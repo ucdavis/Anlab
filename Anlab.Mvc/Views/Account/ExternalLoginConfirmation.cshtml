@@ -8,6 +8,9 @@
 <h3>Associate your @ViewData["LoginProvider"] account.</h3>
 
 <form asp-controller="Account" asp-action="ExternalLoginConfirmation" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+    @Html.HiddenFor(a=>a.FirstName)
+    @Html.HiddenFor(a => a.LastName)
+    @Html.HiddenFor(a => a.Name)
     <h4>Association Form</h4>
     <hr />
     <div asp-validation-summary="All" class="text-danger"></div>
