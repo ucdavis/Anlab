@@ -1,6 +1,9 @@
+using System.Security.Claims;
+using System.Threading.Tasks;
 using AnlabMvc.Data;
 using AnlabMvc.Models;
 using AnlabMvc.Services;
+using AspNetCore.Security.CAS;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -84,7 +87,28 @@ namespace AnlabMvc
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
+            var casOptions = new CasOptions
+            {
+                CasServerUrlBase = "https://cas.ucdavis.edu/cas/",
+                Events = new CasEvents
+                {
+                    OnCreatingTicket = ctx =>
+                    {
+                        var identity = ctx.Principal.Identity as ClaimsIdentity;
 
+                        if (identity == null)
+                        {
+                            return Task.FromResult(0);
+                        }
+
+                        // look up user info and add as claims
+                        identity.AddClaim(new Claim(ClaimTypes.Email, "srkirkland@test.com"));
+
+                        return Task.FromResult(0);
+                    }
+                }
+            };
+            app.UseCasAuthentication(casOptions);
 
             app.UseMvc(routes =>
             {
