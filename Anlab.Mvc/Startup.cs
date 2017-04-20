@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AnlabMvc.Data;
 using AnlabMvc.Models;
+using AnlabMvc.Models.Configuration;
 using AnlabMvc.Services;
 using AspNetCore.Security.CAS;
 using Microsoft.AspNetCore.Builder;
@@ -40,6 +41,8 @@ namespace AnlabMvc
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AzureOptions>(Configuration.GetSection("Authentication:Azure"));
+
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -56,7 +59,7 @@ namespace AnlabMvc
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
-
+            services.AddTransient<IDirectorySearchService, DirectorySearchService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,19 +95,27 @@ namespace AnlabMvc
                 CasServerUrlBase = "https://cas.ucdavis.edu/cas/",
                 Events = new CasEvents
                 {
-                    OnCreatingTicket = ctx =>
+                    OnCreatingTicket = async ctx =>
                     {
                         var identity = ctx.Principal.Identity as ClaimsIdentity;
 
                         if (identity == null)
                         {
-                            return Task.FromResult(0);
+                            return;
                         }
 
-                        // look up user info and add as claims
-                        identity.AddClaim(new Claim(ClaimTypes.Email, "srkirkland@test.com"));
+                        var kerb = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                        return Task.FromResult(0);
+                        // look up user info and add as claims
+                        var user = await app.ApplicationServices.GetService<IDirectorySearchService>().GetByKerb(kerb);
+
+                        if (user != null)
+                        {
+                            identity.AddClaim(new Claim(ClaimTypes.Email, user.Mail));
+                            identity.AddClaim(new Claim(ClaimTypes.Name, user.DisplayName));
+                            identity.AddClaim(new Claim(ClaimTypes.GivenName, user.GivenName));
+                            identity.AddClaim(new Claim(ClaimTypes.Surname, user.Surname));
+                        }
                     }
                 }
             };
