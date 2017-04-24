@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace AnlabMvc.Models
 {
-    // Add profile data for application users by adding properties to the ApplicationUser class
-    public class ApplicationUser : IdentityUser
+    // Add profile data for application users by adding properties to the User class
+    public class User : IdentityUser
     {
         [StringLength(50)]
         [Display(Name = "First Name")]

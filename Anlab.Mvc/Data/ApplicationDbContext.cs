@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AnlabMvc.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

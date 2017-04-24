@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -22,7 +23,7 @@ namespace AnlabMvc.Controllers
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Orders.ToListAsync());
+            return View(await _context.Orders.Include(o=>o.User).ToListAsync());
         }
 
         // GET: Orders/Details/5
@@ -54,8 +55,11 @@ namespace AnlabMvc.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Estimate,Created")] Order order)
+        public async Task<IActionResult> Create([Bind("Id,Estimate")] Order order)
         {
+            order.UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            ModelState.Remove("UserId");
             if (ModelState.IsValid)
             {
                 _context.Add(order);

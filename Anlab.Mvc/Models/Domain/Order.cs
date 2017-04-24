@@ -11,6 +11,11 @@ namespace AnlabMvc.Models.Domain
     /// </summary>
     public class Order
     {
+        public Order()
+        {
+            Created = DateTime.UtcNow;
+        }
+
         [Required]
         public int Id { get; set; }
 
@@ -19,8 +24,10 @@ namespace AnlabMvc.Models.Domain
 
         public DateTime Created { get; set; }
 
+        // FK reference to user
         [Required]
-        public ApplicationUser User { get; set; }
+        public string UserId { get; set; }
+        public User User { get; set; }
 
     }
 }
