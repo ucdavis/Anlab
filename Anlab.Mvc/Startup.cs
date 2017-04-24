@@ -1,9 +1,15 @@
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using AnlabMvc.Data;
 using AnlabMvc.Models;
+using AnlabMvc.Models.Configuration;
 using AnlabMvc.Services;
+using AspNetCore.Security.CAS;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -36,6 +42,8 @@ namespace AnlabMvc
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AzureOptions>(Configuration.GetSection("Authentication:Azure"));
+
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -44,12 +52,15 @@ namespace AnlabMvc
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new RequireHttpsAttribute());
+            });
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
-
+            services.AddTransient<IDirectorySearchService, DirectorySearchService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,7 +91,40 @@ namespace AnlabMvc
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
+            var casOptions = new CasOptions
+            {
+                CasServerUrlBase = "https://cas.ucdavis.edu/cas/",
+                Events = new CasEvents
+                {
+                    OnCreatingTicket = async ctx =>
+                    {
+                        var identity = ctx.Principal.Identity as ClaimsIdentity;
 
+                        if (identity == null)
+                        {
+                            return;
+                        }
+
+                        var kerb = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                        // look up user info and add as claims
+                        var user = await app.ApplicationServices.GetService<IDirectorySearchService>().GetByKerb(kerb);
+
+                        if (user != null)
+                        {                            
+                            identity.AddClaim(new Claim(ClaimTypes.Email, user.Mail));
+                            identity.AddClaim(new Claim(ClaimTypes.GivenName, user.GivenName));
+                            identity.AddClaim(new Claim(ClaimTypes.Surname, user.Surname));
+
+                            // Cas already adds a name param but it's a duplicate of nameIdentifier, so let's replace with something useful
+                            identity.RemoveClaim(identity.FindFirst(ClaimTypes.Name));
+                            identity.AddClaim(new Claim(ClaimTypes.Name, user.DisplayName));
+
+                        }
+                    }
+                }
+            };
+            app.UseCasAuthentication(casOptions);
 
             app.UseMvc(routes =>
             {
