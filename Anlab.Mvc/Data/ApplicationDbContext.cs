@@ -1,4 +1,5 @@
 ﻿using AnlabMvc.Models;
+using AnlabMvc.Models.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,8 @@ namespace AnlabMvc.Data
             : base(options)
         {
         }
+
+        public DbSet<Order> Orders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
