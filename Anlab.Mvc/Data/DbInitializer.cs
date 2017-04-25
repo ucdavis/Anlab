@@ -13,12 +13,6 @@ namespace AnlabMvc.Data
         {
             context.Database.EnsureCreated();
 
-            // Look for any students.
-            if (context.Orders.Any())
-            {
-                return;   // DB has been seeded
-            }
-
             // Seed with orders here, and maybe create users to test with
         }
     }
