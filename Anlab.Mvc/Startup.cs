@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Anlab.Core.Domain;
 using AnlabMvc.Data;
-using AnlabMvc.Models;
 using AnlabMvc.Models.Configuration;
 using AnlabMvc.Services;
 using AspNetCore.Security.CAS;

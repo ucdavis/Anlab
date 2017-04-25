@@ -8,8 +8,8 @@ using AnlabMvc.Data;
 namespace AnlabMvc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170424232326_initial")]
-    partial class initial
+    [Migration("20170425222658_InitialSetup")]
+    partial class InitialSetup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -17,30 +17,18 @@ namespace AnlabMvc.Migrations
                 .HasAnnotation("ProductVersion", "1.1.1")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("AnlabMvc.Models.Domain.Order", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("Created");
-
-                    b.Property<decimal>("Estimate");
-
-                    b.Property<string>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("AnlabMvc.Models.User", b =>
+            modelBuilder.Entity("Anlab.Core.Domain.User", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("AccessFailedCount");
+
+                    b.Property<string>("Account")
+                        .HasMaxLength(16);
+
+                    b.Property<string>("ClientId")
+                        .HasMaxLength(16);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -70,6 +58,8 @@ namespace AnlabMvc.Migrations
                         .HasMaxLength(256);
 
                     b.Property<string>("PasswordHash");
+
+                    b.Property<string>("Phone");
 
                     b.Property<string>("PhoneNumber");
 
@@ -201,13 +191,6 @@ namespace AnlabMvc.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("AnlabMvc.Models.Domain.Order", b =>
-                {
-                    b.HasOne("AnlabMvc.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole")
@@ -218,7 +201,7 @@ namespace AnlabMvc.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("AnlabMvc.Models.User")
+                    b.HasOne("Anlab.Core.Domain.User")
                         .WithMany("Claims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -226,7 +209,7 @@ namespace AnlabMvc.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("AnlabMvc.Models.User")
+                    b.HasOne("Anlab.Core.Domain.User")
                         .WithMany("Logins")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -239,7 +222,7 @@ namespace AnlabMvc.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("AnlabMvc.Models.User")
+                    b.HasOne("Anlab.Core.Domain.User")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);

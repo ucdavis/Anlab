@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace AnlabMvc.Migrations
 {
-    public partial class initial : Migration
+    public partial class InitialSetup : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,6 +15,8 @@ namespace AnlabMvc.Migrations
                 {
                     Id = table.Column<string>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
+                    Account = table.Column<string>(maxLength: 16, nullable: true),
+                    ClientId = table.Column<string>(maxLength: 16, nullable: true),
                     ConcurrencyStamp = table.Column<string>(nullable: true),
                     Email = table.Column<string>(maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(nullable: false),
@@ -26,6 +28,7 @@ namespace AnlabMvc.Migrations
                     NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
                     PasswordHash = table.Column<string>(nullable: true),
+                    Phone = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(nullable: false),
                     SecurityStamp = table.Column<string>(nullable: true),
@@ -63,27 +66,6 @@ namespace AnlabMvc.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Created = table.Column<DateTime>(nullable: false),
-                    Estimate = table.Column<decimal>(nullable: false),
-                    UserId = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Orders_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -173,11 +155,6 @@ namespace AnlabMvc.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_UserId",
-                table: "Orders",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
@@ -217,9 +194,6 @@ namespace AnlabMvc.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Orders");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 

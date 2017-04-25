@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using AnlabMvc.Models;
+using Anlab.Core.Domain;
 using AnlabMvc.Models.ManageViewModels;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;

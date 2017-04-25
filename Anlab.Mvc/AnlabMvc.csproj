@@ -7,6 +7,12 @@
     <PackageTargetFallback>portable-net45+win8</PackageTargetFallback>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Data\Migrations\**" />
+    <Content Remove="Data\Migrations\**" />
+    <EmbeddedResource Remove="Data\Migrations\**" />
+    <None Remove="Data\Migrations\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="AspNetCore.Security.CAS" Version="1.0.0" />
     <PackageReference Include="AzureActiveDirectorySearcher" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
@@ -16,7 +22,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="1.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="1.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="1.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="1.1.0" />
@@ -32,7 +37,7 @@
     <None Remove="yarn.lock" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Data\Migrations\" />
+    <ProjectReference Include="..\Anlab.Core\Anlab.Core.csproj" />
   </ItemGroup>
   <Target Name="RunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->

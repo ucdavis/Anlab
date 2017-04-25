@@ -1,5 +1,4 @@
-﻿using AnlabMvc.Models;
-using AnlabMvc.Models.Domain;
+﻿using Anlab.Core.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
