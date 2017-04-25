@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-namespace AnlabMvc.Models
+namespace Anlab.Core.Domain
 {
     // Add profile data for application users by adding properties to the User class
     public class User : IdentityUser
@@ -16,5 +15,13 @@ namespace AnlabMvc.Models
         [Display(Name = "Name")]
         public string Name { get; set; }
 
+        [StringLength(16)]
+        public string ClientId { get; set; }
+
+        [Phone]
+        public string Phone { get; set; }
+
+        [StringLength(16)]
+        public string Account { get; set; }
     }
 }
