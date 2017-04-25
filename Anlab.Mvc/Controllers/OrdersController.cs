@@ -11,7 +11,7 @@ using AnlabMvc.Models.Domain;
 
 namespace AnlabMvc.Controllers
 {
-    public class OrdersController : Controller
+    public class OrdersController : ApplicationController
     {
         private readonly ApplicationDbContext _context;
 
@@ -57,9 +57,9 @@ namespace AnlabMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Estimate")] Order order)
         {
-            order.UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            order.UserId = CurrentUserId;
+            ModelState.Remove("UserId"); // clear out user error because I added the right one
 
-            ModelState.Remove("UserId");
             if (ModelState.IsValid)
             {
                 _context.Add(order);
