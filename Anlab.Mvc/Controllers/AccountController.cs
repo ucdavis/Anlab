@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using AnlabMvc.Models;
+using Anlab.Core.Domain;
 using AnlabMvc.Models.AccountViewModels;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
