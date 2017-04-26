@@ -4,6 +4,7 @@ using Xunit;
 
 namespace Test
 {
+    [Trait("Category", "Sample")]
     public class SampleTests
     {
         [Fact]
