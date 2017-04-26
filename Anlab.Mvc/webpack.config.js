@@ -8,7 +8,7 @@ module.exports = (env) => {
     const isDevBuild = !(env && env.prod);
     return [{
         stats: { modules: false },
-        entry: { 'main': './Client/boot.tsx', 'root': './Client/root.tsx' },
+        entry: { 'root': './Client/root.tsx' },
         resolve: { extensions: [ '.js', '.jsx', '.ts', '.tsx' ] },
         output: {
             path: path.join(__dirname, bundleOutputDir),
@@ -26,10 +26,10 @@ module.exports = (env) => {
         },
         plugins: [
             new CheckerPlugin(),
-            new webpack.DllReferencePlugin({
-                context: __dirname,
-                manifest: require('./wwwroot/dist/vendor-manifest.json')
-            })
+            //new webpack.DllReferencePlugin({
+            //    context: __dirname,
+            //    manifest: require('./wwwroot/dist/vendor-manifest.json')
+            //})
         ].concat(isDevBuild ? [
             // Plugins that apply in development builds only
             new webpack.SourceMapDevToolPlugin({
