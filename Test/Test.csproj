@@ -13,6 +13,7 @@
     <PackageReference Include="Shouldly" Version="2.8.2" />
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Composition" Version="1.0.27" ExcludeAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
