@@ -32,6 +32,13 @@ namespace Test.TestsDatabase
 
                 using (var context = new ApplicationDbContext(options))
                 {
+                    var xxx = context.Orders.ToList();
+
+                    xxx.Count().ShouldBe(0);
+                }
+
+                using (var context = new ApplicationDbContext(options))
+                {
                     context.Users.Add(CreateValidEntities.User(1));
                     context.SaveChanges();
 
@@ -69,6 +76,13 @@ namespace Test.TestsDatabase
                 using (var context = new ApplicationDbContext(options))
                 {
                     context.Database.EnsureCreated();
+                }
+
+                using (var context = new ApplicationDbContext(options))
+                {
+                    var xxx = context.Orders.ToList();
+
+                    xxx.Count().ShouldBe(0);
                 }
 
                 using (var context = new ApplicationDbContext(options))
