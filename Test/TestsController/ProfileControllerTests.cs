@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using Anlab.Core.Domain;
 using AnlabMvc.Controllers;
 using AnlabMvc.Data;
@@ -43,7 +43,15 @@ namespace Test.TestsController
             mockContext.Setup(m => m.Users).Returns(data.MockAsyncDbSet().Object);
 
 
-            var controller = new ProfileController(mockContext.Object);
+            var currentUser = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, "1"),
+            }));
+
+            var controller = new ProfileController(mockContext.Object)
+            {
+                HttpContext = { User = currentUser }
+            };
 
             // Act
             var controllerResult = await controller.Index();
