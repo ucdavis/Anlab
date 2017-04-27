@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Anlab.Core.Domain;
 using AnlabMvc.Data;
 using Microsoft.Data.Sqlite;
@@ -51,9 +52,10 @@ namespace Test.TestsDatabase
 
                 using (var context = new ApplicationDbContext(options))
                 {
-                    var xxx = context.Orders.ToList();
-
+                    var xxx = context.Orders.Include(a => a.Creator).ToList();
+                    var yyy = context.Users.ToList();
                     xxx.Count().ShouldBe(1);
+                    yyy.Count().ShouldBe(2);
                 }
             }
             finally
@@ -162,6 +164,54 @@ namespace Test.TestsDatabase
                     var xxx = context.Orders.ToList();
 
                     xxx.Count().ShouldBe(value);
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [Fact]
+        public async Task TestTestAsyncSave()
+        {
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new ApplicationDbContext(options))
+                {
+                    context.Database.EnsureCreated();
+                }
+
+                using (var context = new ApplicationDbContext(options))
+                {
+                    var xxx = await context.Orders.ToListAsync();
+
+                    xxx.Count().ShouldBe(0);
+                }
+
+                using (var context = new ApplicationDbContext(options))
+                {
+                    await context.Users.AddAsync(CreateValidEntities.User(1));
+                    await context.SaveChangesAsync();
+
+                    var order = CreateValidEntities.Order(1);
+                    order.Creator = await context.Users.FirstOrDefaultAsync();
+                    await context.Orders.AddAsync(order);
+                    await context.SaveChangesAsync();
+                }
+
+                using (var context = new ApplicationDbContext(options))
+                {
+                    var xxx = await context.Orders.ToListAsync(); 
+
+                    xxx.Count().ShouldBe(1);
                 }
             }
             finally
