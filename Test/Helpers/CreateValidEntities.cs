@@ -12,10 +12,11 @@ namespace Test.Helpers
             var rtValue = new Order();
             rtValue.CreatorId = string.Format("CreatorId{0}", counter);
             rtValue.Project = string.Format("Project{0}", counter);
+            rtValue.Creator = new User(); //Meh? test later
 
             if (populateAllFields)
             {
-                rtValue.Creator = new User(); //Meh? test later
+                
                 rtValue.LabId = string.Format("LabId{0}", counter);
                 rtValue.ClientId = string.Format("ClientId{0}", counter);
                 rtValue.AdditionalEmails = string.Format("AdditionalEmails{0}", counter);

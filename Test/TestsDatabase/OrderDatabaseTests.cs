@@ -44,7 +44,7 @@ namespace Test.TestsDatabase
                     context.SaveChanges();
 
                     var order = CreateValidEntities.Order(1);
-                    order.Creator = context.Users.FirstOrDefault();
+                    order.Creator = new User();//context.Users.FirstOrDefault();
                     context.Orders.Add(order);
                     context.SaveChanges();
                 }
