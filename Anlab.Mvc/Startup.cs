@@ -15,6 +15,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using StackifyLib;
 
 namespace AnlabMvc
 {
@@ -35,6 +37,8 @@ namespace AnlabMvc
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            StackifyLib.Config.Environment = env.EnvironmentName;
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -66,8 +70,9 @@ namespace AnlabMvc
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            app.ConfigureStackifyLogging(Configuration);
+            
+            Log.Logger = new LoggerConfiguration().WriteTo.Stackify().CreateLogger();
 
             if (env.IsDevelopment())
             {
