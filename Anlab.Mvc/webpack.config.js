@@ -8,7 +8,11 @@ module.exports = (env) => {
     const isDevBuild = !(env && env.prod);
     return [{
         stats: { modules: false },
-        entry: { 'root': './Client/root.tsx' },
+        entry: {
+            'root': './Client/root.tsx',
+            'boot': './Client/boot.tsx',
+            'react': ['react', 'react-dom', 'react-router']
+        },
         resolve: { extensions: [ '.js', '.jsx', '.ts', '.tsx' ] },
         output: {
             path: path.join(__dirname, bundleOutputDir),
@@ -26,10 +30,10 @@ module.exports = (env) => {
         },
         plugins: [
             new CheckerPlugin(),
-            //new webpack.DllReferencePlugin({
-            //    context: __dirname,
-            //    manifest: require('./wwwroot/dist/vendor-manifest.json')
-            //})
+            new webpack.optimize.CommonsChunkPlugin({
+                name: 'react',
+                chunks: ['boot']
+            })
         ].concat(isDevBuild ? [
             // Plugins that apply in development builds only
             new webpack.SourceMapDevToolPlugin({
