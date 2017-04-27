@@ -29,5 +29,14 @@ namespace Test.Helpers
 
             return rtValue;
         }
+
+        public static User User(int? counter, bool populateAllFields = false)
+        {
+            var rtValue = new User();
+            rtValue.FirstName = string.Format("FirstName{0}", counter);
+
+            return rtValue;
+
+        }
     }
 }
