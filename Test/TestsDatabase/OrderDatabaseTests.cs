@@ -5,6 +5,7 @@ using Anlab.Core.Domain;
 using AnlabMvc.Data;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Internal;
 using Shouldly;
 using Test.Helpers;
@@ -95,6 +96,7 @@ namespace Test.TestsDatabase
 
                     var order = CreateValidEntities.Order(1);
                     order.Creator = context.Users.FirstOrDefault();
+
                     context.Orders.Add(order);
                     context.SaveChanges();
                 }
@@ -102,6 +104,8 @@ namespace Test.TestsDatabase
                 using (var context = new ApplicationDbContext(options))
                 {
                     var xxx = context.Orders.ToList();
+
+  
 
                     xxx.Count().ShouldBe(1);
                 }
@@ -219,5 +223,6 @@ namespace Test.TestsDatabase
                 connection.Close();
             }
         }
+
     }
 }
