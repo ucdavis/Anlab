@@ -1,4 +1,5 @@
-﻿using Anlab.Core.Domain;
+﻿using System;
+using Anlab.Core.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +12,12 @@ namespace AnlabMvc.Data
         {
         }
 
-        public DbSet<Order> Orders { get; set; }
+        [Obsolete("Just use for tests")]
+        public ApplicationDbContext() { }
+
+        public new virtual DbSet<User> Users {get; set; }
+
+        public virtual DbSet<Order> Orders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
