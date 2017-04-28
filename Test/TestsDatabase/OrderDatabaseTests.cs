@@ -28,17 +28,11 @@ namespace Test.TestsDatabase
                 using (var context = new ApplicationDbContext(options))
                 {
                     context.Database.EnsureCreated();
-                }
 
-                using (var context = new ApplicationDbContext(options))
-                {
                     var existingOrders = context.Orders.ToList();
 
                     existingOrders.Count().ShouldBe(0);
-                }
 
-                using (var context = new ApplicationDbContext(options))
-                {
                     context.Users.Add(CreateValidEntities.User(5));
                     context.SaveChanges();
 
@@ -46,10 +40,7 @@ namespace Test.TestsDatabase
                     order.Creator = context.Users.FirstOrDefault();
                     context.Orders.Add(order);
                     context.SaveChanges();
-                }
 
-                using (var context = new ApplicationDbContext(options))
-                {
                     var updatedOrders = context.Orders.Include(a => a.Creator).ToList();
                     var updatedUsers = context.Users.ToList();
                     updatedOrders.Count().ShouldBe(1);
@@ -79,18 +70,12 @@ namespace Test.TestsDatabase
                 using (var context = new ApplicationDbContext(options))
                 {
                     context.Database.EnsureCreated();
-                }
 
-                using (var context = new ApplicationDbContext(options))
-                {
                     var existingOrders = context.Orders.ToList();
                     existingOrders.Count().ShouldBe(0);
                     var existingUsers = context.Users.ToList();
                     existingUsers.Count().ShouldBe(0);
-                }
 
-                using (var context = new ApplicationDbContext(options))
-                {
                     context.Users.Add(CreateValidEntities.User(5));
                     context.SaveChanges();
 
@@ -98,10 +83,7 @@ namespace Test.TestsDatabase
                     order.Creator = CreateValidEntities.User(3);
                     context.Orders.Add(order);
                     context.SaveChanges();
-                }
 
-                using (var context = new ApplicationDbContext(options))
-                {
                     var updatedOrders = context.Orders.Include(a => a.Creator).ToList();
                     var updatedUsers = context.Users.ToList();
                     updatedOrders.Count().ShouldBe(1);
@@ -193,17 +175,11 @@ namespace Test.TestsDatabase
                 using (var context = new ApplicationDbContext(options))
                 {
                     context.Database.EnsureCreated();
-                }
 
-                using (var context = new ApplicationDbContext(options))
-                {
                     var existingOrders = await context.Orders.ToListAsync();
 
                     existingOrders.Count().ShouldBe(0);
-                }
 
-                using (var context = new ApplicationDbContext(options))
-                {
                     await context.Users.AddAsync(CreateValidEntities.User(1));
                     await context.SaveChangesAsync();
 
@@ -211,10 +187,7 @@ namespace Test.TestsDatabase
                     order.Creator = await context.Users.FirstOrDefaultAsync();
                     await context.Orders.AddAsync(order);
                     await context.SaveChangesAsync();
-                }
 
-                using (var context = new ApplicationDbContext(options))
-                {
                     var updatedOrders = await context.Orders.ToListAsync();
 
                     updatedOrders.Count().ShouldBe(1);
