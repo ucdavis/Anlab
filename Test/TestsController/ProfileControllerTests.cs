@@ -36,7 +36,7 @@ namespace Test.TestsController
                 CreateValidEntities.User(3)
             }.AsQueryable();
 
-
+            //Mock context for Database
             var mockContext = new Mock<ApplicationDbContext>();
             mockContext.Setup(m => m.Users).Returns(data.MockAsyncDbSet().Object);
 
@@ -45,15 +45,14 @@ namespace Test.TestsController
                 new Claim(ClaimTypes.NameIdentifier, "1"),
             }));
 
+            //For Auth? Will need to test
+            //var mockPrincipal = new Mock<IPrincipal>();
+            //mockPrincipal.Setup(x => x.IsInRole(It.IsAny<string>())).Returns(true);
 
-            var mockPrincipal = new Mock<IPrincipal>();
-            mockPrincipal.Setup(x => x.IsInRole(It.IsAny<string>())).Returns(true);
-
+            //To return the user so can check identity.
             var mockHttpContext = new Mock<HttpContext>();
             mockHttpContext.Setup(m => m.User).Returns(user2);
-
-
-
+            
             var controller = new ProfileController(mockContext.Object);
             controller.ControllerContext = new ControllerContext
             {
@@ -69,52 +68,5 @@ namespace Test.TestsController
             model.FirstName.ShouldBe("FirstName2");
         }
 
-        [Fact]
-        public async Task TestWithInMemoryDb()
-        {
-
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-
-            try
-            {
-                var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                    .UseSqlite(connection)
-                    .Options;
-
-                using (var context = new ApplicationDbContext(options))
-                {
-                    context.Database.EnsureCreated();
-                }
-
-                using (var context = new ApplicationDbContext(options))
-                {
-                    await context.Users.AddAsync(CreateValidEntities.User(1));
-                    await context.Users.AddAsync(CreateValidEntities.User(2));
-                    await context.Users.AddAsync(CreateValidEntities.User(3));
-                    await context.SaveChangesAsync();
-
-                }
-
-                using (var context = new ApplicationDbContext(options))
-                {
-                    var controller = new ProfileController(context);
-                    var controllerResult = await controller.Index();
-
-                    // Assert		
-                    var result = Assert.IsType<ViewResult>(controllerResult);
-                    var model = Assert.IsType<User>(result.Model);
-                    model.FirstName.ShouldBe("FirstName1");
-                }
-            }
-            finally
-            {
-                connection.Close();
-            }
-
-
-
-
-        }
     }
 }
