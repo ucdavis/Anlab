@@ -10,8 +10,9 @@ module.exports = (env) => {
         stats: { modules: false },
         entry: {
             'root': './Client/root.tsx',
-            'boot': './Client/boot.tsx',
-            'react': ['react', 'react-dom', 'react-router']
+            'order': './Client/order.tsx',
+            'react': ['react', 'react-dom'],
+            //'react': ['react', 'react-dom', 'react-router']
         },
         resolve: { extensions: [ '.js', '.jsx', '.ts', '.tsx' ] },
         output: {
