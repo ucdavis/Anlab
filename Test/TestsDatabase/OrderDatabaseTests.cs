@@ -1,13 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Anlab.Core.Domain;
+﻿using Anlab.Core.Domain;
 using AnlabMvc.Data;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Internal;
 using Shouldly;
+using System.Linq;
+using System.Threading.Tasks;
 using Test.Helpers;
 using Xunit;
 
@@ -17,7 +14,7 @@ namespace Test.TestsDatabase
     public class OrderDatabaseTests
     {
         [Fact]
-        public void test1()
+        public void OrdersCanBeWrittenToDatabaseWithExistingUser()
         {
             var connection = new SqliteConnection("DataSource=:memory:");
             connection.Open();
@@ -35,28 +32,30 @@ namespace Test.TestsDatabase
 
                 using (var context = new ApplicationDbContext(options))
                 {
-                    var xxx = context.Orders.ToList();
+                    var existingOrders = context.Orders.ToList();
 
-                    xxx.Count().ShouldBe(0);
+                    existingOrders.Count().ShouldBe(0);
                 }
 
                 using (var context = new ApplicationDbContext(options))
                 {
-                    context.Users.Add(CreateValidEntities.User(1));
+                    context.Users.Add(CreateValidEntities.User(5));
                     context.SaveChanges();
 
                     var order = CreateValidEntities.Order(1);
-                    order.Creator = new User();//context.Users.FirstOrDefault();
+                    order.Creator = context.Users.FirstOrDefault();
                     context.Orders.Add(order);
                     context.SaveChanges();
                 }
 
                 using (var context = new ApplicationDbContext(options))
                 {
-                    var xxx = context.Orders.Include(a => a.Creator).ToList();
-                    var yyy = context.Users.ToList();
-                    xxx.Count().ShouldBe(1);
-                    yyy.Count().ShouldBe(2);
+                    var updatedOrders = context.Orders.Include(a => a.Creator).ToList();
+                    var updatedUsers = context.Users.ToList();
+                    updatedOrders.Count().ShouldBe(1);
+                    updatedUsers.Count().ShouldBe(1);
+
+                    updatedOrders[0].Creator.FirstName.ShouldBe("FirstName5");
                 }
             }
             finally
@@ -66,7 +65,7 @@ namespace Test.TestsDatabase
         }
 
         [Fact]
-        public void test2()
+        public void OrdersCanBeWrittenToDatabaseWithNewUser()
         {
             var connection = new SqliteConnection("DataSource=:memory:");
             connection.Open();
@@ -84,30 +83,31 @@ namespace Test.TestsDatabase
 
                 using (var context = new ApplicationDbContext(options))
                 {
-                    var xxx = context.Orders.ToList();
-
-                    xxx.Count().ShouldBe(0);
+                    var existingOrders = context.Orders.ToList();
+                    existingOrders.Count().ShouldBe(0);
+                    var existingUsers = context.Users.ToList();
+                    existingUsers.Count().ShouldBe(0);
                 }
 
                 using (var context = new ApplicationDbContext(options))
                 {
-                    context.Users.Add(CreateValidEntities.User(1));
+                    context.Users.Add(CreateValidEntities.User(5));
                     context.SaveChanges();
 
                     var order = CreateValidEntities.Order(1);
-                    order.Creator = context.Users.FirstOrDefault();
-
+                    order.Creator = CreateValidEntities.User(3);
                     context.Orders.Add(order);
                     context.SaveChanges();
                 }
 
                 using (var context = new ApplicationDbContext(options))
                 {
-                    var xxx = context.Orders.ToList();
+                    var updatedOrders = context.Orders.Include(a => a.Creator).ToList();
+                    var updatedUsers = context.Users.ToList();
+                    updatedOrders.Count().ShouldBe(1);
+                    updatedUsers.Count().ShouldBe(2);
 
-  
-
-                    xxx.Count().ShouldBe(1);
+                    updatedOrders[0].Creator.FirstName.ShouldBe("FirstName3");
                 }
             }
             finally
@@ -116,6 +116,8 @@ namespace Test.TestsDatabase
             }
         }
 
+
+
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
@@ -123,7 +125,7 @@ namespace Test.TestsDatabase
         [InlineData(4)]
         [InlineData(5)]
         [InlineData(6)]
-        public void TestWithTheory(int value)
+        public void OrdersCanBeWrittenToDatabaseWithTheory(int value)
         {
             var connection = new SqliteConnection("DataSource=:memory:");
             connection.Open();
@@ -195,9 +197,9 @@ namespace Test.TestsDatabase
 
                 using (var context = new ApplicationDbContext(options))
                 {
-                    var xxx = await context.Orders.ToListAsync();
+                    var existingOrders = await context.Orders.ToListAsync();
 
-                    xxx.Count().ShouldBe(0);
+                    existingOrders.Count().ShouldBe(0);
                 }
 
                 using (var context = new ApplicationDbContext(options))
@@ -213,9 +215,9 @@ namespace Test.TestsDatabase
 
                 using (var context = new ApplicationDbContext(options))
                 {
-                    var xxx = await context.Orders.ToListAsync(); 
+                    var updatedOrders = await context.Orders.ToListAsync();
 
-                    xxx.Count().ShouldBe(1);
+                    updatedOrders.Count().ShouldBe(1);
                 }
             }
             finally

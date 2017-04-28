@@ -36,6 +36,8 @@ namespace Test.Helpers
             var rtValue = new User();
             rtValue.FirstName = string.Format("FirstName{0}", counter);
 
+            rtValue.Id = (counter ?? 99).ToString();
+
             return rtValue;
 
         }

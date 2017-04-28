@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
-using Anlab.Core.Domain;
+﻿using Anlab.Core.Domain;
 using AnlabMvc.Controllers;
 using AnlabMvc.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using Shouldly;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using Test.Helpers;
 using Xunit;
 
@@ -27,7 +22,7 @@ namespace Test.TestsController
         public async Task TestWithMoqDb()
         {
             var user = CreateValidEntities.User(2);
-            user.Id = "1";
+            user.Id = "44";
             // Arrange
             var data = new List<User>
             {
@@ -42,7 +37,7 @@ namespace Test.TestsController
 
             var user2 = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
-                new Claim(ClaimTypes.NameIdentifier, "1"),
+                new Claim(ClaimTypes.NameIdentifier, "44"),
             }));
 
             //For Auth? Will need to test
