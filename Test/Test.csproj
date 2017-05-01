@@ -6,12 +6,14 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="1.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
     <PackageReference Include="Moq" Version="4.7.8" />
     <PackageReference Include="Shouldly" Version="2.8.2" />
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Composition" Version="1.0.27" ExcludeAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Anlab.Core\Anlab.Core.csproj" />
+    <ProjectReference Include="..\Anlab.Mvc\AnlabMvc.csproj" />
   </ItemGroup>
 
 </Project>
