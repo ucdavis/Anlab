@@ -131,6 +131,15 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
+        // TODO: might not want this in the future
+        [HttpGet]
+        public async Task<IActionResult> LogOff()
+        {
+            await _signInManager.SignOutAsync();
+            _logger.LogInformation(4, "User logged out.");
+            return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
+
         //
         // POST: /Account/Logout
         [HttpPost]
