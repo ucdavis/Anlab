@@ -11,7 +11,7 @@ namespace Test.Helpers
     {
         private SqliteConnection Connection { get; set; }
 
-        public ApplicationDbContext ContextHelper2()
+        public ApplicationDbContext Context()
         {
             Connection = new SqliteConnection("DataSource=:memory:");
             Connection.Open();

@@ -208,7 +208,7 @@ namespace Test.TestsDatabase
         [InlineData(6)]
         public void OrdersCanBeWrittenToDatabaseWithTheoryWithHelper(int value)
         {
-            using (var context = new ContextHelper().ContextHelper2())
+            using (var context = new ContextHelper().Context())
             {
                 var expectedOrders = context.Orders.ToList();
 
