@@ -1,7 +1,4 @@
-﻿using Anlab.Core.Domain;
-using AnlabMvc.Data;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Shouldly;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,89 +13,75 @@ namespace Test.TestsDatabase
         [Fact]
         public void OrdersCanBeWrittenToDatabaseWithExistingUser()
         {
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-
-            try
+            using (var contextHelper = new ContextHelper())
             {
-                var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                    .UseSqlite(connection)
-                    .Options;
 
-                using (var context = new ApplicationDbContext(options))
-                {
-                    context.Database.EnsureCreated();
+                contextHelper.Context.Orders.Count().ShouldBe(0);
 
-                    var existingOrders = context.Orders.ToList();
+                contextHelper.Context.Users.Add(CreateValidEntities.User(5));
+                contextHelper.Context.SaveChanges();
 
-                    existingOrders.Count().ShouldBe(0);
+                var order = CreateValidEntities.Order(1);
+                order.Creator = contextHelper.Context.Users.FirstOrDefault();
+                contextHelper.Context.Orders.Add(order);
+                contextHelper.Context.SaveChanges();
 
-                    context.Users.Add(CreateValidEntities.User(5));
-                    context.SaveChanges();
+                var updatedOrders = contextHelper.Context.Orders.Include(a => a.Creator).ToList();
+                contextHelper.Context.Users.Count().ShouldBe(1);
+                updatedOrders.Count().ShouldBe(1);
 
-                    var order = CreateValidEntities.Order(1);
-                    order.Creator = context.Users.FirstOrDefault();
-                    context.Orders.Add(order);
-                    context.SaveChanges();
 
-                    var updatedOrders = context.Orders.Include(a => a.Creator).ToList();
-                    var updatedUsers = context.Users.ToList();
-                    updatedOrders.Count().ShouldBe(1);
-                    updatedUsers.Count().ShouldBe(1);
-
-                    updatedOrders[0].Creator.FirstName.ShouldBe("FirstName5");
-                }
-            }
-            finally
-            {
-                connection.Close();
+                updatedOrders[0].Creator.FirstName.ShouldBe("FirstName5");
             }
         }
 
         [Fact]
         public void OrdersCanBeWrittenToDatabaseWithNewUser()
         {
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-
-            try
+            using (var contextHelper = new ContextHelper())
             {
-                var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                    .UseSqlite(connection)
-                    .Options;
+                contextHelper.Context.Orders.Count().ShouldBe(0);
 
-                using (var context = new ApplicationDbContext(options))
-                {
-                    context.Database.EnsureCreated();
+                contextHelper.Context.Users.Count().ShouldBe(0);
 
-                    var existingOrders = context.Orders.ToList();
-                    existingOrders.Count().ShouldBe(0);
-                    var existingUsers = context.Users.ToList();
-                    existingUsers.Count().ShouldBe(0);
 
-                    context.Users.Add(CreateValidEntities.User(5));
-                    context.SaveChanges();
+                contextHelper.Context.Users.Add(CreateValidEntities.User(5));
+                contextHelper.Context.SaveChanges();
 
-                    var order = CreateValidEntities.Order(1);
-                    order.Creator = CreateValidEntities.User(3);
-                    context.Orders.Add(order);
-                    context.SaveChanges();
+                var order = CreateValidEntities.Order(1);
+                order.Creator = CreateValidEntities.User(3);
+                contextHelper.Context.Orders.Add(order);
+                contextHelper.Context.SaveChanges();
 
-                    var updatedOrders = context.Orders.Include(a => a.Creator).ToList();
-                    var updatedUsers = context.Users.ToList();
-                    updatedOrders.Count().ShouldBe(1);
-                    updatedUsers.Count().ShouldBe(2);
+                var updatedOrders = contextHelper.Context.Orders.Include(a => a.Creator).ToList();
+                contextHelper.Context.Users.Count().ShouldBe(2);
+                updatedOrders.Count().ShouldBe(1);
 
-                    updatedOrders[0].Creator.FirstName.ShouldBe("FirstName3");
-                }
-            }
-            finally
-            {
-                connection.Close();
+                updatedOrders[0].Creator.FirstName.ShouldBe("FirstName3");
             }
         }
 
 
+        [Fact]
+        public async Task TestTestAsyncSave()
+        {
+            using (var contextHelper = new ContextHelper())
+            {
+
+                (await contextHelper.Context.Orders.CountAsync()).ShouldBe(0);
+
+                await contextHelper.Context.Users.AddAsync(CreateValidEntities.User(1));
+                await contextHelper.Context.SaveChangesAsync();
+
+                var order = CreateValidEntities.Order(1);
+                order.Creator = await contextHelper.Context.Users.FirstOrDefaultAsync();
+                await contextHelper.Context.Orders.AddAsync(order);
+                await contextHelper.Context.SaveChangesAsync();
+
+                (await contextHelper.Context.Orders.CountAsync()).ShouldBe(1);                
+            }
+
+        }
 
         [Theory]
         [InlineData(1)]
@@ -107,97 +90,32 @@ namespace Test.TestsDatabase
         [InlineData(4)]
         [InlineData(5)]
         [InlineData(6)]
-        public void OrdersCanBeWrittenToDatabaseWithTheory(int value)
+        public void OrdersCanBeWrittenToDatabaseWithTheoryWithHelper(int value)
         {
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-
-            try
+            using (var contextHelper = new ContextHelper())
             {
-                var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                    .UseSqlite(connection)
-                    .Options;
+                contextHelper.Context.Orders.Count().ShouldBe(0);
 
-                using (var context = new ApplicationDbContext(options))
+                contextHelper.Context.Users.Add(CreateValidEntities.User(1));
+                contextHelper.Context.SaveChanges();
+
+                for (int i = 0; i < value; i++)
                 {
-                    context.Database.EnsureCreated();
+
+                    var order = CreateValidEntities.Order(i + 1);
+                    order.Creator = contextHelper.Context.Users.FirstOrDefault();
+                    contextHelper.Context.Orders.Add(order);
                 }
 
-                using (var context = new ApplicationDbContext(options))
-                {
-                    var xxx = context.Orders.ToList();
 
-                    xxx.Count().ShouldBe(0);
-                }
+                contextHelper.Context.SaveChanges();
 
-                using (var context = new ApplicationDbContext(options))
-                {
-                    context.Users.Add(CreateValidEntities.User(1));
-                    context.SaveChanges();
+                contextHelper.Context.Orders.Count().ShouldBe(value);
 
-                    for (int i = 0; i < value; i++)
-                    {
-
-                        var order = CreateValidEntities.Order(i+1);
-                        order.Creator = context.Users.FirstOrDefault();
-                        context.Orders.Add(order);
-                    }
-
-
-                    context.SaveChanges();
-                }
-
-                using (var context = new ApplicationDbContext(options))
-                {
-                    var xxx = context.Orders.ToList();
-
-                    xxx.Count().ShouldBe(value);
-                }
             }
-            finally
-            {
-                connection.Close();
-            }
+
         }
 
-        [Fact]
-        public async Task TestTestAsyncSave()
-        {
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-
-            try
-            {
-                var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                    .UseSqlite(connection)
-                    .Options;
-
-                using (var context = new ApplicationDbContext(options))
-                {
-                    context.Database.EnsureCreated();
-
-                    var existingOrders = await context.Orders.ToListAsync();
-
-                    existingOrders.Count().ShouldBe(0);
-
-                    await context.Users.AddAsync(CreateValidEntities.User(1));
-                    await context.SaveChangesAsync();
-
-                    var order = CreateValidEntities.Order(1);
-                    order.Creator = await context.Users.FirstOrDefaultAsync();
-                    await context.Orders.AddAsync(order);
-                    await context.SaveChangesAsync();
-
-                    var updatedOrders = await context.Orders.ToListAsync();
-
-                    updatedOrders.Count().ShouldBe(1);
-                }
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
 
     }
 }
