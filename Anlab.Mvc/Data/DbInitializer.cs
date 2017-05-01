@@ -53,6 +53,17 @@ namespace AnlabMvc.Data
             await userManager.CreateAsync(jasonUser);
             await userManager.AddLoginAsync(jasonUser, jasonLoginInfo);
 
+            // create a new sample order
+
+            var order = new Order
+            {
+                ClientId = "XYZ",
+                CreatorId = scottUser.Id,
+                Project = "Test Project",
+            };
+
+            context.Add(order);
+
             await context.SaveChangesAsync();
 
 

@@ -35,7 +35,7 @@ namespace AnlabMvc.Controllers
 
             await _context.Database.EnsureCreatedAsync();
             
-            return RedirectToAction("Index");
+            return RedirectToAction("LogOff", "Account");
         }
         
     }
