@@ -131,6 +131,12 @@ namespace AnlabMvc
             };
             app.UseCasAuthentication(casOptions);
 
+            app.UseGoogleAuthentication(new GoogleOptions()
+            {
+                ClientId = Configuration["Authentication:Google:ClientId"],
+                ClientSecret = Configuration["Authentication:Google:ClientSecret"]
+            });
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
