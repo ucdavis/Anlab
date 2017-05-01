@@ -208,29 +208,30 @@ namespace Test.TestsDatabase
         [InlineData(6)]
         public void OrdersCanBeWrittenToDatabaseWithTheoryWithHelper(int value)
         {
-            var context = ContextHelper.CreateContext();
-
-            var expectedOrders = context.Orders.ToList();
-
-            expectedOrders.Count().ShouldBe(0);
-
-            context.Users.Add(CreateValidEntities.User(1));
-            context.SaveChanges();
-
-            for (int i = 0; i < value; i++)
+            using (var context = new ContextHelper().ContextHelper2())
             {
+                var expectedOrders = context.Orders.ToList();
 
-                var order = CreateValidEntities.Order(i + 1);
-                order.Creator = context.Users.FirstOrDefault();
-                context.Orders.Add(order);
+                expectedOrders.Count().ShouldBe(0);
+
+                context.Users.Add(CreateValidEntities.User(1));
+                context.SaveChanges();
+
+                for (int i = 0; i < value; i++)
+                {
+
+                    var order = CreateValidEntities.Order(i + 1);
+                    order.Creator = context.Users.FirstOrDefault();
+                    context.Orders.Add(order);
+                }
+
+
+                context.SaveChanges();
+
+                var updatedOrders = context.Orders.ToList();
+
+                updatedOrders.Count().ShouldBe(value);
             }
-
-
-            context.SaveChanges();
-
-            var updatedOrders = context.Orders.ToList();
-
-            updatedOrders.Count().ShouldBe(value);
 
         }
 

@@ -7,20 +7,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Test.Helpers
 {
-    public class ContextHelper
+    public class ContextHelper : IDisposable
     {
-        public static ApplicationDbContext CreateContext()
+        private SqliteConnection Connection { get; set; }
+
+        public ApplicationDbContext ContextHelper2()
         {
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
+            Connection = new SqliteConnection("DataSource=:memory:");
+            Connection.Open();
 
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseSqlite(connection)
+                .UseSqlite(Connection)
                 .Options;
             var context = new ApplicationDbContext(options);
             context.Database.EnsureCreated();
 
             return context;
         }
+
+
+        public void Dispose()
+        {
+            Connection.Close();
+        }
     }
+
+
+
 }
