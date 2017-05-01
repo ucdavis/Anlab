@@ -10,8 +10,9 @@ namespace Test.Helpers
     public class ContextHelper : IDisposable
     {
         private SqliteConnection Connection { get; set; }
+        public ApplicationDbContext Context { get; set; }
 
-        public ApplicationDbContext Context()
+        public ContextHelper()
         {
             Connection = new SqliteConnection("DataSource=:memory:");
             Connection.Open();
@@ -19,16 +20,14 @@ namespace Test.Helpers
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseSqlite(Connection)
                 .Options;
-            var context = new ApplicationDbContext(options);
-            context.Database.EnsureCreated();
-
-            return context;
+            Context = new ApplicationDbContext(options);
+            Context.Database.EnsureCreated();
         }
 
 
         public void Dispose()
         {
-            Connection.Close();
+            Connection?.Close();
         }
     }
 
