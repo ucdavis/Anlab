@@ -9,8 +9,8 @@ namespace Test.Helpers
 {
     public class ContextHelper : IDisposable
     {
-        private SqliteConnection Connection { get; set; }
-        public ApplicationDbContext Context { get; set; }
+        private SqliteConnection Connection { get; }
+        public ApplicationDbContext Context { get; }
 
         public ContextHelper()
         {
