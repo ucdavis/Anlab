@@ -55,7 +55,8 @@
     @RenderBody()
     <hr/>
     <footer>
-        <p>&copy; 2017 - BasicTemplate</p>
+        <p>&copy; The Regents of the University of California, Davis campus, 2017-@(DateTime.UtcNow.Date.ToString("yy")).</p>
+        <p>Version: @TempData["Version"]</p>
     </footer>
 </div>
     

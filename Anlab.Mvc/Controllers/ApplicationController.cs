@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AnlabMvc.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AnlabMvc.Controllers
 {
+    [Version]
     public class ApplicationController : Controller
     {
         public string CurrentUserId => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
