@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Reflection;
+using AnlabMvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace AnlabMvc.Attributes
 {
@@ -9,32 +11,37 @@ namespace AnlabMvc.Attributes
     {
         public int MajorVersion { get; set; }
         public string VersionKey { get; set; }
+        private IMemoryCache _cache;
 
-        public VersionAttribute()
+        public VersionAttribute(IMemoryCache cache)
         {
+            _cache = cache;
             MajorVersion = 1;
             VersionKey = "Version";
         }
 
-        ///// <summary>
-        ///// Grabs the date time stamp and places the version in Cache if it does not exist
-        ///// and places the version in ViewData
-        ///// </summary>
-        ///// <param name="filterContext"></param>
-        //private void LoadAssemblyVersion(ActionExecutingContext filterContext)
-        //{
-        //    var version = filterContext.HttpContext.Cache[VersionKey] as string;
+        /// <summary>
+        /// Grabs the date time stamp and places the version in Cache if it does not exist
+        /// and places the version in ViewData
+        /// </summary>
+        /// <param name="filterContext"></param>
+        private void LoadAssemblyVersion(ActionExecutingContext filterContext)
+        {
+            string version = null;
+            if (!_cache.TryGetValue(VersionKey, out version))
+            {
+                version = typeof(HomeController).GetTypeInfo()
+                    .Assembly.GetName()
+                    .Version
+                    .ToString();
+                var cacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Today.AddDays(1));
 
-        //    if (string.IsNullOrEmpty(version))
-        //    {
-        //        version = Assembly.GetExecutingAssembly().GetName().Version.ToString(); //Version from AppVeyor.
+                _cache.Set(VersionKey, version, cacheOptions);
 
-        //        //Insert version into the cache until tomorrow (Today + 1 day)
-        //        filterContext.HttpContext.Cache.Insert(VersionKey, version, null, DateTime.Today.AddDays(1), Cache.NoSlidingExpiration);
-        //    }
+            }
 
-        //    filterContext.Controller.ViewData[VersionKey] = version;
-        //}
+            filterContext.Controller.TempData[VersionKey] = version;
+        }
 
         //public override void OnActionExecuting(ActionExecutingContext filterContext)
         //{
