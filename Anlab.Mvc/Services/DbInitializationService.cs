@@ -96,7 +96,6 @@ namespace AnlabMvc.Services
             // create sample tests
             var aluminum = new TestItem
             {
-                Id = 3030,
                 Analysis = "Aluminum (KCl extraction)",
                 Code = "Al (KCL)",
                 InternalCost = 18,
@@ -105,8 +104,20 @@ namespace AnlabMvc.Services
                 Multiplier = 1
             };
 
-            _context.Add(aluminum);
+            // create sample tests
+            var ammonium = new TestItem
+            {
+                Analysis = "Ammonium-Nitrogen",
+                Code = "NH4-N",
+                InternalCost = 11,
+                ExternalCost = 17,
+                FeeSchedule = "16_0711",
+                Multiplier = 1
+            };
 
+            _context.Add(aluminum);
+            _context.Add(ammonium);
+            
             await _context.SaveChangesAsync();
 
 
