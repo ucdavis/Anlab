@@ -3,7 +3,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Anlab.Core.Domain;
 using AnlabMvc.Data;
-using AnlabMvc.Helpers;
 using AnlabMvc.Models.Configuration;
 using AnlabMvc.Services;
 using AspNetCore.Security.CAS;
@@ -68,7 +67,7 @@ namespace AnlabMvc
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
-            services.AddTransient<IDirectorySearchService, DirectorySearchService>();            
+            services.AddTransient<IDirectorySearchService, DirectorySearchService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
