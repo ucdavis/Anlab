@@ -30,15 +30,15 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("Email", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("EmailConfirmed", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("FirstName", "System.String", new List<string>
-            {
-                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"First Name\")]",
+            {                
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"First Name\")]",                
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
 
             }));
             expectedFields.Add(new NameAndType("Id", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("LastName", "System.String", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Last Name\")]",
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Last Name\")]",                
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
 
             }));
@@ -50,6 +50,7 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Name\")]",
+                "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)256)]"
 
             }));
