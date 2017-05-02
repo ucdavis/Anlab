@@ -225,6 +225,10 @@ namespace AnlabMvc.Controllers
                     return View("ExternalLoginFailure");
                 }
                 var user = new User { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, Name = model.Name };
+                if (string.IsNullOrWhiteSpace(user.Name))
+                {
+                    user.Name = user.Email;
+                }
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
