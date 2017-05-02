@@ -11,11 +11,11 @@ namespace AnlabMvc.Attributes
     {
         public int MajorVersion { get; set; }
         public string VersionKey { get; set; }
-        private IMemoryCache _cache;
+        //private IMemoryCache _cache;
 
-        public VersionAttribute(IMemoryCache cache)
+        public VersionAttribute()
         {
-            _cache = cache;
+            
             MajorVersion = 1;
             VersionKey = "Version";
         }
@@ -27,27 +27,31 @@ namespace AnlabMvc.Attributes
         /// <param name="filterContext"></param>
         private void LoadAssemblyVersion(ActionExecutingContext filterContext)
         {
-            string version = null;
-            if (!_cache.TryGetValue(VersionKey, out version))
-            {
-                version = typeof(HomeController).GetTypeInfo()
-                    .Assembly.GetName()
-                    .Version
-                    .ToString();
-                var cacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Today.AddDays(1));
+            
+            string version = typeof(VersionAttribute).GetTypeInfo()
+                .Assembly.GetName()
+                .Version
+                .ToString();
+            //if (!_cache.TryGetValue(VersionKey, out version))
+            //{
+            //    version = typeof(HomeController).GetTypeInfo()
+            //        .Assembly.GetName()
+            //        .Version
+            //        .ToString();
+            //    var cacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Today.AddDays(1));
 
-                _cache.Set(VersionKey, version, cacheOptions);
+            //    _cache.Set(VersionKey, version, cacheOptions);
 
-            }
+            //}
 
-            filterContext.Controller.TempData[VersionKey] = version;
+            filterContext.RouteData.Values.Add(VersionKey, version);
         }
 
-        //public override void OnActionExecuting(ActionExecutingContext filterContext)
-        //{
-        //    LoadAssemblyVersion(filterContext);
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            LoadAssemblyVersion(filterContext);
 
-        //    base.OnActionExecuting(filterContext);
-        //}
+            base.OnActionExecuting(filterContext);
+        }
     }
 }

@@ -47,6 +47,7 @@ namespace AnlabMvc
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+           
             services.Configure<AzureOptions>(Configuration.GetSection("Authentication:Azure"));
 
             // Add framework services.
@@ -68,7 +69,6 @@ namespace AnlabMvc
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
             services.AddTransient<IDirectorySearchService, DirectorySearchService>();
-            services.AddMemoryCache();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
