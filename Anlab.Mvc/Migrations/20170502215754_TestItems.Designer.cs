@@ -8,9 +8,10 @@ using AnlabMvc.Data;
 namespace AnlabMvc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170502215754_TestItems")]
+    partial class TestItems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -58,10 +59,6 @@ namespace AnlabMvc.Migrations
                         .IsRequired()
                         .HasMaxLength(512);
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasMaxLength(64);
-
                     b.Property<bool>("ChargeSet");
 
                     b.Property<string>("Code")
@@ -73,10 +70,6 @@ namespace AnlabMvc.Migrations
                     b.Property<string>("FeeSchedule")
                         .IsRequired()
                         .HasMaxLength(7);
-
-                    b.Property<string>("Group")
-                        .IsRequired()
-                        .HasMaxLength(8);
 
                     b.Property<string>("GroupType");
 
@@ -90,7 +83,7 @@ namespace AnlabMvc.Migrations
 
                     b.Property<bool>("Public");
 
-                    b.Property<decimal>("SetupCost");
+                    b.Property<string>("TestType");
 
                     b.HasKey("Id");
 
