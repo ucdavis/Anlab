@@ -35,6 +35,7 @@ namespace AnlabMvc.Data
 
             await userManager.CreateAsync(scottUser);
             await userManager.AddLoginAsync(scottUser, loginInfo);
+            await userManager.AddToRoleAsync(scottUser, "admin");
 
             var jasonUser = new User
             {
@@ -52,6 +53,7 @@ namespace AnlabMvc.Data
 
             await userManager.CreateAsync(jasonUser);
             await userManager.AddLoginAsync(jasonUser, jasonLoginInfo);
+            await userManager.AddToRoleAsync(jasonUser, "admin");
 
             // create a new sample order
 

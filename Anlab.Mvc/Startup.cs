@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -60,6 +61,8 @@ namespace AnlabMvc
             {
                 options.Filters.Add(new RequireHttpsAttribute());
             });
+            
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
