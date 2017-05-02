@@ -6,12 +6,22 @@ const bundleOutputDir = './wwwroot/dist';
 
 module.exports = (env) => {
     const isDevBuild = !(env && env.prod);
+    const cssLoader = {
+        loader: 'css-loader',
+        options: {
+            modules: true,
+            importLoaders: 1,
+            localIdentName: '[name]__[local]___[hash:base64:5]',
+            sourceMap: true
+        }
+    };
     return [{
         stats: { modules: false },
         entry: {
             'root': './Client/root.tsx',
+            'order': './Client/order.tsx',
             'boot': './Client/boot.tsx',
-            'react': ['react', 'react-dom', 'react-router']
+            'react': ['react', 'react-dom', 'react-router', 'react-toolbox']
         },
         resolve: { extensions: [ '.js', '.jsx', '.ts', '.tsx' ] },
         output: {
@@ -23,7 +33,7 @@ module.exports = (env) => {
             rules: [
                 { test: /\.ts(x?)$/, include: /Client/, use: 'babel-loader' },
                 { test: /\.tsx?$/, include: /Client/, use: 'awesome-typescript-loader?silent=true' },
-                { test: /\.css$/, use: isDevBuild ? ['style-loader', 'css-loader'] : ExtractTextPlugin.extract({ use: 'css-loader' }) },
+                { test: /\.css$/, use: isDevBuild ? ['style-loader', cssLoader, 'postcss-loader'] : ExtractTextPlugin.extract({ use: cssLoader }) },
                 { test: /\.scss$/, use: isDevBuild ? ['style-loader', 'css-loader', 'sass-loader'] : ExtractTextPlugin.extract({ use: ['css-loader', 'sass-loader'] }) },
                 { test: /\.(png|jpg|jpeg|gif|svg)$/, use: 'url-loader?limit=25000' }
             ]
