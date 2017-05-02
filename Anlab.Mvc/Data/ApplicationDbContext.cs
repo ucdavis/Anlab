@@ -19,6 +19,8 @@ namespace AnlabMvc.Data
 
         public virtual DbSet<Order> Orders { get; set; }
 
+        public virtual DbSet<TestItem> TestItems { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
