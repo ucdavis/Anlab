@@ -2,10 +2,12 @@
 
 namespace AnlabMvc.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : ApplicationController
     {
         public IActionResult Index()
         {
+            Message = "Thanks for visiting";
+
             return View();
         }
 

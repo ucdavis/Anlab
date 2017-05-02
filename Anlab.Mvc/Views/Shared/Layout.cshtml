@@ -36,13 +36,28 @@
             </div>
         </div>
     </nav>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2017 - BasicTemplate</p>
-        </footer>
-    </div>
+<div class="container body-content">
+    @if (!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string))
+    {
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(TempData["Message"] as string))
+    {
+        <div class="alert alert-info">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @TempData["Message"]
+        </div>
+    }
+    @RenderBody()
+    <hr/>
+    <footer>
+        <p>&copy; 2017 - BasicTemplate</p>
+    </footer>
+</div>
     
 
     <environment names="Development">
