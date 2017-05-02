@@ -59,6 +59,7 @@ namespace AnlabMvc
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            // TODO: require HTTPS in production.  In development it is only needed for federated auth
             services.AddMvc(options =>
             {
                 // options.Filters.Add(new RequireHttpsAttribute());
