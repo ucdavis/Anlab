@@ -1,9 +1,8 @@
-﻿import './css/site.scss';
-
-import * as React from 'react';
+﻿import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import Button from 'react-toolbox/lib/button';
 
 ReactDOM.render(
-    <h1 className="header">Hi world</h1>,
+    <Button label="Hello World!" />,
     document.getElementById('react-app')
 );
