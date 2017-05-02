@@ -100,7 +100,10 @@ namespace AnlabMvc.Services
                 Code = "Al (KCL)",
                 InternalCost = 18,
                 ExternalCost = 27,
+                SetupCost = 30,
                 FeeSchedule = "16_0711",
+                Category = TestCategories.Soil,
+                Group = "SF",
                 Multiplier = 1
             };
 
@@ -111,7 +114,10 @@ namespace AnlabMvc.Services
                 Code = "NH4-N",
                 InternalCost = 11,
                 ExternalCost = 17,
+                SetupCost = 30,
                 FeeSchedule = "16_0711",
+                Category = TestCategories.Soil,
+                Group = "SF",
                 Multiplier = 1
             };
 

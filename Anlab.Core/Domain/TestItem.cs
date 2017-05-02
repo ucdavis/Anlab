@@ -26,7 +26,15 @@ namespace Anlab.Core.Domain
 
         public decimal ExternalCost { get; set; }
 
-        public string TestType { get; set; }
+        public decimal SetupCost { get; set; }
+
+        [Required]
+        [StringLength(64)]
+        public string Category { get; set; }
+
+        [Required]
+        [StringLength(8)]
+        public string Group { get; set; }
 
         [Range(0, int.MaxValue)]
         public int Multiplier { get; set; }
@@ -40,5 +48,12 @@ namespace Anlab.Core.Domain
         public string GroupType { get; set; }
 
         public string Notes { get; set; }
+    }
+
+    public static class TestCategories
+    {
+        public static string Soil = "Soil";
+        public static string Plant = "Plant";
+        public static string Water = "Water";
     }
 }
