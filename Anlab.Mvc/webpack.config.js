@@ -10,6 +10,7 @@ module.exports = (env) => {
         stats: { modules: false },
         entry: {
             'root': './Client/root.tsx',
+            'order': './Client/order.tsx',
             'boot': './Client/boot.tsx',
             'react': ['react', 'react-dom', 'react-router']
         },
