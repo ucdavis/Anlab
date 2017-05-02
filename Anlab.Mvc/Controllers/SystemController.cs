@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Anlab.Core.Domain;
 using AnlabMvc.Data;
+using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AnlabMvc.Controllers
@@ -13,13 +15,11 @@ namespace AnlabMvc.Controllers
     [Authorize]
     public class SystemController : ApplicationController
     {
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<User> _userManager;
+        private readonly IDbInitializationService _dbInitializationService;
 
-        public SystemController(ApplicationDbContext context, UserManager<User> userManager)
+        public SystemController(IDbInitializationService dbInitializationService)
         {
-            _context = context;
-            _userManager = userManager;
+            _dbInitializationService = dbInitializationService;
         }
 
         public IActionResult Index()
@@ -29,11 +29,7 @@ namespace AnlabMvc.Controllers
 
         public async Task<IActionResult> ResetDb()
         {
-            await _context.Database.EnsureDeletedAsync();
-
-            await DbInitializer.Initialize(_context, _userManager);
-
-            await _context.Database.EnsureCreatedAsync();
+            await _dbInitializationService.RecreateAndInitialize();
             
             return RedirectToAction("LogOff", "Account");
         }
