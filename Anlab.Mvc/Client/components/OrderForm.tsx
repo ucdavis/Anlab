@@ -1,13 +1,16 @@
 ﻿import * as React from 'react';
 import TestList from './TestList';
 
+declare var window: any;
+
 export default class OrderForm extends React.Component<any, any> {
-    state = { payment: {} };
+// ReSharper disable once TsNotResolved
+    state = { payment: {}, testItems: window.App.orderData.testItems };
 
     render() {
         return (
             <div>
-                <TestList />
+                <TestList items={this.state.testItems} />
             </div>
         );
     }

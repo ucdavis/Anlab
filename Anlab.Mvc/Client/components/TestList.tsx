@@ -1,30 +1,38 @@
 ﻿import * as React from 'react';
 
-const users = [
-    { name: 'Javi Jimenez', twitter: '@soyjavi', birthdate: new Date(1980, 3, 11), cats: 1 },
-    { name: 'Javi Velasco', twitter: '@javivelasco', birthdate: new Date(1987, 1, 1), dogs: 1, active: true }
-];
+export interface ITestItem {
+    id: number;
+    analysis: string;
+    code: string;
+    internalCost: number;
+    externalCost: number;
+}
 
-export default class TestList extends React.Component<any, any> {
-    state = { selected: [], source: users };
+export interface ITestListProps {
+    items: Array<ITestItem>
+};
+
+export default class TestList extends React.Component<ITestListProps, any> {
+    state = { selected: [] };
 
     renderRows = () => {
-        return users.map(u => {
+        return this.props.items.map(item => {
             return (
-                <tr key={u.name}>
-                    <td>{u.name}</td>
-                    <td>r2</td>
-                    <td>r3</td>
+                <tr key={item.id}>
+                    <td>{item.analysis}</td>
+                    <td>{item.code}</td>
+                    <td>{item.internalCost}</td>
                 </tr>
             );
         });
-    }
+    };
+
     render() {
         return (
             <table className="table">
                 <thead>
                     <tr>
-                        <th>Column1</th>
+                        <th>Analysis</th>
                         <th>Col2</th>
                         <th>Col3</th>
                     </tr>
