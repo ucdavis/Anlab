@@ -1,4 +1,5 @@
 ﻿import * as React from 'react';
+import { IPayment } from './PaymentSelection';
 
 export interface ITestItem {
     id: number;
@@ -9,7 +10,8 @@ export interface ITestItem {
 }
 
 export interface ITestListProps {
-    items: Array<ITestItem>
+    items: Array<ITestItem>,
+    payment: IPayment,
 };
 
 export class TestList extends React.Component<ITestListProps, any> {
@@ -17,11 +19,12 @@ export class TestList extends React.Component<ITestListProps, any> {
 
     renderRows = () => {
         return this.props.items.map(item => {
+            const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
             return (
                 <tr key={item.id}>
                     <td>{item.analysis}</td>
                     <td>{item.code}</td>
-                    <td>{item.internalCost}</td>
+                    <td>{price}</td>
                 </tr>
             );
         });
