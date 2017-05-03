@@ -38,6 +38,13 @@ namespace Test.Helpers
             rtValue.LastName = string.Format("LastName{0}", counter);
             rtValue.Name = string.Format("{0} {1}", rtValue.FirstName, rtValue.LastName);
 
+            if (populateAllFields)
+            {
+                rtValue.ClientId = string.Format("ClientId{0}", counter);
+                rtValue.Phone = string.Format("Phone{0}", counter);
+                rtValue.Account = string.Format("Account{0}", counter);
+            }
+
             rtValue.Id = (counter ?? 99).ToString();
 
             return rtValue;
