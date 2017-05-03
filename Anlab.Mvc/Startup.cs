@@ -51,17 +51,20 @@ namespace AnlabMvc
 
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+              options.UseSqlite("Data Source=anlab.db")
+              // options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+            );
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            // TODO: require HTTPS in production.  In development it is only needed for federated auth
             services.AddMvc(options =>
             {
-                options.Filters.Add(new RequireHttpsAttribute());
+                // options.Filters.Add(new RequireHttpsAttribute());
             });
-            
+
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
 
             // Add application services.
@@ -76,14 +79,14 @@ namespace AnlabMvc
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             app.ConfigureStackifyLogging(Configuration);
-            
+
             Log.Logger = new LoggerConfiguration().WriteTo.Stackify().CreateLogger();
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
- 
+
                 // TODO: if we want to use auto-refresh browerlink. Might conflict with webpack
                 //app.UseBrowserLink();
                 app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions {
@@ -121,7 +124,7 @@ namespace AnlabMvc
                         var user = await app.ApplicationServices.GetService<IDirectorySearchService>().GetByKerb(kerb);
 
                         if (user != null)
-                        {                            
+                        {
                             identity.AddClaim(new Claim(ClaimTypes.Email, user.Mail));
                             identity.AddClaim(new Claim(ClaimTypes.GivenName, user.GivenName));
                             identity.AddClaim(new Claim(ClaimTypes.Surname, user.Surname));
