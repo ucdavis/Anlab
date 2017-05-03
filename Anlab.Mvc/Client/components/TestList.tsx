@@ -12,7 +12,7 @@ export interface ITestListProps {
     items: Array<ITestItem>
 };
 
-export default class TestList extends React.Component<ITestListProps, any> {
+export class TestList extends React.Component<ITestListProps, any> {
     state = { selected: [] };
 
     renderRows = () => {

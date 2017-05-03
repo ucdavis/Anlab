@@ -1,10 +1,13 @@
 ﻿import * as React from 'react';
-import TestList from './TestList';
+import { ITestItem, TestList } from './TestList';
 
 declare var window: any;
 
-export default class OrderForm extends React.Component<any, any> {
-// ReSharper disable once TsNotResolved
+interface IOrderState {
+    testItems: Array<ITestItem>;
+}
+
+export default class OrderForm extends React.Component<any, IOrderState> {
     state = { payment: {}, testItems: window.App.orderData.testItems };
 
     render() {
