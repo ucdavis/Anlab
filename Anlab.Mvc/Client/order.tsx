@@ -1,8 +1,8 @@
 ﻿import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import Button from 'react-toolbox/lib/button';
+import OrderForm from './components/OrderForm';
 
 ReactDOM.render(
-    <Button label="Hello World!" />,
+    <OrderForm />,
     document.getElementById('react-app')
 );

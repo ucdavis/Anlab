@@ -1,0 +1,17 @@
+﻿@model AnlabMvc.Models.Order.OrderEditModel
+
+@{
+    ViewBag.Title = "Create New Work Request";
+}
+
+<h2>Create New Work Request</h2>
+
+<div id="react-app"></div>
+
+<script>
+    App = {};
+    App.data = @Json.Serialize(Model); 
+</script>
+
+<script src="~/dist/react.js" asp-append-version="true"></script>
+<script src="~/dist/order.js" asp-append-version="true"></script>
