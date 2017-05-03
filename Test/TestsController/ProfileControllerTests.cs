@@ -173,8 +173,56 @@ namespace Test.TestsController
             savedResult.Id.ShouldBe("3");
         }
 
+        [Fact]
+        public async Task TestEditPostWhenModelStateIsInvalidReturnsView()
+        {
+            // Arrange
+            var data = new List<User>
+            {
+                CreateValidEntities.User(1),
+                CreateValidEntities.User(2),
+                CreateValidEntities.User(3, populateAllFields: true)
+            }.AsQueryable();
+
+            //Mock context for Database
+            var mockContext = new Mock<ApplicationDbContext>();
+            mockContext.Setup(m => m.Users).Returns(data.MockAsyncDbSet().Object);
+
+            var user2 = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, "3"),
+            }));
+
+            //To return the user so can check identity.
+            var mockHttpContext = new Mock<HttpContext>();
+            mockHttpContext.Setup(m => m.User).Returns(user2);
+
+            var controller = new ProfileController(mockContext.Object);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = mockHttpContext.Object,
+            };
+            controller.ModelState.AddModelError("Fake", "FakeMessage");
+
+            var updatedUser = CreateValidEntities.User(7, populateAllFields: true);
+
+
+            // Act
+            var controllerResult = await controller.Edit(updatedUser);
+
+            // Assert		
+            var result = Assert.IsType<ViewResult>(controllerResult);
+            var model = Assert.IsType<User>(result.Model);
+            model.FirstName.ShouldBe("FirstName7");
+
+            mockContext.Verify(a => a.Update(It.IsAny<User>()), Times.Never);
+            mockContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Never);
+
+
+        }
+
         #endregion Edit Tests
-        
+
 
 
     }
