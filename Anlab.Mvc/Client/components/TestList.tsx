@@ -1,4 +1,7 @@
 ﻿import * as React from 'react';
+
+import Input from 'react-toolbox/lib/input';
+
 import { IPayment } from './PaymentSelection';
 
 export interface ITestItem {
@@ -10,6 +13,10 @@ export interface ITestItem {
     category: string;
 }
 
+interface ITestListState {
+    query: string;
+}
+
 export interface ITestListProps {
     items: Array<ITestItem>;
     payment: IPayment;
@@ -17,17 +24,30 @@ export interface ITestListProps {
     onTestSelectionChanged: Function;
 };
 
-export class TestList extends React.Component<ITestListProps, any> {
-    state = { selected: [] };
+export class TestList extends React.Component<ITestListProps, ITestListState> {
+    state = { query: '' };
 
     onSelection = (test: ITestItem, e) => {
         const selected = e.target.checked;
 
-        this.props.onTestSelectionChanged(test, selected);  
+        this.props.onTestSelectionChanged(test, selected);
+    }
+
+    onQueryChange = (value: string) => {
+        this.setState({ ...this.state, query: value });
     }
 
     renderRows = () => {
-        return this.props.items.map(item => {
+        let filteredItems = this.props.items;
+        const loweredQuery = this.state.query.toLowerCase();
+
+        if (loweredQuery) {
+            filteredItems = this.props.items.filter(item => {
+                return item.analysis.toLowerCase().indexOf(loweredQuery) !== -1 || item.code.toLowerCase().indexOf(loweredQuery) !== -1;
+            });
+        }
+
+        return filteredItems.map(item => {
             const selected = !!this.props.selectedTests[item.id];
             const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
             return (
@@ -43,23 +63,25 @@ export class TestList extends React.Component<ITestListProps, any> {
             );
         });
     };
-
     render() {
         return (
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th>Select</th>
-                        <th>Analysis</th>
-                        <th>Col2</th>
-                        <th>Col3</th>
-                        <th>Category</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {this.renderRows()}
-                </tbody>
-            </table>
+            <div>
+                <Input type='search' label='Search' name='name' value={this.state.query} onChange={this.onQueryChange} />
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>Select</th>
+                            <th>Analysis</th>
+                            <th>Col2</th>
+                            <th>Col3</th>
+                            <th>Category</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.renderRows()}
+                    </tbody>
+                </table>
+            </div>
         );
     }
 }
