@@ -121,9 +121,56 @@ namespace AnlabMvc.Services
                 Multiplier = 1
             };
 
+            // create sample tests
+            var water1 = new TestItem
+            {
+                Analysis = "Fake Test1",
+                Code = "H2O",
+                InternalCost = 8.42m,
+                ExternalCost = 12.33m,
+                SetupCost = 30,
+                FeeSchedule = "16_0711",
+                Category = TestCategories.Water,
+                Group = "SF",
+                Multiplier = 1
+            };
+
+            // create sample tests
+            var water2 = new TestItem
+            {
+                Analysis = "Fake Test2",
+                Code = "H2O-1",
+                InternalCost = 9.22m,
+                ExternalCost = 32.13m,
+                SetupCost = 30,
+                FeeSchedule = "16_0711",
+                Category = TestCategories.Water,
+                Group = "SF",
+                Multiplier = 1
+            };
+
+            // create sample tests
+            var plant1 = new TestItem
+            {
+                Analysis = "Fake Test3",
+                Code = "Fake",
+                InternalCost = 1.22m,
+                ExternalCost = 2.13m,
+                SetupCost = 30,
+                FeeSchedule = "16_0711",
+                Category = TestCategories.Plant,
+                Group = "SF",
+                Multiplier = 1
+            };
+
+
+
             _context.Add(aluminum);
             _context.Add(ammonium);
-            
+            _context.Add(water1);
+            _context.Add(water2);
+            _context.Add(plant1);
+
             await _context.SaveChangesAsync();
 
 
