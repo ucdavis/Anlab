@@ -82,6 +82,29 @@ namespace AnlabMvc.Services
             await _userManager.AddLoginAsync(jasonUser, jasonLoginInfo);
             await _userManager.AddToRoleAsync(jasonUser, "admin");
 
+
+            #region Cal's login
+            var calUser = new User
+            {
+                Email = "cydoval@ucdavis.edu",
+                UserName = "cydoval@ucdavis.edu",
+                Name = "Calvin Doval"
+            };
+
+            var calUserPrincipal = new ClaimsPrincipal();
+            userPrincipal.AddIdentity(new ClaimsIdentity(new[] {
+                new Claim(ClaimTypes.NameIdentifier, "cydoval"),
+                new Claim(ClaimTypes.Name, "Calvin Doval")
+            }));
+            var calLoginInfo = new ExternalLoginInfo(calUserPrincipal, "CAS", "cydoval", null);
+
+            await _userManager.CreateAsync(calUser);
+            await _userManager.AddLoginAsync(calUser, calLoginInfo);
+            await _userManager.AddToRoleAsync(calUser, "admin");
+
+
+            #endregion Cal's login
+
             // create a new sample order
 
             var order = new Order
@@ -121,9 +144,56 @@ namespace AnlabMvc.Services
                 Multiplier = 1
             };
 
+            // create sample tests
+            var water1 = new TestItem
+            {
+                Analysis = "Fake Test1",
+                Code = "H2O",
+                InternalCost = 8.42m,
+                ExternalCost = 12.33m,
+                SetupCost = 30,
+                FeeSchedule = "16_0711",
+                Category = TestCategories.Water,
+                Group = "SF",
+                Multiplier = 1
+            };
+
+            // create sample tests
+            var water2 = new TestItem
+            {
+                Analysis = "Fake Test2",
+                Code = "H2O-1",
+                InternalCost = 9.22m,
+                ExternalCost = 32.13m,
+                SetupCost = 30,
+                FeeSchedule = "16_0711",
+                Category = TestCategories.Water,
+                Group = "SF",
+                Multiplier = 1
+            };
+
+            // create sample tests
+            var plant1 = new TestItem
+            {
+                Analysis = "Fake Test3",
+                Code = "Fake",
+                InternalCost = 1.22m,
+                ExternalCost = 2.13m,
+                SetupCost = 30,
+                FeeSchedule = "16_0711",
+                Category = TestCategories.Plant,
+                Group = "SF",
+                Multiplier = 1
+            };
+
+
+
             _context.Add(aluminum);
             _context.Add(ammonium);
-            
+            _context.Add(water1);
+            _context.Add(water2);
+            _context.Add(plant1);
+
             await _context.SaveChangesAsync();
 
 
