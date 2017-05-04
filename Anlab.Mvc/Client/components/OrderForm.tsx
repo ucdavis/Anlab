@@ -13,12 +13,16 @@ interface IOrderState {
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
-    state = {
-        payment: { clientType: 'uc' },
-        sampleType: 'Soil',
-        testItems: window.App.orderData.testItems,
-        selectedTests: { 1: true, 2: true }
-    };
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            payment: { clientType: 'uc' },
+            sampleType: 'Soil',
+            testItems: window.App.orderData.testItems,
+            selectedTests: { 1: true, 2: false }
+        };
+    }
 
     onPaymentSelected = (payment: any) => {
         this.setState({ ...this.state, payment });
@@ -37,7 +41,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     }
     render() {
         const { testItems, payment, selectedTests, sampleType } = this.state;
-        
+        const filteredTests = testItems.filter(item => item.category === sampleType);
+
         return (
             <div>
                 <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
@@ -45,7 +50,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <label>Select Sample Type:</label>
                     <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
                 </div>
-                <TestList items={testItems} payment={payment} selectedTests={selectedTests} sampleType={sampleType} onTestSelectionChanged={this.onTestSelectionChanged} />
+                <TestList items={filteredTests} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
             </div>
         );
     }

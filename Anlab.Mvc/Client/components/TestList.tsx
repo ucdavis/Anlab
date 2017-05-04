@@ -14,7 +14,6 @@ export interface ITestListProps {
     items: Array<ITestItem>;
     payment: IPayment;
     selectedTests: any;
-    sampleType: string;
     onTestSelectionChanged: Function;
 };
 
@@ -28,10 +27,7 @@ export class TestList extends React.Component<ITestListProps, any> {
     }
 
     renderRows = () => {
-        var sample = this.props.sampleType;
-        var filtered = this.props.items.filter(i => i.category === sample);
-
-        return filtered.map(item => {
+        return this.props.items.map(item => {
             const selected = !!this.props.selectedTests[item.id];
             const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
             return (
