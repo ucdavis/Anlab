@@ -1,18 +1,18 @@
 ﻿import * as React from 'react';
 import { ITestItem, TestList } from './TestList';
 import { IPayment, PaymentSelection } from './PaymentSelection';
-import { ISampleType, SampleTypeSelection } from './SampleTypeSelection';
+import { SampleTypeSelection } from './SampleTypeSelection';
 
 declare var window: any;
 
 interface IOrderState {
     payment: IPayment;
-    sampleType: ISampleType;
+    sampleType: string;
     testItems: Array<ITestItem>;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
-    state = { payment: { clientType: 'uc' }, sampleType: {sampleType: 'Soil'}, testItems: window.App.orderData.testItems };
+    state = { payment: { clientType: 'uc' }, sampleType: 'Soil', testItems: window.App.orderData.testItems };
 
     onPaymentSelected = (payment: any) => {
         this.setState({ ...this.state, payment });

@@ -1,6 +1,5 @@
 ﻿import * as React from 'react';
 import { IPayment } from './PaymentSelection';
-import { ISampleType } from './SampleTypeSelection';
 
 export interface ITestItem {
     id: number;
@@ -14,14 +13,14 @@ export interface ITestItem {
 export interface ITestListProps {
     items: Array<ITestItem>,
     payment: IPayment,
-    sampleType: ISampleType,
+    sampleType: string,
 };
 
 export class TestList extends React.Component<ITestListProps, any> {
     state = { selected: [] };
 
     renderRows = () => {
-        var sample = this.props.sampleType.sampleType;
+        var sample = this.props.sampleType;
         var filtered = this.props.items.filter(i => i.category === sample);
         return filtered.map(item => {
             const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
