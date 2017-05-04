@@ -6,8 +6,6 @@ namespace AnlabMvc.Controllers
     {
         public IActionResult Index()
         {
-            Message = "Thanks for visiting";
-
             return View();
         }
 
