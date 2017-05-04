@@ -12,7 +12,7 @@ interface IOrderState {
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
-    state = { payment: { clientType: 'rob' }, sampleType: {sampleType: 'Soil'}, testItems: window.App.orderData.testItems };
+    state = { payment: { clientType: 'uc' }, sampleType: {sampleType: 'Soil'}, testItems: window.App.orderData.testItems };
 
     onPaymentSelected = (payment: any) => {
         this.setState({ ...this.state, payment });
