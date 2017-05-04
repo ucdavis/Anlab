@@ -11,21 +11,34 @@ export interface ITestItem {
 }
 
 export interface ITestListProps {
-    items: Array<ITestItem>,
-    payment: IPayment,
-    sampleType: string,
+    items: Array<ITestItem>;
+    payment: IPayment;
+    selectedTests: any;
+    sampleType: string;
+    onTestSelectionChanged: Function;
 };
 
 export class TestList extends React.Component<ITestListProps, any> {
     state = { selected: [] };
 
+    onSelection = (test: ITestItem, e) => {
+        const selected = e.target.checked;
+
+        this.props.onTestSelectionChanged(test, selected);  
+    }
+
     renderRows = () => {
         var sample = this.props.sampleType;
         var filtered = this.props.items.filter(i => i.category === sample);
+
         return filtered.map(item => {
+            const selected = !!this.props.selectedTests[item.id];
             const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
             return (
                 <tr key={item.id}>
+                    <td>
+                        <input type="checkbox" checked={selected} onChange={e => this.onSelection(item, e)} />
+                    </td>
                     <td>{item.analysis}</td>
                     <td>{item.code}</td>
                     <td>{price}</td>
@@ -40,6 +53,7 @@ export class TestList extends React.Component<ITestListProps, any> {
             <table className="table">
                 <thead>
                     <tr>
+                        <th>Select</th>
                         <th>Analysis</th>
                         <th>Col2</th>
                         <th>Col3</th>
