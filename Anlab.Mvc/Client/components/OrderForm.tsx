@@ -3,6 +3,7 @@ import { ITestItem, TestList } from './TestList';
 import { IPayment, PaymentSelection } from './PaymentSelection';
 import { SampleTypeSelection } from './SampleTypeSelection';
 import { Quantity } from './Quantity';
+import { Summary } from './Summary';
 
 declare var window: any;
 
@@ -12,6 +13,7 @@ interface IOrderState {
     sampleType: string;
     testItems: Array<ITestItem>;
     selectedTests: any;
+    total: number;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -23,7 +25,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             quantity: null,
             sampleType: 'Soil',
             testItems: window.App.orderData.testItems,
-            selectedTests: { 1: true, 2: false }
+            selectedTests: { 1: true, 2: false },
+            total: 0
         };
     }
 
@@ -49,6 +52,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         const { testItems, payment, selectedTests, sampleType, quantity } = this.state;
         const filteredTests = testItems.filter(item => item.category === sampleType);
 
+        const selectedItems = filteredTests.filter(item => !!selectedTests[item.id]);
+
         return (
             <div>
                 <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
@@ -61,6 +66,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
                 </div>
                 <TestList items={filteredTests} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
+                <Summary testItems={selectedItems} quantity={quantity} payment={payment} />
             </div>
         );
     }
