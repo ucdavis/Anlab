@@ -58,7 +58,6 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                     <td>{item.analysis}</td>
                     <td>{item.code}</td>
                     <td>{price}</td>
-                    <td>{item.category}</td>
                 </tr>
             );
         });
@@ -72,9 +71,8 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                         <tr>
                             <th>Select</th>
                             <th>Analysis</th>
-                            <th>Col2</th>
-                            <th>Col3</th>
-                            <th>Category</th>
+                            <th>Code</th>
+                            <th>Price</th>
                         </tr>
                     </thead>
                     <tbody>
