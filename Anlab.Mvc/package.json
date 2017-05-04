@@ -2,6 +2,7 @@
   "name": "anlab",
   "version": "0.1.0",
   "scripts": {
+    "debug": "ASPNETCORE_ENVIRONMENT=Development dotnet watch run"
   },
   "devDependencies": {
     "@types/history": "^2.0.39",

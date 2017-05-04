@@ -11,13 +11,13 @@ Get the app settings from Box and put them in your secrets location (on MacOSx, 
 ### [If you don't have visual studio]
 // Go to the Anlab.Mvc website directory 
 
-`export ASPNETCORE_ENVIRONMENT=Development`
-
+// first time, or when modules change
 `npm install`
 
 `dotnet restore`
 
-`dotnet run`
+// when you are ready to debug locally
+`npm run debug`
 
 ### [If you have visual studio]
 // Just open it up and run the project!
