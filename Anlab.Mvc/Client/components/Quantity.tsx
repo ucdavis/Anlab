@@ -1,5 +1,5 @@
 ﻿import * as React from 'react';
-import Input from 'react-toolbox/lib/input';
+import { NumberInput } from './numberInput/numberInput';
 
 interface IQuantityProps {
     quantity?: number;
@@ -7,18 +7,9 @@ interface IQuantityProps {
 }
 
 export class Quantity extends React.Component<IQuantityProps, any> {
-    onChanged = (value: string) => {
-        const numValue = Number(value);
-
-        if (isNaN(numValue)) {
-            // do nothing
-        } else {
-            this.props.onQuantityChanged(Number(value));
-        }
-    }
     render() {
         return (
-            <Input type='text' label='Number' name='quantity' required value={this.props.quantity} onChange={this.onChanged} />
+            <NumberInput value={this.props.quantity} onChanged={this.props.onQuantityChanged} />
         );
     }
 }
