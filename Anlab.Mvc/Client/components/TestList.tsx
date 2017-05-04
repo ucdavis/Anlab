@@ -1,5 +1,6 @@
 ﻿import * as React from 'react';
 import { IPayment } from './PaymentSelection';
+import { ISampleType } from './SampleTypeSelection';
 
 export interface ITestItem {
     id: number;
@@ -7,24 +8,31 @@ export interface ITestItem {
     code: string;
     internalCost: number;
     externalCost: number;
+    category: string;
 }
 
 export interface ITestListProps {
     items: Array<ITestItem>,
     payment: IPayment,
+    sampleType: ISampleType,
 };
 
 export class TestList extends React.Component<ITestListProps, any> {
     state = { selected: [] };
 
     renderRows = () => {
-        return this.props.items.map(item => {
+        var sample = this.props.sampleType.sampleType;
+        var filtered = this.props.items.filter(function (testItem) {
+            return testItem.category === sample;
+        });
+        return filtered.map(item => {
             const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
             return (
                 <tr key={item.id}>
                     <td>{item.analysis}</td>
                     <td>{item.code}</td>
                     <td>{price}</td>
+                    <td>{item.category}</td>
                 </tr>
             );
         });
@@ -38,6 +46,7 @@ export class TestList extends React.Component<ITestListProps, any> {
                         <th>Analysis</th>
                         <th>Col2</th>
                         <th>Col3</th>
+                        <th>Category</th>
                     </tr>
                 </thead>
                 <tbody>
