@@ -22,9 +22,7 @@ export class TestList extends React.Component<ITestListProps, any> {
 
     renderRows = () => {
         var sample = this.props.sampleType.sampleType;
-        var filtered = this.props.items.filter(function (testItem) {
-            return testItem.category === sample;
-        });
+        var filtered = this.props.items.filter(i => i.category === sample);
         return filtered.map(item => {
             const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
             return (
