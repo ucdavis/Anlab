@@ -17,19 +17,21 @@ export class Summary extends React.Component<ISummaryProps, any> {
             return prev + perTest + item.setupCost;
         }, 0);
 
-        return total;
+        return total.toFixed(2);
     }
     _renderTests = () => {
         const tests = this.props.testItems.map(item => {
             const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
             const perTest = price * this.props.quantity;
+            const perTestDisplay = perTest.toFixed(2);
+            const rowTotalDisplay = (perTest + item.setupCost).toFixed(2);
             return (
                 <tr key={item.id}>
                     <td>{item.analysis}</td>
                     <td>{price}</td>
-                    <td>{perTest}</td>
+                    <td>{perTestDisplay}</td>
                     <td>{item.setupCost}</td>
-                    <td>{perTest + item.setupCost}</td>
+                    <td>{rowTotalDisplay}</td>
                 </tr>
             );
         });

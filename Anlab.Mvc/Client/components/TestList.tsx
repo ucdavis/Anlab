@@ -50,7 +50,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
 
         return filteredItems.map(item => {
             const selected = !!this.props.selectedTests[item.id];
-            const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
+            const priceDisplay = (this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost).toFixed(2);
             return (
                 <tr key={item.id}>
                     <td>
@@ -58,7 +58,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                     </td>
                     <td>{item.analysis}</td>
                     <td>{item.code}</td>
-                    <td>{price}</td>
+                    <td>{priceDisplay}</td>
                 </tr>
             );
         });
