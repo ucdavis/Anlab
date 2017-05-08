@@ -3,6 +3,7 @@
 import Input from 'react-toolbox/lib/input';
 
 import { IPayment } from './PaymentSelection';
+import NumberFormat from 'react-number-format';
 
 export interface ITestItem {
     id: number;
@@ -50,7 +51,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
 
         return filteredItems.map(item => {
             const selected = !!this.props.selectedTests[item.id];
-            const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
+            const priceDisplay = (this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost);
             return (
                 <tr key={item.id}>
                     <td>
@@ -58,7 +59,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                     </td>
                     <td>{item.analysis}</td>
                     <td>{item.code}</td>
-                    <td>{price}</td>
+                    <td><NumberFormat value={priceDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
                 </tr>
             );
         });
