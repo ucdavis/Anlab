@@ -56,8 +56,11 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         const selectedItems = filteredTests.filter(item => !!selectedTests[item.id]);
 
         return (
-            <div data-tip="Select how you will be paying. Note, UC Accounts offer a discount but you must supply a valid UC Account.">
+            <div>
+                <div data-tip="Select how you will be paying. Note, UC Accounts offer a discount but you must supply a valid UC Account.">
                 <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
+                <ReactTooltip />
+                </div>
                 <div>
                     <label>Select Sample Type:</label>
                     <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
@@ -67,8 +70,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
                 </div>
                 <TestList items={filteredTests} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
-                <Summary testItems={selectedItems} quantity={quantity} payment={payment} />
-                <ReactTooltip />
+                <Summary testItems={selectedItems} quantity={quantity} payment={payment} />                
             </div>
         );
     }
