@@ -1,6 +1,6 @@
 ﻿import * as React from 'react';
-import Tooltip from 'react-toolbox/lib/tooltip';
 import { RadioGroup, RadioButton } from 'react-toolbox/lib/radio';
+import TooltipWrapper  from './tooltipWrapper/tooltipWrapper';
 
 export interface IPayment {
     clientType: string;
@@ -12,11 +12,6 @@ interface IPaymentProps {
     onPaymentSelected: Function;
 }
 
-const Other = (props) => (
-    <div {...props}>{props.children}</div>
-);
-
-const TooltippedOther = Tooltip((Other) as any);
 
 export class PaymentSelection extends React.Component<IPaymentProps, any> {
     handleChange = (clientType: string) => {
@@ -29,12 +24,12 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
 
     render() {
         return (
-            <TooltippedOther tooltip="This is some descriptive text for the payment section">
+            <TooltipWrapper tooltip="This is some descriptive text for the payment section">
                 <RadioGroup name='comic' value={this.props.payment.clientType} onChange={this.handleChange}>
                     <RadioButton label='Paying with UC Account' value='uc'/>
                     <RadioButton label='Paying with Credit Card' value='other'/>
                 </RadioGroup>
-            </TooltippedOther>
+            </TooltipWrapper>
         );
     }
 }
