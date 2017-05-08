@@ -12,7 +12,7 @@ interface IOrderState {
     quantity?: number;
     sampleType: string;
     testItems: Array<ITestItem>;
-    selectedTests: any;
+    selectedTests: Array<ITestItem>;
     total: number;
 }
 
@@ -25,7 +25,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             quantity: null,
             sampleType: 'Soil',
             testItems: window.App.orderData.testItems,
-            selectedTests: { 1: true, 2: false },
+            selectedTests: [],
             total: 0
         };
     }
@@ -36,13 +36,10 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     onSampleSelected = (sampleType: string) => {
         this.setState({ ...this.state, sampleType });
     }
-    onTestSelectionChanged = (test: ITestItem, selected: Boolean) => {
+    onTestSelectionChanged = (selectedTests: Array<ITestItem>) => {
         this.setState({
             ...this.state,
-            selectedTests: {
-                ...this.state.selectedTests,
-                [test.id]: selected
-            }
+            selectedTests
         });
     }
     onQuantityChanged = (quantity?: number) => {
@@ -51,8 +48,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     render() {
         const { testItems, payment, selectedTests, sampleType, quantity } = this.state;
         const filteredTests = testItems.filter(item => item.category === sampleType);
-
-        const selectedItems = filteredTests.filter(item => !!selectedTests[item.id]);
+        const selectedItems = selectedTests.filter(item => item.category === sampleType);
 
         return (
             <div>

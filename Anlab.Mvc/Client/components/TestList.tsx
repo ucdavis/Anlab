@@ -2,7 +2,6 @@
 
 import Input from 'react-toolbox/lib/input';
 import { Table, TableHead, TableRow, TableCell } from 'react-toolbox/lib/table';
-import Tooltip from 'react-toolbox/lib/tooltip';
 
 import { IPayment } from './PaymentSelection';
 import NumberFormat from 'react-number-format';
@@ -24,18 +23,18 @@ interface ITestListState {
 export interface ITestListProps {
     items: Array<ITestItem>;
     payment: IPayment;
-    selectedTests: any;
+    selectedTests: Array<ITestItem>;
     onTestSelectionChanged: Function;
 };
-
-const TooltipCell = Tooltip(TableCell);
 
 export class TestList extends React.Component<ITestListProps, ITestListState> {
     state = { query: '' };
 
-
-        this.props.onTestSelectionChanged(test, selected);
-        //this.props.onTestSelectionChanged(test, selected);
+    onSelection = (selectedIndexes: Array<number>) => {
+        console.log(selectedIndexes);
+        const selected = selectedIndexes.map(i => this.props.items[i]);
+        
+        this.props.onTestSelectionChanged(selected);
     }
 
     onQueryChange = (value: string) => {
@@ -53,7 +52,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
         }
 
         return filteredItems.map(item => {
-            const selected = !!this.props.selectedTests[item.id];
+            const selected = this.props.selectedTests.indexOf(item) !== -1;
             const priceDisplay = (this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost);
             return (
                 <TableRow key={item.id} selected={selected}>
@@ -68,7 +67,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
         return (
             <div>
                 <Input type='search' label='Search' name='name' value={this.state.query} onChange={this.onQueryChange} />
-                <Table selectable onRowSelect={this.onSelection} style={{ marginTop: 10 }}>
+                <Table multiSelectable onRowSelect={this.onSelection} style={{ marginTop: 10 }}>
                     <TableHead>
                         <TableCell>Analysis</TableCell>
                         <TableCell>Code</TableCell>
