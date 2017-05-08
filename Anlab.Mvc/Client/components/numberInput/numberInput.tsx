@@ -29,14 +29,20 @@ export class NumberInput extends React.Component<INumberInputProps, INumberInput
         return value ? String(value) : '';
     }
     onChange = (v: string) => {
-        let error = isNaN(Number(v)) ? 'Must be a positive number' : null;
-        if (error == null) {
-            v = Number(v).toFixed(0).toString();
-            if (Number(v) < 1) {
+        let error = null;
+        if (isNaN(Number(v))) {
+            error = "Must be a positive number greater than 1";
+            this.setState({ ...this.state, internalValue: v, error });
+        } else {
+            let value = Number(v).toFixed(0); //Strip of any decimals
+            if (Number(value) === 0) {
                 error = "Must be a positive number greater than 1";
             }
-        }
-        this.setState({ ...this.state, internalValue: v, error  });
+            if (Number(value) < 0) {
+                value = (Number(value) * -1).toString(); //Make positive if negative
+            }
+            this.setState({ ...this.state, internalValue: value, error });
+        }        
     }
     onBlur = () => {
         let internalValue = Number(this.state.internalValue);
