@@ -18,21 +18,20 @@ export class Summary extends React.Component<ISummaryProps, any> {
             return prev + perTest + item.setupCost;
         }, 0);
 
-        return total.toFixed(2);
+        return total;
     }
     _renderTests = () => {
         const tests = this.props.testItems.map(item => {
             const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
             const perTest = price * this.props.quantity;
-            const perTestDisplay = perTest.toFixed(2);
-            const rowTotalDisplay = (perTest + item.setupCost).toFixed(2);
+            const rowTotalDisplay = (perTest + item.setupCost);
             return (
                 <tr key={item.id}>
                     <td>{item.analysis}</td>
-                    <td><NumberFormat value={price} displayType={'text'} thousandSeparator={true} prefix={'$'} /></td>
-                    <td><NumberFormat value={perTestDisplay} displayType={'text'} thousandSeparator={true} prefix={'$'} /></td>
-                    <td><NumberFormat value={item.setupCost} displayType={'text'} thousandSeparator={true} prefix={'$'} /></td>
-                    <td><NumberFormat value={rowTotalDisplay} displayType={'text'} thousandSeparator={true} prefix={'$'} /></td>
+                    <td><NumberFormat value={price} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+                    <td><NumberFormat value={perTest} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+                    <td><NumberFormat value={item.setupCost} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+                    <td><NumberFormat value={rowTotalDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
                 </tr>
             );
         });
@@ -59,7 +58,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
                     <tfoot>
                         <tr>
                             <td colSpan={4}></td>
-                            <td><NumberFormat value={this.totalCost()} displayType={'text'} thousandSeparator={true} prefix={'$'} /></td>
+                            <td><NumberFormat value={this.totalCost()} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
                         </tr>
                     </tfoot>
                 </table>
