@@ -3,6 +3,7 @@
 import Input from 'react-toolbox/lib/input';
 
 import { IPayment } from './PaymentSelection';
+import NumberFormat from 'react-number-format';
 
 export interface ITestItem {
     id: number;
@@ -10,6 +11,7 @@ export interface ITestItem {
     code: string;
     internalCost: number;
     externalCost: number;
+    setupCost: number;
     category: string;
 }
 
@@ -49,7 +51,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
 
         return filteredItems.map(item => {
             const selected = !!this.props.selectedTests[item.id];
-            const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
+            const priceDisplay = (this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost);
             return (
                 <tr key={item.id}>
                     <td>
@@ -57,8 +59,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                     </td>
                     <td>{item.analysis}</td>
                     <td>{item.code}</td>
-                    <td>{price}</td>
-                    <td>{item.category}</td>
+                    <td><NumberFormat value={priceDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
                 </tr>
             );
         });
@@ -72,9 +73,8 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                         <tr>
                             <th>Select</th>
                             <th>Analysis</th>
-                            <th>Col2</th>
-                            <th>Col3</th>
-                            <th>Category</th>
+                            <th>Code</th>
+                            <th>Price</th>
                         </tr>
                     </thead>
                     <tbody>
