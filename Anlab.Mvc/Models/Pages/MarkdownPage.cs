@@ -8,5 +8,6 @@ namespace AnlabMvc.Models.Pages
     public class MarkdownPage
     {
         public string Html { get; set; }
+        public DateTimeOffset LastModified { get; set; }
     }
 }
