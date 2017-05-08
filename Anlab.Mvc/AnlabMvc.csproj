@@ -45,6 +45,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Anlab.Core\Anlab.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Pages\**\*.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Target Name="RunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
     <Exec Command="npm install" />
