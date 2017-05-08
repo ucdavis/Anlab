@@ -1,6 +1,7 @@
 ﻿import * as React from 'react';
 import { ITestItem } from './TestList';
 import { IPayment } from './PaymentSelection';
+import NumberFormat from 'react-number-format';
 
 interface ISummaryProps {
     testItems: Array<ITestItem>;
@@ -28,10 +29,10 @@ export class Summary extends React.Component<ISummaryProps, any> {
             return (
                 <tr key={item.id}>
                     <td>{item.analysis}</td>
-                    <td>{price}</td>
-                    <td>{perTestDisplay}</td>
-                    <td>{item.setupCost}</td>
-                    <td>{rowTotalDisplay}</td>
+                    <td><NumberFormat value={price} displayType={'text'} thousandSeparator={true} prefix={'$'} /></td>
+                    <td><NumberFormat value={perTestDisplay} displayType={'text'} thousandSeparator={true} prefix={'$'} /></td>
+                    <td><NumberFormat value={item.setupCost} displayType={'text'} thousandSeparator={true} prefix={'$'} /></td>
+                    <td><NumberFormat value={rowTotalDisplay} displayType={'text'} thousandSeparator={true} prefix={'$'} /></td>
                 </tr>
             );
         });
@@ -41,6 +42,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
     render() {
         return (
             <div>
+                
                 <table className="table">
                     <thead>
                         <tr>
@@ -57,7 +59,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
                     <tfoot>
                         <tr>
                             <td colSpan={4}></td>
-                            <td>{this.totalCost()}</td>
+                            <td><NumberFormat value={this.totalCost()} displayType={'text'} thousandSeparator={true} prefix={'$'} /></td>
                         </tr>
                     </tfoot>
                 </table>
