@@ -4,6 +4,7 @@ import { IPayment, PaymentSelection } from './PaymentSelection';
 import { SampleTypeSelection } from './SampleTypeSelection';
 import { Quantity } from './Quantity';
 import { Summary } from './Summary';
+import ReactTooltip from 'react-tooltip'
 
 declare var window: any;
 
@@ -55,7 +56,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         const selectedItems = filteredTests.filter(item => !!selectedTests[item.id]);
 
         return (
-            <div>
+            <div data-tip="Select how you will be paying. Note, UC Accounts offer a discount but you must supply a valid UC Account.">
                 <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
                 <div>
                     <label>Select Sample Type:</label>
@@ -67,6 +68,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                 </div>
                 <TestList items={filteredTests} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
                 <Summary testItems={selectedItems} quantity={quantity} payment={payment} />
+                <ReactTooltip />
             </div>
         );
     }
