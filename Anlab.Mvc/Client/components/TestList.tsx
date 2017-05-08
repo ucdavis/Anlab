@@ -1,6 +1,8 @@
 ﻿import * as React from 'react';
 
 import Input from 'react-toolbox/lib/input';
+import { Table, TableHead, TableRow, TableCell } from 'react-toolbox/lib/table';
+import Tooltip from 'react-toolbox/lib/tooltip';
 
 import { IPayment } from './PaymentSelection';
 import NumberFormat from 'react-number-format';
@@ -26,13 +28,14 @@ export interface ITestListProps {
     onTestSelectionChanged: Function;
 };
 
+const TooltipCell = Tooltip(TableCell);
+
 export class TestList extends React.Component<ITestListProps, ITestListState> {
     state = { query: '' };
 
-    onSelection = (test: ITestItem, e) => {
-        const selected = e.target.checked;
 
         this.props.onTestSelectionChanged(test, selected);
+        //this.props.onTestSelectionChanged(test, selected);
     }
 
     onQueryChange = (value: string) => {
@@ -53,14 +56,11 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
             const selected = !!this.props.selectedTests[item.id];
             const priceDisplay = (this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost);
             return (
-                <tr key={item.id}>
-                    <td>
-                        <input type="checkbox" checked={selected} onChange={e => this.onSelection(item, e)} />
-                    </td>
-                    <td>{item.analysis}</td>
-                    <td>{item.code}</td>
-                    <td><NumberFormat value={priceDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-                </tr>
+                <TableRow key={item.id} selected={selected}>
+                    <TableCell>{item.analysis}</TableCell>
+                    <TableCell>{item.code}</TableCell>
+                    <TableCell numeric><NumberFormat value={priceDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></TableCell>
+                </TableRow>
             );
         });
     };
@@ -68,19 +68,14 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
         return (
             <div>
                 <Input type='search' label='Search' name='name' value={this.state.query} onChange={this.onQueryChange} />
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Select</th>
-                            <th>Analysis</th>
-                            <th>Code</th>
-                            <th>Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.renderRows()}
-                    </tbody>
-                </table>
+                <Table selectable onRowSelect={this.onSelection} style={{ marginTop: 10 }}>
+                    <TableHead>
+                        <TableCell>Analysis</TableCell>
+                        <TableCell>Code</TableCell>
+                        <TableCell numeric>Price</TableCell>
+                    </TableHead>
+                    {this.renderRows()}
+                </Table>
             </div>
         );
     }
