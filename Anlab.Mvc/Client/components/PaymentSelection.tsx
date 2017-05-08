@@ -29,14 +29,12 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
 
     render() {
         return (
-            <div>
-                <TooltippedOther tooltip="This is some descriptive text for the payment section">
-                    <RadioGroup name='comic' value={this.props.payment.clientType} onChange={this.handleChange}>
-                        <RadioButton label='Paying with UC Account' value='uc'/>
-                        <RadioButton label='Paying with Credit Card' value='other'/>
-                    </RadioGroup>
-                </TooltippedOther>
-            </div>
+            <TooltippedOther tooltip="This is some descriptive text for the payment section">
+                <RadioGroup name='comic' value={this.props.payment.clientType} onChange={this.handleChange}>
+                    <RadioButton label='Paying with UC Account' value='uc'/>
+                    <RadioButton label='Paying with Credit Card' value='other'/>
+                </RadioGroup>
+            </TooltippedOther>
         );
     }
 }
