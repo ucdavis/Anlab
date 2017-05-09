@@ -1,1 +1,7 @@
-﻿This is my about page.
+﻿---
+
+title: "About Us"
+
+---
+
+This is my about page.

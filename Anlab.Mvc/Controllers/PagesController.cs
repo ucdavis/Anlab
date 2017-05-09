@@ -15,6 +15,7 @@ namespace AnlabMvc.Controllers
         private readonly IFileProvider _fileProvider;
         private readonly string _cacheKey;
         private readonly MarkdownPipeline _pipeline;
+        private readonly Deserializer _metaReader;
 
         public PagesController(IHostingEnvironment hostingEnvironment, IMemoryCache memoryCache)
         {
@@ -26,6 +27,10 @@ namespace AnlabMvc.Controllers
             _pipeline = new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseAdvancedExtensions()
+                .Build();
+
+            _metaReader = new DeserializerBuilder()
+                .WithNamingConvention(new CamelCaseNamingConvention())
                 .Build();
         }
 
@@ -59,13 +64,17 @@ namespace AnlabMvc.Controllers
                 {
                     var source = sr.ReadToEnd();
 
+                    var frontmatter = Regex.Match(source, @"^---([\s\S]+?)---");
+                    var yamlStream = new StringReader(frontmatter.Groups[1].Value.Trim());
+                    var meta = _metaReader.Deserialize<MarkdownPageMeta>(yamlStream);
 
                     var html = Markdown.ToHtml(source, _pipeline);
                     
                     model = new MarkdownPage()
                     {
                         Html = html,
-                        LastModified = info.LastModified
+                        LastModified = info.LastModified,
+                        Meta = meta
                     };
 
                     // cache for up to 15 minutes

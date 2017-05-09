@@ -2,6 +2,7 @@
 @model MarkdownPage
 
 @{
+    ViewBag.Title = Model.Meta.Title;
 }
 
 @Html.Raw(Model.Html)

@@ -9,5 +9,11 @@ namespace AnlabMvc.Models.Pages
     {
         public string Html { get; set; }
         public DateTimeOffset LastModified { get; set; }
+        public MarkdownPageMeta Meta { get; set; }
+    }
+
+    public class MarkdownPageMeta
+    {
+        public string Title { get; set; }
     }
 }
