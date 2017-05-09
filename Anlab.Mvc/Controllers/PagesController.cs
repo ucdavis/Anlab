@@ -30,6 +30,7 @@ namespace AnlabMvc.Controllers
 
             _pipeline = new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
+                .UseBootstrap()
                 .UseAdvancedExtensions()
                 .Build();
 
