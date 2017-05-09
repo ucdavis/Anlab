@@ -47,6 +47,8 @@ namespace AnlabMvc
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
+
             services.Configure<AzureOptions>(Configuration.GetSection("Authentication:Azure"));
 
             // Add framework services.
@@ -150,6 +152,11 @@ namespace AnlabMvc
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "pages",
+                    template: "pages/{id}",
+                    defaults: new { controller = "Pages", action = "ViewPage" });
 
                 routes.MapSpaFallbackRoute(
                     name: "spa-fallback",

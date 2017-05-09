@@ -1,0 +1,10 @@
+﻿@using AnlabMvc.Models.Pages
+@model MarkdownPage
+
+@{
+    ViewBag.Title = Model.Meta.Title;
+}
+
+@Html.Raw(Model.Html)
+
+Last Modified: @Model.LastModified.ToString("G")
