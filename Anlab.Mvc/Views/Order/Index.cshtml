@@ -10,6 +10,7 @@
     <tbody>
         @foreach(var order in Model) {
             <tr>
+                <td><a asp-action="Edit" asp-route-id="@order.Id">Edit</a></td>
                 <td>@order.Id</td>
                 <td>@order.Project</td>
                 <td>@order.JsonDetails</td>

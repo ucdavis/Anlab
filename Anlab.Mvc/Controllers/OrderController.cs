@@ -26,6 +26,22 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> Edit(int id)
+        {
+            var order = await _context.Orders.SingleOrDefaultAsync(o=>o.Id == id);
+
+            if (order == null){
+                return NotFound(id);
+            }
+
+            var model = new OrderEditModel {
+                TestItems = _context.TestItems.AsNoTracking().ToArray(),
+                Order = order
+            };
+
+            return View(model); 
+        }
+
         public IActionResult Create()
         {
             var model = new OrderEditModel {TestItems = _context.TestItems.AsNoTracking().ToArray()};

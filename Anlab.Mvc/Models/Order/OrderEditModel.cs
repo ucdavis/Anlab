@@ -9,5 +9,6 @@ namespace AnlabMvc.Models.Order
     public class OrderEditModel
     {
         public TestItem[] TestItems { get; set; }
+        public Anlab.Core.Domain.Order Order { get; set; }
     }
 }

@@ -14,21 +14,19 @@ interface IOrderState {
     sampleType: string;
     testItems: Array<ITestItem>;
     selectedTests: any;
-    total: number;
     isValid: boolean;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
     constructor(props) {
         super(props);
-
+        
         this.state = {
             payment: { clientType: 'uc' },
             quantity: null,
             sampleType: 'Soil',
             testItems: window.App.orderData.testItems,
             selectedTests: { 1: true, 2: false },
-            total: 0,
             isValid: false,
         };
     }
@@ -68,7 +66,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             quantity: this.state.quantity,
             payment: this.state.payment,
             sampleType: this.state.sampleType,
-            total: this.state.total,
             selectedTests,
         }
         $.post({
