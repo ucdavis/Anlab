@@ -16,6 +16,7 @@ interface IOrderState {
     selectedTests: any;
     additionalInfo: string;
     total: number;
+    isValid: boolean;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -29,15 +30,19 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             testItems: window.App.orderData.testItems,
             selectedTests: { 1: true, 2: false },
             additionalInfo: '',
-            total: 0
+            total: 0,
+            isValid: false,
         };
     }
-
+    validate = () => {
+        const valid = this.state.quantity > 0;
+        this.setState({ ...this.state, isValid: valid });
+    }
     onPaymentSelected = (payment: any) => {
-        this.setState({ ...this.state, payment });
+        this.setState({ ...this.state, payment }, this.validate);
     }
     onSampleSelected = (sampleType: string) => {
-        this.setState({ ...this.state, sampleType });
+        this.setState({ ...this.state, sampleType }, this.validate);
     }
     onTestSelectionChanged = (test: ITestItem, selected: Boolean) => {
         this.setState({
@@ -46,10 +51,13 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                 ...this.state.selectedTests,
                 [test.id]: selected
             }
-        });
+        }, this.validate);
     }
     onQuantityChanged = (quantity?: number) => {
-        this.setState({ ...this.state, quantity });
+        this.setState({ ...this.state, quantity }, this.validate);
+    }
+    onSubmit = () => {
+
     }
 
     handleChange = (name, value) => {
@@ -63,19 +71,27 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         const selectedItems = filteredTests.filter(item => !!selectedTests[item.id]);
 
         return (
-            <div>
-                <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
-                <div>
-                    <label>Select Sample Type:</label>
-                    <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
+            <div className="row">
+                <div className="col-lg-8">
+                    <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
+                    <div>
+                        <label>Select Sample Type:</label>
+                        <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
+                    </div>
+                    <div>
+                        <label>Quantity:</label>
+                        <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
+                    </div>
+                    <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
+
+                    <TestList items={filteredTests} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
+                    <div style={{ height: 600 }}></div>
                 </div>
-                <div>
-                    <label>Quantity:</label>
-                    <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
+                <div className="col-lg-4">
+                    <div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+                        <Summary canSubmit={this.state.isValid} testItems={selectedItems} quantity={quantity} payment={payment} onSubmit={this.onSubmit} />
+                    </div>
                 </div>
-                <TestList items={filteredTests} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
-                <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange}/>
-                <Summary testItems={selectedItems} quantity={quantity} payment={payment} />
             </div>
         );
     }
