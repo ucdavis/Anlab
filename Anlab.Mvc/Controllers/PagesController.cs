@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using AnlabMvc.Models.Pages;
+using Humanizer;
 using Markdig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
@@ -78,6 +80,12 @@ namespace AnlabMvc.Controllers
                         LastModified = info.LastModified,
                         Meta = meta
                     };
+
+                    // defaults
+                    if (string.IsNullOrWhiteSpace(model.Meta.Title))
+                    {
+                        model.Meta.Title = id.Humanize(LetterCasing.Title);
+                    }
 
                     // cache for up to 15 minutes
                     var options = new MemoryCacheEntryOptions().SetSlidingExpiration(new TimeSpan(0, 15, 0));
