@@ -6,14 +6,15 @@ import { Quantity } from './Quantity';
 import { Summary } from './Summary';
 
 declare var window: any;
+declare var $: any;
 
 interface IOrderState {
+    orderId?: number;
     payment: IPayment;
     quantity?: number;
     sampleType: string;
     testItems: Array<ITestItem>;
     selectedTests: any;
-    total: number;
     isValid: boolean;
 }
 
@@ -21,15 +22,28 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     constructor(props) {
         super(props);
 
-        this.state = {
+        const initialState = {
+            orderId: null,
             payment: { clientType: 'uc' },
             quantity: null,
             sampleType: 'Soil',
             testItems: window.App.orderData.testItems,
-            selectedTests: { 1: true, 2: false },
-            total: 0,
+            selectedTests: { },
             isValid: false,
         };
+
+        if (window.App.orderData.order) {
+            // load up existing order
+            const orderInfo = JSON.parse(window.App.orderData.order.jsonDetails);
+
+            initialState.quantity = orderInfo.Quantity;
+            initialState.sampleType = orderInfo.SampleType;
+            initialState.orderId = orderInfo.Id;
+            
+            orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; } );
+        }
+
+        this.state = { ...initialState };
     }
     validate = () => {
         const valid = this.state.quantity > 0;
@@ -53,14 +67,33 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     onQuantityChanged = (quantity?: number) => {
         this.setState({ ...this.state, quantity }, this.validate);
     }
+    getTests = () => {
+        const { testItems, payment, selectedTests, sampleType, quantity } = this.state;
+        const filtered = testItems.filter(item => item.category === sampleType);
+        return {
+            filtered,
+            selected: filtered.filter(item => !!selectedTests[item.id])
+        };
+    }
     onSubmit = () => {
-
+        const selectedTests = this.getTests().selected;
+        const order = {
+            quantity: this.state.quantity,
+            payment: this.state.payment,
+            sampleType: this.state.sampleType,
+            selectedTests,
+        }
+        $.post({
+            url: '/order/create',
+            data: JSON.stringify(order),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+        });
     }
     render() {
         const { testItems, payment, selectedTests, sampleType, quantity } = this.state;
-        const filteredTests = testItems.filter(item => item.category === sampleType);
-
-        const selectedItems = filteredTests.filter(item => !!selectedTests[item.id]);
+        
+        const { filtered, selected} = this.getTests();
 
         return (
             <div className="row">
@@ -74,12 +107,12 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                         <label>Quantity:</label>
                         <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
                     </div>
-                    <TestList items={filteredTests} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
+                    <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
                     <div style={{ height: 600 }}></div>
                 </div>
                 <div className="col-lg-4">
                     <div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
-                        <Summary canSubmit={this.state.isValid} testItems={selectedItems} quantity={quantity} payment={payment} onSubmit={this.onSubmit} />
+                        <Summary canSubmit={this.state.isValid} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} />
                     </div>
                 </div>
             </div>

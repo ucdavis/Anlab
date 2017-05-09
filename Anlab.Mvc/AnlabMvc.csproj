@@ -30,6 +30,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="1.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
     <PackageReference Include="Serilog.Sinks.Stackify" Version="1.25.4" />
     <PackageReference Include="StackifyLib.AspNetCore" Version="2.0.0-beta1" />
   </ItemGroup>
