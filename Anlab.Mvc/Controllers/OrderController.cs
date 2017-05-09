@@ -57,6 +57,8 @@ namespace AnlabMvc.Controllers
     public class OrderSaveModel {
         public int Quantity { get;set;}
         public string SampleType {get;set;}
-        
+
+        public TestItem[] SelectedTests {get;set;} 
+        public decimal Total {get;set;}
     }
 }
