@@ -78,7 +78,7 @@ namespace AnlabMvc.Controllers
                     {
                         Html = html,
                         LastModified = info.LastModified,
-                        Meta = meta
+                        Meta = meta ?? new MarkdownPageMeta()
                     };
 
                     // defaults
