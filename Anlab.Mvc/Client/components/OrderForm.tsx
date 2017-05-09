@@ -9,6 +9,7 @@ declare var window: any;
 declare var $: any;
 
 interface IOrderState {
+    orderId?: number;
     payment: IPayment;
     quantity?: number;
     sampleType: string;
@@ -22,6 +23,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         super(props);
 
         const initialState = {
+            orderId: null,
             payment: { clientType: 'uc' },
             quantity: null,
             sampleType: 'Soil',
@@ -36,6 +38,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
             initialState.quantity = orderInfo.Quantity;
             initialState.sampleType = orderInfo.SampleType;
+            initialState.orderId = orderInfo.Id;
             
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; } );
         }
