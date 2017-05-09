@@ -14,6 +14,7 @@ namespace AnlabMvc.Controllers
         private readonly IMemoryCache _cache;
         private readonly IFileProvider _fileProvider;
         private readonly string _cacheKey;
+        private readonly MarkdownPipeline _pipeline;
 
         public PagesController(IHostingEnvironment hostingEnvironment, IMemoryCache memoryCache)
         {
@@ -21,6 +22,11 @@ namespace AnlabMvc.Controllers
             _fileProvider = new PhysicalFileProvider(hostingEnvironment.ContentRootPath + "/pages");
 
             _cacheKey = "PagesController_ViewPage_";
+
+            _pipeline = new MarkdownPipelineBuilder()
+                .UseYamlFrontMatter()
+                .UseAdvancedExtensions()
+                .Build();
         }
 
         public IActionResult ViewPage(string id)
@@ -52,8 +58,10 @@ namespace AnlabMvc.Controllers
                 using (var sr = new StreamReader(fs))
                 {
                     var source = sr.ReadToEnd();
-                    var html = Markdown.ToHtml(source);
 
+
+                    var html = Markdown.ToHtml(source, _pipeline);
+                    
                     model = new MarkdownPage()
                     {
                         Html = html,
