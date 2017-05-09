@@ -9,6 +9,7 @@ interface ISummaryProps {
     quantity: number;
     payment: IPayment;
     onSubmit: Function;
+    canSubmit: boolean;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
@@ -66,8 +67,8 @@ export class Summary extends React.Component<ISummaryProps, any> {
                         </tr>
                     </tfoot>
                 </table>
-                <div className="alert alert-info">Go ahead and place your order</div>
-                <Button raised primary onClick={this.props.onSubmit}>
+                {this.props.canSubmit ? <div className="alert alert-info">Go ahead and place your order</div> : null }
+                <Button raised primary disabled={!this.props.canSubmit} onClick={this.props.onSubmit}>
                     Place Order
                 </Button>
             </div>

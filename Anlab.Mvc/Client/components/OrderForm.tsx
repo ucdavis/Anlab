@@ -14,6 +14,7 @@ interface IOrderState {
     testItems: Array<ITestItem>;
     selectedTests: any;
     total: number;
+    isValid: boolean;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -26,15 +27,19 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             sampleType: 'Soil',
             testItems: window.App.orderData.testItems,
             selectedTests: { 1: true, 2: false },
-            total: 0
+            total: 0,
+            isValid: false,
         };
     }
-
+    validate = () => {
+        const valid = this.state.quantity > 0;
+        this.setState({ ...this.state, isValid: valid });
+    }
     onPaymentSelected = (payment: any) => {
-        this.setState({ ...this.state, payment });
+        this.setState({ ...this.state, payment }, this.validate);
     }
     onSampleSelected = (sampleType: string) => {
-        this.setState({ ...this.state, sampleType });
+        this.setState({ ...this.state, sampleType }, this.validate);
     }
     onTestSelectionChanged = (test: ITestItem, selected: Boolean) => {
         this.setState({
@@ -43,10 +48,10 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                 ...this.state.selectedTests,
                 [test.id]: selected
             }
-        });
+        }, this.validate);
     }
     onQuantityChanged = (quantity?: number) => {
-        this.setState({ ...this.state, quantity });
+        this.setState({ ...this.state, quantity }, this.validate);
     }
     onSubmit = () => {
 
@@ -74,7 +79,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                 </div>
                 <div className="col-lg-4">
                     <div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
-                        <Summary testItems={selectedItems} quantity={quantity} payment={payment} onSubmit={this.onSubmit} />
+                        <Summary canSubmit={this.state.isValid} testItems={selectedItems} quantity={quantity} payment={payment} onSubmit={this.onSubmit} />
                     </div>
                 </div>
             </div>
