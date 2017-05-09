@@ -87,8 +87,8 @@ namespace AnlabMvc.Controllers
                         model.Meta.Title = id.Humanize(LetterCasing.Title);
                     }
 
-                    // cache for up to 15 minutes
-                    var options = new MemoryCacheEntryOptions().SetSlidingExpiration(new TimeSpan(0, 15, 0));
+                    // cache for up to 1 day
+                    var options = new MemoryCacheEntryOptions().SetSlidingExpiration(new TimeSpan(1, 0, 0, 0));
                     _cache.Set(_cacheKey + id, model, options);
                 }
 
