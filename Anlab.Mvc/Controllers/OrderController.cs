@@ -55,7 +55,8 @@ namespace AnlabMvc.Controllers
     }
 
     public class OrderSaveModel {
-        public int quantity { get;set;}
+        public int Quantity { get;set;}
         public string SampleType {get;set;}
+        
     }
 }
