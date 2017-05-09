@@ -20,15 +20,27 @@ interface IOrderState {
 export default class OrderForm extends React.Component<undefined, IOrderState> {
     constructor(props) {
         super(props);
-        
-        this.state = {
+
+        const initialState = {
             payment: { clientType: 'uc' },
             quantity: null,
             sampleType: 'Soil',
             testItems: window.App.orderData.testItems,
-            selectedTests: { 1: true, 2: false },
+            selectedTests: { },
             isValid: false,
         };
+
+        if (window.App.orderData.order) {
+            // load up existing order
+            const orderInfo = JSON.parse(window.App.orderData.order.jsonDetails);
+
+            initialState.quantity = orderInfo.Quantity;
+            initialState.sampleType = orderInfo.SampleType;
+            
+            orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; } );
+        }
+
+        this.state = { ...initialState };
     }
     validate = () => {
         const valid = this.state.quantity > 0;
