@@ -186,7 +186,22 @@ namespace AnlabMvc.Services
                 Multiplier = 1
             };
 
-
+            for (int i = 0; i < 30; i++)
+            {
+                var plantx = new TestItem
+                {
+                    Analysis = string.Format("Fake Plant{0}", i),
+                    Code = string.Format("Fake{0}", i),
+                    InternalCost = 1.22m,
+                    ExternalCost = 2.13m,
+                    SetupCost = 30,
+                    FeeSchedule = "16_0711",
+                    Category = TestCategories.Plant,
+                    Group = "SF",
+                    Multiplier = 1
+                };
+                _context.Add(plantx);
+            }
 
             _context.Add(aluminum);
             _context.Add(ammonium);
