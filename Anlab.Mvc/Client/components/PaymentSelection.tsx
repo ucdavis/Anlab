@@ -24,7 +24,7 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
 
     render() {
         return (
-            <TooltipWrapper tooltip="This is some descriptive text for the payment section">
+            <TooltipWrapper tooltip="This is some descriptive text for the payment section" tooltipDelay={1000} tooltipPosition={"left"}>
                 <RadioGroup name='comic' value={this.props.payment.clientType} onChange={this.handleChange}>
                     <RadioButton label='Paying with UC Account' value='uc'/>
                     <RadioButton label='Paying with Credit Card' value='other'/>
