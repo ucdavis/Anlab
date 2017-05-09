@@ -1,4 +1,5 @@
 ﻿import * as React from 'react';
+import { Table, TableHead, TableRow, TableCell } from 'react-toolbox/lib/table';
 import { ITestItem } from './TestList';
 import { IPayment } from './PaymentSelection';
 import NumberFormat from 'react-number-format';
@@ -26,44 +27,40 @@ export class Summary extends React.Component<ISummaryProps, any> {
             const perTest = price * this.props.quantity;
             const rowTotalDisplay = (perTest + item.setupCost);
             return (
-                <tr key={item.id}>
-                    <td>{item.analysis}</td>
-                    <td><NumberFormat value={price} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-                    <td><NumberFormat value={perTest} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-                    <td><NumberFormat value={item.setupCost} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-                    <td><NumberFormat value={rowTotalDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-                </tr>
+                <TableRow key={item.id}>
+                    <TableCell>{item.analysis}</TableCell>
+                    <TableCell><NumberFormat value={price} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></TableCell>
+                    <TableCell><NumberFormat value={perTest} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></TableCell>
+                    <TableCell><NumberFormat value={item.setupCost} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></TableCell>
+                    <TableCell><NumberFormat value={rowTotalDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></TableCell>
+                </TableRow>
             );
         });
 
         return tests;
     }
     render() {
-        return (
-            <div>
-                
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Analysis</th>
-                            <th>Fee</th>
-                            <th>Price</th>
-                            <th>Setup</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this._renderTests()}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colSpan={4}></td>
-                            <td><NumberFormat value={this.totalCost()} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
+        if (this.props.testItems.length > 0) {
+            return (
+                <div style={{ marginTop: 15 }}>
+                    <h3>Selected Tests Total: <NumberFormat value={this.totalCost()} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></h3>
+                    <Table multiSelectable={false} selectable={false}>
+                        <TableHead>
 
-        );
+                            <TableCell>Analysis</TableCell>
+                            <TableCell>Fee</TableCell>
+                            <TableCell>Price</TableCell>
+                            <TableCell>Setup</TableCell>
+                            <TableCell>Total</TableCell>
+
+                        </TableHead>
+
+                        {this._renderTests()}
+                    </Table>
+                </div>
+            );
+        } else {
+            return null;
+        }
     }
 }
