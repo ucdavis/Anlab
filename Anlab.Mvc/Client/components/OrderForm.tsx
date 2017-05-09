@@ -4,6 +4,7 @@ import { IPayment, PaymentSelection } from './PaymentSelection';
 import { SampleTypeSelection } from './SampleTypeSelection';
 import { Quantity } from './Quantity';
 import { Summary } from './Summary';
+import { AdditionalInfo} from './AdditionalInfo';
 
 declare var window: any;
 
@@ -13,6 +14,7 @@ interface IOrderState {
     sampleType: string;
     testItems: Array<ITestItem>;
     selectedTests: any;
+    additionalInfo: string;
     total: number;
     isValid: boolean;
 }
@@ -27,6 +29,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             sampleType: 'Soil',
             testItems: window.App.orderData.testItems,
             selectedTests: { 1: true, 2: false },
+            additionalInfo: '',
             total: 0,
             isValid: false,
         };
@@ -56,8 +59,13 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     onSubmit = () => {
 
     }
+
+    handleChange = (name, value) => {
+        this.setState({ ...this.state, [name]: value });
+    };
+
     render() {
-        const { testItems, payment, selectedTests, sampleType, quantity } = this.state;
+        const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo } = this.state;
         const filteredTests = testItems.filter(item => item.category === sampleType);
 
         const selectedItems = filteredTests.filter(item => !!selectedTests[item.id]);
@@ -74,6 +82,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                         <label>Quantity:</label>
                         <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
                     </div>
+                    <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
+
                     <TestList items={filteredTests} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
                     <div style={{ height: 600 }}></div>
                 </div>
