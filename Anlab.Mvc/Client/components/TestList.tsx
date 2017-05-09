@@ -56,7 +56,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
 
         Object.keys(grouped).map(groupName => {
             // push the group header
-            rows.push(<tr key={`group-${groupName}`}><td colSpan={4}>Group {groupName}</td></tr>);
+            rows.push(<tr key={`group-${groupName}`} className="group-header"><td colSpan={4}>Group {groupName}</td></tr>);
 
             // now get all tests for that group
             const testRows = grouped[groupName].map(item => {
