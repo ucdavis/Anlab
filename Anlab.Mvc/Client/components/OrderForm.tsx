@@ -6,6 +6,7 @@ import { Quantity } from './Quantity';
 import { Summary } from './Summary';
 
 declare var window: any;
+declare var $: any;
 
 interface IOrderState {
     payment: IPayment;
@@ -54,7 +55,12 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.setState({ ...this.state, quantity }, this.validate);
     }
     onSubmit = () => {
-
+        $.post({
+            url: '/order/create',
+            data: JSON.stringify(this.state),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+        });
     }
     render() {
         const { testItems, payment, selectedTests, sampleType, quantity } = this.state;

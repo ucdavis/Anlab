@@ -1,12 +1,19 @@
+@model IList<Order>
 
 @{
     ViewData["Title"] = "Order";
 }
 
-<h2>Order</h2>
+<h2>Orders</h2>
 
-<div id="react-app"></div>
-
-
-    <script src="~/dist/react.js" asp-append-version="true"></script>
-    <script src="~/dist/order.js" asp-append-version="true"></script>
+<table>
+    <tbody>
+        @foreach(var order in Model) {
+            <tr>
+                <td>@order.Id</td>
+                <td>@order.Project</td>
+                <td>@order.JsonDetails</td>
+            </tr>
+        }
+    </tbody>
+</table>
