@@ -2,11 +2,13 @@
 import { ITestItem } from './TestList';
 import { IPayment } from './PaymentSelection';
 import NumberFormat from 'react-number-format';
+import {Button} from 'react-toolbox/lib/button';
 
 interface ISummaryProps {
     testItems: Array<ITestItem>;
     quantity: number;
     payment: IPayment;
+    onSubmit: Function;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
@@ -39,9 +41,11 @@ export class Summary extends React.Component<ISummaryProps, any> {
         return tests;
     }
     render() {
+        if (this.props.testItems.length === 0) {
+            return null;
+        }
         return (
             <div>
-                
                 <table className="table">
                     <thead>
                         <tr>
@@ -62,6 +66,10 @@ export class Summary extends React.Component<ISummaryProps, any> {
                         </tr>
                     </tfoot>
                 </table>
+                <div className="alert alert-info">Go ahead and place your order</div>
+                <Button raised primary onClick={this.props.onSubmit}>
+                    Place Order
+                </Button>
             </div>
 
         );

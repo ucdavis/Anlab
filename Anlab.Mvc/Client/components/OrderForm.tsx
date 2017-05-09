@@ -48,6 +48,9 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     onQuantityChanged = (quantity?: number) => {
         this.setState({ ...this.state, quantity });
     }
+    onSubmit = () => {
+
+    }
     render() {
         const { testItems, payment, selectedTests, sampleType, quantity } = this.state;
         const filteredTests = testItems.filter(item => item.category === sampleType);
@@ -55,18 +58,25 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         const selectedItems = filteredTests.filter(item => !!selectedTests[item.id]);
 
         return (
-            <div>
-                <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
-                <div>
-                    <label>Select Sample Type:</label>
-                    <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
+            <div className="row">
+                <div className="col-lg-8">
+                    <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
+                    <div>
+                        <label>Select Sample Type:</label>
+                        <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
+                    </div>
+                    <div>
+                        <label>Quantity:</label>
+                        <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
+                    </div>
+                    <TestList items={filteredTests} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
+                    <div style={{ height: 600 }}></div>
                 </div>
-                <div>
-                    <label>Quantity:</label>
-                    <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
+                <div className="col-lg-4">
+                    <div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+                        <Summary testItems={selectedItems} quantity={quantity} payment={payment} onSubmit={this.onSubmit} />
+                    </div>
                 </div>
-                <TestList items={filteredTests} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
-                <Summary testItems={selectedItems} quantity={quantity} payment={payment} />
             </div>
         );
     }
