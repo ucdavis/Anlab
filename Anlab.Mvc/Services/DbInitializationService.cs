@@ -197,7 +197,7 @@ namespace AnlabMvc.Services
                     SetupCost = 30,
                     FeeSchedule = "16_0711",
                     Category = TestCategories.Plant,
-                    Group = "SF",
+                    Group = i < 10 ? "SF" : "SS",
                     Multiplier = 1
                 };
                 _context.Add(plantx);
