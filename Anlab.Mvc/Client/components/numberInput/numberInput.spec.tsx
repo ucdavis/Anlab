@@ -50,7 +50,39 @@ describe('<NumberInput />', () => {
         expect(onChanged).toHaveBeenLastCalledWith(42);
     });
 
+    it('should clear error on good value', () => {
         const target = shallow(<NumberInput min={10} max={20} />);
         const internal = target.instance();
 
+        internal.onChange('15');
+
+        expect(internal.state.error).toBeNull();
+    });
+
+    it('should set error on non-number value', () => {
+        const target = shallow(<NumberInput />);
+        const internal = target.instance();
+
+        internal.onChange('abc');
+
+        expect(internal.state.error).not.toBeNull();
+    });
+
+    it('should set error on less than min value', () => {
+        const target = shallow(<NumberInput min={10} />);
+        const internal = target.instance();
+
+        internal.onChange('5');
+
+        expect(internal.state.error).not.toBeNull();
+    });
+
+    it('should set error on more than max value', () => {
+        const target = shallow(<NumberInput max={10} />);
+        const internal = target.instance();
+
+        internal.onChange('15');
+
+        expect(internal.state.error).not.toBeNull();
+    });
 });
