@@ -18,6 +18,7 @@ interface IOrderState {
     testItems: Array<ITestItem>;
     selectedTests: any;
     isValid: boolean;
+    isSubmitting: boolean;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -33,6 +34,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             testItems: window.App.orderData.testItems,
             selectedTests: { },
             isValid: false,
+            isSubmitting: false,
         };
 
         if (window.App.orderData.order) {
@@ -86,6 +88,11 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         };
     }
     onSubmit = () => {
+        var that = this;
+        if (that.state.isSubmitting) {
+            return;
+        }
+        that.setState({ ...this.state, isSubmitting: true });
         const selectedTests = this.getTests().selected;
         const order = {
             quantity: this.state.quantity,
@@ -105,10 +112,13 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                 window.location.replace("/Order/Details/" + redirectId);
             } else {
                 alert("There was a problem saving your order.");
+                that.setState({ ...this.state, isSubmitting: false });
             }
             
-        }).error(function() {
+            }).error(function () {
+            that.setState({ ...this.state, isSubmitting: false });
             alert("An error occured...");
+            
         });
     }
     render() {
@@ -134,7 +144,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                 </div>
                 <div className="col-lg-4">
                     <div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
-                        <Summary canSubmit={this.state.isValid} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} />
+                        <Summary canSubmit={this.state.isValid && this.state.isSubmitting === false} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} />
                     </div>
                 </div>
             </div>
