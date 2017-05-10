@@ -69,7 +69,8 @@ namespace AnlabMvc.Controllers
             return Json(new { success = true, id = order.Id });
         }
 
-        public async Task<IActionResult> Details(int id)
+
+        public async Task<IActionResult> Confirmation(int id)
         {
             var order = await _context.Orders.SingleOrDefaultAsync(o => o.Id == id);
 
@@ -78,13 +79,8 @@ namespace AnlabMvc.Controllers
                 return NotFound(id);
             }
 
-            var model = new OrderEditModel
-            {
-                TestItems = _context.TestItems.AsNoTracking().ToArray(),
-                Order = order
-            };
 
-            return View(model);
+            return View(order);
         }
     }
 
