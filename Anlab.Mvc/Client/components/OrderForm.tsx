@@ -40,6 +40,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             const orderInfo = JSON.parse(window.App.orderData.order.jsonDetails);
 
             initialState.quantity = orderInfo.Quantity;
+            initialState.additionalInfo = orderInfo.AdditionalInfo;
             initialState.sampleType = orderInfo.SampleType;
             initialState.orderId = orderInfo.Id;
             //TODO: save and load additional info
@@ -88,6 +89,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         const selectedTests = this.getTests().selected;
         const order = {
             quantity: this.state.quantity,
+            additionalInfo: this.state.additionalInfo,
             payment: this.state.payment,
             sampleType: this.state.sampleType,
             selectedTests,
