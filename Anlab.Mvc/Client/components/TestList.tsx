@@ -4,6 +4,7 @@ import Input from 'react-toolbox/lib/input';
 
 import { IPayment } from './PaymentSelection';
 import NumberFormat from 'react-number-format';
+import { groupBy } from '../util/arrayHelpers';
 
 export interface ITestItem {
     id: number;
@@ -49,20 +50,35 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
             });
         }
 
-        return filteredItems.map(item => {
-            const selected = !!this.props.selectedTests[item.id];
-            const priceDisplay = (this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost);
-            return (
-                <tr key={item.id}>
-                    <td>
-                        <input type="checkbox" checked={selected} onChange={e => this.onSelection(item, e)} />
-                    </td>
-                    <td>{item.analysis}</td>
-                    <td>{item.code}</td>
-                    <td><NumberFormat value={priceDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-                </tr>
-            );
-        });
+        const grouped = groupBy(filteredItems, 'group');
+        
+        const rows = [];
+
+        Object.keys(grouped).map(groupName => {
+            // push the group header
+            rows.push(<tr key={`group-${groupName}`} className="group-header"><td colSpan={4}>Group {groupName}</td></tr>);
+
+            // now get all tests for that group
+            const testRows = grouped[groupName].map(item => {
+                const selected = !!this.props.selectedTests[item.id];
+                const priceDisplay = (this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost);
+                return (
+                    <tr key={item.id}>
+                        <td>
+                            <input type="checkbox" checked={selected} onChange={e => this.onSelection(item, e)} />
+                        </td>
+                        <td>{item.analysis}</td>
+                        <td>{item.code}</td>
+                        <td><NumberFormat value={priceDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+                    </tr>
+                );
+            });
+
+            // add those tests
+            rows.push.apply(rows, testRows);
+        })
+
+        return rows;
     };
     render() {
         return (
