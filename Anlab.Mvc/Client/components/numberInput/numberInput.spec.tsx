@@ -11,7 +11,7 @@ describe('<NumberInput />', () => {
 
     it('should load value into internalValue as string', () => {
         const onChanged = jest.fn();
-        const target = mount(<NumberInput value={42} />);
+        const target = shallow(<NumberInput value={42} />);
         const internal = target.instance();
 
         expect(internal.state.internalValue).toBe('42');
@@ -19,7 +19,7 @@ describe('<NumberInput />', () => {
 
     it('should load value into internalValue on new props as string', () => {
         const onChanged = jest.fn();
-        const target = mount(<NumberInput value={24} />);
+        const target = shallow(<NumberInput value={24} />);
         const internal = target.instance();
 
         target.setProps({value:42});
@@ -27,31 +27,30 @@ describe('<NumberInput />', () => {
         expect(internal.state.internalValue).toBe('42');
     });
 
-    it('should call onChanged after blur event', () => {
-        const onChanged = jest.fn();
-        const target = mount(<NumberInput onChanged={onChanged} />);
-
-        target.find('input').simulate('blur');
-
-        expect(onChanged).toHaveBeenCalled();
-    });
-
     it('should call onChanged with state.internalValue on blur event', () => {
         const onChanged = jest.fn();
-        const target = mount(<NumberInput onChanged={onChanged} />);
-        const internal = target.instance()
-        internal.state.internalValue = 42
+        const target = shallow(<NumberInput onChanged={onChanged} />);
+        const internal = target.instance();
 
-        target.find('input').simulate('blur');
+        internal.state.internalValue = '42.5';
+        internal.onBlur();
+
+        expect(onChanged).toHaveBeenCalled();
+        expect(onChanged).toHaveBeenLastCalledWith(42.5);
+    });
+
+    it('should call onChanged with truncated state.internalValue', () => {
+        const onChanged = jest.fn();
+        const target = shallow(<NumberInput onChanged={onChanged} integer />);
+        const internal = target.instance();
+
+        internal.state.internalValue = '42.5';
+        internal.onBlur();
+
         expect(onChanged).toHaveBeenLastCalledWith(42);
     });
 
-    it('should call onChanged with truncated state.internalValue on blur event', () => {
-        const onChanged = jest.fn();
-        const target = mount(<NumberInput onChanged={onChanged} integer value={42.5} />);
+        const target = shallow(<NumberInput min={10} max={20} />);
         const internal = target.instance();
 
-        target.find('input').simulate('blur');
-        expect(onChanged).toHaveBeenLastCalledWith(42);
-    })
 });
