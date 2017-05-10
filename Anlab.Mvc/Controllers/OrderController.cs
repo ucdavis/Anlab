@@ -74,6 +74,8 @@ namespace AnlabMvc.Controllers
         public int Quantity { get;set;}
         public string SampleType {get;set;}
 
+        public string AdditionalInfo { get; set; }
+
         public TestItem[] SelectedTests {get;set;} 
         public decimal Total {get;set;}
     }
