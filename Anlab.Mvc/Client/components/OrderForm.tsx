@@ -99,6 +99,16 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             data: JSON.stringify(order),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
+        }).success(function (response) {
+            if (response.success === true) {
+                var redirectId = response.id;
+                window.location.replace("/Order/Details/" + redirectId);
+            } else {
+                alert("There was a problem saving your order.");
+            }
+            
+        }).error(function() {
+            alert("An error occured...");
         });
     }
     render() {

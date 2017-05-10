@@ -66,7 +66,25 @@ namespace AnlabMvc.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true });
+            return Json(new { success = true, id = order.Id });
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var order = await _context.Orders.SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound(id);
+            }
+
+            var model = new OrderEditModel
+            {
+                TestItems = _context.TestItems.AsNoTracking().ToArray(),
+                Order = order
+            };
+
+            return View(model);
         }
     }
 
