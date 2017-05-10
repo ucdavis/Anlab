@@ -2,8 +2,13 @@ import * as React from 'react';
 import Input from 'react-toolbox/lib/input';
 
 interface INumberInputProps {
+    name?: string;
+    label?: string;
     value?: number;
     onChanged?: Function;
+    min?: number;
+    max?: number;
+    integer?: boolean;
 }
 
 interface INumberInputState {
@@ -12,6 +17,11 @@ interface INumberInputState {
 }
 
 export class NumberInput extends React.Component<INumberInputProps, INumberInputState> {
+
+    public static defaultProps: Partial<INumberInputProps> = {
+        integer: false
+    };
+
     constructor(props) {
         super(props);
 
@@ -43,7 +53,7 @@ export class NumberInput extends React.Component<INumberInputProps, INumberInput
                 value = (value * -1); //Make positive if negative
             }
             this.setState({ ...this.state, internalValue: value.toString(), error });
-        }        
+        }
     }
     onBlur = () => {
         let internalValue = Number(this.state.internalValue);
@@ -56,7 +66,15 @@ export class NumberInput extends React.Component<INumberInputProps, INumberInput
     }
     render() {
         return (
-            <Input type='text' label='Number' name='quantity' error={this.state.error} value={this.state.internalValue} onChange={this.onChange} onBlur={this.onBlur} />
+            <Input
+                type='text'
+                label={this.props.label}
+                name={this.props.name}
+                error={this.state.error}
+                value={this.state.internalValue}
+                onChange={this.onChange}
+                onBlur={this.onBlur}
+            />
         );
     }
 }
