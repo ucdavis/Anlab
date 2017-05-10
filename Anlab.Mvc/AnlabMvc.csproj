@@ -35,7 +35,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
     <PackageReference Include="Serilog.Sinks.Stackify" Version="1.25.4" />
     <PackageReference Include="StackifyLib.AspNetCore" Version="2.0.0-beta1" />
-    <PackageReference Include="YamlDotNet" Version="4.1.0" />
+    <PackageReference Include="YamlDotNet" Version="4.1.1-netstandard0395" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
