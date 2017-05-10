@@ -9,11 +9,6 @@ describe('<NumberInput />', () => {
         expect(target.find('input').length).toEqual(1);
     });
 
-    it('should render a label', () => {
-        const target = mount(<NumberInput />);
-        expect(target.find('label').length).toEqual(1);
-    });
-
     it('should load value into internalValue as string', () => {
         const onChanged = jest.fn();
         const target = mount(<NumberInput value={42} />);
@@ -41,7 +36,7 @@ describe('<NumberInput />', () => {
         expect(onChanged).toHaveBeenCalled();
     });
 
-    it('should call onChanged with state.internalValue', () => {
+    it('should call onChanged with state.internalValue on blur event', () => {
         const onChanged = jest.fn();
         const target = mount(<NumberInput onChanged={onChanged} />);
         const internal = target.instance()
@@ -50,4 +45,13 @@ describe('<NumberInput />', () => {
         target.find('input').simulate('blur');
         expect(onChanged).toHaveBeenLastCalledWith(42);
     });
+
+    it('should call onChanged with truncated state.internalValue on blur event', () => {
+        const onChanged = jest.fn();
+        const target = mount(<NumberInput onChanged={onChanged} integer value={42.5} />);
+        const internal = target.instance();
+
+        target.find('input').simulate('blur');
+        expect(onChanged).toHaveBeenLastCalledWith(42);
+    })
 });

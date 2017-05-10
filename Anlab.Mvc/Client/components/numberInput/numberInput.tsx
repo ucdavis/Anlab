@@ -60,13 +60,21 @@ export class NumberInput extends React.Component<INumberInputProps, INumberInput
         this.setState({ error } as INumberInputState);
     }
     onBlur = () => {
-        let internalValue = Number(this.state.internalValue);
+        let value = Number(this.state.internalValue);
 
-        if (isNaN(internalValue)) internalValue = null;
+        if (isNaN(value)) value = null;
 
-        this.setState({ ...this.state, internalValue: this.transformValue(internalValue), error: null });
+        // force integer
+        if (this.props.integer && !isNaN(value)) {
+          value = Math.floor(value);
+        }
 
-        this.props.onChanged(internalValue);
+        // push possible changes, clear error
+        this.setState({
+          internalValue: this.transformValue(value)
+        } as INumberInputState);
+
+        this.props.onChanged(value);
     }
     render() {
         return (
