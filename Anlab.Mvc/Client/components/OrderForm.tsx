@@ -109,7 +109,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         }).success(function (response) {
             if (response.success === true) {
                 var redirectId = response.id;
-                window.location.replace("/Order/Details/" + redirectId);
+                window.location.replace("/Order/Confirmation/" + redirectId);
             } else {
                 alert("There was a problem saving your order.");
                 that.setState({ ...this.state, isSubmitting: false });
