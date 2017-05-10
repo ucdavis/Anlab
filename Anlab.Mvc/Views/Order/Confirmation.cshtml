@@ -1,0 +1,46 @@
+@model AnlabMvc.Models.Order.OrderReviewModel
+
+@{
+    ViewData["Title"] = "Confirmation";
+}
+
+<h2>Confirmation</h2>
+
+<div class="form-group">
+    <strong>Created By</strong>
+    <span>@Model.Order.Creator.Name</span>
+</div>
+<div class="form-group">
+    <strong>Project</strong>
+    <span>@Model.Order.Project</span>
+</div>
+<div class="form-group">
+    <strong>Selected Tests</strong>
+    <span>@Model.Order.JsonDetails</span>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+
+
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var test in @Model.OrderDetails.SelectedTests)
+    {
+        <tr>
+            <td>@test.Analysis</td>
+            <td>@test.Code</td>
+            <td>@test.SetupCost</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<form asp-controller="order" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
+    
+</form>
