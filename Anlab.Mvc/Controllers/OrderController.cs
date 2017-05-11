@@ -110,16 +110,22 @@ namespace AnlabMvc.Controllers
                 return NotFound(id);
             }
 
-            
+            if (order.Status != null)
+            {
+                ErrorMessage = "Already confirmed";
+                var model = new OrderReviewModel();
+                model.Order = order;
+                model.OrderDetails = JsonConvert.DeserializeObject<OrderDetails>(order.JsonDetails);
 
-            Message = string.Format("Confirm Value {0}", confirm);
+                return View(model);
+            }
 
+            order.Status = "Confirmed";
+            await _context.SaveChangesAsync();
 
-            var model = new OrderReviewModel();
-            model.Order = order;
-            model.OrderDetails = JsonConvert.DeserializeObject<OrderDetails>(order.JsonDetails);
+            Message = "Order confirmed";
+            return RedirectToAction("Index");
 
-            return View(model);
         }
     }
 
