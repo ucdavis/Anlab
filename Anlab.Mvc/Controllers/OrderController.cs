@@ -80,6 +80,40 @@ namespace AnlabMvc.Controllers
                 return NotFound(id);
             }
 
+            if (order.CreatorId != CurrentUserId)
+            {
+                ErrorMessage = "You don't have access to this order.";
+                return NotFound(id);
+            }
+
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = JsonConvert.DeserializeObject<OrderDetails>(order.JsonDetails);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Confirmation(int id, bool confirm)
+        {
+            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound(id);
+            }
+
+            if (order.CreatorId != CurrentUserId)
+            {
+                ErrorMessage = "You don't have access to this order.";
+                return NotFound(id);
+            }
+
+            
+
+            Message = string.Format("Confirm Value {0}", confirm);
+
 
             var model = new OrderReviewModel();
             model.Order = order;
