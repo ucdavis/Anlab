@@ -46,6 +46,9 @@
     <None Remove="yarn.lock" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="wwwroot\dist\font-awesome.css" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Anlab.Core\Anlab.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
