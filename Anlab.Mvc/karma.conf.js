@@ -4,12 +4,9 @@ module.exports = function (config) {
   config.set({
     frameworks: ["jasmine"],
     files: [
-        // { pattern: "Client/**/*.spec.+(js|jsx|ts|tsx)" },
-        'webpack.tests.js'
+        'webpack.tests.js',
     ],
-    // exclude: ['node_modules'],
     preprocessors: {
-      // "Client/**/*.+(js|jsx|ts|tsx)": [ "webpack", 'sourcemap' ],
       "webpack.tests.js": [ "webpack", 'sourcemap' ],
     },
     reporters: ["progress"],
