@@ -15,7 +15,7 @@ module.exports = (env) => {
             sourceMap: true
         }
     };
-    return [{
+    return {
         stats: { modules: false },
         entry: {
             'root': './Client/root.tsx',
@@ -54,5 +54,5 @@ module.exports = (env) => {
             new webpack.optimize.UglifyJsPlugin(),
             new ExtractTextPlugin('site.css')
         ])
-    }];
+    };
 };

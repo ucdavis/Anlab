@@ -10,7 +10,6 @@ describe('<NumberInput />', () => {
     });
 
     it('should load value into internalValue as string', () => {
-        const onChanged = jest.fn();
         const target = shallow(<NumberInput value={42} />);
         const internal = target.instance();
 
@@ -18,7 +17,6 @@ describe('<NumberInput />', () => {
     });
 
     it('should load value into internalValue on new props as string', () => {
-        const onChanged = jest.fn();
         const target = shallow(<NumberInput value={24} />);
         const internal = target.instance();
 
@@ -28,7 +26,7 @@ describe('<NumberInput />', () => {
     });
 
     it('should call onChanged with state.internalValue on blur event', () => {
-        const onChanged = jest.fn();
+        const onChanged = jasmine.createSpy('onChanged');
         const target = shallow(<NumberInput onChanged={onChanged} />);
         const internal = target.instance();
 
@@ -36,18 +34,18 @@ describe('<NumberInput />', () => {
         internal.onBlur();
 
         expect(onChanged).toHaveBeenCalled();
-        expect(onChanged).toHaveBeenLastCalledWith(42.5);
+        expect(onChanged).toHaveBeenCalledWith(42.5);
     });
 
     it('should call onChanged with truncated state.internalValue', () => {
-        const onChanged = jest.fn();
+        const onChanged = jasmine.createSpy('onChanged');
         const target = shallow(<NumberInput onChanged={onChanged} integer />);
         const internal = target.instance();
 
         internal.state.internalValue = '42.5';
         internal.onBlur();
 
-        expect(onChanged).toHaveBeenLastCalledWith(42);
+        expect(onChanged).toHaveBeenCalledWith(42);
     });
 
     it('should clear error on good value', () => {
