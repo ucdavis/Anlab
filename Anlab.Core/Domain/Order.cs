@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using AnlabMvc.Models.Order;
+using Newtonsoft.Json;
 
 namespace Anlab.Core.Domain
 {
@@ -38,5 +40,22 @@ namespace Anlab.Core.Domain
         public DateTime Updated { get; set; }
 
         public string Status { get; set; }
+
+        public OrderDetails GetOrderDetails()
+        {
+            try
+            {
+                return JsonConvert.DeserializeObject<OrderDetails>(JsonDetails);
+            }
+            catch (JsonSerializationException)
+            {
+                return new OrderDetails();
+            }
+        }
+
+        public void SaveDetails(OrderDetails details)
+        {
+            JsonDetails = JsonConvert.SerializeObject(details);
+        }
     }
 }

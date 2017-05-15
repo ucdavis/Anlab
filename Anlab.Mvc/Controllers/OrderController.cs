@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AnlabMvc.Data;
 using AnlabMvc.Models.Order;
 using Anlab.Core.Domain;
+using Anlab.Core.Models;
 using Microsoft.AspNetCore.Http.Features.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -100,7 +101,7 @@ namespace AnlabMvc.Controllers
 
             var model = new OrderReviewModel();
             model.Order = order;
-            model.OrderDetails = JsonConvert.DeserializeObject<OrderDetails>(order.JsonDetails);
+            model.OrderDetails = order.GetOrderDetails();
             var testItemIds = model.OrderDetails.SelectedTests.Select(a => a.Id).ToArray();
 
             //TODO: Should this be done in the create?
@@ -124,7 +125,9 @@ namespace AnlabMvc.Controllers
             model.OrderDetails.Total = model.OrderDetails.Total * model.OrderDetails.Quantity;
             model.OrderDetails.Total += selectedTests.Sum(a => a.SetupCost);
 
-            
+            order.SaveDetails(model.OrderDetails);
+            await _context.SaveChangesAsync();
+
 
             return View(model);
         }
@@ -172,11 +175,7 @@ namespace AnlabMvc.Controllers
         public Payment Payment { get; set; }
     }
 
-    public class Payment
-    {
-        public string ClientType { get; set; }
-        public string Account { get; set; }
-    }
+
 
    
 }
