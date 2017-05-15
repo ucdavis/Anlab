@@ -90,6 +90,29 @@ namespace AnlabMvc.Controllers
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = JsonConvert.DeserializeObject<OrderDetails>(order.JsonDetails);
+            var testItemIds = model.OrderDetails.SelectedTests.Select(a => a.Id).ToArray();
+
+            //TODO: Should this be done in the create?
+            var selectedTests = await _context.TestItems.Where(a => testItemIds.Contains(a.Id)).ToListAsync();
+            if(string.Equals(model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
+            {
+                model.OrderDetails.Total = selectedTests.Sum(a => a.InternalCost);
+            }
+            else
+            {
+                if (string.Equals(model.OrderDetails.Payment.ClientType, "other", StringComparison.OrdinalIgnoreCase))
+                {
+                    model.OrderDetails.Total = selectedTests.Sum(a => a.ExternalCost);
+                }
+                else
+                {
+                    throw new Exception("What! unknown payment!!!");
+                }
+            }
+
+            model.OrderDetails.Total = model.OrderDetails.Total * model.OrderDetails.Quantity;
+            model.OrderDetails.Total += selectedTests.Sum(a => a.SetupCost);
+
             
 
             return View(model);

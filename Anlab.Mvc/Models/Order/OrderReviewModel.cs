@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Anlab.Core.Domain;
+using AnlabMvc.Controllers;
 
 namespace AnlabMvc.Models.Order
 {
@@ -24,5 +25,7 @@ namespace AnlabMvc.Models.Order
         public IList<TestItem> SelectedTests { get; set; }
 
         public Decimal Total { get; set; }
+
+        public Payment Payment { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+@using Humanizer
 @model AnlabMvc.Models.Order.OrderReviewModel
 
 @{
@@ -44,7 +45,7 @@
 <form asp-controller="order" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
     @Html.Hidden("confirm", true)
     
-    <button type="submit" class="btn btn-primary"><i class="fa fa-envelope" aria-hidden="true"> Confirm and Send</i></button>
+    <button type="submit" class="btn btn-primary"><i class="fa fa-money" aria-hidden="true"> @(String.Format("{0:C}", Model.OrderDetails.Total)) Confirm and Send</i></button>
 </form>
 
 @section AdditionalStyles
