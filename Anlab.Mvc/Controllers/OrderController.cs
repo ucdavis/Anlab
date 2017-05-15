@@ -90,6 +90,7 @@ namespace AnlabMvc.Controllers
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = JsonConvert.DeserializeObject<OrderDetails>(order.JsonDetails);
+            
 
             return View(model);
         }
@@ -137,6 +138,14 @@ namespace AnlabMvc.Controllers
 
         public TestItem[] SelectedTests {get;set;} 
         public decimal Total {get;set;}
+
+        public Payment Payment { get; set; }
+    }
+
+    public class Payment
+    {
+        public string ClientType { get; set; }
+        public string Account { get; set; }
     }
 
    
