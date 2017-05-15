@@ -48,7 +48,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.sampleType = orderInfo.SampleType;
             initialState.orderId = orderInfo.Id;
             initialState.project = window.App.orderData.order.Project;
-            //TODO: save and load additional info
             
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; } );
         }
