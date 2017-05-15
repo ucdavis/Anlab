@@ -88,11 +88,11 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         };
     }
     onSubmit = () => {
-        var that = this;
-        if (that.state.isSubmitting) {
+        
+        if (this.state.isSubmitting) {
             return;
         }
-        that.setState({ ...this.state, isSubmitting: true });
+        this.setState({ ...this.state, isSubmitting: true });
         const selectedTests = this.getTests().selected;
         const order = {
             quantity: this.state.quantity,
@@ -101,6 +101,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             sampleType: this.state.sampleType,
             selectedTests,
         }
+        var that = this;
         $.post({
             url: '/order/create',
             data: JSON.stringify(order),
@@ -116,9 +117,9 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             }
             
             }).error(function () {
-            that.setState({ ...this.state, isSubmitting: false });
-            alert("An error occured...");
-            
+                alert("An error occured...");
+                that.setState({ ...this.state, isSubmitting: false });
+                        
         });
     }
     render() {
