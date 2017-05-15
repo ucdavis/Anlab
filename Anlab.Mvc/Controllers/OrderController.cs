@@ -137,11 +137,7 @@ namespace AnlabMvc.Controllers
             if (order.Status != null)
             {
                 ErrorMessage = "Already confirmed";
-                var model = new OrderReviewModel();
-                model.Order = order;
-                model.OrderDetails = JsonConvert.DeserializeObject<OrderDetails>(order.JsonDetails);
-
-                return View(model);
+                return RedirectToAction("Confirmation", new {id});
             }
 
             order.Status = "Confirmed";
