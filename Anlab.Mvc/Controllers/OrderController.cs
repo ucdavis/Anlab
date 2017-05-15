@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using AnlabMvc.Data;
 using AnlabMvc.Models.Order;
 using Anlab.Core.Domain;
+using Microsoft.AspNetCore.Http.Features.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Remotion.Linq.Parsing.ExpressionVisitors.MemberBindings;
 
 namespace AnlabMvc.Controllers
 {
@@ -26,6 +28,15 @@ namespace AnlabMvc.Controllers
 
             return View(model);
         }
+
+
+        public async Task<IActionResult> MyOrders()
+        {
+            var model = await _context.Orders.Where(a => a.CreatorId == CurrentUserId).ToArrayAsync();
+
+            return View(model);
+        }
+
 
         public async Task<IActionResult> Edit(int id)
         {
@@ -137,14 +148,14 @@ namespace AnlabMvc.Controllers
             if (order.Status != null)
             {
                 ErrorMessage = "Already confirmed";
-                return RedirectToAction("Confirmation", new {id});
+                return RedirectToAction("MyOrders");
             }
 
             order.Status = "Confirmed";
             await _context.SaveChangesAsync();
 
             Message = "Order confirmed";
-            return RedirectToAction("Index");
+            return RedirectToAction("MyOrders");
 
         }
     }
