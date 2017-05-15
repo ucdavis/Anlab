@@ -1,0 +1,32 @@
+@using Humanizer
+@model AnlabMvc.Models.Order.OrderReviewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+
+@Html.Partial("_OrderDetails")
+
+<div class="form-group">
+    <strong>json Data</strong>
+    <span>@Model.Order.JsonDetails</span>
+</div>
+
+@section AdditionalStyles
+{
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" />
+}
+
+@section Scripts
+{
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            $("#table").dataTable();
+        });
+    </script>
+}

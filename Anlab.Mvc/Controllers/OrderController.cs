@@ -82,6 +82,32 @@ namespace AnlabMvc.Controllers
             return Json(new { success = true, id = order.Id });
         }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound(id);
+            }
+
+            if (order.CreatorId != CurrentUserId)
+            {
+                ErrorMessage = "You don't have access to this order.";
+                return NotFound(id);
+            }
+
+            if (order.Status == null)
+            {
+                ErrorMessage = "Must confim order before viewing details.";
+                return RedirectToAction("MyOrders");
+            }
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+
+            return View(model);
+        }
 
         public async Task<IActionResult> Confirmation(int id)
         {
