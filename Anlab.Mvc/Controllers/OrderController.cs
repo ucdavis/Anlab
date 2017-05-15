@@ -70,7 +70,7 @@ namespace AnlabMvc.Controllers
             var order = new Order
             {
                 CreatorId = CurrentUserId,
-                Project = "Project name",
+                Project = model.Project,
                 JsonDetails = JsonConvert.SerializeObject(model)
             };
             // save model
@@ -171,6 +171,8 @@ namespace AnlabMvc.Controllers
 
         public TestItem[] SelectedTests {get;set;} 
         public decimal Total {get;set;}
+
+        public string Project { get; set; }
 
         public Payment Payment { get; set; }
     }
