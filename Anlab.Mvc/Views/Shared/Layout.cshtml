@@ -5,7 +5,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BasicTemplate</title>
-    
 
     <environment names="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.css" />
@@ -17,10 +16,17 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
     </environment>
     @RenderSection("AdditionalStyles", required: false)
+    <!-- Typekit -->
+    <script src="https://use.typekit.net/vqy0brq.js"></script>
+    <script>
+        try {
+            Typekit.load();
+        } catch (e) {}
+    </script>
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+    <nav class="navbar navbar-anlab">
+        <div class="boundary">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
@@ -28,7 +34,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">BasicTemplate</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand"><img src="/media/anlab_logo.svg" alt=""></a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -40,7 +46,13 @@
             </div>
         </div>
     </nav>
-<div class="container body-content">
+    <div class="head_bleed">
+      <div class="head_divider">
+
+      </div>
+    </div>
+
+<div class="boundary body-content">
     @if (!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string))
     {
         <div class="alert alert-danger">
@@ -57,13 +69,13 @@
         </div>
     }
     @RenderBody()
-    <hr/>
     <footer>
-        <p>&copy; The Regents of the University of California, Davis campus, 20017-@(DateTime.UtcNow.Date.ToString("yy")).</p>
-        <p>Version: @VersionFinder.Version</p>
+      <div class="boundary"><p>&copy; The Regents of the University of California, Davis campus, 20017-@(DateTime.UtcNow.Date.ToString("yy")).</p>
+      <p>Version: @VersionFinder.Version</p></div>
+
     </footer>
 </div>
-    
+
 
     <environment names="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.js"></script>
