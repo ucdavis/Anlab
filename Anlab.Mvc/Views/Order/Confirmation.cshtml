@@ -35,7 +35,7 @@
     <tr>
         <td>Analysis</td>
         <td>Code</td>
-        <td>Fee</td>
+        <td>Fee (* Qty @Model.OrderDetails.Quantity)</td>
         <td>SetupCost</td>
         <td>Sample Total</td>
 
@@ -49,7 +49,7 @@
         <tr>
             <td>@test.Analysis</td>
             <td>@test.Code</td>
-            <td>@(String.Format("{0:C}", testFee))</td>
+            <td>@(String.Format("{0:C}", testFee * Model.OrderDetails.Quantity))</td>
             <td>@(String.Format("{0:C}", test.SetupCost))</td>
             <td>@(String.Format("{0:C}", totalForTest))
             </td>
