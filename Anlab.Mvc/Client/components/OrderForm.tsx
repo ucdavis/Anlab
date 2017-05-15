@@ -18,6 +18,7 @@ interface IOrderState {
     testItems: Array<ITestItem>;
     selectedTests: any;
     isValid: boolean;
+    isSubmitting: boolean;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -33,6 +34,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             testItems: window.App.orderData.testItems,
             selectedTests: { },
             isValid: false,
+            isSubmitting: false,
         };
 
         if (window.App.orderData.order) {
@@ -86,6 +88,11 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         };
     }
     onSubmit = () => {
+        
+        if (this.state.isSubmitting) {
+            return;
+        }
+        this.setState({ ...this.state, isSubmitting: true });
         const selectedTests = this.getTests().selected;
         const order = {
             quantity: this.state.quantity,
@@ -94,11 +101,25 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             sampleType: this.state.sampleType,
             selectedTests,
         }
+        var that = this;
         $.post({
             url: '/order/create',
             data: JSON.stringify(order),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
+        }).success(function (response) {
+            if (response.success === true) {
+                var redirectId = response.id;
+                window.location.replace("/Order/Confirmation/" + redirectId);
+            } else {
+                alert("There was a problem saving your order.");
+                that.setState({ ...this.state, isSubmitting: false });
+            }
+            
+            }).error(function () {
+                alert("An error occured...");
+                that.setState({ ...this.state, isSubmitting: false });
+                        
         });
     }
     render() {
@@ -124,7 +145,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                 </div>
                 <div className="col-lg-4">
                     <div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
-                        <Summary canSubmit={this.state.isValid} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} />
+                        <Summary canSubmit={this.state.isValid && !this.state.isSubmitting} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} />
                     </div>
                 </div>
             </div>

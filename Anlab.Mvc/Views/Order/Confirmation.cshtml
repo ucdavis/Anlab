@@ -1,0 +1,87 @@
+@using Humanizer
+@model AnlabMvc.Models.Order.OrderReviewModel
+
+@{
+    ViewData["Title"] = "Confirmation";
+}
+
+<h2>Confirmation</h2>
+
+<div class="form-group">
+    <strong>Created By</strong>
+    <span>@Model.Order.Creator.Name</span>
+</div>
+<div class="form-group">
+    <strong>Project</strong>
+    <span>@Model.Order.Project</span>
+</div>
+<div class="form-group">
+    <strong>Quantity</strong>
+    <span>@Model.OrderDetails.Quantity</span>
+</div>
+
+<div class="form-group">
+    <strong>Additional Info</strong>
+    <span>@Model.OrderDetails.AdditionalInfo</span>
+</div>
+
+<div class="form-group">
+    <strong>Total Amount</strong>
+    <span>@(String.Format("{0:C}", Model.OrderDetails.Total))</span>
+</div>
+
+<table id="table">
+    <thead>
+    <tr>
+        <td>Analysis</td>
+        <td>Code</td>
+        <td>Fee (* Qty @Model.OrderDetails.Quantity)</td>
+        <td>SetupCost</td>
+        <td>Sample Total</td>
+
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var test in @Model.OrderDetails.SelectedTests)
+    {
+        var testFee = string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase) ? test.InternalCost : test.ExternalCost;
+        var totalForTest = (testFee * Model.OrderDetails.Quantity) + test.SetupCost;
+        <tr>
+            <td>@test.Analysis</td>
+            <td>@test.Code</td>
+            <td>@(String.Format("{0:C}", testFee * Model.OrderDetails.Quantity))</td>
+            <td>@(String.Format("{0:C}", test.SetupCost))</td>
+            <td>@(String.Format("{0:C}", totalForTest))
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<form asp-controller="order" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
+    @Html.Hidden("confirm", true)
+    
+    <button type="submit" class="btn btn-primary"><i class="fa fa-money" aria-hidden="true"> @(String.Format("{0:C}", Model.OrderDetails.Total)) Confirm and Send</i></button>
+</form>
+
+
+<div class="form-group">
+    <strong>json Data</strong>
+    <span>@Model.Order.JsonDetails</span>
+</div>
+
+@section AdditionalStyles
+{
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" />
+}
+
+@section Scripts
+{
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            $("#table").dataTable();
+        });
+    </script>
+}

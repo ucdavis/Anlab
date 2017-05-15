@@ -8,6 +8,7 @@ using Anlab.Core.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AnlabMvc.Controllers
 {
@@ -66,7 +67,85 @@ namespace AnlabMvc.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true });
+            return Json(new { success = true, id = order.Id });
+        }
+
+
+        public async Task<IActionResult> Confirmation(int id)
+        {
+            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound(id);
+            }
+
+            if (order.CreatorId != CurrentUserId)
+            {
+                ErrorMessage = "You don't have access to this order.";
+                return NotFound(id);
+            }
+
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = JsonConvert.DeserializeObject<OrderDetails>(order.JsonDetails);
+            var testItemIds = model.OrderDetails.SelectedTests.Select(a => a.Id).ToArray();
+
+            //TODO: Should this be done in the create?
+            var selectedTests = await _context.TestItems.Where(a => testItemIds.Contains(a.Id)).ToListAsync();
+            if(string.Equals(model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
+            {
+                model.OrderDetails.Total = selectedTests.Sum(a => a.InternalCost);
+            }
+            else
+            {
+                if (string.Equals(model.OrderDetails.Payment.ClientType, "other", StringComparison.OrdinalIgnoreCase))
+                {
+                    model.OrderDetails.Total = selectedTests.Sum(a => a.ExternalCost);
+                }
+                else
+                {
+                    throw new Exception("What! unknown payment!!!");
+                }
+            }
+
+            model.OrderDetails.Total = model.OrderDetails.Total * model.OrderDetails.Quantity;
+            model.OrderDetails.Total += selectedTests.Sum(a => a.SetupCost);
+
+            
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Confirmation(int id, bool confirm)
+        {
+            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound(id);
+            }
+
+            if (order.CreatorId != CurrentUserId)
+            {
+                ErrorMessage = "You don't have access to this order.";
+                return NotFound(id);
+            }
+
+            if (order.Status != null)
+            {
+                ErrorMessage = "Already confirmed";
+                return RedirectToAction("Confirmation", new {id});
+            }
+
+            order.Status = "Confirmed";
+            await _context.SaveChangesAsync();
+
+            Message = "Order confirmed";
+            return RedirectToAction("Index");
+
         }
     }
 
@@ -78,5 +157,15 @@ namespace AnlabMvc.Controllers
 
         public TestItem[] SelectedTests {get;set;} 
         public decimal Total {get;set;}
+
+        public Payment Payment { get; set; }
     }
+
+    public class Payment
+    {
+        public string ClientType { get; set; }
+        public string Account { get; set; }
+    }
+
+   
 }
