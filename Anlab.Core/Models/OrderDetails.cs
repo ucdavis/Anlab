@@ -25,6 +25,8 @@ namespace AnlabMvc.Models.Order
         public Decimal Total { get; set; }
 
         public Payment Payment { get; set; }
+
+        public IList<string> AdditionalEmails { get; set; }
     }
 
 }

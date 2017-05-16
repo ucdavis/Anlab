@@ -48,6 +48,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
             initialState.quantity = orderInfo.Quantity;
             initialState.additionalInfo = orderInfo.AdditionalInfo;
+            initialState.additionalEmails = orderInfo.AdditionalEmails;
             initialState.sampleType = orderInfo.SampleType;
             initialState.orderId = orderInfo.Id;
             initialState.project = window.App.orderData.order.Project;
@@ -125,6 +126,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         const order = {
             quantity: this.state.quantity,
             additionalInfo: this.state.additionalInfo,
+            additionalEmails: this.state.additionalEmails,
             project: this.state.project,
             payment: this.state.payment,
             sampleType: this.state.sampleType,

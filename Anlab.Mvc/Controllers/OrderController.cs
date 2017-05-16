@@ -201,6 +201,8 @@ namespace AnlabMvc.Controllers
         public string Project { get; set; }
 
         public Payment Payment { get; set; }
+
+        public List<string> AdditionalEmails { get; set; }
     }
 
 
