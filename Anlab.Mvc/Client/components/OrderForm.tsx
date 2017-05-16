@@ -6,6 +6,7 @@ import { Quantity } from './Quantity';
 import { Summary } from './Summary';
 import { AdditionalInfo } from './AdditionalInfo';
 import { Project } from "./project";
+import { AdditionalEmails } from "./AdditionalEmails"
 declare var window: any;
 declare var $: any;
 
@@ -20,6 +21,7 @@ interface IOrderState {
     selectedTests: any;
     isValid: boolean;
     isSubmitting: boolean;
+    additionalEmails: Array<string>;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -37,6 +39,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             isValid: false,
             isSubmitting: false,
             project: '',
+            additionalEmails: []
         };
 
         if (window.App.orderData.order) {
@@ -77,9 +80,21 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.setState({ ...this.state, quantity }, this.validate);
     }
 
+    onEmailAdded = (additionalEmail: string) => {
+        this.setState({
+                ...this.state,
+                additionalEmails: [
+                    ...this.state.additionalEmails,
+                    additionalEmail
+                ]
+            }
+        );
+    }
+
     handleChange = (name, value) => {
         this.setState({ ...this.state, [name]: value }, this.validate);
     };
+
 
     getTests = () => {
         const { testItems, payment, selectedTests, sampleType, quantity } = this.state;
@@ -126,7 +141,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         });
     }
     render() {
-        const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo, project } = this.state;
+        const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails } = this.state;
         
         const { filtered, selected} = this.getTests();
 
@@ -142,6 +157,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                         <label>Quantity:</label>
                         <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
                     </div>
+                    <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} />
                     <Project project={project} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
