@@ -12,20 +12,5 @@ namespace AnlabMvc.Models.Order
         public OrderDetails OrderDetails { get; set; }
     }
 
-    public class OrderDetails
-    {
-        public OrderDetails()
-        {
-  
-        }
 
-        public int Quantity { get; set; }
-        public string SampleType { get; set; }
-        public string AdditionalInfo { get; set; }
-        public IList<TestItem> SelectedTests { get; set; }
-
-        public Decimal Total { get; set; }
-
-        public Payment Payment { get; set; }
-    }
 }

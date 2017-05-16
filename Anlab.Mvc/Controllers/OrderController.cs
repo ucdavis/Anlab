@@ -5,10 +5,13 @@ using System.Threading.Tasks;
 using AnlabMvc.Data;
 using AnlabMvc.Models.Order;
 using Anlab.Core.Domain;
+using Anlab.Core.Models;
+using Microsoft.AspNetCore.Http.Features.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Remotion.Linq.Parsing.ExpressionVisitors.MemberBindings;
 
 namespace AnlabMvc.Controllers
 {
@@ -26,6 +29,15 @@ namespace AnlabMvc.Controllers
 
             return View(model);
         }
+
+
+        public async Task<IActionResult> MyOrders()
+        {
+            var model = await _context.Orders.Where(a => a.CreatorId == CurrentUserId).ToArrayAsync();
+
+            return View(model);
+        }
+
 
         public async Task<IActionResult> Edit(int id)
         {
@@ -58,7 +70,7 @@ namespace AnlabMvc.Controllers
             var order = new Order
             {
                 CreatorId = CurrentUserId,
-                Project = "Project name",
+                Project = model.Project,
                 JsonDetails = JsonConvert.SerializeObject(model)
             };
             // save model
@@ -70,6 +82,32 @@ namespace AnlabMvc.Controllers
             return Json(new { success = true, id = order.Id });
         }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound(id);
+            }
+
+            if (order.CreatorId != CurrentUserId)
+            {
+                ErrorMessage = "You don't have access to this order.";
+                return NotFound(id);
+            }
+
+            if (order.Status == null)
+            {
+                ErrorMessage = "Must confim order before viewing details.";
+                return RedirectToAction("MyOrders");
+            }
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+
+            return View(model);
+        }
 
         public async Task<IActionResult> Confirmation(int id)
         {
@@ -89,7 +127,7 @@ namespace AnlabMvc.Controllers
 
             var model = new OrderReviewModel();
             model.Order = order;
-            model.OrderDetails = JsonConvert.DeserializeObject<OrderDetails>(order.JsonDetails);
+            model.OrderDetails = order.GetOrderDetails();
             var testItemIds = model.OrderDetails.SelectedTests.Select(a => a.Id).ToArray();
 
             //TODO: Should this be done in the create?
@@ -113,7 +151,9 @@ namespace AnlabMvc.Controllers
             model.OrderDetails.Total = model.OrderDetails.Total * model.OrderDetails.Quantity;
             model.OrderDetails.Total += selectedTests.Sum(a => a.SetupCost);
 
-            
+            order.SaveDetails(model.OrderDetails);
+            await _context.SaveChangesAsync();
+
 
             return View(model);
         }
@@ -137,14 +177,14 @@ namespace AnlabMvc.Controllers
             if (order.Status != null)
             {
                 ErrorMessage = "Already confirmed";
-                return RedirectToAction("Confirmation", new {id});
+                return RedirectToAction("MyOrders");
             }
 
             order.Status = "Confirmed";
             await _context.SaveChangesAsync();
 
             Message = "Order confirmed";
-            return RedirectToAction("Index");
+            return RedirectToAction("MyOrders");
 
         }
     }
@@ -158,14 +198,14 @@ namespace AnlabMvc.Controllers
         public TestItem[] SelectedTests {get;set;} 
         public decimal Total {get;set;}
 
+        public string Project { get; set; }
+
         public Payment Payment { get; set; }
+
+        public IList<string> AdditionalEmails { get; set; }
     }
 
-    public class Payment
-    {
-        public string ClientType { get; set; }
-        public string Account { get; set; }
-    }
+
 
    
 }

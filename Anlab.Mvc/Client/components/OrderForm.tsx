@@ -5,13 +5,15 @@ import { SampleTypeSelection } from './SampleTypeSelection';
 import { Quantity } from './Quantity';
 import { Summary } from './Summary';
 import { AdditionalInfo } from './AdditionalInfo';
-
+import { Project } from "./project";
+import { AdditionalEmails } from "./AdditionalEmails"
 declare var window: any;
 declare var $: any;
 
 interface IOrderState {
     orderId?: number;
     additionalInfo: string;
+    project: string;
     payment: IPayment;
     quantity?: number;
     sampleType: string;
@@ -19,6 +21,7 @@ interface IOrderState {
     selectedTests: any;
     isValid: boolean;
     isSubmitting: boolean;
+    additionalEmails: Array<string>;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -35,6 +38,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             selectedTests: { },
             isValid: false,
             isSubmitting: false,
+            project: '',
+            additionalEmails: []
         };
 
         if (window.App.orderData.order) {
@@ -43,9 +48,10 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
             initialState.quantity = orderInfo.Quantity;
             initialState.additionalInfo = orderInfo.AdditionalInfo;
+            initialState.additionalEmails = orderInfo.AdditionalEmails;
             initialState.sampleType = orderInfo.SampleType;
             initialState.orderId = orderInfo.Id;
-            //TODO: save and load additional info
+            initialState.project = window.App.orderData.order.Project;
             
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; } );
         }
@@ -53,7 +59,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.state = { ...initialState };
     }
     validate = () => {
-        const valid = this.state.quantity > 0;
+        const valid = this.state.quantity > 0 && this.state.project.length > 0;
         this.setState({ ...this.state, isValid: valid });
     }
     onPaymentSelected = (payment: any) => {
@@ -75,9 +81,32 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.setState({ ...this.state, quantity }, this.validate);
     }
 
+    onEmailAdded = (additionalEmail: string) => {
+        this.setState({
+                ...this.state,
+                additionalEmails: [
+                    ...this.state.additionalEmails,
+                    additionalEmail
+                ]
+            }
+        );
+    }
+
+    onDeleteEmail = (email2Delete: any) => {
+        const index = this.state.additionalEmails.indexOf(email2Delete);
+        if (index > -1) {
+            const fixed = this.state.additionalEmails.splice(index, 1);
+            this.setState({
+                ...this.state.additionalEmails, fixed
+            });
+        }
+    }
+
+
     handleChange = (name, value) => {
         this.setState({ ...this.state, [name]: value }, this.validate);
     };
+
 
     getTests = () => {
         const { testItems, payment, selectedTests, sampleType, quantity } = this.state;
@@ -97,6 +126,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         const order = {
             quantity: this.state.quantity,
             additionalInfo: this.state.additionalInfo,
+            additionalEmails: this.state.additionalEmails,
+            project: this.state.project,
             payment: this.state.payment,
             sampleType: this.state.sampleType,
             selectedTests,
@@ -123,7 +154,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         });
     }
     render() {
-        const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo } = this.state;
+        const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails } = this.state;
         
         const { filtered, selected} = this.getTests();
 
@@ -139,6 +170,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                         <label>Quantity:</label>
                         <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
                     </div>
+                    <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail}/>
+                    <Project project={project} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
                     <div style={{ height: 600 }}></div>

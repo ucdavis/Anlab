@@ -2,19 +2,13 @@
 @model AnlabMvc.Models.Order.OrderReviewModel
 
 @{
-    ViewData["Title"] = "Confirmation";
+    ViewData["Title"] = "Details";
 }
 
-<h2>Confirmation</h2>
+<h2>Details</h2>
+
 
 @Html.Partial("_OrderDetails")
-
-<form asp-controller="order" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
-    @Html.Hidden("confirm", true)
-    
-    <button type="submit" class="btn btn-primary"><i class="fa fa-money" aria-hidden="true"> @(String.Format("{0:C}", Model.OrderDetails.Total)) Confirm and Send</i></button>
-</form>
-
 
 <div class="form-group">
     <strong>json Data</strong>

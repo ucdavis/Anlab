@@ -1,0 +1,72 @@
+@using Humanizer
+@model AnlabMvc.Models.Order.OrderReviewModel
+
+<div class="form-group">
+    <strong>Created By</strong>
+    <span>@Model.Order.Creator.Name</span>
+</div>
+<div class="form-group">
+    <strong>Project</strong>
+    <span>@Model.Order.Project</span>
+</div>
+<div class="form-group">
+    <strong>Quantity</strong>
+    <span>@Model.OrderDetails.Quantity</span>
+</div>
+
+<div class="form-group">
+    <strong>Additional Info</strong>
+    <pre>@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</pre>
+</div>
+
+<div class="form-group">
+    <strong>Sample Type</strong>
+    <span>@Model.OrderDetails.SampleType</span>
+</div>
+
+<div class="form-group">
+    <strong>Payment Method</strong>
+    @if(string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
+    {
+        <span>UC Account: @Model.OrderDetails.Payment.Account</span>
+    }
+    else
+    {
+        <span>Credit Card</span>
+    }
+    
+</div>
+
+<div class="form-group">
+    <strong>Total Amount</strong>
+    <span>@(String.Format("{0:C}", Model.OrderDetails.Total))</span>
+</div>
+
+<table id="table">
+    <thead>
+        <tr>
+            <th>Analysis</th>
+            <th>Code</th>
+            <th>Fee (* Qty @Model.OrderDetails.Quantity)</th>
+            <th>SetupCost</th>
+            <th>Sample Total</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var test in @Model.OrderDetails.SelectedTests)
+        {
+            var testFee = string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase) ? test.InternalCost : test.ExternalCost;
+            var totalForTest = (testFee * Model.OrderDetails.Quantity) + test.SetupCost;
+            <tr>
+                <td>@test.Analysis</td>
+                <td>@test.Code</td>
+                <td>@(String.Format("{0:C}", testFee * Model.OrderDetails.Quantity))</td>
+                <td>@(String.Format("{0:C}", test.SetupCost))</td>
+                <td>
+                    @(String.Format("{0:C}", totalForTest))
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
