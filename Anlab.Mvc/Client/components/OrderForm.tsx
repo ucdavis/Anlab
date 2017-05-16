@@ -91,6 +91,17 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         );
     }
 
+    onDeleteEmail = (email2Delete: any) => {
+        const index = this.state.additionalEmails.indexOf(email2Delete);
+        if (index > -1) {
+            const fixed = this.state.additionalEmails.splice(index, 1);
+            this.setState({
+                ...this.state.additionalEmails, fixed
+            });
+        }
+    }
+
+
     handleChange = (name, value) => {
         this.setState({ ...this.state, [name]: value }, this.validate);
     };
@@ -157,7 +168,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                         <label>Quantity:</label>
                         <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
                     </div>
-                    <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} />
+                    <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail}/>
                     <Project project={project} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />

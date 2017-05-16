@@ -5,6 +5,7 @@ import { Button, IconButton } from 'react-toolbox/lib/button';
 interface IAdditionalEmailsProps {
     addedEmails: Array<string>;
     onEmailAdded: Function;
+    onDeleteEmail: Function;
 }
 
 interface IAdditionalEmailsState {
@@ -34,14 +35,18 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
         }
     }
 
+    onDelete = (email2Delete: any) => {
+        this.props.onDeleteEmail(email2Delete);
+    }
+
     _renderEmails = () => {
         if (this.props.addedEmails.length === 0) {
             return null;
         }
 
-        const emails = this.props.addedEmails.map(email => {
+        const emails = this.props.addedEmails.map(item => {
             return (
-                <div>{email}</div>
+                <div>{item} <button onClick={() => this.onDelete(item)}>Delete</button></div>
             );
         });
 
