@@ -20,6 +20,24 @@
 </div>
 
 <div class="form-group">
+    <strong>Sample Type</strong>
+    <span>@Model.OrderDetails.SampleType</span>
+</div>
+
+<div class="form-group">
+    <strong>Payment Method</strong>
+    @if(string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
+    {
+        <span>UC Account: @Model.OrderDetails.Payment.Account</span>
+    }
+    else
+    {
+        <span>Credit Card</span>
+    }
+    
+</div>
+
+<div class="form-group">
     <strong>Total Amount</strong>
     <span>@(String.Format("{0:C}", Model.OrderDetails.Total))</span>
 </div>
