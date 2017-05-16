@@ -16,7 +16,7 @@
 
 <div class="form-group">
     <strong>Additional Info</strong>
-    <span>@Html.Raw("<pre>" + Html.Encode(Model.OrderDetails.AdditionalInfo) + "</pre>")</span>
+    <pre>@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</pre>
 </div>
 
 <div class="form-group">
