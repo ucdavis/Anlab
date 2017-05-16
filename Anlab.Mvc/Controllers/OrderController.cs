@@ -202,7 +202,7 @@ namespace AnlabMvc.Controllers
 
         public Payment Payment { get; set; }
 
-        public List<string> AdditionalEmails { get; set; }
+        public IList<string> AdditionalEmails { get; set; }
     }
 
 
