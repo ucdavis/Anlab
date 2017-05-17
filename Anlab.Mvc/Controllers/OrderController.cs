@@ -71,6 +71,10 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> Create([FromBody]OrderSaveModel model)
         {
             // TODO: do validation
+            if (model.OrderId.HasValue)
+            {
+                throw new Exception("oops");
+            }
 
             var order = new Order
             {
@@ -197,6 +201,8 @@ namespace AnlabMvc.Controllers
     }
 
     public class OrderSaveModel {
+        public int? OrderId { get; set; }
+
         public int Quantity { get;set;}
         public string SampleType {get;set;}
 

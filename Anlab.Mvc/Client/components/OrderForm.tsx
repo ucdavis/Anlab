@@ -124,6 +124,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.setState({ ...this.state, isSubmitting: true });
         const selectedTests = this.getTests().selected;
         const order = {
+            orderId: this.state.orderId,
             quantity: this.state.quantity,
             additionalInfo: this.state.additionalInfo,
             additionalEmails: this.state.additionalEmails,
