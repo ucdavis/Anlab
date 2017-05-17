@@ -3,3 +3,13 @@
   padding:5px;
   background-color:#fff;
 }
+nav.navbar-anlab {
+  ul.navbar-nav {
+    li {
+      font-weight:600;
+      a {
+        color:$primary-font;
+      }
+    }
+  }
+}

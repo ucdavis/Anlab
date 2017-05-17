@@ -82,12 +82,13 @@
         </div>
     }
     @RenderBody()
-    <footer>
-      <p class="discreet">&copy; The Regents of the University of California, Davis campus, 20017-@(DateTime.UtcNow.Date.ToString("yy")).</p>
-      <p class="discreet">Version: @VersionFinder.Version</p>
 
-    </footer>
 </div>
+<footer>
+  <p class="discreet">&copy; The Regents of the University of California, Davis campus, 20017-@(DateTime.UtcNow.Date.ToString("yy")).</p>
+  <p class="discreet">Version: @VersionFinder.Version</p>
+
+</footer>
 
 
     <environment names="Development">
