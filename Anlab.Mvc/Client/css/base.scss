@@ -33,12 +33,17 @@ body {
 }
 
 footer {
+  .footer_contents {
+    @include boundary;
+      border-top:1px solid $borders;
+      padding-top:16px;
+  }
     position: absolute;
     bottom: 0;
     width: 100%;
     padding-top: 2%;
     padding-bottom: 4%;
-    border-top:1px solid $borders;
+
     height: 140px;
     display: block;
 }

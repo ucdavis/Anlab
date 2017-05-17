@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
     </environment>
+    <link rel="shortcut icon" href="/media/favicon.ico">
     @RenderSection("AdditionalStyles", required: false)
     <!-- Typekit -->
     <script src="https://use.typekit.net/vqy0brq.js"></script>
@@ -85,8 +86,9 @@
 
 </div>
 <footer>
-  <p class="discreet">&copy; The Regents of the University of California, Davis campus, 20017-@(DateTime.UtcNow.Date.ToString("yy")).</p>
-  <p class="discreet">Version: @VersionFinder.Version</p>
+  <div class="footer_contents"><p class="discreet">&copy; The Regents of the University of California, Davis campus, 20017-@(DateTime.UtcNow.Date.ToString("yy")).</p>
+    <p class="discreet">Version: @VersionFinder.Version</p></div>
+
 
 </footer>
 
