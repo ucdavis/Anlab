@@ -104,12 +104,14 @@ p {
     }
     &.discreet {
       font-style: italic;
-      color:$secondary-font;
+      color:$tertiary-font;
       font-size:1.4rem;
       margin-top:10px;
     }
     &.lead {
       font-size:1.8rem;
+      font-weight:600;
+      margin-bottom:12px;
     }
     &.table-header {
       font-size:1.8rem;

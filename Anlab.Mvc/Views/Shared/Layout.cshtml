@@ -38,9 +38,22 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <!-- <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li> -->
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lab Information <span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">Rush Request</a></li>
+                        <li><a href="#">Methods of Analysis</a></li>
+                        <li><a href="#">QA/QC</a></li>
+                        <!-- <li role="separator" class="divider"></li>
+                        <li class="dropdown-header">Nav header</li> -->
+                        <li><a href="#">Forms and Guides</a></li>
+                        <li><a href="#">Sampling and Preparation</a></li>
+                      </ul>
+                    </li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
@@ -70,8 +83,8 @@
     }
     @RenderBody()
     <footer>
-      <p>&copy; The Regents of the University of California, Davis campus, 20017-@(DateTime.UtcNow.Date.ToString("yy")).</p>
-      <p>Version: @VersionFinder.Version</p>
+      <p class="discreet">&copy; The Regents of the University of California, Davis campus, 20017-@(DateTime.UtcNow.Date.ToString("yy")).</p>
+      <p class="discreet">Version: @VersionFinder.Version</p>
 
     </footer>
 </div>
