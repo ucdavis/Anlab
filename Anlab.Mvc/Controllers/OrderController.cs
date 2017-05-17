@@ -71,10 +71,6 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> Create([FromBody]OrderSaveModel model)
         {
             // TODO: do validation
-            if (model.OrderId.HasValue)
-            {
-                throw new Exception("oops");
-            }
 
             var order = new Order
             {
