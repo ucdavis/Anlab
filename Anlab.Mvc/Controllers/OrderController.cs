@@ -23,15 +23,8 @@ namespace AnlabMvc.Controllers
         {
             _context = context;
         }
-        public IActionResult Index()
-        {
-            var model = _context.Orders.ToList();
 
-            return View(model);
-        }
-
-
-        public async Task<IActionResult> MyOrders()
+        public async Task<IActionResult> Index()
         {
             var model = await _context.Orders.Where(a => a.CreatorId == CurrentUserId).ToArrayAsync();
 
@@ -46,6 +39,18 @@ namespace AnlabMvc.Controllers
             if (order == null){
                 return NotFound(id);
             }
+            if (order.CreatorId != CurrentUserId)
+            {
+                ErrorMessage = "You don't have access to this order.";
+                return RedirectToAction("Index");
+            }
+
+            if (order.Status != null)
+            {
+                ErrorMessage = "You can't edit an order that has been confirmed.";
+                return RedirectToAction("Index");
+            }
+
 
             var model = new OrderEditModel {
                 TestItems = _context.TestItems.AsNoTracking().ToArray(),
@@ -100,7 +105,7 @@ namespace AnlabMvc.Controllers
             if (order.Status == null)
             {
                 ErrorMessage = "Must confim order before viewing details.";
-                return RedirectToAction("MyOrders");
+                return RedirectToAction("Index");
             }
             var model = new OrderReviewModel();
             model.Order = order;
@@ -179,14 +184,14 @@ namespace AnlabMvc.Controllers
             if (order.Status != null)
             {
                 ErrorMessage = "Already confirmed";
-                return RedirectToAction("MyOrders");
+                return RedirectToAction("Index");
             }
 
             order.Status = "Confirmed";
             await _context.SaveChangesAsync();
 
             Message = "Order confirmed";
-            return RedirectToAction("MyOrders");
+            return RedirectToAction("Index");
 
         }
     }
