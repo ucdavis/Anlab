@@ -52,6 +52,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.sampleType = orderInfo.SampleType;
             initialState.orderId = window.App.OrderId;
             initialState.project = window.App.Project;
+            initialState.isValid = true;
             
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
@@ -59,7 +60,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.state = { ...initialState };
     }
     validate = () => {
-        const valid = this.state.quantity > 0 && this.state.project.length > 0;
+        const valid = this.state.quantity > 0 && this.state.project.trim() != "";
         this.setState({ ...this.state, isValid: valid });
     }
     onPaymentSelected = (payment: any) => {
