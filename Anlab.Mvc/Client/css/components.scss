@@ -163,3 +163,15 @@
   background-color:#fff;
   padding:38px;
 }
+.pagetitle_banner {
+  background-color:#fff;
+      margin-bottom:24px;
+
+  .pagetitle_banner_contents {
+    @include boundary;
+      height:92px;
+      display:flex;
+      align-items: flex-end;
+      padding-bottom:8px;
+  }
+}
