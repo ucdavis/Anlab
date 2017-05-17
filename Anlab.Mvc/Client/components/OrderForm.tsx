@@ -136,7 +136,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         }
         var that = this;
         $.post({
-            url: '/order/create',
+            url: '/order/save',
             data: JSON.stringify(order),
             contentType: "application/json; charset=utf-8",
             dataType: "json",

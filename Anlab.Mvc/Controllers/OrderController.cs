@@ -68,23 +68,46 @@ namespace AnlabMvc.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody]OrderSaveModel model)
+        public async Task<IActionResult> Save([FromBody]OrderSaveModel model)
         {
             // TODO: do validation
 
-            var order = new Order
-            {
-                CreatorId = CurrentUserId,
-                Project = model.Project,
-                JsonDetails = JsonConvert.SerializeObject(model)
-            };
-            // save model
+            var idForRedirection = 0;
 
-            _context.Add(order);
+            if (model.OrderId.HasValue)
+            {
+                var orderToUpdate = await _context.Orders.SingleAsync(a => a.Id == model.OrderId.Value);
+                if (orderToUpdate.CreatorId != CurrentUserId)
+                {
+                    return Json(new {success = false, message = "This is not your order."});
+                }
+                if(orderToUpdate.Status != null)
+                {
+                    return Json(new { success = false, message = "This has been confirmed and may not be updated." });
+                }
+
+                orderToUpdate.Project = model.Project;
+                orderToUpdate.JsonDetails = JsonConvert.SerializeObject(model);
+                idForRedirection = model.OrderId.Value;
+            }
+            else
+            {
+                var order = new Order
+                {
+                    CreatorId = CurrentUserId,
+                    Project = model.Project,
+                    JsonDetails = JsonConvert.SerializeObject(model)
+                };
+                // save model
+
+                _context.Add(order);
+                idForRedirection = order.Id;
+            }
+
 
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true, id = order.Id });
+            return Json(new { success = true, id = idForRedirection });
         }
 
         public async Task<IActionResult> Details(int id)
