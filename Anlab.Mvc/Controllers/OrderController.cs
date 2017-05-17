@@ -152,6 +152,8 @@ namespace AnlabMvc.Controllers
             model.OrderDetails.Total += selectedTests.Sum(a => a.SetupCost);
 
             order.SaveDetails(model.OrderDetails);
+            order.AdditionalEmails = model.OrderDetails.AdditionalEmails.Any() ? string.Join(";", model.OrderDetails.AdditionalEmails) : null;
+
             await _context.SaveChangesAsync();
 
 
