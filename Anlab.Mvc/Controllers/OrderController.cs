@@ -89,6 +89,7 @@ namespace AnlabMvc.Controllers
                 orderToUpdate.Project = model.Project;
                 orderToUpdate.JsonDetails = JsonConvert.SerializeObject(model);
                 idForRedirection = model.OrderId.Value;
+                await _context.SaveChangesAsync();
             }
             else
             {
@@ -101,11 +102,10 @@ namespace AnlabMvc.Controllers
                 // save model
 
                 _context.Add(order);
+                await _context.SaveChangesAsync();
                 idForRedirection = order.Id;
             }
-
-
-            await _context.SaveChangesAsync();
+            
 
             return Json(new { success = true, id = idForRedirection });
         }
