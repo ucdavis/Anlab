@@ -1,4 +1,5 @@
-﻿using Anlab.Core.Domain;
+﻿using System;
+using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +9,7 @@ namespace AnlabMvc.Models.Order
     public class OrderSaveModel
     {
         public int? OrderId { get; set; }
-        [Range(1, 100000, ErrorMessage = "Please enter a sample quantity greater than zero. And less than 100000.")]
+        [Range(1, Int32.MaxValue, ErrorMessage = "Please enter a sample quantity greater than zero.")]
         public int Quantity { get; set; }
 
         [Required]

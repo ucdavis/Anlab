@@ -5,7 +5,9 @@
 }
 
 <h2>My Orders</h2>
-<p>@Html.ActionLink("Create Order", "Create", "Order", null, new{@class = "btn btn-default"})</p>
+<p>
+    <a asp-action="Create" class="btn btn-default">Create Order</a>    
+</p>
 
 
 <table id="table">
