@@ -72,7 +72,20 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Save([FromBody]OrderSaveModel model)
         {
-            // TODO: do validation
+            if (!ModelState.IsValid)
+            {
+                var errors = new List<string>();
+                foreach (var result in ModelState.Values)
+                {
+                    foreach (var errs in result.Errors)
+                    {
+                        errors.Add(errs.ErrorMessage);
+                    }
+                }
+
+                //TODO: A better way to return errors. Or maybe not, they shouldn't really ever happen.
+                return Json(new { success = false, message = "There were problems with your order. Unable to save. Errors: " + string.Join("--", errors) });
+            }
 
             var idForRedirection = 0;
 
