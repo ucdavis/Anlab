@@ -140,18 +140,18 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             data: JSON.stringify(order),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
-        }).success(function (response) {
+        }).success((response) => {
             if (response.success === true) {
                 var redirectId = response.id;
                 window.location.replace("/Order/Confirmation/" + redirectId);
             } else {
                 alert(response.message);
-                that.setState({ ...this.state, isSubmitting: false });
+                that.setState({ ...that.state, isSubmitting: false });
             }
             
-            }).error(function () {
-                alert("An error occured...");
-                that.setState({ ...this.state, isSubmitting: false });
+        }).error(() => {
+            alert("An error occured...");
+            that.setState({ ...that.state, isSubmitting: false });
                         
         });
     }
@@ -180,7 +180,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                 </div>
                 <div className="col-lg-4">
                     <div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
-                        <Summary isCreate={this.state.orderId == null} canSubmit={this.state.isValid && !this.state.isSubmitting} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} />
+                        <Summary isCreate={this.state.orderId === null} canSubmit={this.state.isValid && !this.state.isSubmitting} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} />
                     </div>
                 </div>
             </div>
