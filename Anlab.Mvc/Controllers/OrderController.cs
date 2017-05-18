@@ -33,6 +33,13 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
+        public IActionResult Create()
+        {
+            var model = new OrderEditModel { TestItems = _context.TestItems.AsNoTracking().ToArray() };
+
+            return View(model);
+        }
+
 
         public async Task<IActionResult> Edit(int id)
         {
@@ -61,13 +68,7 @@ namespace AnlabMvc.Controllers
 
             return View(model); 
         }
-
-        public IActionResult Create()
-        {
-            var model = new OrderEditModel {TestItems = _context.TestItems.AsNoTracking().ToArray()};
-
-            return View(model);
-        }
+        
 
         [HttpPost]
         public async Task<IActionResult> Save([FromBody]OrderSaveModel model)
