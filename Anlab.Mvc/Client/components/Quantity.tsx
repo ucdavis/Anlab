@@ -9,7 +9,14 @@ interface IQuantityProps {
 export class Quantity extends React.Component<IQuantityProps, any> {
     render() {
         return (
-            <NumberInput value={this.props.quantity} onChanged={this.props.onQuantityChanged} />
+            <NumberInput
+                name='quantity'
+                label='Quantity'
+                value={this.props.quantity}
+                onChanged={this.props.onQuantityChanged}
+                integer
+                min={0}
+            />
         );
     }
 }
