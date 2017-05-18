@@ -96,10 +96,11 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     onDeleteEmail = (email2Delete: any) => {
         const index = this.state.additionalEmails.indexOf(email2Delete);
         if (index > -1) {
-            const fixed = this.state.additionalEmails.splice(index, 1);
-            this.setState({
-                ...this.state.additionalEmails, fixed
-            });
+            const shallow = [...this.state.additionalEmails];
+            shallow.splice(index, 1);
+            this.setState({...this.state, additionalEmails: shallow }
+            );
+            //this.setState({...this.state.additionalEmails, fixed});
         }
     }
 
