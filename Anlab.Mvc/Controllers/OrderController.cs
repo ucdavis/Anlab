@@ -6,6 +6,7 @@ using AnlabMvc.Data;
 using AnlabMvc.Models.Order;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ using Remotion.Linq.Parsing.ExpressionVisitors.MemberBindings;
 
 namespace AnlabMvc.Controllers
 {
+    [Authorize]
     public class OrderController : ApplicationController
     {
         private readonly ApplicationDbContext _context;
@@ -218,26 +220,5 @@ namespace AnlabMvc.Controllers
 
         }
     }
-
-    public class OrderSaveModel {
-        public int? OrderId { get; set; }
-
-        public int Quantity { get;set;}
-        public string SampleType {get;set;}
-
-        public string AdditionalInfo { get; set; }
-
-        public TestItem[] SelectedTests {get;set;} 
-        public decimal Total {get;set;}
-
-        public string Project { get; set; }
-
-        public Payment Payment { get; set; }
-
-        public IList<string> AdditionalEmails { get; set; }
-    }
-
-
-
    
 }
