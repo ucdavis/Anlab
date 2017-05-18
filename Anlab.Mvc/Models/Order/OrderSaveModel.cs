@@ -15,7 +15,6 @@ namespace AnlabMvc.Models.Order
         [Required]
         public string SampleType { get; set; }
 
-        [StringLength(10)] //Testing
         public string AdditionalInfo { get; set; }
 
         [MinLength(1, ErrorMessage = "You must select at least 1 test.")]

@@ -102,8 +102,9 @@ namespace AnlabMvc.Controllers
                     return Json(new { success = false, message = "This has been confirmed and may not be updated." });
                 }
 
-                orderToUpdate.Project = model.Project;
-                orderToUpdate.JsonDetails = JsonConvert.SerializeObject(model);
+                await PopulateOrder(model, orderToUpdate);
+
+
                 idForRedirection = model.OrderId.Value;
                 await _context.SaveChangesAsync();
             }
@@ -112,10 +113,8 @@ namespace AnlabMvc.Controllers
                 var order = new Order
                 {
                     CreatorId = CurrentUserId,
-                    Project = model.Project,
-                    JsonDetails = JsonConvert.SerializeObject(model)
                 };
-                // save model
+                await PopulateOrder(model, order);
 
                 _context.Add(order);
                 await _context.SaveChangesAsync();
@@ -124,6 +123,35 @@ namespace AnlabMvc.Controllers
             
 
             return Json(new { success = true, id = idForRedirection });
+        }
+
+        private async Task PopulateOrder(OrderSaveModel model, Order orderToUpdate)
+        {
+            orderToUpdate.Project = model.Project;
+            orderToUpdate.JsonDetails = JsonConvert.SerializeObject(model);
+            var orderDetails = orderToUpdate.GetOrderDetails();
+            var testItemIds = orderDetails.SelectedTests.Select(a => a.Id).ToArray();
+            var selectedTests = await _context.TestItems.Where(a => testItemIds.Contains(a.Id)).ToListAsync();
+            if (string.Equals(orderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
+            {
+                orderDetails.Total = selectedTests.Sum(a => a.InternalCost);
+            }
+            else
+            {
+                if (string.Equals(orderDetails.Payment.ClientType, "other", StringComparison.OrdinalIgnoreCase))
+                {
+                    orderDetails.Total = selectedTests.Sum(a => a.ExternalCost);
+                }
+                else
+                {
+                    throw new Exception("What! unknown payment!!!");
+                }
+            }
+            orderDetails.Total = orderDetails.Total * orderDetails.Quantity;
+            orderDetails.Total += selectedTests.Sum(a => a.SetupCost);
+
+            orderToUpdate.SaveDetails(orderDetails);
+            orderToUpdate.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails);
         }
 
         public async Task<IActionResult> Details(int id)
@@ -172,35 +200,7 @@ namespace AnlabMvc.Controllers
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
-            var testItemIds = model.OrderDetails.SelectedTests.Select(a => a.Id).ToArray();
-
-            //TODO: Should this be done in the create?
-            var selectedTests = await _context.TestItems.Where(a => testItemIds.Contains(a.Id)).ToListAsync();
-            if(string.Equals(model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
-            {
-                model.OrderDetails.Total = selectedTests.Sum(a => a.InternalCost);
-            }
-            else
-            {
-                if (string.Equals(model.OrderDetails.Payment.ClientType, "other", StringComparison.OrdinalIgnoreCase))
-                {
-                    model.OrderDetails.Total = selectedTests.Sum(a => a.ExternalCost);
-                }
-                else
-                {
-                    throw new Exception("What! unknown payment!!!");
-                }
-            }
-
-            model.OrderDetails.Total = model.OrderDetails.Total * model.OrderDetails.Quantity;
-            model.OrderDetails.Total += selectedTests.Sum(a => a.SetupCost);
-
-            order.SaveDetails(model.OrderDetails);
-            order.AdditionalEmails = string.Join(";", model.OrderDetails.AdditionalEmails);
             
-            await _context.SaveChangesAsync();
-
-
             return View(model);
         }
 
