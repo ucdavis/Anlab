@@ -22,6 +22,12 @@ namespace AnlabMvc.Controllers
 
             return View();
         }
+        public IActionResult SamplingAndPreparation()
+        {
+            ViewData["Message"] = "Si .";
+
+            return View();
+        }
 
         public IActionResult Error()
         {
