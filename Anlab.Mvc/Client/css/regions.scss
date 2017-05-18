@@ -1,0 +1,17 @@
+//sampling and preparation
+
+.sampling-buttons {
+    text-align: center;
+    align-self: flex-end;
+    border: 1px solid $primary-font;
+    padding: 24px 0px;
+    &:hover {
+      background-color:$bg-color;
+    }
+    h3 {
+      margin-bottom:0px;
+    }
+    img {
+        margin-bottom: 8px;
+    }
+}

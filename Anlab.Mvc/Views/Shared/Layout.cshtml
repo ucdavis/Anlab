@@ -5,7 +5,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BasicTemplate</title>
-    
 
     <environment names="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.css" />
@@ -16,11 +15,19 @@
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
     </environment>
+    <link rel="shortcut icon" href="/media/favicon.ico">
     @RenderSection("AdditionalStyles", required: false)
+    <!-- Typekit -->
+    <script src="https://use.typekit.net/vqy0brq.js"></script>
+    <script>
+        try {
+            Typekit.load();
+        } catch (e) {}
+    </script>
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+    <nav class="navbar navbar-anlab">
+        <div class="boundary">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
@@ -28,19 +35,43 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">BasicTemplate</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand"><img src="/media/anlab_logo.svg" alt=""></a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <!-- <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li> -->
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lab Information <span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">Rush Request</a></li>
+                        <li><a href="#">Methods of Analysis</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="QAQC">QA/QC</a></li>
+                        <!-- <li role="separator" class="divider"></li>
+                        <li class="dropdown-header">Nav header</li> -->
+                        <li><a href="#">Forms and Guides</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="SamplingAndPreparation">Sampling and Preparation</a></li>
+                      </ul>
+                    </li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
         </div>
     </nav>
-<div class="container body-content">
+    <div class="head_bleed">
+      <div class="head_divider">
+
+      </div>
+    </div>
+    <div class="pagetitle_banner">
+      <div class="pagetitle_banner_contents">
+        <h1>@ViewData["Title"]</h1>
+      </div>
+    </div>
+
+<div class="boundary body-content">
     @if (!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string))
     {
         <div class="alert alert-danger">
@@ -57,13 +88,15 @@
         </div>
     }
     @RenderBody()
-    <hr/>
-    <footer>
-        <p>&copy; The Regents of the University of California, Davis campus, 20017-@(DateTime.UtcNow.Date.ToString("yy")).</p>
-        <p>Version: @VersionFinder.Version</p>
-    </footer>
+
 </div>
-    
+<footer>
+  <div class="footer_contents"><p class="discreet">&copy; The Regents of the University of California, Davis campus, 20017-@(DateTime.UtcNow.Date.ToString("yy")).</p>
+    <p class="discreet">Version: @VersionFinder.Version</p></div>
+
+
+</footer>
+
 
     <environment names="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.js"></script>
