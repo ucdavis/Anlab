@@ -1,20 +1,73 @@
 @model IList<Order>
 
 @{
-    ViewData["Title"] = "Order";
+    ViewData["Title"] = "MyOrders";
 }
 
-<h2>Orders</h2>
+<h2>My Orders</h2>
+<p>
+    <a asp-action="Create" class="btn btn-default">Create Order</a>    
+</p>
 
-<table>
+
+<table id="table">
+    <thead>
+    <tr>
+        <th></th>
+        <th>Id</th>
+        <th>Created</th>
+        <th>Updated</th>
+        <th>Project</th>
+        <th>Status</th>
+        
+    </tr>
+    </thead>
     <tbody>
-        @foreach(var order in Model) {
-            <tr>
-                <td><a asp-action="Edit" asp-route-id="@order.Id">Edit</a></td>
-                <td>@order.Id</td>
-                <td>@order.Project</td>
-                <td>@order.JsonDetails</td>
-            </tr>
-        }
+    @foreach (var order in Model)
+    {
+        <tr>
+            <td>@if (order.Status == null)
+                {
+                    <a asp-action="Confirmation" asp-route-id="@order.Id">Confirm</a>
+                    <a asp-action="Edit" asp-route-id="@order.Id">Edit</a>
+                }
+                else
+                {
+                    <a asp-action="Details" asp-route-id="@order.Id">Details</a>
+                }
+            </td>
+            <td>@order.Id</td>
+            <td>@order.Created</td>
+            <td>@order.Updated</td>
+            <td>@order.Project</td>
+            <td>@order.Status</td>
+        </tr>
+    }
     </tbody>
 </table>
+
+@section AdditionalStyles
+{
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" />
+}
+
+@section Scripts
+{
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            $("#table").dataTable({
+                "sorting": [[2, "desc"]],
+                "columnDefs": [
+
+                    {
+                        "targets": [0],
+                        "orderable": false                        
+                    },
+
+                ]
+            });
+        });
+    </script>
+}

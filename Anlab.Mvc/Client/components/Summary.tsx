@@ -10,6 +10,7 @@ interface ISummaryProps {
     payment: IPayment;
     onSubmit: Function;
     canSubmit: boolean;
+    isCreate: boolean;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
@@ -45,6 +46,8 @@ export class Summary extends React.Component<ISummaryProps, any> {
         if (this.props.testItems.length === 0) {
             return null;
         }
+        const saveText = this.props.isCreate ? "Place Order" : "Update Order";
+        const infoText = this.props.isCreate ? "Go ahead and place your order" : "Go ahead and update your order";
         return (
             <div>
                 <table className="table">
@@ -67,9 +70,9 @@ export class Summary extends React.Component<ISummaryProps, any> {
                         </tr>
                     </tfoot>
                 </table>
-                {this.props.canSubmit ? <div className="alert alert-info">Go ahead and place your order</div> : null }
+                {this.props.canSubmit ? <div className="alert alert-info">{infoText}</div> : null }
                 <Button raised primary disabled={!this.props.canSubmit} onClick={this.props.onSubmit}>
-                    Place Order
+                    {saveText}
                 </Button>
             </div>
 

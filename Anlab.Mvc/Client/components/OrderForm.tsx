@@ -5,7 +5,7 @@ import { SampleTypeSelection } from './SampleTypeSelection';
 import { Quantity } from './Quantity';
 import { Summary } from './Summary';
 import { AdditionalInfo } from './AdditionalInfo';
-import { Project } from "./project";
+import { Project } from "./Project";
 import { AdditionalEmails } from "./AdditionalEmails"
 declare var window: any;
 declare var $: any;
@@ -50,16 +50,17 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.additionalInfo = orderInfo.AdditionalInfo;
             initialState.additionalEmails = orderInfo.AdditionalEmails;
             initialState.sampleType = orderInfo.SampleType;
-            initialState.orderId = orderInfo.Id;
-            initialState.project = window.App.orderData.order.Project;
+            initialState.orderId = window.App.OrderId;
+            initialState.project = orderInfo.Project;
+            initialState.isValid = true;
             
-            orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; } );
+            orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
 
         this.state = { ...initialState };
     }
     validate = () => {
-        const valid = this.state.quantity > 0 && this.state.project.length > 0;
+        const valid = this.state.quantity > 0 && !!this.state.project.trim();
         this.setState({ ...this.state, isValid: valid });
     }
     onPaymentSelected = (payment: any) => {
@@ -124,6 +125,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.setState({ ...this.state, isSubmitting: true });
         const selectedTests = this.getTests().selected;
         const order = {
+            orderId: this.state.orderId,
             quantity: this.state.quantity,
             additionalInfo: this.state.additionalInfo,
             additionalEmails: this.state.additionalEmails,
@@ -134,22 +136,22 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         }
         var that = this;
         $.post({
-            url: '/order/create',
+            url: '/order/save',
             data: JSON.stringify(order),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
-        }).success(function (response) {
+        }).success((response) => {
             if (response.success === true) {
                 var redirectId = response.id;
                 window.location.replace("/Order/Confirmation/" + redirectId);
             } else {
-                alert("There was a problem saving your order.");
-                that.setState({ ...this.state, isSubmitting: false });
+                alert(response.message);
+                that.setState({ ...that.state, isSubmitting: false });
             }
             
-            }).error(function () {
-                alert("An error occured...");
-                that.setState({ ...this.state, isSubmitting: false });
+        }).error(() => {
+            alert("An error occured...");
+            that.setState({ ...that.state, isSubmitting: false });
                         
         });
     }
@@ -178,7 +180,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                 </div>
                 <div className="col-lg-4">
                     <div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
-                        <Summary canSubmit={this.state.isValid && !this.state.isSubmitting} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} />
+                        <Summary isCreate={this.state.orderId === null} canSubmit={this.state.isValid && !this.state.isSubmitting} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} />
                     </div>
                 </div>
             </div>

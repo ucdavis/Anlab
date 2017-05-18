@@ -27,6 +27,8 @@ namespace AnlabMvc.Models.Order
         public Payment Payment { get; set; }
 
         public IList<string> AdditionalEmails { get; set; }
+
+        public string Project { get; set; }
     }
 
 }
