@@ -23,7 +23,6 @@ install:
 
 cache:
 - packages -> **\packages.config
-- %LOCALAPPDATA%\Yarn -> **\packages.json
 - anlab.mvc\node_modules -> **\package.json
 
 build_script:
