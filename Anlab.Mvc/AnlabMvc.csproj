@@ -5,6 +5,8 @@
     <IsPackable>false</IsPackable>
     <UserSecretsId>f3c999a5-2304-44e0-a49e-f43333bf9ccf</UserSecretsId>
     <PackageTargetFallback>portable-net45+win8</PackageTargetFallback>
+    <Version>1.0.0.0</Version>
+    <Description>Order and results management system for AnLab@UCDavis</Description>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Data\Migrations\**" />

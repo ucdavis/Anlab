@@ -5,10 +5,6 @@ environment:
   matrix:
     - node_version: "7"
 
-  assembly_version: '{version}'
-  assembly_file_version: '{version}'
-  assembly_informational_version: '{version}'
-
 branches:
   except:
   - design
