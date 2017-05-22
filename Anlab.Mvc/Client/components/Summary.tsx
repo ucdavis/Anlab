@@ -11,6 +11,7 @@ interface ISummaryProps {
     onSubmit: Function;
     canSubmit: boolean;
     isCreate: boolean;
+    grind: boolean;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
@@ -19,15 +20,26 @@ export class Summary extends React.Component<ISummaryProps, any> {
             // total for current item
             const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
             const perTest = price * this.props.quantity;
-            return prev + perTest + item.setupCost;
+            const grindTotal = this.grindCost() * this.props.quantity;
+            return prev + perTest + item.setupCost + grindTotal;
         }, 0);
 
         return total;
     }
+
+    grindCost = () => {
+        if (this.props.grind) {
+            return this.props.payment.clientType === 'uc' ? 6 : 9;
+        } else {
+            return 0;
+        }
+    }
+
     _renderTests = () => {
+
         const tests = this.props.testItems.map(item => {
             const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
-            const perTest = price * this.props.quantity;
+            const perTest = price * this.props.quantity;            
             const rowTotalDisplay = (perTest + item.setupCost);
             return (
                 <tr key={item.id}>
@@ -42,6 +54,33 @@ export class Summary extends React.Component<ISummaryProps, any> {
 
         return tests;
     }
+
+    _renderAdditionalFees = () => {
+        if (this.grindCost() === 0) {
+            return null;
+        }
+        const grindPrice = this.props.payment.clientType === 'uc' ? 6 : 9;
+        const grindTotal = grindPrice * this.props.quantity;
+
+        return (
+            <table className="table">
+                <thead>
+                <tr>
+                    <th>Fee Type</th>
+                    <th>Fee</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Grind</td>
+                    <td><NumberFormat value={grindPrice} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+                    <td><NumberFormat value={grindTotal} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+                </tr>
+                </tbody>
+            </table>
+        );
+    }
     render() {
         if (this.props.testItems.length === 0) {
             return null;
@@ -50,6 +89,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
         const infoText = this.props.isCreate ? "Go ahead and place your order" : "Go ahead and update your order";
         return (
             <div>
+                {this._renderAdditionalFees()}
                 <table className="table">
                     <thead>
                         <tr>

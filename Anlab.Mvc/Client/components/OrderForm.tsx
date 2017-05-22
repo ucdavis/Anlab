@@ -7,6 +7,8 @@ import { Summary } from './Summary';
 import { AdditionalInfo } from './AdditionalInfo';
 import { Project } from "./Project";
 import { AdditionalEmails } from "./AdditionalEmails"
+import { Grind } from "./Grind"
+
 declare var window: any;
 declare var $: any;
 
@@ -22,6 +24,9 @@ interface IOrderState {
     isValid: boolean;
     isSubmitting: boolean;
     additionalEmails: Array<string>;
+    grind: string;
+    foreignSoil: string;
+    filterWater: string;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -39,7 +44,10 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             isValid: false,
             isSubmitting: false,
             project: '',
-            additionalEmails: []
+            additionalEmails: [],
+            grind: 'No',
+            foreignSoil: 'No',
+            filterWater: 'No',
         };
 
         if (window.App.orderData.order) {
@@ -53,6 +61,9 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.orderId = window.App.OrderId;
             initialState.project = orderInfo.Project;
             initialState.isValid = true;
+            initialState.grind = orderInfo.Grind;
+            initialState.foreignSoil = orderInfo.ForeignSoil;
+            initialState.filterWater = orderInfo.FilterWater;
             
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
@@ -155,7 +166,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         });
     }
     render() {
-        const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails } = this.state;
+        const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, grind } = this.state;
         
         const { filtered, selected} = this.getTests();
 
@@ -167,6 +178,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                         <label>Select Sample Type:</label>
                         <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
                     </div>
+                    <Grind grind={grind} handleChange={this.handleChange} sampleType={sampleType}/>
                     <div>
                         <label>Quantity:</label>
                         <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
@@ -179,7 +191,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                 </div>
                 <div className="col-lg-4">
                     <div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
-                        <Summary isCreate={this.state.orderId === null} canSubmit={this.state.isValid && !this.state.isSubmitting} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} />
+                        <Summary isCreate={this.state.orderId === null} canSubmit={this.state.isValid && !this.state.isSubmitting} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} grind={(grind === "Yes" && sampleType !== "Water")} />
                     </div>
                 </div>
             </div>
