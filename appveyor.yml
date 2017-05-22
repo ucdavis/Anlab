@@ -17,13 +17,14 @@ install:
 - cmd: >-
     cd Anlab.Mvc
 
-    npm install
+    yarn install
 
     cd ..
 
 cache:
 - packages -> **\packages.config
-- giving\node_modules -> **\package.json
+- "%LOCALAPPDATA%\\Yarn" -> **\packages.json
+- anlab.mvc\node_modules -> **\package.json
 
 build_script:
 - cmd: >-
