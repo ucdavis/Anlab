@@ -60,7 +60,9 @@
             $("#table").dataTable({
                 "sorting": [[2, "desc"]],
                 "columnDefs": [
-
+                    {
+                        "type": "date", "targets" : [2,3]
+                    },
                     {
                         "targets": [0],
                         "orderable": false                        
