@@ -51,7 +51,7 @@ test_script:
     cd ..
 
 artifacts:
-- path: '**/octopacked/Anlab.*.nupkg'
+- path: '**/Anlab.*.nupkg'
   name: nugetweb
 
 deploy:
