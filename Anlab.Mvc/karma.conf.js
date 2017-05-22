@@ -1,5 +1,10 @@
 const webpackConfig = require('./webpack.config')();
 
+var reporters = ['progress'];
+if (process.env.APPVEYOR_API_URL) {
+    reporters.push('appveyor');
+}
+
 module.exports = function (config) {
   config.set({
     frameworks: ["jasmine"],
@@ -9,7 +14,7 @@ module.exports = function (config) {
     preprocessors: {
       "webpack.tests.js": [ "webpack", 'sourcemap' ],
     },
-    reporters: ["progress"],
+    reporters: reporters,
     browsers: ["jsdom"],
     singleRun: true,
     webpack: {

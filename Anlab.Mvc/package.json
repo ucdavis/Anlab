@@ -26,6 +26,7 @@
     "jasmine-core": "^2.6.1",
     "jsdom": "^10.1.0",
     "karma": "^1.7.0",
+    "karma-appveyor-reporter": "^0.3.0",
     "karma-jasmine": "^1.1.0",
     "karma-jsdom-launcher": "^6.1.1",
     "karma-sourcemap-loader": "^0.3.7",
