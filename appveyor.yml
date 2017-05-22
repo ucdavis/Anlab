@@ -1,5 +1,9 @@
 version: 1.0.0.{build}
 
+environment:
+  matrix:
+    - node_version: "7"
+
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
@@ -14,7 +18,9 @@ branches:
 image: Visual Studio 2017
 
 install:
+- ps: Install-Product node $env:node_version
 - cmd: >-
+
     cd Anlab.Mvc
 
     yarn install
