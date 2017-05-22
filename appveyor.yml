@@ -31,7 +31,8 @@ install:
 - cmd: echo %APPVEYOR_REPO_COMMIT_MESSAGE% > commit.txt 
 
 cache:
-- packages -> **\packages.config
+- '%USERPROFILE%\.nuget\packages -> **\*.csproj'
+- '%LOCALAPPDATA%\yarn -> **\package.json'
 - anlab.mvc\node_modules -> **\package.json
 
 build_script:
