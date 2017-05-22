@@ -1,6 +1,7 @@
 version: 1.0.0.{build}
 
 environment:
+  configuration: Release
   matrix:
     - node_version: "7"
 
@@ -34,13 +35,13 @@ cache:
 - anlab.mvc\node_modules -> **\package.json
 
 build_script:
-- cmd: dotnet build -c Release
+- cmd: dotnet build -c %configuration%
 
 after_build:
 - cmd: dotnet publish .\Anlab.Mvc\AnlabMvc.csproj --output %appveyor_build_folder%\dist
 
 test_script:
-- cmd: vstest.console /logger:Appveyor %appveyor_build_folder%\Test.dll
+- cmd: vstest.console /logger:Appveyor %appveyor_build_folder%\Test\bin\%configuration%\netcoreapp1.1\Test.dll
 - cmd: >-
     cd Anlab.Mvc
 
