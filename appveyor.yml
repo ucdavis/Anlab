@@ -32,7 +32,7 @@ cache:
 
 before_build:
 - ps: |
-    $path = (Get-Item .\Project\Project.csproj).FullName
+    $path = (Get-Item .\Anlab.Mvc\AnlabMvc.csproj).FullName
     $csproj = [xml](Get-Content $path)
     $csproj.Project.PropertyGroup.Version = $Env:APPVEYOR_BUILD_VERSION
     $csproj.Save($path)
