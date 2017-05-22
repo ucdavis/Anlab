@@ -35,7 +35,7 @@ cache:
 - anlab.mvc\node_modules -> **\package.json
 
 build_script:
-- cmd: msbuild /t:RunWebpack /p:Configuration=%configuration%
+- cmd: msbuild .\Anlab.Mvc\AnlabMvc.csproj /t:RunWebpack /p:Configuration=%configuration%
 - cmd: msbuild /t:Build /p:Configuration=%configuration%;RunOctoPack=true;OctoPackReleaesNotesFile=..\commit.txt
 
 test_script:
