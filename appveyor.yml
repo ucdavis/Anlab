@@ -19,7 +19,13 @@ image: Visual Studio 2017
 
 install:
 - ps: Install-Product node $env:node_version
-- cmd: yarn install --packages=./Anlab.Mvc/package.json
+- cmd: >-
+    cd Anlab.Mvc
+    
+    yarn install
+
+    cd ..
+
 - cmd: dotnet restore
 - cmd: echo %APPVEYOR_REPO_COMMIT_MESSAGE% > commit.txt 
 
@@ -31,13 +37,12 @@ build_script:
 - cmd: dotnet build -c Release
 
 after_build:
-- cmd: dotnet publish src\Anlab.Mvc\AnlabMvc.csproj --output %appveyor_build_folder%\dist
+- cmd: dotnet publish .\Anlab.Mvc\AnlabMvc.csproj --output %appveyor_build_folder%\dist
 
 test_script:
+- cmd: dotnet test .\Test\Test.csproj -l Appveyor
 - cmd: >-
-    dotnet test -l Appveyor
-
-    cd Anlab
+    cd Anlab.Mvc
 
     npm test
 
