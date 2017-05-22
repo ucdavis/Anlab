@@ -1,0 +1,71 @@
+version: 1.0.0.{build}
+
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+
+branches:
+  except:
+  - design
+
+image: Visual Studio 2017
+
+install:
+- cmd: >-
+    cd Anlab.Mvc
+
+    npm install
+
+    cd ..
+
+cache:
+- packages -> **\packages.config
+- giving\node_modules -> **\package.json
+
+build_script:
+- cmd: >-
+    dotnet restore
+
+    echo %APPVEYOR_REPO_COMMIT_MESSAGE% > commit.txt
+
+    type commit.txt
+
+    msbuild Anlab.sln /t:build /p:Configuration=Release;RunOctoPack=true;OctoPackReleaseNotesFile=..\commit.txt
+
+after_build:
+- cmd: >-
+    dotnet publish src\Anlab.Mvc --output %appveyor_build_folder%\dist
+
+test_script:
+- cmd: >-
+    vstest.console /logger:Appveyor "C:\projects\giving\Giving.Tests\bin\Release\Giving.Tests.dll"
+
+    cd Anlab
+
+    npm test
+
+    cd ..
+
+artifacts:
+- path: '**/octopacked/Anlab.*.nupkg'
+  name: nugetweb
+
+deploy:
+- provider: NuGet
+  server: https://scruffy.caes.ucdavis.edu/nuget/packages
+  api_key:
+    secure: UBO7nAPSvgx5lKiqX0FTNi4HQatzLx+XgbYhfvGmzRU=
+  skip_symbols: true
+  on:
+    branch: master
+
+notifications:
+- provider: Slack
+  incoming_webhook: https://hooks.slack.com/services/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
+  channel: caes-development
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: false
