@@ -33,7 +33,7 @@ build_script:
 
     type commit.txt
 
-    msbuild Anlab.sln /t:build /p:Configuration=Release;RunOctoPack=true;OctoPackReleaseNotesFile=..\commit.txt
+    dotnet build -c Release
 
 after_build:
 - cmd: >-
@@ -41,7 +41,7 @@ after_build:
 
 test_script:
 - cmd: >-
-    vstest.console /logger:Appveyor "C:\projects\giving\Giving.Tests\bin\Release\Giving.Tests.dll"
+    dotnet test -l Appveyor
 
     cd Anlab
 
