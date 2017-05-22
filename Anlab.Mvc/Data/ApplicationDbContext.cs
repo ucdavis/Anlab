@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
@@ -21,13 +22,24 @@ namespace AnlabMvc.Data
             UpdateDates();
             return base.SaveChanges();
         }
-
-
-        public async Task<int> SaveChangesAsync()
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
             UpdateDates();
-            return await base.SaveChangesAsync();
+            return base.SaveChanges(acceptAllChangesOnSuccess);
         }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            UpdateDates();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
+        {
+            UpdateDates();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+        
 
         private void UpdateDates()
         {
