@@ -40,7 +40,7 @@ after_build:
 - cmd: dotnet publish .\Anlab.Mvc\AnlabMvc.csproj --output %appveyor_build_folder%\dist
 
 test_script:
-- cmd: dotnet test .\Test\Test.csproj -l Appveyor
+- cmd: vstest.console /logger:Appveyor %appveyor_build_folder%\Test.dll
 - cmd: >-
     cd Anlab.Mvc
 
