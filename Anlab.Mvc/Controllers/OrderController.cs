@@ -237,7 +237,7 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+            var order = await _context.Orders.SingleOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
             {
