@@ -3,17 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using Anlab.Core.Models;
 using AnlabMvc.Models.Order;
 using Newtonsoft.Json;
 
 namespace Anlab.Core.Domain
 {
-    public class Order
+    public class Order :IDatedEntity
     {
-        public Order()
-        {
-            Created = Updated = DateTime.UtcNow;
-        }
+
         public int Id { get; set; }
         
         [Required]
@@ -57,5 +55,6 @@ namespace Anlab.Core.Domain
         {
             JsonDetails = JsonConvert.SerializeObject(details);
         }
+
     }
 }
