@@ -233,6 +233,36 @@ namespace AnlabMvc.Controllers
             return RedirectToAction("Index");
 
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound(id);
+            }
+
+            if (order.CreatorId != CurrentUserId)
+            {
+                ErrorMessage = "You don't have access to this order.";
+                return NotFound(id);
+            }
+
+            if (order.Status != null)
+            {
+                ErrorMessage = "Can't delete confirmed orders.";
+                return RedirectToAction("Index");
+            }
+
+            _context.Remove(order);
+            await _context.SaveChangesAsync();
+
+            Message = "Order deleted";
+            return RedirectToAction("Index");
+
+        }
     }
    
 }
