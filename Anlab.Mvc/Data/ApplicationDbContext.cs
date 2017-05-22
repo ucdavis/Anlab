@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Anlab.Core.Domain;
+using Anlab.Core.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +14,51 @@ namespace AnlabMvc.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+            
         }
+
+        public override int SaveChanges()
+        {
+            UpdateDates();
+            return base.SaveChanges();
+        }
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            UpdateDates();
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            UpdateDates();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
+        {
+            UpdateDates();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+        
+
+        private void UpdateDates()
+        {
+            var entitiesUpdated = ChangeTracker.Entries<IDatedEntity>()
+                .Where(a => a.State == EntityState.Modified).Select(a => a.Entity).ToList();
+            var entitiesCreated = ChangeTracker.Entries<IDatedEntity>()
+                .Where(a => a.State == EntityState.Added).Select(a => a.Entity).ToList();
+            var now = DateTime.UtcNow;
+            foreach (var datedEntity in entitiesUpdated)
+            {
+                datedEntity.Updated = now;
+            }
+            foreach (var datedEntity in entitiesCreated)
+            {
+                datedEntity.Updated = now;
+                datedEntity.Created = now;
+            }
+        }
+
 
         [Obsolete("Just use for tests")]
         public ApplicationDbContext() { }
