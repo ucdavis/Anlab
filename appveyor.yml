@@ -49,7 +49,7 @@ test_script:
     cd ..
 
 artifacts:
-- path: '**/Anlab.*.nupkg'
+- path: '**/AnlabMvc.*.nupkg'
   name: nugetweb
 
 deploy:
