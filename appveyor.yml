@@ -43,7 +43,7 @@ build_script:
 
 after_build:
 - cmd: >-
-    dotnet publish src\Anlab.Mvc --output %appveyor_build_folder%\dist
+    dotnet publish src\Anlab.Mvc\Anlab.Mvc.csproj --output %appveyor_build_folder%\dist
 
 test_script:
 - cmd: >-
