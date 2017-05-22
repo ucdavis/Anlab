@@ -22,11 +22,11 @@ install:
 - cmd: >-
     cd Anlab.Mvc
     
-    yarn install
+    appveyor-retry yarn install
 
     cd ..
 
-- cmd: dotnet restore
+- cmd: appveyor-retry dotnet restore
 - cmd: echo %APPVEYOR_REPO_COMMIT_MESSAGE% > commit.txt 
 
 cache:
