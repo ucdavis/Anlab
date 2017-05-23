@@ -132,7 +132,8 @@ namespace AnlabMvc.Controllers
             var orderDetails = orderToUpdate.GetOrderDetails();
             var testItemIds = orderDetails.SelectedTests.Select(a => a.Id).ToArray();
             var selectedTests = await _context.TestItems.Where(a => testItemIds.Contains(a.Id)).ToListAsync();
-            if (string.Equals(orderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
+            var isUcClient = string.Equals(orderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase);
+            if (isUcClient)
             {
                 orderDetails.Total = selectedTests.Sum(a => a.InternalCost);
             }
@@ -148,10 +149,41 @@ namespace AnlabMvc.Controllers
                 }
             }
             orderDetails.Total = orderDetails.Total * orderDetails.Quantity;
+            AddAdditionalFees(orderDetails, isUcClient);
             orderDetails.Total += selectedTests.Sum(a => a.SetupCost);
+
 
             orderToUpdate.SaveDetails(orderDetails);
             orderToUpdate.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails);
+        }
+
+        private static void AddAdditionalFees(OrderDetails orderDetails, bool isUcClient)
+        {
+            if (string.Equals(orderDetails.SampleType, "Water", StringComparison.OrdinalIgnoreCase))
+            {
+                if (string.Equals(orderDetails.FilterWater, "Yes", StringComparison.OrdinalIgnoreCase))
+                {
+                    orderDetails.Total += orderDetails.Quantity * (isUcClient ? 11 : 17);
+                }
+            }
+            if (string.Equals(orderDetails.SampleType, "Soil", StringComparison.OrdinalIgnoreCase))
+            {
+                if (string.Equals(orderDetails.Grind, "Yes", StringComparison.OrdinalIgnoreCase))
+                {
+                    orderDetails.Total += orderDetails.Quantity * (isUcClient ? 6 : 9);
+                }
+                if (string.Equals(orderDetails.ForeignSoil, "Yes", StringComparison.OrdinalIgnoreCase))
+                {
+                    orderDetails.Total += orderDetails.Quantity * (isUcClient ? 9 : 14);
+                }
+            }
+            if (string.Equals(orderDetails.SampleType, "Plant", StringComparison.OrdinalIgnoreCase))
+            {
+                if (string.Equals(orderDetails.Grind, "Yes", StringComparison.OrdinalIgnoreCase))
+                {
+                    orderDetails.Total += orderDetails.Quantity * (isUcClient ? 6 : 9);
+                }
+            }
         }
 
         public async Task<IActionResult> Details(int id)
