@@ -38,7 +38,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         const initialState = {
             orderId: null,
             additionalInfo: '',
-            payment: { clientType: 'uc' },
+            payment: { clientType: 'uc', account: '' },
             quantity: null,
             sampleType: 'Soil',
             testItems: window.App.orderData.testItems,
@@ -67,6 +67,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.foreignSoil = orderInfo.ForeignSoil;
             initialState.filterWater = orderInfo.FilterWater;
             initialState.payment.clientType = orderInfo.Payment.ClientType;
+            initialState.payment.account = orderInfo.Payment.Account;
 
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
