@@ -1,3 +1,6 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/sfxwgf2l87l1g8j7?svg=true)](https://ci.appveyor.com/project/UCNETAdmin/anlab)
+
+[![forthebadge](http://forthebadge.com/images/badges/uses-html.svg)](http://forthebadge.com)
 # Anlab
 
 Order and results management system for http://anlab.ucdavis.edu/
