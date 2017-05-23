@@ -1,6 +1,6 @@
 ﻿import * as React from 'react';
-
 import Input from 'react-toolbox/lib/input';
+import Checkbox from 'react-toolbox/lib/checkbox';
 
 import { IPayment } from './PaymentSelection';
 import NumberFormat from 'react-number-format';
@@ -31,7 +31,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
     state = { query: '' };
 
     onSelection = (test: ITestItem, e) => {
-        const selected = e.target.checked;
+        const selected = e;
 
         this.props.onTestSelectionChanged(test, selected);
     }
@@ -65,7 +65,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                 return (
                     <tr key={item.id}>
                         <td>
-                            <input type="checkbox" checked={selected} onChange={e => this.onSelection(item, e)} />
+                            <Checkbox checked={selected} onChange={e => this.onSelection(item, e)} />
                         </td>
                         <td>{item.analysis}</td>
                         <td>{item.code}</td>
