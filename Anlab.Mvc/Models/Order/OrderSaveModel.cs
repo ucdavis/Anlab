@@ -29,5 +29,9 @@ namespace AnlabMvc.Models.Order
         public Payment Payment { get; set; }
 
         public IList<string> AdditionalEmails { get; set; }
+
+        public bool Grind { get; set; }
+        public bool ForeignSoil { get; set; }
+        public bool FilterWater { get; set; }
     }
 }

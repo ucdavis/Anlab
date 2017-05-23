@@ -29,6 +29,12 @@ namespace AnlabMvc.Models.Order
         public IList<string> AdditionalEmails { get; set; }
 
         public string Project { get; set; }
+
+        public bool Grind { get; set; } //Soil and Plant
+
+        public bool ForeignSoil { get; set; } //Soil
+
+        public bool FilterWater { get; set; } //Water
     }
 
 }
