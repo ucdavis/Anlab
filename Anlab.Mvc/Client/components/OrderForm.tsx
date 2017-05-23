@@ -66,7 +66,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.grind = orderInfo.Grind;
             initialState.foreignSoil = orderInfo.ForeignSoil;
             initialState.filterWater = orderInfo.FilterWater;
-            
+            initialState.payment.clientType = orderInfo.Payment.ClientType;
+
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
 
