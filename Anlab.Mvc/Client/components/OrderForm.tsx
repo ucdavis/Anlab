@@ -8,6 +8,7 @@ import { AdditionalInfo } from './AdditionalInfo';
 import { Project } from "./Project";
 import { AdditionalEmails } from "./AdditionalEmails"
 import { Grind } from "./Grind"
+import { ForeignSoil } from "./ForeignSoil"
 
 declare var window: any;
 declare var $: any;
@@ -166,7 +167,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         });
     }
     render() {
-        const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, grind } = this.state;
+        const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, grind, foreignSoil } = this.state;
         
         const { filtered, selected} = this.getTests();
 
@@ -178,7 +179,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                         <label>Select Sample Type:</label>
                         <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
                     </div>
-                    <Grind grind={grind} handleChange={this.handleChange} sampleType={sampleType}/>
+                    <Grind grind={grind} handleChange={this.handleChange} sampleType={sampleType} />
+                    <ForeignSoil foreignSoil={foreignSoil} handleChange={this.handleChange} sampleType={sampleType} />
                     <div>
                         <label>Quantity:</label>
                         <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
@@ -191,7 +193,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                 </div>
                 <div className="col-lg-4">
                     <div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
-                        <Summary isCreate={this.state.orderId === null} canSubmit={this.state.isValid && !this.state.isSubmitting} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} grind={(grind === "Yes" && sampleType !== "Water")} />
+                        <Summary isCreate={this.state.orderId === null} canSubmit={this.state.isValid && !this.state.isSubmitting} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} grind={(grind === "Yes" && sampleType !== "Water")} foreignSoil={(foreignSoil === "Yes" && sampleType !== "Water")}/>
                     </div>
                 </div>
             </div>

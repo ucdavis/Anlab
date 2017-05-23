@@ -12,6 +12,7 @@ interface ISummaryProps {
     canSubmit: boolean;
     isCreate: boolean;
     grind: boolean;
+    foreignSoil: boolean;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
@@ -21,7 +22,8 @@ export class Summary extends React.Component<ISummaryProps, any> {
             const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
             const perTest = price * this.props.quantity;
             const grindTotal = this.grindCost() * this.props.quantity;
-            return prev + perTest + item.setupCost + grindTotal;
+            const foreignSoilTotal = this.foreignSoilCost() * this.props.quantity;
+            return prev + perTest + item.setupCost + grindTotal + foreignSoilTotal;
         }, 0);
 
         return total;
@@ -30,6 +32,14 @@ export class Summary extends React.Component<ISummaryProps, any> {
     grindCost = () => {
         if (this.props.grind) {
             return this.props.payment.clientType === 'uc' ? 6 : 9;
+        } else {
+            return 0;
+        }
+    }
+
+    foreignSoilCost = () => {
+        if (this.props.foreignSoil) {
+            return this.props.payment.clientType === 'uc' ? 9 : 14;
         } else {
             return 0;
         }
@@ -56,11 +66,10 @@ export class Summary extends React.Component<ISummaryProps, any> {
     }
 
     _renderAdditionalFees = () => {
-        if (this.grindCost() === 0) {
+        if (!(this.props.grind || this.props.foreignSoil)) {
             return null;
         }
-        const grindPrice = this.props.payment.clientType === 'uc' ? 6 : 9;
-        const grindTotal = grindPrice * this.props.quantity;
+
 
         return (
             <table className="table">
@@ -72,15 +81,45 @@ export class Summary extends React.Component<ISummaryProps, any> {
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Grind</td>
-                    <td><NumberFormat value={grindPrice} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-                    <td><NumberFormat value={grindTotal} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-                </tr>
+                    {this._renderGrindFee()}
+                    {this._renderForeignSoilFee()}
                 </tbody>
             </table>
         );
     }
+
+    _renderGrindFee = () => {
+        if (!this.props.grind) {
+            return null;
+        }
+        const Price = this.grindCost();
+        const Total = Price * this.props.quantity;
+
+        return (
+            <tr>
+                <td>Grind</td>
+                <td><NumberFormat value={Price} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+                <td><NumberFormat value={Total} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+            </tr>
+            );
+    }
+
+    _renderForeignSoilFee = () => {
+        if (!this.props.foreignSoil) {
+            return null;
+        }
+        const Price = this.foreignSoilCost();
+        const Total = Price * this.props.quantity;
+
+        return (
+            <tr>
+                <td>Foreign Soil</td>
+                <td><NumberFormat value={Price} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+                <td><NumberFormat value={Total} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+            </tr>
+        );
+    }
+
     render() {
         if (this.props.testItems.length === 0) {
             return null;
