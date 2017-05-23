@@ -161,25 +161,25 @@ namespace AnlabMvc.Controllers
         {
             if (string.Equals(orderDetails.SampleType, "Water", StringComparison.OrdinalIgnoreCase))
             {
-                if (string.Equals(orderDetails.FilterWater, "Yes", StringComparison.OrdinalIgnoreCase))
+                if (orderDetails.FilterWater)
                 {
                     orderDetails.Total += orderDetails.Quantity * (isUcClient ? 11 : 17);
                 }
             }
             if (string.Equals(orderDetails.SampleType, "Soil", StringComparison.OrdinalIgnoreCase))
             {
-                if (string.Equals(orderDetails.Grind, "Yes", StringComparison.OrdinalIgnoreCase))
+                if (orderDetails.Grind)
                 {
                     orderDetails.Total += orderDetails.Quantity * (isUcClient ? 6 : 9);
                 }
-                if (string.Equals(orderDetails.ForeignSoil, "Yes", StringComparison.OrdinalIgnoreCase))
+                if (orderDetails.ForeignSoil)
                 {
                     orderDetails.Total += orderDetails.Quantity * (isUcClient ? 9 : 14);
                 }
             }
             if (string.Equals(orderDetails.SampleType, "Plant", StringComparison.OrdinalIgnoreCase))
             {
-                if (string.Equals(orderDetails.Grind, "Yes", StringComparison.OrdinalIgnoreCase))
+                if (orderDetails.Grind)
                 {
                     orderDetails.Total += orderDetails.Quantity * (isUcClient ? 6 : 9);
                 }

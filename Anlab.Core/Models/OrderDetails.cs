@@ -30,11 +30,11 @@ namespace AnlabMvc.Models.Order
 
         public string Project { get; set; }
 
-        public string Grind { get; set; } //Soil and Plant
+        public bool Grind { get; set; } //Soil and Plant
 
-        public string ForeignSoil { get; set; } //Soil
+        public bool ForeignSoil { get; set; } //Soil
 
-        public string FilterWater { get; set; } //Water
+        public bool FilterWater { get; set; } //Water
     }
 
 }

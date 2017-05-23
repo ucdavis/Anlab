@@ -26,9 +26,9 @@ interface IOrderState {
     isValid: boolean;
     isSubmitting: boolean;
     additionalEmails: Array<string>;
-    grind: string;
-    foreignSoil: string;
-    filterWater: string;
+    grind: boolean;
+    foreignSoil: boolean;
+    filterWater: boolean;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -47,9 +47,9 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             isSubmitting: false,
             project: '',
             additionalEmails: [],
-            grind: 'No',
-            foreignSoil: 'No',
-            filterWater: 'No',
+            grind: false,
+            foreignSoil: false,
+            filterWater: false,
         };
 
         if (window.App.orderData.order) {
@@ -199,7 +199,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                 </div>
                 <div className="col-lg-4">
                     <div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
-                        <Summary isCreate={this.state.orderId === null} canSubmit={this.state.isValid && !this.state.isSubmitting} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} grind={(grind === "Yes" && sampleType !== "Water")} foreignSoil={(foreignSoil === "Yes" && sampleType === "Soil")} filterWater={(filterWater === "Yes" && sampleType === "Water")}/>
+                        <Summary isCreate={this.state.orderId === null} canSubmit={this.state.isValid && !this.state.isSubmitting} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} grind={(grind && sampleType !== "Water")} foreignSoil={(foreignSoil && sampleType === "Soil")} filterWater={(filterWater && sampleType === "Water")}/>
                     </div>
                 </div>
             </div>

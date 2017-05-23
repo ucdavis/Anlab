@@ -30,8 +30,8 @@ namespace AnlabMvc.Models.Order
 
         public IList<string> AdditionalEmails { get; set; }
 
-        public string Grind { get; set; }
-        public string ForeignSoil { get; set; }
-        public string FilterWater { get; set; }
+        public bool Grind { get; set; }
+        public bool ForeignSoil { get; set; }
+        public bool FilterWater { get; set; }
     }
 }
