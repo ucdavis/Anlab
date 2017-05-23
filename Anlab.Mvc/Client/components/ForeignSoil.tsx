@@ -23,7 +23,7 @@ export class ForeignSoil extends React.Component<IForeignSoilProps, any> {
         this.props.handleChange('foreignSoil', foreignSoil);
     }
     render() {
-        if (!(this.props.sampleType === "Soil" || this.props.sampleType === "Plant")) {
+        if (this.props.sampleType !== "Soil" ) {
             return null;
         }
         return (
