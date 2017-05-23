@@ -18,17 +18,19 @@ interface ISummaryProps {
 
 export class Summary extends React.Component<ISummaryProps, any> {
     totalCost = () => {
+        const grindTotal = this.grindCost() * this.props.quantity;
+        const foreignSoilTotal = this.foreignSoilCost() * this.props.quantity;
+        const filterWaterTotal = this.waterFilterCost() * this.props.quantity;
+
         const total = this.props.testItems.reduce((prev, item) => {
             // total for current item
             const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
             const perTest = price * this.props.quantity;
-            const grindTotal = this.grindCost() * this.props.quantity;
-            const foreignSoilTotal = this.foreignSoilCost() * this.props.quantity;
-            const filterWaterTotal = this.waterFilterCost() * this.props.quantity;
-            return prev + perTest + item.setupCost + grindTotal + foreignSoilTotal + filterWaterTotal;
+
+            return prev + perTest + item.setupCost;
         }, 0);
 
-        return total;
+        return total + grindTotal + foreignSoilTotal + filterWaterTotal;
     }
 
     grindCost = () => {
