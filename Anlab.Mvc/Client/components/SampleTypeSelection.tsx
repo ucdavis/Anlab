@@ -22,15 +22,25 @@ export class SampleTypeSelection extends React.Component<ISampleTypeProps, any> 
     }
     render() {
         return (
-            <RadioGroup name='comic' value={this.props.sampleType} onChange={this.handleChange}>
-                <RadioButton label='Soil' value='Soil'>
-                    <TooltipDiv style={style} tooltip="A Soil Tooltip" tooltipDelay={500} tooltipPosition={'left'}/>
-                </RadioButton>
-                <RadioButton label='Water' value='Water'>
-                    <TooltipDiv style={style} tooltip="A Water Tooltip" tooltipDelay={500} tooltipPosition={'left'} />
-                </RadioButton>
-                <RadioButton label='Plant Material' value='Plant'/>
-            </RadioGroup>
+          <div className="form_wrap">
+          <RadioGroup name='comic' value={this.props.sampleType} onChange={this.handleChange}>
+              <RadioButton label='Soil' value='Soil'>
+                  <TooltipDiv style={style} tooltip="A Soil Tooltip" tooltipDelay={500} tooltipPosition={'left'}/>
+              </RadioButton>
+              <RadioButton label='Water' value='Water'>
+                  <TooltipDiv style={style} tooltip="A Water Tooltip" tooltipDelay={500} tooltipPosition={'left'} />
+              </RadioButton>
+              <RadioButton label='Plant Material' value='Plant'/>
+          </RadioGroup>
+          <h2 className="form_header">What type of samples?</h2>
+          <div className="row">
+          <div className="anlab_form_style col t-center"><h3>Soil</h3></div>
+          <div className="anlab_form_style col t-center"><h3>Plant Material</h3></div>
+          <div className="anlab_form_style col t-center"><h3>Water</h3></div>
+          </div>
+          </div>
+
+
         );
     }
 }
