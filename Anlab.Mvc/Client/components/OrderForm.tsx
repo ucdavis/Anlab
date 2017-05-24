@@ -6,10 +6,11 @@ import { Quantity } from './Quantity';
 import { Summary } from './Summary';
 import { AdditionalInfo } from './AdditionalInfo';
 import { Project } from "./Project";
-import { AdditionalEmails } from "./AdditionalEmails"
-import { Grind } from "./Grind"
-import { ForeignSoil } from "./ForeignSoil"
-import { WaterFilter } from "./WaterFilter"
+import { AdditionalEmails } from "./AdditionalEmails";
+import { Grind } from "./Grind";
+import { ForeignSoil } from "./ForeignSoil";
+import { WaterFilter } from "./WaterFilter";
+import PlantSvg from '../media/plant.svg';
 
 declare var window: any;
 declare var $: any;
@@ -180,6 +181,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         return (
             <div className="row">
                 <div className="col-lg-8">
+                    <PlantSvg />
                     <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
                     <div>
                         <label>Select Sample Type:</label>
