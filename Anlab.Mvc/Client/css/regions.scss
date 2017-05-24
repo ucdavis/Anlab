@@ -15,3 +15,18 @@
         margin-bottom: 8px;
     }
 }
+// order
+#react-app {
+  .theme__radio___1vWJb::before {
+    background-color: $primary-color;
+  }
+  .theme__radioChecked___210O6 {
+    border: 2px solid $primary-color;
+  }
+}
+.anlab_payment_option {
+  border: 1px solid $borders;
+  border-radius:4px;
+  padding:16px 20px;
+
+}
