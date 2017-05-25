@@ -10,7 +10,6 @@ import { AdditionalEmails } from "./AdditionalEmails";
 import { Grind } from "./Grind";
 import { ForeignSoil } from "./ForeignSoil";
 import { WaterFilter } from "./WaterFilter";
-import PlantSvg from '../media/plant.svg';
 
 declare var window: any;
 declare var $: any;
@@ -181,7 +180,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         return (
             <div className="row">
                 <div className="col-8 whiteblock">
-                    <PlantSvg />
+
 
                     <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
                     <div>
