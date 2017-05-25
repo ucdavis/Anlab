@@ -33,7 +33,7 @@ namespace AnlabMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("FirstName,LastName,Name")]User user)
+        public async Task<IActionResult> Edit([Bind("FirstName,LastName,Name,Phone,Account")]User user)
         {
             var userToUpdate = await _context.Users.SingleOrDefaultAsync(x => x.Id == CurrentUserId);
 
@@ -42,6 +42,8 @@ namespace AnlabMvc.Controllers
                 userToUpdate.FirstName = user.FirstName;
                 userToUpdate.LastName = user.LastName;
                 userToUpdate.Name = user.Name;
+                userToUpdate.Phone = user.Phone;
+                userToUpdate.Account = user.Account;
 
                 _context.Update(userToUpdate);
                 await _context.SaveChangesAsync();
