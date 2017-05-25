@@ -51,7 +51,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
         }
 
         const grouped = groupBy(filteredItems, 'group');
-        
+
         const rows = [];
 
         Object.keys(grouped).map(groupName => {
@@ -82,6 +82,8 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
     };
     render() {
         return (
+          <div className="form_wrap">
+          <h2 className="form_header">Which tests would you like to run?</h2>
             <div>
                 <Input type='search' label='Search' name='name' value={this.state.query} onChange={this.onQueryChange} />
                 <table className="table">
@@ -97,6 +99,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                         {this.renderRows()}
                     </tbody>
                 </table>
+            </div>
             </div>
         );
     }
