@@ -29,8 +29,22 @@
   .label:not(.fixed) {
     color:$primary-color;
   }
-}
 
+}
+// test table
+table.table {
+  tbody {
+
+  }
+  tr.group-header {
+    background-color: darken($primary-color, 9.99999);
+    color:#fff;
+    font-size:1.4rem;
+  }
+  .theme__field___3Tq32 {
+    margin-bottom:0px;
+  }
+}
 .anlab_form_style {
   border: 1px solid $borders;
   border-radius:4px;
@@ -44,7 +58,7 @@
     margin-bottom:0px;
   }
   &:hover {
-    background-color:#FDFDFD;
+    background-color:#F2F2F2;
   }
 }
 .anlab_form_samplebtn {
@@ -58,22 +72,31 @@
 .active-border {
   border:2px solid $primary-color;
 }
+.active-bg {
+  background-color:$primary-color;
+  &:hover {
+    background-color:$primary-color !important;
+  }
+}
 .active-svg {
   svg {
     g {
-      fill:$primary-color;
+      fill:#fff;
     }
 
   }
 }
 .active-text {
   h3 {
-    color:$primary-color;
+    color:#fff;
+  }
+  p {
+    color:#fff;
   }
 }
 h2.form_header {
   font-size:2rem;
   color:$primary-color;
   font-weight:600;
-  margin-bottom:0px;
+  margin-bottom:16px;
 }

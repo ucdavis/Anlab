@@ -42,7 +42,7 @@ export class SampleTypeSelection extends React.Component<ISampleTypeProps, any> 
           <div className="anlab_form_style anlab_form_samplebtn col t-center">
           <PlantSvg />
           <h3>Plant Material</h3></div>
-          <div className="anlab_form_style anlab_form_samplebtn col t-center active-border active-svg active-text">
+          <div className="anlab_form_style anlab_form_samplebtn col t-center active-bg active-border active-svg active-text">
           <WaterSvg /><h3>Water</h3></div>
           </div>
           </div>

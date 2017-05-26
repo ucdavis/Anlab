@@ -56,7 +56,7 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
           <div className="row">
           <div className="anlab_form_style col-5"><h3>Credit Card</h3><p>It's amazing what you can do with a little love in your heart.</p></div>
           <span className="dividing_span col-2 t-center align-middle">or</span>
-          <div className="anlab_form_style col-5 active-border"><h3>UC Funds</h3><p>It's amazing what you can do with a little love in your heart</p></div></div>
+          <div className="anlab_form_style col-5 active-border active-text active-bg"><h3>UC Funds</h3><p>It's amazing what you can do with a little love in your heart</p></div></div>
           </div>
 
 

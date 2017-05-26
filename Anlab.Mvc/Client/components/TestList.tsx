@@ -83,7 +83,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
     render() {
         return (
           <div className="form_wrap">
-          <h2 className="form_header">Which tests would you like to run?</h2>
+          <h2 className="form_header margin-bottom-zero">Which tests would you like to run?</h2>
             <div>
                 <Input type='search' label='Search' name='name' value={this.state.query} onChange={this.onQueryChange} />
                 <table className="table">
