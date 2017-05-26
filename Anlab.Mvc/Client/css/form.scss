@@ -44,6 +44,9 @@ table.table {
   .theme__field___3Tq32 {
     margin-bottom:0px;
   }
+  > thead > tr > th {
+    border-bottom:2px solid $primary-color;
+  }
 }
 .anlab_form_style {
   border: 1px solid $borders;
