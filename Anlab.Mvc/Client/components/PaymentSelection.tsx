@@ -1,7 +1,5 @@
 ﻿import * as React from 'react';
-import { RadioGroup, RadioButton } from 'react-toolbox/lib/radio';
 import Input from 'react-toolbox/lib/input';
-import TooltipWrapper  from './tooltipWrapper/tooltipWrapper';
 
 export interface IPayment {
     clientType: string;
@@ -27,7 +25,6 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
     }
     handleChange = (clientType: string) => {
         var updatedPaymentInfo = { ...this.props.payment, clientType };
-
         this.props.onPaymentSelected(updatedPaymentInfo);
     }
 
@@ -37,29 +34,23 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
     }
 
 
-
-
     render() {
         return (
-          <div className="form_wrap">
-          <TooltipWrapper tooltip="This is some descriptive text for the payment section" tooltipDelay={1000} tooltipPosition={"left"}>
-              <RadioGroup name='comic' value={this.props.payment.clientType} onChange={this.handleChange}>
-                  <RadioButton className="anlab_radio" label='Paying with UC Account' value='uc' />
-                  <RadioButton className="anlab_radio" label='Paying with Credit Card' value='other'/>
-              </RadioGroup>
-
-              {this._renderUcAccount()}
-
-
-          </TooltipWrapper>
-          <h2 className="form_header">How will you pay for your order?</h2>
-          <div className="row">
-          <div className="anlab_form_style col-5"><h3>Credit Card</h3><p>It's amazing what you can do with a little love in your heart.</p></div>
-          <span className="dividing_span col-2 t-center align-middle">or</span>
-          <div className="anlab_form_style col-5 active-border active-text active-bg"><h3>UC Funds</h3><p>It's amazing what you can do with a little love in your heart</p></div></div>
-          </div>
-
-
+            <div className="form_wrap">
+                <h2 className="form_header">How will you pay for your order?</h2>
+                <div className="row">
+                    <div className={this.props.payment.clientType !== 'uc' ? "anlab_form_style col-5 active-border active-text active-bg" : "anlab_form_style col-5"} onClick={() => this.handleChange("other")}>
+                        <h3>Credit Card</h3>
+                        <p>It's amazing what you can do with a little love in your heart.</p>                        
+                    </div>
+                    <span className="dividing_span col-2 t-center align-middle">or</span>
+                    <div className={this.props.payment.clientType === 'uc' ? "anlab_form_style col-5 active-border active-text active-bg" : "anlab_form_style col-5"} onClick= {()=>this.handleChange("uc")}>
+                        <h3>UC Funds</h3>
+                        <p>It's amazing what you can do with a little love in your heart</p>
+                    </div>
+                </div>
+                {this._renderUcAccount()}
+            </div>
         );
     }
 }
