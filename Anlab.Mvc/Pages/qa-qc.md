@@ -1,5 +1,8 @@
-﻿@{ ViewData["Title"] = "QA/QC"; }
+﻿---
 
+title: "QA/QC"
+
+---
 <div class="row">
     <div class="col-8 whiteblock">
         <p class="lead">The Analytical Laboratory's policies and procedures related to quality control/quality assurance are available in its <a href="/media/pdf/qual-manual.pdf" target="_blank" title="QA/QC Manual">QA/QC Manual (PDF)</a>.

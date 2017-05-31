@@ -1,6 +1,8 @@
-﻿@{
-    ViewData["Title"] = "Contact";
-}
+﻿---
+
+title: "Rush Request Policy"
+
+---
 <div class="row">
     <div class="col-8 whiteblock">
 
