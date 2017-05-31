@@ -10,7 +10,6 @@ import { AdditionalEmails } from "./AdditionalEmails";
 import { Grind } from "./Grind";
 import { ForeignSoil } from "./ForeignSoil";
 import { WaterFilter } from "./WaterFilter";
-import PlantSvg from '../media/plant.svg';
 
 declare var window: any;
 declare var $: any;
@@ -133,7 +132,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         };
     }
     onSubmit = () => {
-        
+
         if (this.state.isSubmitting) {
             return;
         }
@@ -166,22 +165,23 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                 alert(response.message);
                 that.setState({ ...that.state, isSubmitting: false });
             }
-            
+
         }).error(() => {
             alert("An error occured...");
             that.setState({ ...that.state, isSubmitting: false });
-                        
+
         });
     }
     render() {
         const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, grind, foreignSoil, filterWater } = this.state;
-        
+
         const { filtered, selected} = this.getTests();
 
         return (
             <div className="row">
-                <div className="col-lg-8">
-                    <PlantSvg />
+                <div className="col-8 whiteblock">
+
+
                     <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
                     <div>
                         <label>Select Sample Type:</label>

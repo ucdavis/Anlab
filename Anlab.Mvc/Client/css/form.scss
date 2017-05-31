@@ -1,0 +1,105 @@
+// React overrides
+#react-app {
+
+  .theme__text___3guDD {
+    color:$primary-font;
+  }
+  .theme__radio___1vWJb {
+    border: 2px solid $primary-font;
+  }
+  .theme__radio___1vWJb::before {
+    background-color: $primary-color;
+  }
+  .theme__radioChecked___210O6 {
+    border: 2px solid $primary-color;
+  }
+  .theme__text___dXU7C {
+    color:$primary-font;
+  }
+  .theme__check___1CXAo {
+    border-color:$primary-font;
+  }
+  .theme__check___1CXAo.theme__checked___nSz7s {
+    background-color: $primary-color;
+    border-color:$primary-color;
+  }
+  .theme__bar___3FySS::before, .theme__bar___3FySS::after {
+    background-color: $primary-color;
+  }
+  .label:not(.fixed) {
+    color:$primary-color;
+  }
+
+}
+// test table
+table.table {
+  tbody {
+
+  }
+  tr.group-header {
+    background-color: darken($primary-color, 9.99999);
+    color:#fff;
+    font-size:1.4rem;
+  }
+  .theme__field___3Tq32 {
+    margin-bottom:0px;
+  }
+  > thead > tr > th {
+    border-bottom:2px solid $primary-color;
+  }
+}
+.anlab_form_style {
+  border: 1px solid $borders;
+  border-radius:4px;
+  padding:16px 20px;
+  cursor: pointer;
+  h3 {
+    margin-bottom:8px;
+  }
+  p {
+    color:$tertiary-font;
+    margin-bottom:0px;
+  }
+  &:hover {
+    background-color:#F2F2F2;
+  }
+}
+.anlab_form_samplebtn {
+  svg {
+    margin:8px 0px;
+  }
+  h3 {
+    margin-bottom:0px;
+  }
+}
+.active-border {
+  border:2px solid $primary-color;
+}
+.active-bg {
+  background-color:$primary-color;
+  &:hover {
+    background-color:$primary-color !important;
+  }
+}
+.active-svg {
+  svg {
+    g {
+      fill:#fff;
+    }
+
+  }
+}
+.active-text {
+  h3 {
+    color:#fff;
+  }
+  p {
+    color:#fff;
+  }
+}
+h2.form_header {
+  font-size:2rem;
+  color:$primary-color;
+  font-weight:600;
+  margin-bottom:24px;
+}

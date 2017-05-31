@@ -156,6 +156,7 @@ h1 {
 h2 {
     font-size: 2.2rem;
     font-weight: 400;
+    
 }
 .h3,
 h3 {
@@ -181,4 +182,9 @@ h5 {}
   font-size:1.2rem;
   text-transform: uppercase;
   color:$secondary-font;
+}
+span.dividing_span {
+  font-style: italic;
+  font-size:2rem;
+  color:$primary-font;
 }
