@@ -183,15 +183,16 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
 
                     <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
-                    <div>
-                        <label>Select Sample Type:</label>
+
                         <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
-                    </div>
+
                     <Grind grind={grind} handleChange={this.handleChange} sampleType={sampleType} />
-                    <ForeignSoil foreignSoil={foreignSoil} handleChange={this.handleChange} sampleType={sampleType} />
-                    <WaterFilter filterWater={filterWater} handleChange={this.handleChange} sampleType={sampleType} />
-                    <div>
-                        <label>Quantity:</label>
+
+                      <ForeignSoil foreignSoil={foreignSoil} handleChange={this.handleChange} sampleType={sampleType} />
+                      <WaterFilter filterWater={filterWater} handleChange={this.handleChange} sampleType={sampleType} />
+
+                    <div className="form_wrap">
+                        <label className="form_header">How many samples will you require?</label>
                         <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
                     </div>
                     <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail}/>
