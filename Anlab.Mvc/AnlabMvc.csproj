@@ -49,6 +49,11 @@
     <None Remove="yarn.lock" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Client\media\icecream.svg">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Anlab.Core\Anlab.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
