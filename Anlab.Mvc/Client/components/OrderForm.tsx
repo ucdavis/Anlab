@@ -52,6 +52,13 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             filterWater: false,
         };
 
+        if (window.App.defaultAccount) {            
+            initialState.payment.account = window.App.defaultAccount;
+            initialState.payment.clientType = 'uc';
+        } else {
+            initialState.payment.clientType = 'other';
+        }
+
         if (window.App.orderData.order) {
             // load up existing order
             const orderInfo = JSON.parse(window.App.orderData.order.jsonDetails);

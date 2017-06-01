@@ -37,6 +37,9 @@ namespace AnlabMvc.Controllers
         {
             var model = new OrderEditModel { TestItems = _context.TestItems.AsNoTracking().ToArray() };
 
+            var user = _context.Users.Single(a => a.Id == CurrentUserId);
+            model.DefaultAccount = user.Account;
+
             return View(model);
         }
 

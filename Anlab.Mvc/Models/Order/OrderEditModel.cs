@@ -10,5 +10,7 @@ namespace AnlabMvc.Models.Order
     {
         public TestItem[] TestItems { get; set; }
         public Anlab.Core.Domain.Order Order { get; set; }
+
+        public string DefaultAccount { get; set; }
     }
 }
