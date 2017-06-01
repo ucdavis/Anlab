@@ -14,19 +14,21 @@ export class SampleTypeSelection extends React.Component<ISampleTypeProps, any> 
         this.props.onSampleSelected(sampleType);
     }
     render() {
+        const activeDiv = "anlab_form_style anlab_form_samplebtn col t-center active-bg active-border active-svg active-text";
+        const inactiveDiv = "anlab_form_style anlab_form_samplebtn col t-center";
         return (
             <div className="form_wrap">
                 <h2 className="form_header">What type of samples?</h2>
                 <div className="row">
-                    <div className={this.props.sampleType === "Soil" ? "anlab_form_style anlab_form_samplebtn col t-center active-bg active-border active-svg active-text" : "anlab_form_style anlab_form_samplebtn col t-center"} onClick={() => this.handleChange("Soil")}>
+                    <div className={this.props.sampleType === "Soil" ? activeDiv : inactiveDiv} onClick={() => this.handleChange("Soil")}>
                         <SoilSvg />
                         <h3>Soil</h3>
                     </div>
-                    <div className={this.props.sampleType === "Plant" ? "anlab_form_style anlab_form_samplebtn col t-center active-bg active-border active-svg active-text" : "anlab_form_style anlab_form_samplebtn col t-center"} onClick={() => this.handleChange("Plant")}>
+                    <div className={this.props.sampleType === "Plant" ? activeDiv : inactiveDiv} onClick={() => this.handleChange("Plant")}>
                         <PlantSvg />
                         <h3>Plant Material</h3>
                     </div>
-                    <div className={this.props.sampleType === "Water" ? "anlab_form_style anlab_form_samplebtn col t-center active-bg active-border active-svg active-text" : "anlab_form_style anlab_form_samplebtn col t-center"} onClick={() => this.handleChange("Water")}>
+                    <div className={this.props.sampleType === "Water" ? activeDiv : inactiveDiv} onClick={() => this.handleChange("Water")}>
                         <WaterSvg />
                         <h3>Water</h3>
                     </div>

@@ -54,7 +54,7 @@ export class NumberInput extends React.Component<INumberInputProps, INumberInput
         }
         // check max range or early return
         else if (!isNaN(this.props.max) && this.props.max < value) {
-            error = `Must be a number less than ${this.props.max}.`;
+            error = `Must be a number less than or equal to ${this.props.max}.`;
         }
 
         this.setState({ error } as INumberInputState);

@@ -16,6 +16,7 @@ export class Quantity extends React.Component<IQuantityProps, any> {
                 onChanged={this.props.onQuantityChanged}
                 integer
                 min={0}
+                max={100}
             />
         );
     }

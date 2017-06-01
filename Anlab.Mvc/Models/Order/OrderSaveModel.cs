@@ -9,7 +9,7 @@ namespace AnlabMvc.Models.Order
     public class OrderSaveModel
     {
         public int? OrderId { get; set; }
-        [Range(1, Int32.MaxValue, ErrorMessage = "Please enter a sample quantity greater than zero.")]
+        [Range(1, 100)]
         public int Quantity { get; set; }
 
         [Required]
