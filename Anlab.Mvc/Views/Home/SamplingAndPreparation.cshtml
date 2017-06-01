@@ -146,4 +146,14 @@
     </div>
 </div>
 
-</div>
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function() {
+            $('.collapse').on('show.bs.collapse', function (e) {
+                $('.collapse').not(e.target).removeClass('in');
+            });
+        });
+    </script>
+}
+
