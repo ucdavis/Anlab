@@ -208,7 +208,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     </div>
 
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
-                    <div style={{ height: 600 }}></div>
+                
                 </div>
                 <div className="col-lg-4">
                     <div data-spy="affix" data-offset-top="60" data-offset-bottom="200">

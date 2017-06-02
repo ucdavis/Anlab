@@ -35,6 +35,9 @@
   .theme__flat___1jWAQ {
     background-color: $primary-color;
   }
+  .theme__primary___3tTAW:not([disabled]).theme__raised___221ic, .theme__primary___3tTAW:not([disabled]).theme__floating___3IRMZ {
+    background-color:$primary-color;
+  }
 
 }
 // test table
