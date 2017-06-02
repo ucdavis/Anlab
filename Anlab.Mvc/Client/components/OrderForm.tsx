@@ -183,13 +183,14 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
 
                     <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
+<div className="form_wrap">
+<SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
 
-                        <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
+<Grind grind={grind} handleChange={this.handleChange} sampleType={sampleType} />
 
-                    <Grind grind={grind} handleChange={this.handleChange} sampleType={sampleType} />
-
-                      <ForeignSoil foreignSoil={foreignSoil} handleChange={this.handleChange} sampleType={sampleType} />
-                      <WaterFilter filterWater={filterWater} handleChange={this.handleChange} sampleType={sampleType} />
+<ForeignSoil foreignSoil={foreignSoil} handleChange={this.handleChange} sampleType={sampleType} />
+<WaterFilter filterWater={filterWater} handleChange={this.handleChange} sampleType={sampleType} />
+</div>
 
                     <div className="form_wrap">
                         <label className="form_header">How many samples will you require?</label>
