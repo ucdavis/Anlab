@@ -197,8 +197,16 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                         <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
                     </div>
                     <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail}/>
-                    <Project project={project} handleChange={this.handleChange} />
-                    <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
+                    <div className="form_wrap">
+                    <h2 className="form_header">What is the project ID?</h2>
+                      <Project project={project} handleChange={this.handleChange} />
+
+                    </div>
+                    <div className="form_wrap">
+<h2 className="form_header">Any additional information?</h2>
+  <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
+                    </div>
+
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
                     <div style={{ height: 600 }}></div>
                 </div>

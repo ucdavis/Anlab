@@ -29,6 +29,12 @@
   .label:not(.fixed) {
     color:$primary-color;
   }
+  .theme__primary___3tTAW:not([disabled]).theme__flat___1jWAQ, .theme__primary___3tTAW:not([disabled]).theme__toggle___hC5Z2 {
+    color:#fff;
+  }
+  .theme__flat___1jWAQ {
+    background-color: $primary-color;
+  }
 
 }
 // test table
@@ -37,7 +43,7 @@ table.table {
 
   }
   tr.group-header {
-    background-color: darken($primary-color, 9.99999);
+    background-color: $primary-color;
     color:#fff;
     font-size:1.4rem;
   }
