@@ -154,6 +154,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
         }
         const saveText = this.props.isCreate ? "Place Order" : "Update Order";
         const infoText = this.props.isCreate ? "Go ahead and place your order" : "Go ahead and update your order";
+        const errorText = "Please correct any errors and complete an required fields before you " + saveText;
         return (
             <div>
                 {this._renderAdditionalFees()}
@@ -177,7 +178,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
                         </tr>
                     </tfoot>
                 </table>
-                {this.props.canSubmit ? <div className="alert alert-info">{infoText}</div> : null }
+                {this.props.canSubmit ? <div className="alert alert-info">{infoText}</div> : <div className="alert alert-danger">{errorText}</div> }
                 <Button raised primary disabled={!this.props.canSubmit} onClick={this.props.onSubmit}>
                     {saveText}
                 </Button>
