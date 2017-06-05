@@ -154,7 +154,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
         }
         const saveText = this.props.isCreate ? "Place Order" : "Update Order";
         const infoText = this.props.isCreate ? "Go ahead and place your order" : "Go ahead and update your order";
-        const errorText = "Please correct any errors and complete an required fields before you " + saveText;
+        const errorText = "Please correct any errors and complete any required fields before you " + saveText.toLowerCase();
         return (
             <div>
                 {this._renderAdditionalFees()}
