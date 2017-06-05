@@ -58,8 +58,11 @@ export class NumberInput extends React.Component<INumberInputProps, INumberInput
         }
 
         this.setState({ error } as INumberInputState);
+
+        this.props.onChanged(value);
     }
     onBlur = () => {
+        let error = null;
         let value = Number(this.state.internalValue);
 
         if (isNaN(value)) value = null;
@@ -68,13 +71,20 @@ export class NumberInput extends React.Component<INumberInputProps, INumberInput
         if (this.props.integer && !isNaN(value)) {
           value = Math.floor(value);
         }
+        if (!isNaN(this.props.min) && this.props.min > value) {
+            error = `Must be a number greater than ${this.props.min}.`;
+        }
+        if (!isNaN(this.props.max) && this.props.max < value) {
+            error = `Must be a number less than or equal to ${this.props.max}.`;
+        }
 
         // push possible changes, clear error
         this.setState({
-          internalValue: this.transformValue(value)
+            internalValue: this.transformValue(value),
+            error: error
         } as INumberInputState);
 
-        this.props.onChanged(value);
+        
     }
     render() {
         return (
