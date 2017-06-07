@@ -38,7 +38,7 @@ namespace AnlabMvc.Controllers
             foreach (var user in users)
             {
                 var ur = new UserRolesModel();
-                ur.User = user;
+                ur.User = user;                
                 if (user.Roles.Any(a => a.RoleId == adminRole))
                 {
                     ur.IsAdmin = true;
@@ -56,9 +56,24 @@ namespace AnlabMvc.Controllers
                     ur.IsUser = false;
                 }
                 usersRoles.Add(ur);
-            }
+            }           
 
             return View(usersRoles);
+        }
+
+        public async Task<IActionResult> AddUserToRole(string userId, string role, bool add)
+        {
+            var user = _dbContext.Users.Single(a => a.Id == userId);
+            if (add)
+            {
+                await _userManager.AddToRoleAsync(user, role);
+            }
+            else
+            {
+                await _userManager.RemoveFromRoleAsync(user, role);
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

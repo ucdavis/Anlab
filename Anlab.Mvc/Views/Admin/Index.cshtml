@@ -24,7 +24,24 @@
     {
         <tr>
             <td>
+                @if (user.IsUser)
+                {
+                    <a class="btn btn-danger" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="User" asp-route-add="false">Remove from User Role</a>
+                }
+                else
+                {
+                    <a class="btn btn-default" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="User" asp-route-add="true">Add to User Role</a>
+                }
+                @if (user.IsAdmin)
+                {
+                    <a class="btn btn-danger" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="Admin" asp-route-add="false">Remove from Admin Role</a>
+                }
+                else
+                {
+                    <a class="btn btn-default" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="Admin" asp-route-add="true">Add to Admin Role</a>
+                }
 
+                
             </td>
             <td>@user.User.Id</td>
             <td>@user.User.Name</td>
