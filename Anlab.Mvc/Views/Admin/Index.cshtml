@@ -1,0 +1,52 @@
+@using AnlabMvc.Models.User
+@model IList<AnlabMvc.Models.User.UserRolesModel>
+
+@{
+    ViewData["Title"] = "Admin Index";
+}
+
+<h2>Admin Index</h2>
+
+
+<table id="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Is Admin</th>
+            <th>Is User</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>
+
+            </td>
+            <td>@user.User.Id</td>
+            <td>@user.User.Name</td>
+            <td>@user.User.Email</td>
+            <td>@user.IsAdmin</td>
+            <td>@user.IsUser</td>
+        </tr>
+    }
+    </tbody>
+</table>
+@section AdditionalStyles
+{
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" />
+}
+@section Scripts
+{
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#table").dataTable({
+                "sorting": [[2, "desc"]]
+            });
+        });
+    </script>
+}

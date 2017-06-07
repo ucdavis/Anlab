@@ -81,6 +81,7 @@ namespace AnlabMvc.Services
             await _userManager.CreateAsync(jasonUser);
             await _userManager.AddLoginAsync(jasonUser, jasonLoginInfo);
             await _userManager.AddToRoleAsync(jasonUser, "Admin");
+            await _userManager.AddToRoleAsync(jasonUser, "User");
 
 
             #region Cal's login
