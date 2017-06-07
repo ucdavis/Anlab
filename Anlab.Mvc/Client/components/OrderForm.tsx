@@ -1,4 +1,5 @@
 ﻿import * as React from 'react';
+import Dialog from 'react-toolbox/lib/dialog';
 import { ITestItem, TestList } from './TestList';
 import { IPayment, PaymentSelection } from './PaymentSelection';
 import { SampleTypeSelection } from './SampleTypeSelection';
@@ -29,6 +30,8 @@ interface IOrderState {
     grind: boolean;
     foreignSoil: boolean;
     filterWater: boolean;
+    isErrorActive: boolean;
+    errorMessage: string;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -50,6 +53,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             grind: false,
             foreignSoil: false,
             filterWater: false,
+            isErrorActive: false,
+            errorMessage: '',
         };
 
         if (window.App.defaultAccount) {            
@@ -129,6 +134,13 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.setState({ ...this.state, [name]: value }, this.validate);
     };
 
+    handleDialogToggle = () => {
+        this.setState({ ...this.state, isErrorActive: !this.state.isErrorActive});
+    }
+
+    dialogActions = [
+        { label: "Got It!", onClick: this.handleDialogToggle }
+    ];
 
     getTests = () => {
         const { testItems, payment, selectedTests, sampleType, quantity } = this.state;
@@ -169,14 +181,10 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                 var redirectId = response.id;
                 window.location.replace("/Order/Confirmation/" + redirectId);
             } else {
-                alert(response.message);
-                that.setState({ ...that.state, isSubmitting: false });
+                that.setState({ ...that.state, isSubmitting: false, isErrorActive: true, errorMessage: response.message });
             }
-
         }).error(() => {
-            alert("An error occured...");
-            that.setState({ ...that.state, isSubmitting: false });
-
+            that.setState({ ...that.state, isSubmitting: false, isErrorActive: true, errorMessage: "An internal error occured..." });
         });
     }
     render() {
@@ -212,6 +220,15 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                         <Summary isCreate={this.state.orderId === null} canSubmit={this.state.isValid && !this.state.isSubmitting} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} grind={(grind && sampleType !== "Water")} foreignSoil={(foreignSoil && sampleType === "Soil")} filterWater={(filterWater && sampleType === "Water")}/>
                     </div>
                 </div>
+
+                <Dialog
+                    actions={this.dialogActions}
+                    active={this.state.isErrorActive}
+                    onEscKeyDown={this.handleDialogToggle}
+                    onOverlayClick={this.handleDialogToggle}
+                    title='Errors Detected'>
+                    <p>{this.state.errorMessage}</p>
+                </Dialog>
             </div>
         );
     }
