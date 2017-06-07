@@ -43,8 +43,8 @@ namespace AnlabMvc.Services
             if (_context.Users.Any()) return; // Do nothing if there is already user data in the system
 
             // create roles
-            await _roleManager.CreateAsync(new IdentityRole("admin"));
-            await _roleManager.CreateAsync(new IdentityRole("user"));
+            await _roleManager.CreateAsync(new IdentityRole("Admin"));
+            await _roleManager.CreateAsync(new IdentityRole("User"));
 
             var scottUser = new User
             {
@@ -62,7 +62,7 @@ namespace AnlabMvc.Services
 
             await _userManager.CreateAsync(scottUser);
             await _userManager.AddLoginAsync(scottUser, loginInfo);
-            await _userManager.AddToRoleAsync(scottUser, "admin");
+            await _userManager.AddToRoleAsync(scottUser, "Admin");
 
             var jasonUser = new User
             {
@@ -80,7 +80,7 @@ namespace AnlabMvc.Services
 
             await _userManager.CreateAsync(jasonUser);
             await _userManager.AddLoginAsync(jasonUser, jasonLoginInfo);
-            await _userManager.AddToRoleAsync(jasonUser, "admin");
+            await _userManager.AddToRoleAsync(jasonUser, "Admin");
 
 
             #region Cal's login
