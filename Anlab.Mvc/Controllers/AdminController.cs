@@ -109,6 +109,15 @@ namespace AnlabMvc.Controllers
             return View(user);
         }
 
+        public IActionResult OpenOrders()
+        {
+            //TODO: update this when we know status. Add filter?
+            var orders = _dbContext.Orders.Where(a => a.Status != null && a.Status != "Complete")
+                .Include(i => i.Creator).ToList();
+
+            return View(orders);
+        }
+
 
         public async Task<IActionResult> AddUserToRole(string userId, string role, bool add)
         {

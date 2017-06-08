@@ -1,0 +1,68 @@
+@model IList<Order>
+@{
+    ViewData["Title"] = "OpenOrders";
+}
+
+
+<table id="table">
+    <thead>
+    <tr>
+        <th></th>
+        <th>Id</th>
+        <th>User</th>
+        <th>ClientId</th>
+        <th>Created</th>
+        <th>Updated</th>
+        <th>Project</th>
+        <th>Status</th>
+
+        
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var order in Model)
+    {
+        <tr>
+            <td>
+                <a asp-action="Edit" asp-route-id="@order.Id">Edit</a>
+                <a asp-action="Details" asp-route-id="@order.Id">Details</a>
+            </td>
+            <td>@order.Id</td>
+            <td>@order.Creator.Email</td>
+            <td>@order.Creator.ClientId</td>
+            <td>@order.Created</td>
+            <td>@order.Updated</td>
+            <td>@order.Project</td>
+            <td>@order.Status</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@section AdditionalStyles
+{
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" />
+}
+
+@section Scripts
+{
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            $("#table").dataTable({
+                "sorting": [[2, "desc"]],
+                "columnDefs": [
+                    {
+                        "type": "date", "targets" : [2,3]
+                    },
+                    {
+                        "targets": [0],
+                        "orderable": false                        
+                    },
+
+                ]
+            });
+        });
+    </script>
+}
