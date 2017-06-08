@@ -61,6 +61,55 @@ namespace AnlabMvc.Controllers
             return View(usersRoles);
         }
 
+        public IActionResult ListNonAdminUsers()
+        {
+            var adminRole = _roleManager.Roles.Single(a => a.Name == "Admin").Id;
+            var users = _dbContext.Users.Include(a => a.Roles).Where(w => w.Roles.All(x => x.RoleId != adminRole)).ToList();
+
+            return View(users);
+        }
+
+        public IActionResult EditUser(string id)
+        {
+            var user = _dbContext.Users.SingleOrDefault(a => a.Id == id);
+            if (user == null)
+            {
+                ErrorMessage = "User Not Found";
+                return RedirectToAction("ListNonAdminUsers");
+            }
+
+            return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditUser(string id, [Bind("FirstName,LastName,Name,Phone,Account,ClientId")]User user)
+        {
+            var userToUpdate = _dbContext.Users.SingleOrDefault(a => a.Id == id);
+            if (userToUpdate == null)
+            {
+                ErrorMessage = "User Not Found";
+                return RedirectToAction("ListNonAdminUsers");
+            }
+            if (ModelState.IsValid)
+            {
+                userToUpdate.FirstName = user.FirstName;
+                userToUpdate.LastName = user.LastName;
+                userToUpdate.Name = user.Name;
+                userToUpdate.Phone = user.Phone;
+                userToUpdate.Account = user.Account;
+                userToUpdate.ClientId = user.ClientId;
+
+                _dbContext.Update(userToUpdate);
+                _dbContext.SaveChanges();
+
+                return RedirectToAction("ListNonAdminUsers");
+            }
+
+            return View(user);
+        }
+
+
         public async Task<IActionResult> AddUserToRole(string userId, string role, bool add)
         {
             var user = _dbContext.Users.Single(a => a.Id == userId);
@@ -70,6 +119,11 @@ namespace AnlabMvc.Controllers
             }
             else
             {
+                if (user.Id == CurrentUserId)
+                {
+                    ErrorMessage = "Can't remove your own permissions.";
+                    return RedirectToAction("Index");
+                }
                 await _userManager.RemoveFromRoleAsync(user, role);
             }
 
