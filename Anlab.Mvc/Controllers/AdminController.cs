@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Anlab.Core.Domain;
 using AnlabMvc.Data;
+using AnlabMvc.Models.Order;
 using AnlabMvc.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -116,6 +117,22 @@ namespace AnlabMvc.Controllers
                 .Include(i => i.Creator).ToList();
 
             return View(orders);
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id && o.Status != null);
+
+            if (order == null)
+            {
+                return NotFound(id);
+            }
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+
+            return View(model);
         }
 
 
