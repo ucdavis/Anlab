@@ -135,6 +135,24 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> Edit(int id)
+        {
+            var order = await _dbContext.Orders.SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound(id);
+            }
+
+
+            var model = new OrderEditModel
+            {
+                TestItems = _dbContext.TestItems.AsNoTracking().ToArray(),
+                Order = order
+            };
+
+            return View(model);
+        }
 
         public async Task<IActionResult> AddUserToRole(string userId, string role, bool add)
         {

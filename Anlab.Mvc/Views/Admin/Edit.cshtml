@@ -1,0 +1,19 @@
+﻿@model AnlabMvc.Models.Order.OrderEditModel
+@using Anlab.Core.Domain
+
+@{
+    ViewBag.Title = "Create New Work Request";
+}
+
+<h2>Edit Existing Order</h2>
+
+<div id="react-app"></div>
+
+<script>
+    App = {};
+    App.orderData = @Json.Serialize(Model);
+    App.OrderId = @Model.Order.Id;
+</script>
+
+<script src="~/dist/react.js" asp-append-version="true"></script>
+<script src="~/dist/order.js" asp-append-version="true"></script>
