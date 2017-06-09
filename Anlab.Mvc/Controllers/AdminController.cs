@@ -6,6 +6,7 @@ using Anlab.Core.Domain;
 using AnlabMvc.Data;
 using AnlabMvc.Models.Order;
 using AnlabMvc.Models.User;
+using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -20,12 +21,14 @@ namespace AnlabMvc.Controllers
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IOrderService _orderService;
 
-        public AdminController(ApplicationDbContext dbContext, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public AdminController(ApplicationDbContext dbContext, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IOrderService orderService)
         {
             _dbContext = dbContext;
             _userManager = userManager;
             _roleManager = roleManager;
+            _orderService = orderService;
         }
         public async Task<IActionResult> Index()
         {
@@ -152,6 +155,45 @@ namespace AnlabMvc.Controllers
             };
 
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Save([FromBody]OrderSaveModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = new List<string>();
+                foreach (var result in ModelState.Values)
+                {
+                    foreach (var errs in result.Errors)
+                    {
+                        errors.Add(errs.ErrorMessage);
+                    }
+                }
+
+                //TODO: A better way to return errors. Or maybe not, they shouldn't really ever happen.
+                return Json(new { success = false, message = "There were problems with your order. Unable to save. Errors: " + string.Join("--", errors) });
+            }
+
+            var idForRedirection = 0;
+
+            if (model.OrderId.HasValue)
+            {
+                var orderToUpdate = await _dbContext.Orders.SingleAsync(a => a.Id == model.OrderId.Value);
+
+                await _orderService.PopulateOrder(model, orderToUpdate);
+
+
+                idForRedirection = model.OrderId.Value;
+                await _dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                return Json(new { success = false, message = "Order Id not found." });
+            }
+
+
+            return Json(new { success = true, id = idForRedirection });
         }
 
         public async Task<IActionResult> AddUserToRole(string userId, string role, bool add)

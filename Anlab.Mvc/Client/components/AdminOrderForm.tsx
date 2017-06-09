@@ -172,14 +172,14 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         }
         var that = this;
         $.post({
-            url: '/order/save',
+            url: '/admin/save',
             data: JSON.stringify(order),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
         }).success((response) => {
             if (response.success === true) {
                 var redirectId = response.id;
-                window.location.replace("/Order/Confirmation/" + redirectId);
+                window.location.replace("/Admin/Details/" + redirectId);
             } else {
                 that.setState({ ...that.state, isSubmitting: false, isErrorActive: true, errorMessage: response.message });
             }
