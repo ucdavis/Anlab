@@ -74,6 +74,7 @@ namespace AnlabMvc
             services.AddTransient<ISmsSender, AuthMessageSender>();
             services.AddTransient<IDirectorySearchService, DirectorySearchService>();
             services.AddTransient<IDbInitializationService, DbInitializationService>();
+            services.AddTransient<IOrderService, OrderService>();
 
         }
 
