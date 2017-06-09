@@ -34,7 +34,7 @@ interface IOrderState {
     errorMessage: string;
 }
 
-export default class OrderForm extends React.Component<undefined, IOrderState> {
+export default class AdminOrderForm extends React.Component<undefined, IOrderState> {
     constructor(props) {
         super(props);
 
