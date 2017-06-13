@@ -5,15 +5,14 @@
     ViewBag.Title = "Admin Edit";
 }
 
-<h2>Admin Edit</h2>
-
-<div id="react-app-admin"></div>
+<div id="react-app"></div>
 
 <script>
     App = {};
     App.orderData = @Json.Serialize(Model);
     App.OrderId = @Model.Order.Id;
+    App.IsAdmin = true;
 </script>
 
 <script src="~/dist/react.js" asp-append-version="true"></script>
-<script src="~/dist/adminOrder.js" asp-append-version="true"></script>
+<script src="~/dist/order.js" asp-append-version="true"></script>
