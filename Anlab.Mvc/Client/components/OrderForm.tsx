@@ -32,6 +32,7 @@ interface IOrderState {
     filterWater: boolean;
     isErrorActive: boolean;
     errorMessage: string;
+    isAdmin: boolean;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -55,6 +56,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             filterWater: false,
             isErrorActive: false,
             errorMessage: '',
+            isAdmin: false,
         };
 
         if (window.App.defaultAccount) {            
@@ -62,6 +64,9 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.payment.clientType = 'uc';
         } else {
             initialState.payment.clientType = 'other';
+        }
+        if (window.App.IsAdmin === true) {
+            initialState.isAdmin = true;
         }
 
         if (window.App.orderData.order) {
@@ -150,10 +155,15 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             selected: filtered.filter(item => !!selectedTests[item.id])
         };
     }
-    onSubmit = () => {
-
+    onSubmit = () => {        
         if (this.state.isSubmitting) {
             return;
+        }
+        var postUrl = '/order/save';
+        var returnUrl = '/Order/Confirmation/';
+        if (this.state.isAdmin) {
+            postUrl = '/admin/save';
+            returnUrl = '/Admin/Details/';
         }
         this.setState({ ...this.state, isSubmitting: true });
         const selectedTests = this.getTests().selected;
@@ -172,14 +182,15 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         }
         var that = this;
         $.post({
-            url: '/order/save',
+            
+            url: postUrl,
             data: JSON.stringify(order),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
         }).success((response) => {
             if (response.success === true) {
                 var redirectId = response.id;
-                window.location.replace("/Order/Confirmation/" + redirectId);
+                window.location.replace(returnUrl + redirectId);
             } else {
                 that.setState({ ...that.state, isSubmitting: false, isErrorActive: true, errorMessage: response.message });
             }
