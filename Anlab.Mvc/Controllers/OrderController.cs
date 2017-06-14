@@ -60,7 +60,7 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index");
             }
 
-            if (order.Status != null)
+            if (order.Status != OrderStatusCodes.Created)
             {
                 ErrorMessage = "You can't edit an order that has been confirmed.";
                 return RedirectToAction("Index");
@@ -103,13 +103,12 @@ namespace AnlabMvc.Controllers
                 {
                     return Json(new {success = false, message = "This is not your order."});
                 }
-                if(orderToUpdate.Status != null)
+                if(orderToUpdate.Status != OrderStatusCodes.Created)
                 {
                     return Json(new { success = false, message = "This has been confirmed and may not be updated." });
                 }
 
                 await _orderService.PopulateOrder(model, orderToUpdate);
-
 
                 idForRedirection = model.OrderId.Value;
                 await _context.SaveChangesAsync();
@@ -119,6 +118,7 @@ namespace AnlabMvc.Controllers
                 var order = new Order
                 {
                     CreatorId = CurrentUserId,
+                    Status = OrderStatusCodes.Created,
                 };
                 await _orderService.PopulateOrder(model, order);
 
@@ -147,7 +147,7 @@ namespace AnlabMvc.Controllers
                 return NotFound(id);
             }
 
-            if (order.Status == null)
+            if (order.Status == OrderStatusCodes.Created)
             {
                 ErrorMessage = "Must confim order before viewing details.";
                 return RedirectToAction("Index");
@@ -198,7 +198,7 @@ namespace AnlabMvc.Controllers
                 return NotFound(id);
             }
 
-            if (order.Status != null)
+            if (order.Status != OrderStatusCodes.Created)
             {
                 ErrorMessage = "Already confirmed";
                 return RedirectToAction("Index");
@@ -228,7 +228,7 @@ namespace AnlabMvc.Controllers
                 return NotFound(id);
             }
 
-            if (order.Status != null)
+            if (order.Status != OrderStatusCodes.Created)
             {
                 ErrorMessage = "Can't delete confirmed orders.";
                 return RedirectToAction("Index");

@@ -119,7 +119,7 @@ namespace AnlabMvc.Controllers
         public IActionResult OpenOrders()
         {
             //TODO: update this when we know status. Add filter?
-            var orders = _dbContext.Orders.Where(a => a.Status != null && a.Status != "Complete")
+            var orders = _dbContext.Orders.Where(a => a.Status != OrderStatusCodes.Created && a.Status != OrderStatusCodes.Complete)
                 .Include(i => i.Creator).ToList();
 
             return View(orders);
@@ -127,7 +127,7 @@ namespace AnlabMvc.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id && o.Status != null);
+            var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id && o.Status != OrderStatusCodes.Created);
 
             if (order == null)
             {
@@ -162,7 +162,7 @@ namespace AnlabMvc.Controllers
 
         public IActionResult ListUsersOrders(string id)
         {
-            var orders = _dbContext.Orders.Where(a => a.CreatorId == id && a.Status != null).ToArray();
+            var orders = _dbContext.Orders.Where(a => a.CreatorId == id && a.Status != OrderStatusCodes.Created).ToArray();
             return View(orders);
         }
 
