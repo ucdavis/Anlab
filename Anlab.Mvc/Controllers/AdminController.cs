@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Anlab.Core.Domain;
 using AnlabMvc.Data;
 using AnlabMvc.Models.Order;
+using AnlabMvc.Models.Roles;
 using AnlabMvc.Models.User;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -15,7 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AnlabMvc.Controllers
 {
-    [Authorize(Roles = "Admin,User")]
+    [Authorize(Roles = RoleCodes.Admin + "," + RoleCodes.User)]
     public class AdminController : ApplicationController
     {
         private readonly ApplicationDbContext _dbContext;
@@ -31,12 +32,12 @@ namespace AnlabMvc.Controllers
             _orderService = orderService;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = RoleCodes.Admin)]
         public async Task<IActionResult> Index()
         {
-            var adminUsers = await _userManager.GetUsersInRoleAsync("Admin");
-            var adminRole = _roleManager.Roles.Single(a => a.Name == "Admin").Id;
-            var userRole = _roleManager.Roles.Single(a => a.Name == "User").Id;
+            var adminUsers = await _userManager.GetUsersInRoleAsync(RoleCodes.Admin);
+            var adminRole = _roleManager.Roles.Single(a => a.Name == RoleCodes.Admin).Id;
+            var userRole = _roleManager.Roles.Single(a => a.Name == RoleCodes.User).Id;
 
             var users = _dbContext.Users.Include(a => a.Roles).ToList();
             
@@ -69,7 +70,7 @@ namespace AnlabMvc.Controllers
 
         public IActionResult ListNonAdminUsers()
         {
-            var adminRole = _roleManager.Roles.Single(a => a.Name == "Admin").Id;
+            var adminRole = _roleManager.Roles.Single(a => a.Name == RoleCodes.Admin).Id;
             var users = _dbContext.Users.Include(a => a.Roles).Where(w => w.Roles.All(x => x.RoleId != adminRole)).ToList();
 
             return View(users);
@@ -198,7 +199,7 @@ namespace AnlabMvc.Controllers
             return Json(new { success = true, id = idForRedirection });
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = RoleCodes.Admin)]
         public async Task<IActionResult> AddUserToRole(string userId, string role, bool add)
         {
             var user = _dbContext.Users.Single(a => a.Id == userId);
