@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AnlabMvc.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,User")]
     public class AdminController : ApplicationController
     {
         private readonly ApplicationDbContext _dbContext;
@@ -30,6 +30,8 @@ namespace AnlabMvc.Controllers
             _roleManager = roleManager;
             _orderService = orderService;
         }
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var adminUsers = await _userManager.GetUsersInRoleAsync("Admin");
@@ -196,6 +198,7 @@ namespace AnlabMvc.Controllers
             return Json(new { success = true, id = idForRedirection });
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddUserToRole(string userId, string role, bool add)
         {
             var user = _dbContext.Users.Single(a => a.Id == userId);
