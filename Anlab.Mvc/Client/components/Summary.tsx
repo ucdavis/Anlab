@@ -14,6 +14,7 @@ interface ISummaryProps {
     grind: boolean;
     foreignSoil: boolean;
     filterWater: boolean;
+    hideError: boolean;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
@@ -178,7 +179,8 @@ export class Summary extends React.Component<ISummaryProps, any> {
                         </tr>
                     </tfoot>
                 </table>
-                {this.props.canSubmit ? <div className="alert alert-info">{infoText}</div> : <div className="alert alert-danger">{errorText}</div> }
+                {this.props.canSubmit ? <div className="alert alert-info">{infoText}</div> : null}
+                {!this.props.hideError ? <div className="alert alert-danger">{errorText}</div> : null}
                 <Button raised primary disabled={!this.props.canSubmit} onClick={this.props.onSubmit}>
                     {saveText}
                 </Button>

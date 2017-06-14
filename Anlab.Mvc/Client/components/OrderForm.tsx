@@ -1,5 +1,6 @@
 ﻿import * as React from 'react';
 import Dialog from 'react-toolbox/lib/dialog';
+import DatePicker from 'react-toolbox/lib/date_picker';
 import { ITestItem, TestList } from './TestList';
 import { IPayment, PaymentSelection } from './PaymentSelection';
 import { SampleTypeSelection } from './SampleTypeSelection';
@@ -32,11 +33,13 @@ interface IOrderState {
     filterWater: boolean;
     isErrorActive: boolean;
     errorMessage: string;
+    dateSampled: Date;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
     constructor(props) {
         super(props);
+
 
         const initialState = {
             orderId: null,
@@ -45,7 +48,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             quantity: null,
             sampleType: 'Soil',
             testItems: window.App.orderData.testItems,
-            selectedTests: { },
+            selectedTests: {},
             isValid: false,
             isSubmitting: false,
             project: '',
@@ -55,7 +58,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             filterWater: false,
             isErrorActive: false,
             errorMessage: '',
-        };
+            dateSampled: new Date(),
+    };
 
         if (window.App.defaultAccount) {            
             initialState.payment.account = window.App.defaultAccount;
@@ -80,6 +84,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.filterWater = orderInfo.FilterWater;
             initialState.payment.clientType = orderInfo.Payment.ClientType;
             initialState.payment.account = orderInfo.Payment.Account;
+            initialState.dateSampled = new Date(Date.parse(orderInfo.DateSampled));
 
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
@@ -156,7 +161,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             return;
         }
         this.setState({ ...this.state, isSubmitting: true });
-        const selectedTests = this.getTests().selected;
+        const selectedTests = this.getTests().selected;        
         const order = {
             orderId: this.state.orderId,
             quantity: this.state.quantity,
@@ -168,6 +173,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             grind: this.state.grind,
             foreignSoil: this.state.foreignSoil,
             filterWater: this.state.filterWater,
+            dateSampled: this.state.dateSampled,
             selectedTests,
         }
         var that = this;
@@ -205,6 +211,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <Grind grind={grind} handleChange={this.handleChange} sampleType={sampleType} />
                     <ForeignSoil foreignSoil={foreignSoil} handleChange={this.handleChange} sampleType={sampleType} />
                     <WaterFilter filterWater={filterWater} handleChange={this.handleChange} sampleType={sampleType} />
+                    <DatePicker label="Date Sampled" sundayFirstDayOfWeek onChange={this.handleChange.bind(this, 'dateSampled')} value={this.state.dateSampled}  />
                     <div>
                         <label>Quantity:</label>
                         <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
@@ -217,7 +224,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                 </div>
                 <div className="col-lg-4">
                     <div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
-                        <Summary isCreate={this.state.orderId === null} canSubmit={this.state.isValid && !this.state.isSubmitting} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} grind={(grind && sampleType !== "Water")} foreignSoil={(foreignSoil && sampleType === "Soil")} filterWater={(filterWater && sampleType === "Water")}/>
+                        <Summary isCreate={this.state.orderId === null} canSubmit={this.state.isValid && !this.state.isSubmitting} hideError={this.state.isValid || this.state.isSubmitting} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} grind={(grind && sampleType !== "Water")} foreignSoil={(foreignSoil && sampleType === "Soil")} filterWater={(filterWater && sampleType === "Water")}/>
                     </div>
                 </div>
 
