@@ -160,6 +160,12 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
+        public IActionResult ListUsersOrders(string id)
+        {
+            var orders = _dbContext.Orders.Where(a => a.CreatorId == id && a.Status != null).ToArray();
+            return View(orders);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Save([FromBody]OrderSaveModel model)
         {
