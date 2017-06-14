@@ -87,7 +87,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.state = { ...initialState };
     }
     validate = () => {
-        const valid = this.state.quantity > 0 && !!this.state.project.trim();
+        const valid = this.state.quantity > 0 && this.state.quantity <= 100 && !!this.state.project.trim();
         this.setState({ ...this.state, isValid: valid });
     }
     onPaymentSelected = (payment: any) => {
