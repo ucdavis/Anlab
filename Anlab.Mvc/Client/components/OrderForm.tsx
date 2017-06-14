@@ -159,8 +159,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         if (this.state.isSubmitting) {
             return;
         }
-        var postUrl = '/order/save';
-        var returnUrl = '/Order/Confirmation/';
+        let postUrl = '/order/save';
+        let returnUrl = '/Order/Confirmation/';
         if (this.state.isAdmin) {
             postUrl = '/admin/save';
             returnUrl = '/Admin/Details/';
@@ -180,7 +180,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             filterWater: this.state.filterWater,
             selectedTests,
         }
-        var that = this;
+        const that = this;
         $.post({
             
             url: postUrl,
@@ -189,7 +189,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             dataType: "json",
         }).success((response) => {
             if (response.success === true) {
-                var redirectId = response.id;
+                const redirectId = response.id;
                 window.location.replace(returnUrl + redirectId);
             } else {
                 that.setState({ ...that.state, isSubmitting: false, isErrorActive: true, errorMessage: response.message });
