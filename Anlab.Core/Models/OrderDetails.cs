@@ -35,6 +35,9 @@ namespace AnlabMvc.Models.Order
         public bool ForeignSoil { get; set; } //Soil
 
         public bool FilterWater { get; set; } //Water
+
+        public string AdminComments { get; set; }
+        public decimal AdjustmentAmount { get; set; }
     }
 
 }
