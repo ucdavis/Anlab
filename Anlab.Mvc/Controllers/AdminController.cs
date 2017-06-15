@@ -35,43 +35,23 @@ namespace AnlabMvc.Controllers
         [Authorize(Roles = RoleCodes.Admin)]
         public async Task<IActionResult> Index()
         {
-            var adminUsers = await _userManager.GetUsersInRoleAsync(RoleCodes.Admin);
-            var adminRole = _roleManager.Roles.Single(a => a.Name == RoleCodes.Admin).Id;
-            var userRole = _roleManager.Roles.Single(a => a.Name == RoleCodes.User).Id;
+            var adminRole = await _roleManager.FindByNameAsync(RoleCodes.Admin);
+            var userRole = await _roleManager.FindByNameAsync(RoleCodes.User);
 
-            var users = _dbContext.Users.Include(a => a.Roles).ToList();
-            
-            var usersRoles = new List<UserRolesModel>();
-            foreach (var user in users)
+            var usersRoles = _dbContext.Users.Select(u => new UserRolesModel
             {
-                var ur = new UserRolesModel();
-                ur.User = user;                
-                if (user.Roles.Any(a => a.RoleId == adminRole))
-                {
-                    ur.IsAdmin = true;
-                }
-                else
-                {
-                    ur.IsAdmin = false;
-                }
-                if (user.Roles.Any(a => a.RoleId == userRole))
-                {
-                    ur.IsUser = true;
-                }
-                else
-                {
-                    ur.IsUser = false;
-                }
-                usersRoles.Add(ur);
-            }           
+                User = u,
+                IsAdmin = u.Roles.Any(a => a.RoleId == adminRole.Id),
+                IsUser = u.Roles.Any(a => a.RoleId == userRole.Id)
+            }).ToList();
 
             return View(usersRoles);
         }
 
-        public IActionResult ListNonAdminUsers()
+        public async Task<IActionResult> ListNonAdminUsers()
         {
-            var adminRole = _roleManager.Roles.Single(a => a.Name == RoleCodes.Admin).Id;
-            var users = _dbContext.Users.Include(a => a.Roles).Where(w => w.Roles.All(x => x.RoleId != adminRole)).ToList();
+            var adminRole = await _roleManager.FindByNameAsync(RoleCodes.Admin);
+            var users = _dbContext.Users.Where(w => w.Roles.All(x => x.RoleId != adminRole.Id)).ToList();
 
             return View(users);
         }
