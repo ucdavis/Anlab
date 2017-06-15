@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
 using Anlab.Core.Domain;
 using AnlabMvc.Data;
+using MailKit.Net.Smtp;
+using MimeKit;
 
 namespace AnlabMvc.Services {
     public class MailService {
@@ -16,6 +18,32 @@ namespace AnlabMvc.Services {
             _dbContext.Add(message);
 
             await _dbContext.SaveChangesAsync();
+        }
+
+        public void SendMessage(MailMessage mailMessage) {
+            var message = new MimeMessage ();
+    		message.From.Add (new MailboxAddress ("Anlab", "anlab@ucdavis.edu"));
+			message.To.Add (new MailboxAddress(mailMessage.SendTo));
+			message.Subject = mailMessage.Subject;
+            message.Body = new TextPart("html") { Text = mailMessage.Body };
+
+            using (var client = new SmtpClient ()) {
+				// For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
+				client.ServerCertificateValidationCallback = (s,c,h,e) => true;
+
+                client.Connect("smtp.ucdavis.edu", 49);
+				// client.Connect ("smtp.ucdavis.edu", 587, false);
+
+				// Note: since we don't have an OAuth2 token, disable
+				// the XOAUTH2 authentication mechanism.
+				client.AuthenticationMechanisms.Remove ("XOAUTH2");
+
+				// Note: only needed if the SMTP server requires authentication
+				// client.Authenticate ("joey", "password");
+
+				client.Send (message);
+				client.Disconnect (true);
+			}
         }
     }
 }
