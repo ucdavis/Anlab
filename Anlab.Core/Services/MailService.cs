@@ -4,9 +4,9 @@ using Anlab.Core.Domain;
 using MailKit.Net.Smtp;
 using MimeKit;
 
-namespace AnlabMvc.Services {
+namespace Anlab.Core.Services {
     public class MailService {
-        private ApplicationDbContext _dbContext;
+        private readonly ApplicationDbContext _dbContext;
 
         public MailService(ApplicationDbContext dbContext)
         {
@@ -19,7 +19,7 @@ namespace AnlabMvc.Services {
 
             await _dbContext.SaveChangesAsync();
         }
-
+        
         public void SendMessage(MailMessage mailMessage) {
             var message = new MimeMessage ();
     		message.From.Add (new MailboxAddress ("Anlab", "anlab@ucdavis.edu"));
@@ -31,6 +31,7 @@ namespace AnlabMvc.Services {
 				// For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
 				client.ServerCertificateValidationCallback = (s,c,h,e) => true;
 
+                // TODO: use authenticated STMP
                 client.Connect("smtp.ucdavis.edu", 25, false);
 				// client.Connect ("smtp.ucdavis.edu", 587, false);
 
