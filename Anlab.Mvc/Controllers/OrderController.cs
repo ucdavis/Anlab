@@ -6,6 +6,7 @@ using AnlabMvc.Data;
 using AnlabMvc.Models.Order;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
+using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -20,10 +21,12 @@ namespace AnlabMvc.Controllers
     public class OrderController : ApplicationController
     {
         private readonly ApplicationDbContext _context;
+        private readonly IOrderService _orderService;
 
-        public OrderController(ApplicationDbContext context)
+        public OrderController(ApplicationDbContext context, IOrderService orderService)
         {
             _context = context;
+            _orderService = orderService;
         }
 
         public async Task<IActionResult> Index()
@@ -57,7 +60,7 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index");
             }
 
-            if (order.Status != null)
+            if (order.Status != OrderStatusCodes.Created)
             {
                 ErrorMessage = "You can't edit an order that has been confirmed.";
                 return RedirectToAction("Index");
@@ -100,13 +103,12 @@ namespace AnlabMvc.Controllers
                 {
                     return Json(new {success = false, message = "This is not your order."});
                 }
-                if(orderToUpdate.Status != null)
+                if(orderToUpdate.Status != OrderStatusCodes.Created)
                 {
                     return Json(new { success = false, message = "This has been confirmed and may not be updated." });
                 }
 
-                await PopulateOrder(model, orderToUpdate);
-
+                await _orderService.PopulateOrder(model, orderToUpdate);
 
                 idForRedirection = model.OrderId.Value;
                 await _context.SaveChangesAsync();
@@ -116,8 +118,9 @@ namespace AnlabMvc.Controllers
                 var order = new Order
                 {
                     CreatorId = CurrentUserId,
+                    Status = OrderStatusCodes.Created,
                 };
-                await PopulateOrder(model, order);
+                await _orderService.PopulateOrder(model, order);
 
                 _context.Add(order);
                 await _context.SaveChangesAsync();
@@ -128,66 +131,6 @@ namespace AnlabMvc.Controllers
             return Json(new { success = true, id = idForRedirection });
         }
 
-        private async Task PopulateOrder(OrderSaveModel model, Order orderToUpdate)
-        {
-            orderToUpdate.Project = model.Project;
-            orderToUpdate.JsonDetails = JsonConvert.SerializeObject(model);
-            var orderDetails = orderToUpdate.GetOrderDetails();
-            var testItemIds = orderDetails.SelectedTests.Select(a => a.Id).ToArray();
-            var selectedTests = await _context.TestItems.Where(a => testItemIds.Contains(a.Id)).ToListAsync();
-            var isUcClient = string.Equals(orderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase);
-            if (isUcClient)
-            {
-                orderDetails.Total = selectedTests.Sum(a => a.InternalCost);
-            }
-            else
-            {
-                if (string.Equals(orderDetails.Payment.ClientType, "other", StringComparison.OrdinalIgnoreCase))
-                {
-                    orderDetails.Total = selectedTests.Sum(a => a.ExternalCost);
-                }
-                else
-                {
-                    throw new Exception("What! unknown payment!!!");
-                }
-            }
-            orderDetails.Total = orderDetails.Total * orderDetails.Quantity;
-            AddAdditionalFees(orderDetails, isUcClient);
-            orderDetails.Total += selectedTests.Sum(a => a.SetupCost);
-
-
-            orderToUpdate.SaveDetails(orderDetails);
-            orderToUpdate.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails);
-        }
-
-        private static void AddAdditionalFees(OrderDetails orderDetails, bool isUcClient)
-        {
-            if (string.Equals(orderDetails.SampleType, "Water", StringComparison.OrdinalIgnoreCase))
-            {
-                if (orderDetails.FilterWater)
-                {
-                    orderDetails.Total += orderDetails.Quantity * (isUcClient ? 11 : 17);
-                }
-            }
-            if (string.Equals(orderDetails.SampleType, "Soil", StringComparison.OrdinalIgnoreCase))
-            {
-                if (orderDetails.Grind)
-                {
-                    orderDetails.Total += orderDetails.Quantity * (isUcClient ? 6 : 9);
-                }
-                if (orderDetails.ForeignSoil)
-                {
-                    orderDetails.Total += orderDetails.Quantity * (isUcClient ? 9 : 14);
-                }
-            }
-            if (string.Equals(orderDetails.SampleType, "Plant", StringComparison.OrdinalIgnoreCase))
-            {
-                if (orderDetails.Grind)
-                {
-                    orderDetails.Total += orderDetails.Quantity * (isUcClient ? 6 : 9);
-                }
-            }
-        }
 
         public async Task<IActionResult> Details(int id)
         {
@@ -204,7 +147,7 @@ namespace AnlabMvc.Controllers
                 return NotFound(id);
             }
 
-            if (order.Status == null)
+            if (order.Status == OrderStatusCodes.Created)
             {
                 ErrorMessage = "Must confim order before viewing details.";
                 return RedirectToAction("Index");
@@ -255,7 +198,7 @@ namespace AnlabMvc.Controllers
                 return NotFound(id);
             }
 
-            if (order.Status != null)
+            if (order.Status != OrderStatusCodes.Created)
             {
                 ErrorMessage = "Already confirmed";
                 return RedirectToAction("Index");
@@ -285,7 +228,7 @@ namespace AnlabMvc.Controllers
                 return NotFound(id);
             }
 
-            if (order.Status != null)
+            if (order.Status != OrderStatusCodes.Created)
             {
                 ErrorMessage = "Can't delete confirmed orders.";
                 return RedirectToAction("Index");
