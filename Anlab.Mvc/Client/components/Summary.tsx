@@ -17,6 +17,7 @@ interface ISummaryProps {
     hideError: boolean;
     isAdmin: boolean;
     status: string;
+    adjustmentAmount: number;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
@@ -33,7 +34,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
             return prev + perTest + item.setupCost;
         }, 0);
 
-        return total + grindTotal + foreignSoilTotal + filterWaterTotal;
+        return total + grindTotal + foreignSoilTotal + filterWaterTotal + this.props.adjustmentAmount;
     }
 
     grindCost = () => {
@@ -80,7 +81,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
     }
 
     _renderAdditionalFees = () => {
-        if (!(this.props.grind || this.props.foreignSoil || this.props.filterWater)) {
+        if (!(this.props.grind || this.props.foreignSoil || this.props.filterWater || this.props.adjustmentAmount !== 0)) {
             return null;
         }
 
@@ -98,6 +99,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
                     {this._renderGrindFee()}
                     {this._renderForeignSoilFee()}
                     {this._renderFilterWaterFee()}
+                    {this._renderAdjustment()}
                 </tbody>
             </table>
         );
@@ -117,6 +119,20 @@ export class Summary extends React.Component<ISummaryProps, any> {
                 <td><NumberFormat value={Total} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
             </tr>
             );
+    }
+
+    _renderAdjustment = () => {
+        if (this.props.adjustmentAmount === 0) {
+            return null;
+        }
+
+        return (
+            <tr>
+                <td>Adjustment</td>
+                <td></td>
+                <td><NumberFormat value={this.props.adjustmentAmount} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+            </tr>
+        );
     }
 
     _renderForeignSoilFee = () => {
