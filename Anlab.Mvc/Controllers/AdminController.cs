@@ -172,6 +172,12 @@ namespace AnlabMvc.Controllers
 
                 await _orderService.PopulateOrder(model, orderToUpdate);
 
+                if (orderToUpdate.Status == OrderStatusCodes.Confirmed)
+                {
+                    orderToUpdate.Status = OrderStatusCodes.Received;
+                    await _orderService.SendOrderToAnlab(orderToUpdate);
+                }
+
 
                 idForRedirection = model.OrderId.Value;
                 await _dbContext.SaveChangesAsync();

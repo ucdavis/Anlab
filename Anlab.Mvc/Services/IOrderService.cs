@@ -13,6 +13,7 @@ namespace AnlabMvc.Services
     public interface IOrderService
     {
         Task PopulateOrder(OrderSaveModel model, Order orderToUpdate);
+        Task SendOrderToAnlab(Order order);
     }
 
     public class OrderService : IOrderService
@@ -54,6 +55,13 @@ namespace AnlabMvc.Services
             orderToUpdate.SaveDetails(orderDetails);
             orderToUpdate.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails);
         }
+
+        public async Task SendOrderToAnlab(Order order)
+        {
+            //TODO: Implement this.
+            return;
+        }
+
         private static void AddAdditionalFees(OrderDetails orderDetails, bool isUcClient)
         {
             if (string.Equals(orderDetails.SampleType, "Water", StringComparison.OrdinalIgnoreCase))
