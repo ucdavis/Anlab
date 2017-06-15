@@ -1,15 +1,15 @@
 ﻿using System;
+using Anlab.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using AnlabMvc.Data;
 
-namespace AnlabMvc.Migrations
+namespace Anlab.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170502215754_TestItems")]
-    partial class TestItems
+    [Migration("20170502222144_TestGroups")]
+    partial class TestGroups
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -59,6 +59,10 @@ namespace AnlabMvc.Migrations
                         .IsRequired()
                         .HasMaxLength(512);
 
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(64);
+
                     b.Property<bool>("ChargeSet");
 
                     b.Property<string>("Code")
@@ -70,6 +74,10 @@ namespace AnlabMvc.Migrations
                     b.Property<string>("FeeSchedule")
                         .IsRequired()
                         .HasMaxLength(7);
+
+                    b.Property<string>("Group")
+                        .IsRequired()
+                        .HasMaxLength(8);
 
                     b.Property<string>("GroupType");
 
@@ -83,7 +91,7 @@ namespace AnlabMvc.Migrations
 
                     b.Property<bool>("Public");
 
-                    b.Property<string>("TestType");
+                    b.Property<decimal>("SetupCost");
 
                     b.HasKey("Id");
 

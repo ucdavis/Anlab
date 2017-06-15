@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Anlab.Core.Data;
 using Anlab.Core.Domain;
-using AnlabMvc.Data;
+using Anlab.Core.Models;
 using AnlabMvc.Models.Order;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;

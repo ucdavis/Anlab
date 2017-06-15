@@ -9,12 +9,6 @@
     <Description>Order and results management system for AnLab@UCDavis</Description>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Data\Migrations\**" />
-    <Content Remove="Data\Migrations\**" />
-    <EmbeddedResource Remove="Data\Migrations\**" />
-    <None Remove="Data\Migrations\**" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="AspNetCore.Security.CAS" Version="1.0.0" />
     <PackageReference Include="AzureActiveDirectorySearcher" Version="1.0.0" />
     <PackageReference Include="Humanizer.Core" Version="2.2.0" />

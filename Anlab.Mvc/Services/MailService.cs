@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
+using Anlab.Core.Data;
 using Anlab.Core.Domain;
-using AnlabMvc.Data;
 using MailKit.Net.Smtp;
 using MimeKit;
 
