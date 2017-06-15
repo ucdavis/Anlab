@@ -217,7 +217,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                 </div>
                 <div className="col-lg-4">
                     <div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
-                        <Summary isCreate={this.state.orderId === null} canSubmit={this.state.isValid && !this.state.isSubmitting} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} grind={(grind && sampleType !== "Water")} foreignSoil={(foreignSoil && sampleType === "Soil")} filterWater={(filterWater && sampleType === "Water")}/>
+                        <Summary isCreate={this.state.orderId === null} canSubmit={this.state.isValid && !this.state.isSubmitting} hideError={this.state.isValid || this.state.isSubmitting} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} grind={(grind && sampleType !== "Water")} foreignSoil={(foreignSoil && sampleType === "Soil")} filterWater={(filterWater && sampleType === "Water")}/>
                     </div>
                 </div>
 
