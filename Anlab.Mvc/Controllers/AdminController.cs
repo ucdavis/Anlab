@@ -170,7 +170,7 @@ namespace AnlabMvc.Controllers
             {
                 var orderToUpdate = await _dbContext.Orders.SingleAsync(a => a.Id == model.OrderId.Value);
 
-                await _orderService.PopulateOrder(model, orderToUpdate);
+                await _orderService.PopulateOrder(model, orderToUpdate, true);
 
                 if (orderToUpdate.Status == OrderStatusCodes.Confirmed)
                 {

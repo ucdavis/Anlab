@@ -188,6 +188,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             grind: this.state.grind,
             foreignSoil: this.state.foreignSoil,
             filterWater: this.state.filterWater,
+            labComments: this.state.labComments,
+            adjustmentAmount: this.state.adjustmentAmount,
             selectedTests,
         }
         const that = this;
