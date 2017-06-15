@@ -11,6 +11,7 @@ import { AdditionalEmails } from "./AdditionalEmails";
 import { Grind } from "./Grind";
 import { ForeignSoil } from "./ForeignSoil";
 import { WaterFilter } from "./WaterFilter";
+import { LabFields } from './LabFields';
 
 declare var window: any;
 declare var $: any;
@@ -34,6 +35,8 @@ interface IOrderState {
     errorMessage: string;
     isAdmin: boolean;
     status: string;
+    labComments: string;
+    adjustmentAmount: number;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -59,6 +62,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             errorMessage: '',
             isAdmin: false,
             status: '',
+            labComments: '',
+            adjustmentAmount: 0,
         };
 
         if (window.App.defaultAccount) {            
@@ -88,6 +93,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.filterWater = orderInfo.FilterWater;
             initialState.payment.clientType = orderInfo.Payment.ClientType;
             initialState.payment.account = orderInfo.Payment.Account;
+            initialState.labComments = orderInfo.LabComments;
+            initialState.adjustmentAmount = orderInfo.AdjustmentAmount;
 
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
@@ -202,7 +209,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         });
     }
     render() {
-        const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, grind, foreignSoil, filterWater, isAdmin, status } = this.state;
+        const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, grind, foreignSoil, filterWater, isAdmin, status, labComments, adjustmentAmount } = this.state;
 
         const { filtered, selected} = this.getTests();
 
@@ -226,6 +233,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail}/>
                     <Project project={project} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
+                    <LabFields isAdmin={isAdmin} labComments={labComments} adjustmentAmount={adjustmentAmount} handleChange={this.handleChange} />
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
                     <div style={{ height: 600 }}></div>
                 </div>
