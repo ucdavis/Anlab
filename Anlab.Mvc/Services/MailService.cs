@@ -31,7 +31,7 @@ namespace AnlabMvc.Services {
 				// For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
 				client.ServerCertificateValidationCallback = (s,c,h,e) => true;
 
-                client.Connect("smtp.ucdavis.edu", 49);
+                client.Connect("smtp.ucdavis.edu", 25, false);
 				// client.Connect ("smtp.ucdavis.edu", 587, false);
 
 				// Note: since we don't have an OAuth2 token, disable
