@@ -4,8 +4,8 @@ using Anlab.Core.Models;
 
 namespace Anlab.Core.Domain
 {
-    public class MailQueue {
-        public MailQueue()
+    public class MailMessage {
+        public MailMessage()
         {
             SentAt = DateTime.UtcNow;
         }
