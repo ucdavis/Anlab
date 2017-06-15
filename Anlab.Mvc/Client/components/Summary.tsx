@@ -15,6 +15,8 @@ interface ISummaryProps {
     foreignSoil: boolean;
     filterWater: boolean;
     hideError: boolean;
+    isAdmin: boolean;
+    status: string;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
@@ -153,8 +155,14 @@ export class Summary extends React.Component<ISummaryProps, any> {
         if (this.props.testItems.length === 0) {
             return null;
         }
-        const saveText = this.props.isCreate ? "Place Order" : "Update Order";
-        const infoText = this.props.isCreate ? "Go ahead and place your order" : "Go ahead and update your order";
+        let saveText = this.props.isCreate ? "Place Order" : "Update Order";
+        let infoText = this.props.isCreate ? "Go ahead and place your order" : "Go ahead and update your order";        
+        if (this.props.isAdmin) {
+            if (this.props.status === "Confirmed") {
+                saveText = "Receive Order";
+                infoText = "Receive Order. Make any changes needed first.";
+            }
+        }
         const errorText = "Please correct any errors and complete any required fields before you " + saveText.toLowerCase();
         return (
             <div>

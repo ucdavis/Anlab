@@ -2,7 +2,7 @@
 @using Anlab.Core.Domain
 
 @{
-    ViewBag.Title = "Admin Edit";
+    ViewBag.Title = "Admin Edit -- " + Model.Order.Status + " Status";
 }
 
 <div id="react-app"></div>
@@ -12,6 +12,7 @@
     App.orderData = @Json.Serialize(Model);
     App.OrderId = @Model.Order.Id;
     App.IsAdmin = true;
+    App.Status = @Json.Serialize(Model.Order.Status);
 </script>
 
 <script src="~/dist/react.js" asp-append-version="true"></script>
