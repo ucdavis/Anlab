@@ -171,6 +171,13 @@ namespace AnlabMvc.Controllers
                 var orderToUpdate = await _dbContext.Orders.SingleAsync(a => a.Id == model.OrderId.Value);
 
                 await _orderService.PopulateOrder(model, orderToUpdate);
+                _orderService.PopulateOrderWithLabDetails(model, orderToUpdate);
+
+                if (orderToUpdate.Status == OrderStatusCodes.Confirmed)
+                {
+                    orderToUpdate.Status = OrderStatusCodes.Received;
+                    await _orderService.SendOrderToAnlab(orderToUpdate);
+                }
 
 
                 idForRedirection = model.OrderId.Value;

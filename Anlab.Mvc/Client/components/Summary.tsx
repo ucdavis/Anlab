@@ -15,6 +15,9 @@ interface ISummaryProps {
     foreignSoil: boolean;
     filterWater: boolean;
     hideError: boolean;
+    isAdmin: boolean;
+    status: string;
+    adjustmentAmount: number;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
@@ -31,7 +34,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
             return prev + perTest + item.setupCost;
         }, 0);
 
-        return total + grindTotal + foreignSoilTotal + filterWaterTotal;
+        return total + grindTotal + foreignSoilTotal + filterWaterTotal + this.props.adjustmentAmount;
     }
 
     grindCost = () => {
@@ -78,7 +81,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
     }
 
     _renderAdditionalFees = () => {
-        if (!(this.props.grind || this.props.foreignSoil || this.props.filterWater)) {
+        if (!(this.props.grind || this.props.foreignSoil || this.props.filterWater || this.props.adjustmentAmount !== 0)) {
             return null;
         }
 
@@ -96,6 +99,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
                     {this._renderGrindFee()}
                     {this._renderForeignSoilFee()}
                     {this._renderFilterWaterFee()}
+                    {this._renderAdjustment()}
                 </tbody>
             </table>
         );
@@ -115,6 +119,20 @@ export class Summary extends React.Component<ISummaryProps, any> {
                 <td><NumberFormat value={Total} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
             </tr>
             );
+    }
+
+    _renderAdjustment = () => {
+        if (this.props.adjustmentAmount === 0) {
+            return null;
+        }
+
+        return (
+            <tr>
+                <td>Adjustment</td>
+                <td></td>
+                <td><NumberFormat value={this.props.adjustmentAmount} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+            </tr>
+        );
     }
 
     _renderForeignSoilFee = () => {
@@ -153,8 +171,14 @@ export class Summary extends React.Component<ISummaryProps, any> {
         if (this.props.testItems.length === 0) {
             return null;
         }
-        const saveText = this.props.isCreate ? "Place Order" : "Update Order";
-        const infoText = this.props.isCreate ? "Go ahead and place your order" : "Go ahead and update your order";
+        let saveText = this.props.isCreate ? "Place Order" : "Update Order";
+        let infoText = this.props.isCreate ? "Go ahead and place your order" : "Go ahead and update your order";        
+        if (this.props.isAdmin) {
+            if (this.props.status === "Confirmed") {
+                saveText = "Receive Order";
+                infoText = "Receive Order. Make any changes needed first.";
+            }
+        }
         const errorText = "Please correct any errors and complete any required fields before you " + saveText.toLowerCase();
         return (
             <div>
