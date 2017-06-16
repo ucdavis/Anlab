@@ -12,7 +12,8 @@ namespace AnlabMvc.Services
 {
     public interface IOrderService
     {
-        Task PopulateOrder(OrderSaveModel model, Order orderToUpdate, bool fromAdmin = false);
+        Task PopulateOrder(OrderSaveModel model, Order orderToUpdate);
+        void PopulateOrderWithLabDetails(OrderSaveModel model, Order orderToUpdate);
         Task SendOrderToAnlab(Order order);
     }
 
@@ -24,7 +25,7 @@ namespace AnlabMvc.Services
         {
             _context = context;
         }
-        public async Task PopulateOrder(OrderSaveModel model, Order orderToUpdate, bool fromAdmin = false)
+        public async Task PopulateOrder(OrderSaveModel model, Order orderToUpdate)
         {
             orderToUpdate.Project = model.Project;
             orderToUpdate.JsonDetails = JsonConvert.SerializeObject(model);
@@ -50,18 +51,16 @@ namespace AnlabMvc.Services
             orderDetails.Total = orderDetails.Total * orderDetails.Quantity;
             AddAdditionalFees(orderDetails, isUcClient);
             orderDetails.Total += selectedTests.Sum(a => a.SetupCost);
-            if (fromAdmin)
-            {
-                orderDetails.Total += orderDetails.AdjustmentAmount;
-            }
-            else
-            {
-                orderDetails.AdjustmentAmount = 0;
-                orderDetails.LabComments = String.Empty;
-            }
 
             orderToUpdate.SaveDetails(orderDetails);
             orderToUpdate.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails);
+        }
+
+        public void PopulateOrderWithLabDetails(OrderSaveModel model, Order orderToUpdate)
+        {
+            var orderDetails = orderToUpdate.GetOrderDetails();
+            orderDetails.Total += orderDetails.AdjustmentAmount;
+            orderToUpdate.SaveDetails(orderDetails);
         }
 
         public async Task SendOrderToAnlab(Order order)
