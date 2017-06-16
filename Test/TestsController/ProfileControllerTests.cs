@@ -1,6 +1,5 @@
 ﻿using Anlab.Core.Domain;
 using AnlabMvc.Controllers;
-using AnlabMvc.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +14,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using Anlab.Core.Data;
 using Test.Helpers;
 using Xunit;
 using Xunit.Abstractions;

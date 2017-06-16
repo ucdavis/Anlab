@@ -7,7 +7,7 @@ using Anlab.Core.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace AnlabMvc.Data
+namespace Anlab.Core.Data
 {
     public class ApplicationDbContext : IdentityDbContext<User>
     {

@@ -1,21 +1,20 @@
 ﻿using System;
+using Anlab.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using AnlabMvc.Data;
 
-namespace AnlabMvc.Migrations
+namespace Anlab.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170502222144_TestGroups")]
-    partial class TestGroups
+    [Migration("20170511225713_OrderStatus")]
+    partial class OrderStatus
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.1.1")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "1.1.1");
 
             modelBuilder.Entity("Anlab.Core.Domain.Order", b =>
                 {
@@ -40,6 +39,8 @@ namespace AnlabMvc.Migrations
                     b.Property<string>("Project")
                         .IsRequired()
                         .HasMaxLength(256);
+
+                    b.Property<string>("Status");
 
                     b.Property<DateTime>("Updated");
 
