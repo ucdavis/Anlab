@@ -45,4 +45,24 @@ describe('<Project />', () => {
         internal.onChange('x');
         expect(internal.state.error).toBeNull();
     });
+
+    it('should set error empty string value', () => {
+        const target = shallow(<Project project={' '} handleChange={null} />);
+        const internal = target.instance();
+
+        internal.onChange('');
+
+        expect(internal.state.error).not.toBeNull();
+        expect(internal.state.error).toBe("The project id is required");
+    });
+
+    it('should set error spaces string value', () => {
+        const target = shallow(<Project project={' '} handleChange={null} />);
+        const internal = target.instance();
+
+        internal.onChange('   ');
+
+        expect(internal.state.error).not.toBeNull();
+        expect(internal.state.error).toBe("The project id is required");
+    });
 });
