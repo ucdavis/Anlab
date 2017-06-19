@@ -48,6 +48,17 @@ describe('<NumberInput />', () => {
         expect(onChanged).toHaveBeenCalledWith(42);
     });
 
+    it('should call onChanged without truncated state.internalValue when not integer', () => {
+        const onChanged = jasmine.createSpy('onChanged');
+        const target = shallow(<NumberInput onChanged={onChanged} />);
+        const internal = target.instance();
+
+        internal.state.internalValue = '42.5';
+        internal.onBlur();
+
+        expect(onChanged).toHaveBeenCalledWith(42.5);
+    });
+
     it('should clear error on good value', () => {
         const target = shallow(<NumberInput min={10} max={20} />);
         const internal = target.instance();
