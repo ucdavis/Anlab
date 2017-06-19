@@ -64,6 +64,7 @@ describe('<NumberInput />', () => {
         internal.onChange('abc');
 
         expect(internal.state.error).not.toBeNull();
+        expect(internal.state.error).toBe("Must be a number.");
     });
 
     it('should set error on less than min value', () => {
@@ -73,6 +74,7 @@ describe('<NumberInput />', () => {
         internal.onChange('5');
 
         expect(internal.state.error).not.toBeNull();
+        expect(internal.state.error).toBe("Must be a number greater than 10.");
     });
 
     it('should set error on more than max value', () => {
@@ -82,5 +84,6 @@ describe('<NumberInput />', () => {
         internal.onChange('15');
 
         expect(internal.state.error).not.toBeNull();
+        expect(internal.state.error).toBe("Must be a number less than or equal to 10.");
     });
 });
