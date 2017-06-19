@@ -39,17 +39,17 @@ namespace Anlab.Core.Services {
 				client.ServerCertificateValidationCallback = (s,c,h,e) => true;
 
                 // TODO: use authenticated STMP
-                client.Connect("smtp.ucdavis.edu", 25, false);
+                client.Connect("smtp.mailtrap.io", 2525);
 				// client.Connect ("smtp.ucdavis.edu", 587, false);
 
 				// Note: since we don't have an OAuth2 token, disable
 				// the XOAUTH2 authentication mechanism.
 				client.AuthenticationMechanisms.Remove ("XOAUTH2");
 
-				// Note: only needed if the SMTP server requires authentication
-				// client.Authenticate ("joey", "password");
+                // Note: only needed if the SMTP server requires authentication
+                client.Authenticate("b8a905cbb77fa1", "64d1a775a037f2");
 
-				client.Send (message);
+                client.Send (message);
 				client.Disconnect (true);
 			}
         }
