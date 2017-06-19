@@ -5,7 +5,14 @@ using MailKit.Net.Smtp;
 using MimeKit;
 
 namespace Anlab.Core.Services {
-    public class MailService {
+    public interface IMailService
+    {
+        Task EnqueueMessageAsync(MailMessage message);
+        void SendMessage(MailMessage mailMessage);
+    }
+
+    public class MailService : IMailService
+    {
         private readonly ApplicationDbContext _dbContext;
 
         public MailService(ApplicationDbContext dbContext)

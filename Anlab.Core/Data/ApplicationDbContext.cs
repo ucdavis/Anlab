@@ -69,6 +69,8 @@ namespace Anlab.Core.Data
 
         public virtual DbSet<TestItem> TestItems { get; set; }
 
+        public virtual DbSet<MailMessage> MailMessages { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
