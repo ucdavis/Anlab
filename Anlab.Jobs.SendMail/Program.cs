@@ -15,7 +15,6 @@ namespace Anlab.Jobs.SendMail
         {
             // Use this to get configuration info, environmental comes in from azure
             //var builder = new ConfigurationBuilder().AddEnvironmentVariables();
-
             //var config = builder.Build();
 
             IServiceCollection services = new ServiceCollection();
@@ -35,18 +34,35 @@ namespace Anlab.Jobs.SendMail
             //dbContext.Database.EnsureDeleted();
             //dbContext.Database.EnsureCreated();
 
-            using (var txn = dbContext.Database.BeginTransaction())
+            // TOOD: remove, this is how to enqueue a message for testing
+            //mailService.EnqueueMessageAsync(new MailMessage
+            //{
+            //    Body = "Test email",
+            //    Subject = "Test time",
+            //    SendTo = "srkirkland@ucdavis.edu"
+            //}).Wait();
+
+            // Get all messages that we haven't tried to send yet
+            var messagesToSend = dbContext.MailMessages.Where(x => x.Sent == null).ToList();
+
+            foreach (var message in messagesToSend)
             {
-                mailService.EnqueueMessageAsync(new MailMessage
+                try
                 {
-                    Body = "Test email",
-                    Subject = "Test time",
-                    SendTo = "srkirkland@ucdavis.edu"
-                }).Wait();
+                    mailService.SendMessage(message);
 
-                Console.WriteLine(dbContext.MailMessages.Count());
+                    message.Sent = true;
+                    message.SentAt = DateTime.UtcNow;
+                }
+                catch (Exception ex)
+                {
+                    // TODO: figure out which exceptions to retry
+                    message.Sent = false;
+                    message.FailureReason = ex.Message;
+                }
 
-                txn.Commit();
+                dbContext.Update(message);
+                dbContext.SaveChanges();
             }
 
             Console.WriteLine("Hello World!");
