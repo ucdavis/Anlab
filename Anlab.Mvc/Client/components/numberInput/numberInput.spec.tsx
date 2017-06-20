@@ -48,6 +48,17 @@ describe('<NumberInput />', () => {
         expect(onChanged).toHaveBeenCalledWith(42);
     });
 
+    it('should call onChanged without truncated state.internalValue when not integer', () => {
+        const onChanged = jasmine.createSpy('onChanged');
+        const target = shallow(<NumberInput onChanged={onChanged} />);
+        const internal = target.instance();
+
+        internal.state.internalValue = '42.5';
+        internal.onBlur();
+
+        expect(onChanged).toHaveBeenCalledWith(42.5);
+    });
+
     it('should clear error on good value', () => {
         const target = shallow(<NumberInput min={10} max={20} />);
         const internal = target.instance();
@@ -64,6 +75,7 @@ describe('<NumberInput />', () => {
         internal.onChange('abc');
 
         expect(internal.state.error).not.toBeNull();
+        expect(internal.state.error).toBe("Must be a number.");
     });
 
     it('should set error on less than min value', () => {
@@ -73,6 +85,7 @@ describe('<NumberInput />', () => {
         internal.onChange('5');
 
         expect(internal.state.error).not.toBeNull();
+        expect(internal.state.error).toBe("Must be a number greater than 10.");
     });
 
     it('should set error on more than max value', () => {
@@ -82,5 +95,6 @@ describe('<NumberInput />', () => {
         internal.onChange('15');
 
         expect(internal.state.error).not.toBeNull();
+        expect(internal.state.error).toBe("Must be a number less than or equal to 10.");
     });
 });
