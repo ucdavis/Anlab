@@ -7,16 +7,11 @@ namespace Anlab.Core.Models
 {
     public class OrderDetails
     {
-        public OrderDetails()
-        {
-
-        }
-
         public int Quantity { get; set; }
         public string SampleType { get; set; }
         [DataType(DataType.MultilineText)]
         public string AdditionalInfo { get; set; }
-        public IList<TestItem> SelectedTests { get; set; }
+        public IList<TestDetails> SelectedTests { get; set; }
 
         public Decimal Total { get; set; }
 

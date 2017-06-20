@@ -26,32 +26,44 @@ namespace AnlabMvc.Services
         {
             _context = context;
         }
+
+        private IEnumerable<TestDetails> CalculateTestDetails(OrderDetails orderDetails)
+        {
+            var isUcClient = string.Equals(orderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase);
+
+            foreach (var test in orderDetails.SelectedTests)
+            {
+                var cost = isUcClient ? test.InternalCost : test.ExternalCost;
+                var costAndQuantity = cost * orderDetails.Quantity;
+
+                yield return new TestDetails
+                {
+                    Analysis = test.Analysis,
+                    Code = test.Code,
+                    SetupCost = test.SetupCost,
+                    InternalCost = test.InternalCost,
+                    ExternalCost = test.ExternalCost,
+                    Cost = cost,
+                    SubTotal = costAndQuantity,
+                    Total = costAndQuantity + test.SetupCost
+                };
+            }
+        }
         public async Task PopulateOrder(OrderSaveModel model, Order orderToUpdate)
         {
+            // TODO: get test items from DB to make sure we are using proper $$
             orderToUpdate.Project = model.Project;
             orderToUpdate.JsonDetails = JsonConvert.SerializeObject(model);
             var orderDetails = orderToUpdate.GetOrderDetails();
-            var testItemIds = orderDetails.SelectedTests.Select(a => a.Id).ToArray();
-            var selectedTests = await _context.TestItems.Where(a => testItemIds.Contains(a.Id)).ToListAsync();
+
             var isUcClient = string.Equals(orderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase);
-            if (isUcClient)
-            {
-                orderDetails.Total = selectedTests.Sum(a => a.InternalCost);
-            }
-            else
-            {
-                if (string.Equals(orderDetails.Payment.ClientType, "other", StringComparison.OrdinalIgnoreCase))
-                {
-                    orderDetails.Total = selectedTests.Sum(a => a.ExternalCost);
-                }
-                else
-                {
-                    throw new Exception("What! unknown payment!!!");
-                }
-            }
-            orderDetails.Total = orderDetails.Total * orderDetails.Quantity;
+
+            var tests = CalculateTestDetails(orderDetails).ToArray();
+
+            orderDetails.SelectedTests = tests;
+            orderDetails.Total = tests.Sum(x=>x.Total);
+
             AddAdditionalFees(orderDetails, isUcClient);
-            orderDetails.Total += selectedTests.Sum(a => a.SetupCost);
 
             orderToUpdate.SaveDetails(orderDetails);
             orderToUpdate.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails);
