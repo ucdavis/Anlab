@@ -22,11 +22,13 @@ namespace AnlabMvc.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IOrderService _orderService;
+        private readonly IOrderMessageService _orderMessageService;
 
-        public OrderController(ApplicationDbContext context, IOrderService orderService)
+        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService)
         {
             _context = context;
             _orderService = orderService;
+            _orderMessageService = orderMessageService;
         }
 
         public async Task<IActionResult> Index()
@@ -204,7 +206,10 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index");
             }
 
-            order.Status = "Confirmed";
+            order.Status = OrderStatusCodes.Confirmed;
+
+            await _orderMessageService.EnqueueCreatedMessage(order);
+
             await _context.SaveChangesAsync();
 
             Message = "Order confirmed";

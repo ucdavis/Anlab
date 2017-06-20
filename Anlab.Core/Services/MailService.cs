@@ -7,7 +7,7 @@ using MimeKit;
 namespace Anlab.Core.Services {
     public interface IMailService
     {
-        Task EnqueueMessageAsync(MailMessage message);
+        void EnqueueMessage(MailMessage message);
         void SendMessage(MailMessage mailMessage);
     }
 
@@ -20,13 +20,11 @@ namespace Anlab.Core.Services {
             _dbContext = dbContext;
         }
 
-        public async Task EnqueueMessageAsync(MailMessage message)
+        public void EnqueueMessage(MailMessage message)
         {
             _dbContext.Add(message);
-
-            await _dbContext.SaveChangesAsync();
         }
-        
+
         public void SendMessage(MailMessage mailMessage) {
             var message = new MimeMessage ();
     		message.From.Add (new MailboxAddress ("Anlab", "anlab@ucdavis.edu"));

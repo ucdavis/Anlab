@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
+using Anlab.Core.Services;
 using AnlabMvc.Models.Configuration;
 using AnlabMvc.Services;
 using AspNetCore.Security.CAS;
@@ -77,6 +78,8 @@ namespace AnlabMvc
             services.AddTransient<IDbInitializationService, DbInitializationService>();
             services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<ViewRenderService>();
+            services.AddTransient<IMailService, MailService>();
+            services.AddTransient<IOrderMessageService, OrderMessageService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
