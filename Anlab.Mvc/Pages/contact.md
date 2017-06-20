@@ -5,8 +5,6 @@ title: "Rush Request Policy"
 ---
 <div class="row">
     <div class="col-8 whiteblock">
-
-
         <h3>Sample Receiving Area Information:</h3>
         <p>To <strong>Mail</strong> or <strong>Ship</strong> Samples to the Lab:</p>
         <address>
@@ -52,7 +50,6 @@ title: "Rush Request Policy"
         <p><a href="mailto:anlab@ucdavis.edu"><b>Main Office</b></a><br> 530-752-0147<br> Room 224 Hoagland Hall</p>
         <p><a href="http://campusmap.ucdavis.edu/?b=82" target="_blank">Campus Map</a><span class="external-link"> — Hoagland Hall
           <a href="http://campusmap.ucdavis.edu/?b=82" target="_blank"><br /></a>
-
       </p>
     </div>
 </div>
