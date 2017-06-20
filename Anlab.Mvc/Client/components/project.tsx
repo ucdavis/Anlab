@@ -21,23 +21,24 @@ export class Project extends React.Component<IProjectProps, IProjectInputState> 
             error: null
         };
     }
-
-    onChange = (v: string) => {
+    validate = (v: string) => {
         let error = null;
         if (v.trim() === "") {
             error = "The project id is required";
         }
-        this.setState({ ...this.state, internalValue: v, error });
-        
+
+        this.setState({ error } as IProjectInputState);
+    }
+
+
+    onChange = (v: string) => {
+        this.setState({ ...this.state, internalValue: v });
+        this.validate(v);
     }
 
     onBlur = () => {
-        let error = null;
         let internalValue = this.state.internalValue;
-        if (internalValue.trim() === "") {
-            error = "The project id is required";
-        }
-        this.setState({ ...this.state, error });
+        this.validate(internalValue);
         this.props.handleChange('project', internalValue);
     }
     render() {

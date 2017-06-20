@@ -1,4 +1,5 @@
 ﻿import * as React from 'react';
+import Dialog from 'react-toolbox/lib/dialog';
 import { ITestItem, TestList } from './TestList';
 import { IPayment, PaymentSelection } from './PaymentSelection';
 import { SampleTypeSelection } from './SampleTypeSelection';
@@ -10,6 +11,7 @@ import { AdditionalEmails } from "./AdditionalEmails";
 import { Grind } from "./Grind";
 import { ForeignSoil } from "./ForeignSoil";
 import { WaterFilter } from "./WaterFilter";
+import { LabFields } from './LabFields';
 
 declare var window: any;
 declare var $: any;
@@ -29,6 +31,12 @@ interface IOrderState {
     grind: boolean;
     foreignSoil: boolean;
     filterWater: boolean;
+    isErrorActive: boolean;
+    errorMessage: string;
+    isAdmin: boolean;
+    status: string;
+    labComments: string;
+    adjustmentAmount: number;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -50,7 +58,24 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             grind: false,
             foreignSoil: false,
             filterWater: false,
+            isErrorActive: false,
+            errorMessage: '',
+            isAdmin: false,
+            status: '',
+            labComments: '',
+            adjustmentAmount: 0,
         };
+
+        if (window.App.defaultAccount) {            
+            initialState.payment.account = window.App.defaultAccount;
+            initialState.payment.clientType = 'uc';
+        } else {
+            initialState.payment.clientType = 'other';
+        }
+        if (window.App.IsAdmin === true) {
+            initialState.isAdmin = true;
+            initialState.status = window.App.Status;
+        }
 
         if (window.App.orderData.order) {
             // load up existing order
@@ -68,6 +93,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.filterWater = orderInfo.FilterWater;
             initialState.payment.clientType = orderInfo.Payment.ClientType;
             initialState.payment.account = orderInfo.Payment.Account;
+            initialState.labComments = orderInfo.LabComments;
+            initialState.adjustmentAmount = orderInfo.AdjustmentAmount;
 
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
@@ -75,7 +102,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.state = { ...initialState };
     }
     validate = () => {
-        const valid = this.state.quantity > 0 && !!this.state.project.trim();
+        const valid = this.state.quantity > 0 && this.state.quantity <= 100 && !!this.state.project.trim();
         this.setState({ ...this.state, isValid: valid });
     }
     onPaymentSelected = (payment: any) => {
@@ -122,6 +149,13 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.setState({ ...this.state, [name]: value }, this.validate);
     };
 
+    handleDialogToggle = () => {
+        this.setState({ ...this.state, isErrorActive: !this.state.isErrorActive});
+    }
+
+    dialogActions = [
+        { label: "Got It!", onClick: this.handleDialogToggle }
+    ];
 
     getTests = () => {
         const { testItems, payment, selectedTests, sampleType, quantity } = this.state;
@@ -131,10 +165,15 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             selected: filtered.filter(item => !!selectedTests[item.id])
         };
     }
-    onSubmit = () => {
-
+    onSubmit = () => {        
         if (this.state.isSubmitting) {
             return;
+        }
+        let postUrl = '/order/save';
+        let returnUrl = '/Order/Confirmation/';
+        if (this.state.isAdmin) {
+            postUrl = '/admin/save';
+            returnUrl = '/Admin/Details/';
         }
         this.setState({ ...this.state, isSubmitting: true });
         const selectedTests = this.getTests().selected;
@@ -149,31 +188,30 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             grind: this.state.grind,
             foreignSoil: this.state.foreignSoil,
             filterWater: this.state.filterWater,
+            labComments: this.state.labComments,
+            adjustmentAmount: this.state.adjustmentAmount,
             selectedTests,
         }
-        var that = this;
+        const that = this;
         $.post({
-            url: '/order/save',
+            
+            url: postUrl,
             data: JSON.stringify(order),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
         }).success((response) => {
             if (response.success === true) {
-                var redirectId = response.id;
-                window.location.replace("/Order/Confirmation/" + redirectId);
+                const redirectId = response.id;
+                window.location.replace(returnUrl + redirectId);
             } else {
-                alert(response.message);
-                that.setState({ ...that.state, isSubmitting: false });
+                that.setState({ ...that.state, isSubmitting: false, isErrorActive: true, errorMessage: response.message });
             }
-
         }).error(() => {
-            alert("An error occured...");
-            that.setState({ ...that.state, isSubmitting: false });
-
+            that.setState({ ...that.state, isSubmitting: false, isErrorActive: true, errorMessage: "An internal error occured..." });
         });
     }
     render() {
-        const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, grind, foreignSoil, filterWater } = this.state;
+        const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, grind, foreignSoil, filterWater, isAdmin, status, labComments, adjustmentAmount } = this.state;
 
         const { filtered, selected} = this.getTests();
 
@@ -198,14 +236,37 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail}/>
                     <Project project={project} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
+                    <LabFields isAdmin={isAdmin} labComments={labComments} adjustmentAmount={adjustmentAmount} handleChange={this.handleChange} />
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
                     <div style={{ height: 600 }}></div>
                 </div>
                 <div className="col-lg-4">
                     <div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
-                        <Summary isCreate={this.state.orderId === null} canSubmit={this.state.isValid && !this.state.isSubmitting} testItems={selected} quantity={quantity} payment={payment} onSubmit={this.onSubmit} grind={(grind && sampleType !== "Water")} foreignSoil={(foreignSoil && sampleType === "Soil")} filterWater={(filterWater && sampleType === "Water")}/>
+                        <Summary
+                            isCreate={this.state.orderId === null}
+                            canSubmit={this.state.isValid && !this.state.isSubmitting}
+                            hideError={this.state.isValid || this.state.isSubmitting}
+                            testItems={selected}
+                            quantity={quantity}
+                            payment={payment}
+                            onSubmit={this.onSubmit}
+                            grind={(grind && sampleType !== "Water")}
+                            foreignSoil={(foreignSoil && sampleType === "Soil")}
+                            filterWater={(filterWater && sampleType === "Water")}
+                            isAdmin={isAdmin}
+                            status={status}
+                            adjustmentAmount={adjustmentAmount} />
                     </div>
                 </div>
+
+                <Dialog
+                    actions={this.dialogActions}
+                    active={this.state.isErrorActive}
+                    onEscKeyDown={this.handleDialogToggle}
+                    onOverlayClick={this.handleDialogToggle}
+                    title='Errors Detected'>
+                    <p>{this.state.errorMessage}</p>
+                </Dialog>
             </div>
         );
     }

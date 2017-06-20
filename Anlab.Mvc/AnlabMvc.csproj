@@ -9,12 +9,6 @@
     <Description>Order and results management system for AnLab@UCDavis</Description>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Data\Migrations\**" />
-    <Content Remove="Data\Migrations\**" />
-    <EmbeddedResource Remove="Data\Migrations\**" />
-    <None Remove="Data\Migrations\**" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="AspNetCore.Security.CAS" Version="1.0.0" />
     <PackageReference Include="AzureActiveDirectorySearcher" Version="1.0.0" />
     <PackageReference Include="Humanizer.Core" Version="2.2.0" />
@@ -49,6 +43,11 @@
     <None Remove="yarn.lock" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Client\media\icecream.svg">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Anlab.Core\Anlab.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -60,7 +59,6 @@
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
     <Exec Command="npm install" />
     <Exec Command="node node_modules/webpack/bin/webpack.js --env.prod" />
-
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
       <DistFiles Include="wwwroot\dist\**" />

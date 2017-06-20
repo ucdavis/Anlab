@@ -35,16 +35,18 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
 
 
     render() {
+        const activeDiv = "anlab_form_style col-5 active-border active-text active-bg";
+        const inactiveDiv = "anlab_form_style col-5";
         return (
             <div className="form_wrap">
                 <h2 className="form_header">How will you pay for your order?</h2>
                 <div className="row">
-                    <div className={this.props.payment.clientType !== 'uc' ? "anlab_form_style col-5 active-border active-text active-bg" : "anlab_form_style col-5"} onClick={() => this.handleChange("other")}>
+                    <div className={this.props.payment.clientType !== 'uc' ? activeDiv : inactiveDiv} onClick={() => this.handleChange("other")}>
                         <h3>Credit Card</h3>
                         <p>It's amazing what you can do with a little love in your heart.</p>                        
                     </div>
                     <span className="dividing_span col-2 t-center align-middle">or</span>
-                    <div className={this.props.payment.clientType === 'uc' ? "anlab_form_style col-5 active-border active-text active-bg" : "anlab_form_style col-5"} onClick= {()=>this.handleChange("uc")}>
+                    <div className={this.props.payment.clientType === 'uc' ? activeDiv : inactiveDiv} onClick= {()=>this.handleChange("uc")}>
                         <h3>UC Funds</h3>
                         <p>It's amazing what you can do with a little love in your heart</p>
                     </div>

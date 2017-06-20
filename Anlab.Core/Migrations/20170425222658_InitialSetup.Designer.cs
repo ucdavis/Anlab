@@ -1,54 +1,21 @@
 ﻿using System;
+using Anlab.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using AnlabMvc.Data;
 
-namespace AnlabMvc.Migrations
+namespace Anlab.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170425225600_Orders")]
-    partial class Orders
+    [Migration("20170425222658_InitialSetup")]
+    partial class InitialSetup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Anlab.Core.Domain.Order", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("AdditionalEmails");
-
-                    b.Property<string>("ClientId")
-                        .HasMaxLength(16);
-
-                    b.Property<DateTime>("Created");
-
-                    b.Property<string>("CreatorId")
-                        .IsRequired();
-
-                    b.Property<string>("JsonDetails");
-
-                    b.Property<string>("LabId")
-                        .HasMaxLength(16);
-
-                    b.Property<string>("Project")
-                        .IsRequired()
-                        .HasMaxLength(256);
-
-                    b.Property<DateTime>("Updated");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatorId");
-
-                    b.ToTable("Orders");
-                });
 
             modelBuilder.Entity("Anlab.Core.Domain.User", b =>
                 {
@@ -222,14 +189,6 @@ namespace AnlabMvc.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("Anlab.Core.Domain.Order", b =>
-                {
-                    b.HasOne("Anlab.Core.Domain.User", "Creator")
-                        .WithMany()
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
