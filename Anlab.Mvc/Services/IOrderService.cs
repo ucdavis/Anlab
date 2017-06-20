@@ -29,20 +29,22 @@ namespace AnlabMvc.Services
 
         private async Task<TestDetails[]> CalculateTestDetails(OrderDetails orderDetails)
         {
-            var selectedTestCodes = orderDetails.SelectedTests.Select(t => t.Code);
-            var tests = await _context.TestItems.Where(a => selectedTestCodes.Contains(a.Code)).ToListAsync();
+            // TODO: Do we really want to match on ID, or Code, or some combination?
+            var selectedTestIds = orderDetails.SelectedTests.Select(t => t.Id);
+            var tests = await _context.TestItems.Where(a => selectedTestIds.Contains(a.Id)).ToListAsync();
 
             var calcualtedTests = new List<TestDetails>();
 
             foreach (var test in orderDetails.SelectedTests)
             {
-                var dbTest = tests.Single(t => t.Code == test.Code);
+                var dbTest = tests.Single(t => t.Id == test.Id);
 
                 var cost = orderDetails.Payment.IsInternalClient ? dbTest.InternalCost : dbTest.ExternalCost;
                 var costAndQuantity = cost * orderDetails.Quantity;
 
                 calcualtedTests.Add(new TestDetails
                 {
+                    Id = dbTest.Id,
                     Analysis = dbTest.Analysis,
                     Code = dbTest.Code,
                     SetupCost = dbTest.SetupCost,
