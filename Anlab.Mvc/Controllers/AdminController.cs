@@ -212,5 +212,15 @@ namespace AnlabMvc.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> MailQueue()
+        {
+            // Right now, show unsent pending emails.
+            // TODO: show recently sent
+
+            var messages = await _dbContext.MailMessages.Where(x => x.Sent == null).AsNoTracking().ToListAsync();
+
+            return Json(messages);
+        }
     }
 }
