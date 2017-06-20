@@ -39,4 +39,53 @@ describe('<AdditionalEmails />', () => {
         const target2 = target.first('Button');
         expect(target2.text()).not.toContain("test4@testy.com");
     });
+
+    it('should set internal email value', () => {
+        const target = mount(<AdditionalEmails addedEmails={[]} onDeleteEmail={null} onEmailAdded={null} />);
+        const internal = target.instance();
+
+        expect(internal.state.email).toBe('');
+
+        internal.onEmailChanged('xxx');
+
+        expect(internal.state.email).toBe('xxx');
+    });
+
+    it('should call onEmailAdded with valid state.email onClick event', () => {
+        const onEmailAdded = jasmine.createSpy('onEmailAdded');
+        const target = shallow(<AdditionalEmails addedEmails={[]} onDeleteEmail={null} onEmailAdded={onEmailAdded} />);
+        const internal = target.instance();
+
+        internal.state.email = 'test@testy.com';
+        internal.onClick();
+
+        expect(onEmailAdded).toHaveBeenCalled();
+        expect(onEmailAdded).toHaveBeenCalledWith('test@testy.com');
+        expect(internal.state.email).toBe('');
+    });
+
+    it('should not call onEmailAdded with invalid state.email onClick event', () => {
+        const onEmailAdded = jasmine.createSpy('onEmailAdded');
+        const target = shallow(<AdditionalEmails addedEmails={[]} onDeleteEmail={null} onEmailAdded={onEmailAdded} />);
+        const internal = target.instance();
+
+        internal.state.email = 'test@invlid@invalid.com';
+        internal.onClick();
+
+        expect(onEmailAdded).not.toHaveBeenCalled();
+        expect(internal.state.email).toBe('test@invlid@invalid.com');
+    });
+
+
+    it('should call onDeleteEmail with onDelete event', () => {
+        const onDeleteEmail = jasmine.createSpy('onDeleteEmail');
+        const target = shallow(<AdditionalEmails addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]} onDeleteEmail={onDeleteEmail} onEmailAdded={null} />);
+        const internal = target.instance();
+
+        internal.state.email = 'test@testy.com';
+        internal.onDelete('test2@testy.com');
+
+        expect(onDeleteEmail).toHaveBeenCalled();
+        expect(onDeleteEmail).toHaveBeenCalledWith('test2@testy.com');
+    });
 });
