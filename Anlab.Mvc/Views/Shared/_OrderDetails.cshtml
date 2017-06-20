@@ -85,17 +85,13 @@
     <tbody>
         @foreach (var test in @Model.OrderDetails.SelectedTests)
         {
-            var testFee = string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase) ? test.InternalCost : test.ExternalCost;
-            var totalForTest = (testFee * Model.OrderDetails.Quantity) + test.SetupCost;
             <tr>
                 <td>@test.Analysis</td>
                 <td>@test.Code</td>
-                <td>@(String.Format("{0:C}", testFee * Model.OrderDetails.Quantity))</td>
-                <td>@(String.Format("{0:C}", test.SetupCost))</td>
-                <td>
-                    @(String.Format("{0:C}", totalForTest))
-            </td>
-        </tr>
+                <td>@test.SubTotal.ToString("C")</td>
+                <td>@test.SetupCost.ToString("C")</td>
+                <td>@test.Total.ToString("C")</td>
+            </tr>
         }
     </tbody>
 </table>
