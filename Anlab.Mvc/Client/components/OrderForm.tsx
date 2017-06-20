@@ -169,11 +169,11 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         if (this.state.isSubmitting) {
             return;
         }
-        let postUrl = '/order/save';
+        let postUrl = '/Order/Save';
         let returnUrl = '/Order/Confirmation/';
         if (this.state.isAdmin) {
-            postUrl = '/admin/save';
-            returnUrl = '/Admin/Details/';
+            postUrl = '/Lab/save';
+            returnUrl = '/Lab/Details/';
         }
         this.setState({ ...this.state, isSubmitting: true });
         const selectedTests = this.getTests().selected;
