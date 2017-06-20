@@ -73,7 +73,7 @@ table.table {
   }
 }
 .active-border {
-  border:2px solid $primary-color;
+  border:1px solid $primary-color;
 }
 .active-bg {
   background-color:$primary-color;
@@ -97,7 +97,7 @@ table.table {
     color:#fff;
   }
 }
-h2.form_header {
+.form_header {
   font-size:2rem;
   color:$primary-color;
   font-weight:600;
