@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Anlab.Core.Models;
-using AnlabMvc.Models.Order;
 using Newtonsoft.Json;
 
 namespace Anlab.Core.Domain

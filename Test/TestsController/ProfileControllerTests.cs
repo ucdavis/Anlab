@@ -1,6 +1,5 @@
 ﻿using Anlab.Core.Domain;
 using AnlabMvc.Controllers;
-using AnlabMvc.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +14,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using Anlab.Core.Data;
 using Test.Helpers;
 using Xunit;
 using Xunit.Abstractions;
@@ -166,10 +166,11 @@ namespace Test.TestsController
             savedResult.FirstName.ShouldBe("FirstName7");
             savedResult.LastName.ShouldBe("LastName7");
             savedResult.Name.ShouldBe("FirstName7 LastName7");
+            savedResult.Account.ShouldBe("Account7");
+            savedResult.Phone.ShouldBe("Phone7");
             //Unchanged Values
-            savedResult.Account.ShouldBe("Account3");
+
             savedResult.ClientId.ShouldBe("ClientId3");
-            savedResult.Phone.ShouldBe("Phone3");
             savedResult.Id.ShouldBe("3");
         }
 

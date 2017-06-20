@@ -1,13 +1,15 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Anlab.Core.Data;
 using Anlab.Core.Domain;
-using AnlabMvc.Data;
+using Anlab.Core.Services;
 using AnlabMvc.Models.Configuration;
 using AnlabMvc.Services;
 using AspNetCore.Security.CAS;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -74,7 +76,11 @@ namespace AnlabMvc
             services.AddTransient<ISmsSender, AuthMessageSender>();
             services.AddTransient<IDirectorySearchService, DirectorySearchService>();
             services.AddTransient<IDbInitializationService, DbInitializationService>();
-
+            services.AddTransient<IOrderService, OrderService>();
+            services.AddTransient<ViewRenderService>();
+            services.AddTransient<IMailService, MailService>();
+            services.AddTransient<IOrderMessageService, OrderMessageService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

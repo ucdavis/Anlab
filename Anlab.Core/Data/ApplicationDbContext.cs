@@ -7,7 +7,7 @@ using Anlab.Core.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace AnlabMvc.Data
+namespace Anlab.Core.Data
 {
     public class ApplicationDbContext : IdentityDbContext<User>
     {
@@ -68,6 +68,8 @@ namespace AnlabMvc.Data
         public virtual DbSet<Order> Orders { get; set; }
 
         public virtual DbSet<TestItem> TestItems { get; set; }
+
+        public virtual DbSet<MailMessage> MailMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

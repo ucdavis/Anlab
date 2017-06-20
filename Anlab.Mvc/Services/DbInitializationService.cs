@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Anlab.Core.Data;
 using Anlab.Core.Domain;
-using AnlabMvc.Data;
+using AnlabMvc.Models.Roles;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
@@ -43,8 +44,8 @@ namespace AnlabMvc.Services
             if (_context.Users.Any()) return; // Do nothing if there is already user data in the system
 
             // create roles
-            await _roleManager.CreateAsync(new IdentityRole("admin"));
-            await _roleManager.CreateAsync(new IdentityRole("user"));
+            await _roleManager.CreateAsync(new IdentityRole(RoleCodes.Admin));
+            await _roleManager.CreateAsync(new IdentityRole(RoleCodes.User));
 
             var scottUser = new User
             {
@@ -62,7 +63,7 @@ namespace AnlabMvc.Services
 
             await _userManager.CreateAsync(scottUser);
             await _userManager.AddLoginAsync(scottUser, loginInfo);
-            await _userManager.AddToRoleAsync(scottUser, "admin");
+            await _userManager.AddToRoleAsync(scottUser, RoleCodes.Admin);
 
             var jasonUser = new User
             {
@@ -80,7 +81,8 @@ namespace AnlabMvc.Services
 
             await _userManager.CreateAsync(jasonUser);
             await _userManager.AddLoginAsync(jasonUser, jasonLoginInfo);
-            await _userManager.AddToRoleAsync(jasonUser, "admin");
+            await _userManager.AddToRoleAsync(jasonUser, RoleCodes.Admin);
+            await _userManager.AddToRoleAsync(jasonUser, RoleCodes.User);
 
 
             #region Cal's login
@@ -100,7 +102,7 @@ namespace AnlabMvc.Services
 
             await _userManager.CreateAsync(calUser);
             await _userManager.AddLoginAsync(calUser, calLoginInfo);
-            await _userManager.AddToRoleAsync(calUser, "admin");
+            await _userManager.AddToRoleAsync(calUser, RoleCodes.Admin);
 
 
             #endregion Cal's login
@@ -197,6 +199,23 @@ namespace AnlabMvc.Services
                     SetupCost = 30,
                     FeeSchedule = "16_0711",
                     Category = TestCategories.Plant,
+                    Group = i < 10 ? "SF" : "SS",
+                    Multiplier = 1
+                };
+                _context.Add(plantx);
+            }
+
+            for (int i = 0; i < 5; i++)
+            {
+                var plantx = new TestItem
+                {
+                    Analysis = string.Format("Fake Other{0}", i),
+                    Code = string.Format("Fake{0}", i),
+                    InternalCost = 5.22m,
+                    ExternalCost = 7.13m,
+                    SetupCost = 30,
+                    FeeSchedule = "16_0711",
+                    Category = TestCategories.Other,
                     Group = i < 10 ? "SF" : "SS",
                     Multiplier = 1
                 };

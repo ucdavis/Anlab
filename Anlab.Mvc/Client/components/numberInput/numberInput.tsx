@@ -32,19 +32,18 @@ export class NumberInput extends React.Component<INumberInputProps, INumberInput
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ ...this.state, internalValue: this.transformValue(nextProps.value) });
+        this.setState({ internalValue: this.transformValue(nextProps.value) } as INumberInputState);
     }
 
     transformValue = (value: Number) => {
         return value ? String(value) : '';
     }
-    onChange = (v: string) => {
+
+    validate = (v: string) => {
         let error = null;
+        // if it's not a number, return error
         let value = Number(v);
 
-        this.setState({ internalValue: v } as INumberInputState);
-
-        // if it's not a number, return error
         if (isNaN(value)) {
             error = "Must be a number.";
         }
@@ -54,10 +53,18 @@ export class NumberInput extends React.Component<INumberInputProps, INumberInput
         }
         // check max range or early return
         else if (!isNaN(this.props.max) && this.props.max < value) {
-            error = `Must be a number less than ${this.props.max}.`;
+            error = `Must be a number less than or equal to ${this.props.max}.`;
         }
 
         this.setState({ error } as INumberInputState);
+    }
+
+    onChange = (v: string) => {
+
+        this.setState({ internalValue: v } as INumberInputState);
+
+        this.validate(v);
+
     }
     onBlur = () => {
         let value = Number(this.state.internalValue);
@@ -73,6 +80,8 @@ export class NumberInput extends React.Component<INumberInputProps, INumberInput
         this.setState({
           internalValue: this.transformValue(value)
         } as INumberInputState);
+
+        this.validate(this.state.internalValue);
 
         this.props.onChanged(value);
     }

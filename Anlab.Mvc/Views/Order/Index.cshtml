@@ -1,10 +1,10 @@
+@using AnlabMvc.Models.Order
 @model IList<Order>
 
 @{
-    ViewData["Title"] = "MyOrders";
+    ViewData["Title"] = "Orders";
 }
 
-<h2>My Orders</h2>
 <p>
     <a asp-action="Create" class="btn btn-default">Create Order</a>    
 </p>
@@ -26,7 +26,7 @@
     @foreach (var order in Model)
     {
         <tr>
-            <td>@if (order.Status == null)
+            <td>@if (order.Status == OrderStatusCodes.Created)
                 {
                     <a asp-action="Confirmation" asp-route-id="@order.Id">Confirm</a>
                     <a asp-action="Edit" asp-route-id="@order.Id">Edit</a>

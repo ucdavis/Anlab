@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace AnlabMvc.Migrations
+namespace Anlab.Core.Migrations
 {
     public partial class TestGroups : Migration
     {

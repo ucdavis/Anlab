@@ -1,4 +1,5 @@
 ﻿@using AnlabMvc.Helpers
+@using AnlabMvc.Models.Roles
 <!DOCTYPE html>
 <html>
 <head>
@@ -42,16 +43,40 @@
                     <!-- <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li> -->
                     <li><a asp-controller="Pages" asp-action="about">About</a></li>
                     <li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lab Information <span class="caret"></span></a>
-                      <ul class="dropdown-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lab Information <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
                         <li><a asp-controller="Pages" asp-action="using-the-lab">Using the Lab</a></li>
                         <li><a asp-controller="Pages" asp-action="rush-request">Rush Request</a></li>
                         <li><a asp-controller="Pages" asp-action="methods-of-analysis">Methods of Analysis</a></li>
                         <li><a asp-controller="Pages" asp-action="qa-qc">QA/QC</a></li>
                         <li><a asp-controller="Pages" asp-action="forms-and-guides">Forms and Guides</a></li>
                         <li><a asp-area="" asp-controller="Home" asp-action="SamplingAndPreparation">Sampling and Preparation</a></li>
-                      </ul>
+                        </ul>
                     </li>
+                    @if (User != null && User.Identity.IsAuthenticated)
+                    { 
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Orders <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a asp-controller="Order" asp-action="Index">Your Orders</a></li>                                
+                                <li><a asp-controller="Order" asp-action="Create">Create Order</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (User != null && (User.IsInRole(RoleCodes.Admin) || User.IsInRole(RoleCodes.User) ))
+                    {
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a asp-controller="Admin" asp-action="OpenOrders">Open Orders</a></li>                                
+                                <li><a asp-controller="Admin" asp-action="ListNonAdminUsers">Clients</a></li>
+                                @if (User.IsInRole(RoleCodes.Admin))
+                                {
+                                    <li><a asp-controller="Admin" asp-action="Index">Maintain Admin Users</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
                     <li><a asp-controller="Pages" asp-action="contact">Contact</a></li>
 
                 </ul>

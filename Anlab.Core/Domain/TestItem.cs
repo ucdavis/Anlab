@@ -55,5 +55,6 @@ namespace Anlab.Core.Domain
         public static string Soil = "Soil";
         public static string Plant = "Plant";
         public static string Water = "Water";
+        public static string Other = "Other";
     }
 }
