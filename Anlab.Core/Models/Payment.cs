@@ -10,5 +10,7 @@ namespace Anlab.Core.Models
         [Required(ErrorMessage = "You must select the payment method.")]
         public string ClientType { get; set; }
         public string Account { get; set; }
+
+        public bool IsInternalClient => string.Equals(ClientType, "uc", StringComparison.OrdinalIgnoreCase);
     }
 }
