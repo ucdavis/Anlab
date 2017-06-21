@@ -1,19 +1,13 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using AnlabMvc.Models.Order;
 using Anlab.Core.Domain;
-using Anlab.Core.Models;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Features.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Remotion.Linq.Parsing.ExpressionVisitors.MemberBindings;
 
 namespace AnlabMvc.Controllers
 {

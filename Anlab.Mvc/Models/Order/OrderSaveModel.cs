@@ -18,7 +18,7 @@ namespace AnlabMvc.Models.Order
         public string AdditionalInfo { get; set; }
 
         [MinLength(1, ErrorMessage = "You must select at least 1 test.")]
-        public TestItem[] SelectedTests { get; set; }
+        public TestDetails[] SelectedTests { get; set; }
 
         public decimal Total { get; set; }
 

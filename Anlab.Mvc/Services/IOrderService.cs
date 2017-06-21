@@ -26,32 +26,50 @@ namespace AnlabMvc.Services
         {
             _context = context;
         }
+
+        private async Task<TestDetails[]> CalculateTestDetails(OrderDetails orderDetails)
+        {
+            // TODO: Do we really want to match on ID, or Code, or some combination?
+            var selectedTestIds = orderDetails.SelectedTests.Select(t => t.Id);
+            var tests = await _context.TestItems.Where(a => selectedTestIds.Contains(a.Id)).ToListAsync();
+
+            var calcualtedTests = new List<TestDetails>();
+
+            foreach (var test in orderDetails.SelectedTests)
+            {
+                var dbTest = tests.Single(t => t.Id == test.Id);
+
+                var cost = orderDetails.Payment.IsInternalClient ? dbTest.InternalCost : dbTest.ExternalCost;
+                var costAndQuantity = cost * orderDetails.Quantity;
+
+                calcualtedTests.Add(new TestDetails
+                {
+                    Id = dbTest.Id,
+                    Analysis = dbTest.Analysis,
+                    Code = dbTest.Code,
+                    SetupCost = dbTest.SetupCost,
+                    InternalCost = dbTest.InternalCost,
+                    ExternalCost = dbTest.ExternalCost,
+                    Cost = cost,
+                    SubTotal = costAndQuantity,
+                    Total = costAndQuantity + dbTest.SetupCost
+                });
+            }
+
+            return calcualtedTests.ToArray();
+        }
         public async Task PopulateOrder(OrderSaveModel model, Order orderToUpdate)
         {
             orderToUpdate.Project = model.Project;
             orderToUpdate.JsonDetails = JsonConvert.SerializeObject(model);
             var orderDetails = orderToUpdate.GetOrderDetails();
-            var testItemIds = orderDetails.SelectedTests.Select(a => a.Id).ToArray();
-            var selectedTests = await _context.TestItems.Where(a => testItemIds.Contains(a.Id)).ToListAsync();
-            var isUcClient = string.Equals(orderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase);
-            if (isUcClient)
-            {
-                orderDetails.Total = selectedTests.Sum(a => a.InternalCost);
-            }
-            else
-            {
-                if (string.Equals(orderDetails.Payment.ClientType, "other", StringComparison.OrdinalIgnoreCase))
-                {
-                    orderDetails.Total = selectedTests.Sum(a => a.ExternalCost);
-                }
-                else
-                {
-                    throw new Exception("What! unknown payment!!!");
-                }
-            }
-            orderDetails.Total = orderDetails.Total * orderDetails.Quantity;
-            AddAdditionalFees(orderDetails, isUcClient);
-            orderDetails.Total += selectedTests.Sum(a => a.SetupCost);
+
+            var tests = await CalculateTestDetails(orderDetails);
+
+            orderDetails.SelectedTests = tests.ToArray();
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x=>x.Total);
+
+            AddAdditionalFees(orderDetails);
 
             orderToUpdate.SaveDetails(orderDetails);
             orderToUpdate.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails);
@@ -70,33 +88,34 @@ namespace AnlabMvc.Services
             return;
         }
 
-        private static void AddAdditionalFees(OrderDetails orderDetails, bool isUcClient)
+        private static void AddAdditionalFees(OrderDetails orderDetails)
         {
             if (string.Equals(orderDetails.SampleType, "Water", StringComparison.OrdinalIgnoreCase))
             {
                 if (orderDetails.FilterWater)
                 {
-                    orderDetails.Total += orderDetails.Quantity * (isUcClient ? 11 : 17);
+                    orderDetails.Total += orderDetails.Quantity * (orderDetails.Payment.IsInternalClient ? 11 : 17);
                 }
             }
             if (string.Equals(orderDetails.SampleType, "Soil", StringComparison.OrdinalIgnoreCase))
             {
                 if (orderDetails.Grind)
                 {
-                    orderDetails.Total += orderDetails.Quantity * (isUcClient ? 6 : 9);
+                    orderDetails.Total += orderDetails.Quantity * (orderDetails.Payment.IsInternalClient ? 6 : 9);
                 }
                 if (orderDetails.ForeignSoil)
                 {
-                    orderDetails.Total += orderDetails.Quantity * (isUcClient ? 9 : 14);
+                    orderDetails.Total += orderDetails.Quantity * (orderDetails.Payment.IsInternalClient ? 9 : 14);
                 }
             }
             if (string.Equals(orderDetails.SampleType, "Plant", StringComparison.OrdinalIgnoreCase))
             {
                 if (orderDetails.Grind)
                 {
-                    orderDetails.Total += orderDetails.Quantity * (isUcClient ? 6 : 9);
+                    orderDetails.Total += orderDetails.Quantity * (orderDetails.Payment.IsInternalClient ? 6 : 9);
                 }
             }
         }
     }
 }
+
