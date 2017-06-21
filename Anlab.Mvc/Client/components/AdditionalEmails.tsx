@@ -26,9 +26,15 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
         this.setState({ ...this.state, email });
     }
     onClick = () => {
+        const emailtoAdd = this.state.email.toLowerCase();
+        
         const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (re.test((this.state.email))) {
-            this.props.onEmailAdded(this.state.email);
+        if (re.test((emailtoAdd))) {            
+            if (this.props.addedEmails.indexOf(emailtoAdd) === -1) {
+                this.props.onEmailAdded(emailtoAdd);
+            } else {
+                alert("Email already added");
+            }
             this.setState({ ...this.state, email: "" });
         } else {
             alert("Invalid email");
@@ -44,9 +50,9 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
             return null;
         }
 
-        const emails = this.props.addedEmails.map(item => {
+        const emails = this.props.addedEmails.map((item, index) => {
             return (
-                <div>{item} <Button label="Delete" primary onClick={() => this.onDelete(item)}/></div>
+                <div key={item}>{item} <Button label="Delete" primary onClick={() => this.onDelete(item)}/></div>
             );
         });
 
