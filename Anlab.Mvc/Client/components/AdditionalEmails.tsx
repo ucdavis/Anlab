@@ -50,7 +50,7 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
             return null;
         }
 
-        const emails = this.props.addedEmails.map((item, index) => {
+        const emails = this.props.addedEmails.map(item => {
             return (
                 <div key={item}>{item} <Button label="Delete" primary onClick={() => this.onDelete(item)}/></div>
             );
