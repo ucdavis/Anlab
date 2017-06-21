@@ -66,6 +66,7 @@ describe('<AdditionalEmails />', () => {
 
     it('should not call onEmailAdded with invalid state.email onClick event', () => {
         const onEmailAdded = jasmine.createSpy('onEmailAdded');
+        spyOn(window, 'alert');
         const target = shallow(<AdditionalEmails addedEmails={[]} onDeleteEmail={null} onEmailAdded={onEmailAdded} />);
         const internal = target.instance();
 
@@ -74,6 +75,7 @@ describe('<AdditionalEmails />', () => {
 
         expect(onEmailAdded).not.toHaveBeenCalled();
         expect(internal.state.email).toBe('test@invlid@invalid.com');
+        expect(window.alert).toHaveBeenCalledWith('Invalid email');
     });
 
 
