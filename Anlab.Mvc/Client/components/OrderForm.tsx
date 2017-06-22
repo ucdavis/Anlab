@@ -210,8 +210,16 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             that.setState({ ...that.state, isSubmitting: false, isErrorActive: true, errorMessage: "An internal error occured..." });
         });
     }
+
+    renderLab = () => {
+        if (this.state.isFromLab) {
+            return (<LabFields labComments={this.state.labComments} adjustmentAmount={this.state.adjustmentAmount} handleChange={this.handleChange} />);
+        }
+    }
+
+
     render() {
-        const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, grind, foreignSoil, filterWater, isFromLab, status, labComments, adjustmentAmount } = this.state;
+        const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, grind, foreignSoil, filterWater, isFromLab, status, adjustmentAmount } = this.state;
 
         const { filtered, selected} = this.getTests();
 
@@ -236,7 +244,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail}/>
                     <Project project={project} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
-                    <LabFields isFromLab={isFromLab} labComments={labComments} adjustmentAmount={adjustmentAmount} handleChange={this.handleChange} />
+                    {this.renderLab()}
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
                     <div style={{ height: 600 }}></div>
                 </div>
