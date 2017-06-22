@@ -1,0 +1,68 @@
+﻿@model List<Anlab.Core.Domain.MailMessage>
+@{
+    ViewData["Title"] = "MailQueue";
+}
+
+@foreach (var message in Model)
+{
+    <div class="row">
+
+        <div class="col whiteblock">
+
+            <table>
+                <tr>
+                    <th>To: </th>
+                    <td>
+                        @message.SendTo
+                    </td>
+                </tr>
+                <tr>
+                    <th>Subject: </th>
+                    <td>
+                        @message.Subject
+                    </td>
+                </tr>
+                <tr>
+                    <th>Sent: </th>
+                    <td>
+                        @if (message.Sent.HasValue && message.Sent == true)
+                        {
+                            @message.SentAt
+                        }
+                        else
+                        {
+                            @message.FailureReason
+                        }
+
+                    </td>
+                </tr>
+                <tr>
+                    <th>Body:</th>
+                    <td>
+                        <div class="col">
+                            <a href="#@message.Id" role="button" class="collapsed" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
+                                Expand
+                            </a>
+                            <a href="ViewMessage/@message.Id" target="_blank">Open in new window</a>
+                        </div>
+                        <div class="collapse" id="@message.Id" aria-expanded="false" style="height: 0px;">
+                           <div class="collapse-body"> @Html.Raw(@message.Body)</div>
+
+                        </div>
+                    </td>
+
+                </tr>
+            </table>
+            <br />
+        </div>
+    </div>
+}
+
+
+
+
+
+
+
+
+

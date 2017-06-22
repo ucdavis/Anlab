@@ -124,7 +124,17 @@ namespace AnlabMvc.Controllers
 
             var messages = await _dbContext.MailMessages.Where(x => x.Sent == null).AsNoTracking().ToListAsync();
 
-            return Json(messages);
+            return View(messages);
+        }
+
+        public async Task<IActionResult> ViewMessage(int id)
+        {
+
+            var messages = await _dbContext.MailMessages.Where(x => x.Id == id).AsNoTracking().ToListAsync();
+
+
+
+            return View(messages[0]);
         }
     }
 }
