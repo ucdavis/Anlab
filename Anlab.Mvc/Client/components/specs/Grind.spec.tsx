@@ -12,6 +12,11 @@ describe('<Grind />', () => {
         const target = mount(<Grind sampleType="Soil" handleChange={handleChange} grind={false} />);
         expect(target.find('Checkbox').length).toEqual(1);
     });
+    it('should render a Checkbox when sampleType is plant', () => {
+        const handleChange = jasmine.createSpy('handleChange');
+        const target = mount(<Grind sampleType="Plant" handleChange={handleChange} grind={false} />);
+        expect(target.find('Checkbox').length).toEqual(1);
+    });
     it('should have a checked false', () => {
         const handleChange = jasmine.createSpy('handleChange');
         const target = mount(<Grind sampleType="Soil" handleChange={handleChange} grind={false} />);
