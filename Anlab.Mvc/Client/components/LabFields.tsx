@@ -3,7 +3,7 @@ import Input from 'react-toolbox/lib/input';
 import { NumberInput } from './numberInput/numberInput';
 
 interface ILabFieldsProps {
-    isAdmin: boolean;
+    isFromLab: boolean;
     labComments: string;
     adjustmentAmount: number;
     handleChange: Function;
@@ -11,7 +11,7 @@ interface ILabFieldsProps {
 
 export class LabFields extends React.Component<ILabFieldsProps, any> {
     render() {
-        if (!this.props.isAdmin) {
+        if (!this.props.isFromLab) {
             return null;
         }
         return (

@@ -33,7 +33,7 @@ interface IOrderState {
     filterWater: boolean;
     isErrorActive: boolean;
     errorMessage: string;
-    isAdmin: boolean;
+    isFromLab: boolean;
     status: string;
     labComments: string;
     adjustmentAmount: number;
@@ -60,7 +60,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             filterWater: false,
             isErrorActive: false,
             errorMessage: '',
-            isAdmin: false,
+            isFromLab: false,
             status: '',
             labComments: '',
             adjustmentAmount: 0,
@@ -72,8 +72,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         } else {
             initialState.payment.clientType = 'other';
         }
-        if (window.App.IsAdmin === true) {
-            initialState.isAdmin = true;
+        if (window.App.IsFromLab === true) {
+            initialState.isFromLab = true;
             initialState.status = window.App.Status;
         }
 
@@ -171,7 +171,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         }
         let postUrl = '/Order/Save';
         let returnUrl = '/Order/Confirmation/';
-        if (this.state.isAdmin) {
+        if (this.state.isFromLab) {
             postUrl = '/Lab/save';
             returnUrl = '/Lab/Details/';
         }
@@ -211,7 +211,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         });
     }
     render() {
-        const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, grind, foreignSoil, filterWater, isAdmin, status, labComments, adjustmentAmount } = this.state;
+        const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, grind, foreignSoil, filterWater, isFromLab, status, labComments, adjustmentAmount } = this.state;
 
         const { filtered, selected} = this.getTests();
 
@@ -236,7 +236,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail}/>
                     <Project project={project} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
-                    <LabFields isAdmin={isAdmin} labComments={labComments} adjustmentAmount={adjustmentAmount} handleChange={this.handleChange} />
+                    <LabFields isFromLab={isFromLab} labComments={labComments} adjustmentAmount={adjustmentAmount} handleChange={this.handleChange} />
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
                     <div style={{ height: 600 }}></div>
                 </div>
@@ -253,7 +253,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                             grind={(grind && sampleType !== "Water")}
                             foreignSoil={(foreignSoil && sampleType === "Soil")}
                             filterWater={(filterWater && sampleType === "Water")}
-                            isAdmin={isAdmin}
+                            isFromLab={isFromLab}
                             status={status}
                             adjustmentAmount={adjustmentAmount} />
                     </div>

@@ -15,7 +15,7 @@ interface ISummaryProps {
     foreignSoil: boolean;
     filterWater: boolean;
     hideError: boolean;
-    isAdmin: boolean;
+    isFromLab: boolean;
     status: string;
     adjustmentAmount: number;
 }
@@ -173,7 +173,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
         }
         let saveText = this.props.isCreate ? "Place Order" : "Update Order";
         let infoText = this.props.isCreate ? "Go ahead and place your order" : "Go ahead and update your order";        
-        if (this.props.isAdmin) {
+        if (this.props.isFromLab) {
             if (this.props.status === "Confirmed") {
                 saveText = "Receive Order";
                 infoText = "Receive Order. Make any changes needed first.";
