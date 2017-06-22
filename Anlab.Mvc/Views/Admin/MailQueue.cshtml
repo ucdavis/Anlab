@@ -1,9 +1,9 @@
 ﻿@model List<Anlab.Core.Domain.MailMessage>
 @{
-    ViewData["Title"] = "MailQueue";
+    ViewData["Title"] = "Mail Queue";
 }
 
-
+<div style="padding-bottom: 120px;">
 @foreach (var message in Model)
 {
     <div class="row">
@@ -26,7 +26,6 @@
                 <tr>
                     <th>Sent: </th>
                     <td>
-
                         @if (message.Sent.HasValue && message.Sent == true)
                         {
                             @message.SentAt.ToLocalTime();
@@ -42,17 +41,19 @@
                     <th>Body:</th>
                     <td>
                         <div class="col">
-                            <a href="#@message.Id" role="button" class="collapsed" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
+                            <a href="#@message.Id" class="collapsed" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
                                 Expand
-                            </a>
+                            </a> |
                             <a href="ViewMessage/@message.Id" target="_blank">Open in new window</a>
                         </div>
                         <div class="collapse" id="@message.Id" aria-expanded="false" style="height: 0px;">
                            <div class="collapse-body"> @Html.Raw(@message.Body)
                             <br />
-                               <a href="#@message.Id" role="button" class="collapsed" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
+                               <a href="#@message.Id" class="collapsed" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
                                    Collapse
-                               </a>
+                               </a> |
+                               <a href="ViewMessage/@message.Id" target="_blank">Open in new window</a>
+
                             </div>
 
                         </div>
@@ -63,11 +64,5 @@
         </div>
     </div>
 }
-<p></p>
 
-
-
-
-
-
-
+</div>
