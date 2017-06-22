@@ -3,6 +3,7 @@
     ViewData["Title"] = "MailQueue";
 }
 
+
 @foreach (var message in Model)
 {
     <div class="row">
@@ -25,9 +26,10 @@
                 <tr>
                     <th>Sent: </th>
                     <td>
+
                         @if (message.Sent.HasValue && message.Sent == true)
                         {
-                            @message.SentAt
+                            @message.SentAt.ToLocalTime();
                         }
                         else
                         {
@@ -46,19 +48,22 @@
                             <a href="ViewMessage/@message.Id" target="_blank">Open in new window</a>
                         </div>
                         <div class="collapse" id="@message.Id" aria-expanded="false" style="height: 0px;">
-                           <div class="collapse-body"> @Html.Raw(@message.Body)</div>
+                           <div class="collapse-body"> @Html.Raw(@message.Body)
+                            <br />
+                               <a href="#@message.Id" role="button" class="collapsed" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
+                                   Collapse
+                               </a>
+                            </div>
 
                         </div>
                     </td>
 
                 </tr>
             </table>
-            <br />
         </div>
     </div>
 }
-
-
+<p></p>
 
 
 
