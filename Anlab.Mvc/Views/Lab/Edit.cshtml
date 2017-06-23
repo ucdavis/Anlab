@@ -11,7 +11,7 @@
     App = {};
     App.orderData = @Json.Serialize(Model);
     App.OrderId = @Model.Order.Id;
-    App.IsAdmin = true;
+    App.IsFromLab = true;
     App.Status = @Json.Serialize(Model.Order.Status);
 </script>
 

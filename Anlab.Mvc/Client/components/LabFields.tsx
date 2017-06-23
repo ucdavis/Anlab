@@ -3,7 +3,6 @@ import Input from 'react-toolbox/lib/input';
 import { NumberInput } from './numberInput/numberInput';
 
 interface ILabFieldsProps {
-    isAdmin: boolean;
     labComments: string;
     adjustmentAmount: number;
     handleChange: Function;
@@ -11,9 +10,6 @@ interface ILabFieldsProps {
 
 export class LabFields extends React.Component<ILabFieldsProps, any> {
     render() {
-        if (!this.props.isAdmin) {
-            return null;
-        }
         return (
             <div>
                 <Input type='text' multiline label='Lab Comments' maxLength={2000} value={this.props.labComments} onChange={this.props.handleChange.bind(this, 'labComments')} />
