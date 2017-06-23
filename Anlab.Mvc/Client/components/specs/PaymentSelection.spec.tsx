@@ -37,5 +37,17 @@ describe('<PaymentSelection/>', () => {
                 expect(input.prop('value')).toEqual('123');
             });
         });
+        it('should call onPaymentSelected when the account is changed', () => {
+            const onPaymentSelected = jasmine.createSpy('onPaymentSelected');
+            const payment = { clientType: 'uc', account: '123' };
+            const target = mount(<PaymentSelection payment={payment} onPaymentSelected={onPaymentSelected} />);
+            expect(target.find('Input').length).toEqual(1);
+
+            const internal = target.instance();
+            internal.handleAccountChange('xxx');
+
+            expect(onPaymentSelected).toHaveBeenCalled();
+            expect(onPaymentSelected).toHaveBeenCalledWith({ clientType: 'uc', account: 'xxx' });
+        });
     });
 });
