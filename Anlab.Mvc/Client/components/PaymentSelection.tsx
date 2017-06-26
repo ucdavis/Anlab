@@ -15,13 +15,12 @@ interface IPaymentProps {
 
 export class PaymentSelection extends React.Component<IPaymentProps, any> {
     _renderUcAccount = () => {
-        if (this.props.payment.clientType !== 'uc') {
-            return null;
+        if (this.props.payment.clientType === 'uc') {
+            return (
+                <Input type="text" label="UC Account" value={this.props.payment.account} maxLength={10} onChange={this
+                    .handleAccountChange}/>
+            );
         }
-
-        return (
-            <Input type="text" label="UC Account" value={this.props.payment.account} maxLength={10} onChange={this.handleAccountChange}/>
-        );
     }
     handleChange = (clientType: string) => {
         var updatedPaymentInfo = { ...this.props.payment, clientType };
