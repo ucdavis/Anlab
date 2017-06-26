@@ -219,7 +219,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
 
     render() {
-        const { testItems, payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, grind, foreignSoil, filterWater, isFromLab, status, adjustmentAmount } = this.state;
+        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, grind, foreignSoil, filterWater, isFromLab, status, adjustmentAmount } = this.state;
 
         const { filtered, selected} = this.getTests();
 
