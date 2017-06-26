@@ -81,5 +81,15 @@ describe('<SampleTypeSelection/>', () => {
             expect(expectedTag.length).toEqual(1);
             expect(expectedTag.text()).toEqual('Soil');
         });
+
+        it('should call on click with soil parameter', () => {
+            const onSampleSelected = jasmine.createSpy('onSampleSelected');
+            const target = mount(<SampleTypeSelection sampleType="Soil" onSampleSelected={onSampleSelected} />);
+            const expectedTag = target.find('div').at(1).childAt(0);
+            expectedTag.simulate('click');
+
+            expect(onSampleSelected).toHaveBeenCalled();
+            expect(onSampleSelected).toHaveBeenCalledWith('Soil');
+        });
     });
 });
