@@ -352,4 +352,22 @@ describe('<Summary />', () => {
             });
         });
     });
+
+    describe('Rendering', () => {
+        it('should render nothing if no tests are selected', () => {
+            const testItems: Array<ITestItem> = [];
+            const payment = { clientType: 'other', account: '' };
+            const target = mount(<Summary adjustmentAmount={0} isFromLab={false} quantity={1} payment={payment} foreignSoil={false} status="Test" canSubmit={false} filterWater={false} grind={false} hideError={true} isCreate={true} onSubmit={null} testItems={testItems} />);
+            expect(target.find('div').length).toEqual(0);
+        });
+        it('should render something if tests are selected', () => {
+            const testItems: Array<ITestItem> = [
+                { id: 1, analysis: '1ABC', code: '1C-ABC', internalCost: 2.02, externalCost: 3.03, setupCost: 5, category: 'Cat1' },
+                { id: 2, analysis: '2ABC', code: '2C-ABC', internalCost: 1.01, externalCost: 4.03, setupCost: 6, category: 'Cat2' }
+            ]
+            const payment = { clientType: 'other', account: '' };
+            const target = mount(<Summary adjustmentAmount={0} isFromLab={false} quantity={1} payment={payment} foreignSoil={false} status="Test" canSubmit={false} filterWater={false} grind={false} hideError={true} isCreate={true} onSubmit={null} testItems={testItems} />);
+            expect(target.find('div').length).toBeGreaterThan(0);
+        });
+    });
 });
