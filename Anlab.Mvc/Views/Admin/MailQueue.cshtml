@@ -2,67 +2,67 @@
 @{
     ViewData["Title"] = "Mail Queue";
 }
+<div  style="padding-bottom:120px;">
+<table id="table" cellpadding="0px;" class="row-border order-column stripe">
+    <thead>
+        <tr>
+            <th>To:</th>
+            <th>Subject:</th>
+            <th>Sent At:</th>
 
-<div style="padding-bottom: 120px;">
-@foreach (var message in Model)
-{
-    <div class="row">
 
-        <div class="col whiteblock">
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var message in Model)
+    {
+        <tr>
+            <td>@message.SendTo
+                
+            </td>
+            <td>@message.Subject<br />
+                <a href="#@message.Id" class="collapsed" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
+                    Expand Body
+                </a> |
+                <a href="ViewMessage/@message.Id" target="_blank">Open in new window</a>
+                <div class="collapse" id="@message.Id" aria-expanded="false" style="height: 0px;">
+                    <div class="collapse-body">
+                        @Html.Raw(@message.Body)<br />
+                        <a href="#@message.Id" class="collapsed" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
+                            Collapse Body
+                        </a> |
+                        <a href="ViewMessage/@message.Id" target="_blank">Open in new window</a>
+                    </div>
+                </div>
+</td>
+            <td>@message.SentAt.ToLocalTime()</td>
 
-            <table>
-                <tr>
-                    <th>To: </th>
-                    <td>
-                        @message.SendTo
-                    </td>
-                </tr>
-                <tr>
-                    <th>Subject: </th>
-                    <td>
-                        @message.Subject
-                    </td>
-                </tr>
-                <tr>
-                    <th>Sent: </th>
-                    <td>
-                        @if (message.Sent.HasValue && message.Sent == true)
-                        {
-                            @message.SentAt.ToLocalTime();
-                        }
-                        else
-                        {
-                            @message.FailureReason
-                        }
+        </tr>
+    }
 
-                    </td>
-                </tr>
-                <tr>
-                    <th>Body:</th>
-                    <td>
-                        <div class="col">
-                            <a href="#@message.Id" class="collapsed" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
-                                Expand
-                            </a> |
-                            <a href="ViewMessage/@message.Id" target="_blank">Open in new window</a>
-                        </div>
-                        <div class="collapse" id="@message.Id" aria-expanded="false" style="height: 0px;">
-                           <div class="collapse-body"> @Html.Raw(@message.Body)
-                            <br />
-                               <a href="#@message.Id" class="collapsed" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
-                                   Collapse
-                               </a> |
-                               <a href="ViewMessage/@message.Id" target="_blank">Open in new window</a>
-
-                            </div>
-
-                        </div>
-                    </td>
-
-                </tr>
-            </table>
-        </div>
+    </tbody>
+</table>
     </div>
-}
 
-</div>
+@section AdditionalStyles
+{
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" />
+}
+@section Scripts
+{
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $("#table").dataTable({
+                "order": [[2, "desc"]],
+                "columnDefs": [
+                    {
+                        "type": "ordering", "targets": [0,1,2]
+
+                    }
+                ]
+            });
+
+        });
+    </script>
+}
