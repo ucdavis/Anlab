@@ -351,6 +351,137 @@ describe('<Summary />', () => {
                 expect(internal.totalCost()).toEqual(98.09); // 3 * (3.03 + 6 + 9 + 11) + 11
             });
         });
+        describe('_renderAdditionalFees internal function', () =>
+        {
+            it('should return null', () => {
+                const payment = { clientType: 'uc', account: '' };
+                const target = shallow(<Summary adjustmentAmount={0}
+                                                isFromLab={false}
+                                                quantity={1}
+                                                payment={payment}
+                                                foreignSoil={false}
+                                                status="Test"
+                                                canSubmit={false}
+                                                filterWater={false}
+                                                grind={false}
+                                                hideError={true}
+                                                isCreate={true}
+                                                onSubmit={null}
+                                                testItems={testItems} />);
+                const internal = target.instance();
+                //console.log(internal._renderAdditionalFees().debug());
+                expect(internal._renderAdditionalFees()).toEqual(null);
+            });
+
+            it('should render when adjustment is not zero 1', () => {
+                const payment = { clientType: 'uc', account: '' };
+                const target = shallow(<Summary adjustmentAmount={0.01}
+                                                isFromLab={false}
+                                                quantity={1}
+                                                payment={payment}
+                                                foreignSoil={false}
+                                                status="Test"
+                                                canSubmit={false}
+                                                filterWater={false}
+                                                grind={false}
+                                                hideError={true}
+                                                isCreate={true}
+                                                onSubmit={null}
+                                                testItems={testItems} />);
+                const internal = target.instance();
+                expect(internal._renderAdditionalFees()).not.toEqual(null);
+            });
+            it('should render when adjustment is not zero 2', () => {
+                const payment = { clientType: 'uc', account: '' };
+                const target = shallow(<Summary adjustmentAmount={-1}
+                                                isFromLab={false}
+                                                quantity={1}
+                                                payment={payment}
+                                                foreignSoil={false}
+                                                status="Test"
+                                                canSubmit={false}
+                                                filterWater={false}
+                                                grind={false}
+                                                hideError={true}
+                                                isCreate={true}
+                                                onSubmit={null}
+                                                testItems={testItems} />);
+                const internal = target.instance();
+                expect(internal._renderAdditionalFees()).not.toEqual(null);
+            });
+            it('should render when foreignSoil is true', () => {
+                const payment = { clientType: 'uc', account: '' };
+                const target = shallow(<Summary adjustmentAmount={0}
+                                                isFromLab={false}
+                                                quantity={1}
+                                                payment={payment}
+                                                foreignSoil={true}
+                                                status="Test"
+                                                canSubmit={false}
+                                                filterWater={false}
+                                                grind={false}
+                                                hideError={true}
+                                                isCreate={true}
+                                                onSubmit={null}
+                                                testItems={testItems} />);
+                const internal = target.instance();
+                expect(internal._renderAdditionalFees()).not.toEqual(null);
+            });
+            it('should render when filterWater is true', () => {
+                const payment = { clientType: 'uc', account: '' };
+                const target = shallow(<Summary adjustmentAmount={0}
+                                                isFromLab={false}
+                                                quantity={1}
+                                                payment={payment}
+                                                foreignSoil={false}
+                                                status="Test"
+                                                canSubmit={false}
+                                                filterWater={true}
+                                                grind={false}
+                                                hideError={true}
+                                                isCreate={true}
+                                                onSubmit={null}
+                                                testItems={testItems} />);
+                const internal = target.instance();
+                expect(internal._renderAdditionalFees()).not.toEqual(null);
+            });
+            it('should render when grind is true', () => {
+                const payment = { clientType: 'uc', account: '' };
+                const target = shallow(<Summary adjustmentAmount={0}
+                                                isFromLab={false}
+                                                quantity={1}
+                                                payment={payment}
+                                                foreignSoil={false}
+                                                status="Test"
+                                                canSubmit={false}
+                                                filterWater={false}
+                                                grind={true}
+                                                hideError={true}
+                                                isCreate={true}
+                                                onSubmit={null}
+                                                testItems={testItems} />);
+                const internal = target.instance();
+                expect(internal._renderAdditionalFees()).not.toEqual(null);
+            });
+            it('should render when all conditions are set', () => {
+                const payment = { clientType: 'uc', account: '' };
+                const target = shallow(<Summary adjustmentAmount={10}
+                                                isFromLab={false}
+                                                quantity={1}
+                                                payment={payment}
+                                                foreignSoil={true}
+                                                status="Test"
+                                                canSubmit={false}
+                                                filterWater={true}
+                                                grind={true}
+                                                hideError={true}
+                                                isCreate={true}
+                                                onSubmit={null}
+                                                testItems={testItems} />);
+                const internal = target.instance();
+                expect(internal._renderAdditionalFees()).not.toEqual(null);
+            });
+        });
     });
 
     describe('Rendering', () => {
