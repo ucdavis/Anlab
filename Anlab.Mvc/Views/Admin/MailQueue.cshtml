@@ -13,14 +13,14 @@
 
         </tr>
     </thead>
-    <tbody>
+    <tbody style="vertical-align: top;">
     @foreach (var message in Model)
     {
         <tr>
             <td>@message.SendTo
                 
             </td>
-            <td>@message.Subject<br />
+            <td data-search="@message.Subject">@message.Subject<br />
                 <a href="#@message.Id" class="collapsed" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
                     Expand Body
                 </a> |
@@ -57,7 +57,7 @@
                 "order": [[2, "desc"]],
                 "columnDefs": [
                     {
-                        "type": "ordering", "targets": [0,1,2]
+                        "type": "ordering", "targets": [0, 1, 2]
 
                     }
                 ]
