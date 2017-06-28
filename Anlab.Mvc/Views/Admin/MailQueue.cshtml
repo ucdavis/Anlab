@@ -2,14 +2,15 @@
 @{
     ViewData["Title"] = "Mail Queue";
 }
+<div id="collapsebutton" class="nodisp expandcollapse btn btn-small btn-success no-print" style="margin: 10px 0px;"><i class="glyphicon glyphicon-minus"></i> Collapse All</div>
+<div id="expandbutton" class="disp expandcollapse btn btn-small btn-success no-print" style="margin: 10px 0px;"><i class="glyphicon glyphicon-plus"></i> Expand All</div>
 <div  style="padding-bottom:120px;">
-<table id="table" cellpadding="0px;" class="row-border order-column stripe">
+<table id="table" cellpadding="0" class="row-border stripe order-column">
     <thead>
         <tr>
             <th>To:</th>
             <th>Subject:</th>
             <th>Sent At:</th>
-
 
         </tr>
     </thead>
@@ -20,22 +21,37 @@
             <td>@message.SendTo
                 
             </td>
-            <td data-search="@message.Subject">@message.Subject<br />
-                <a href="#@message.Id" class="collapsed" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
-                    Expand Body
-                </a> |
-                <a href="ViewMessage/@message.Id" target="_blank">Open in new window</a>
-                <div class="collapse" id="@message.Id" aria-expanded="false" style="height: 0px;">
-                    <div class="collapse-body">
-                        @Html.Raw(@message.Body)<br />
-                        <a href="#@message.Id" class="collapsed" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
-                            Collapse Body
-                        </a> |
-                        <a href="ViewMessage/@message.Id" target="_blank">Open in new window</a>
+            <td data-search="@message.Subject">
+                @message.Subject<br />
+            <a data-toggle="collapse" href="#@message.Id" aria-expanded="true" aria-controls="@message.Id">
+                Expand Body
+            </a> |
+            <a href="ViewMessage/@message.Id" target="_blank">Open in new window</a>
+            <div id="@message.Id" class="panel-collapse collapse">
+                <div class="panel-body">
+                    @Html.Raw(message.Body)
                     </div>
-                </div>
-</td>
-            <td>@message.SentAt.ToLocalTime()</td>
+                    <a data-toggle="collapse" href="#@message.Id" aria-expanded="true" aria-controls="@message.Id">
+                        Collapse Body
+                    </a> |
+                    <a href="ViewMessage/@message.Id" target="_blank">Open in new window</a>
+                
+            </div>
+        </td>
+            <td>
+            @if (message.Sent.HasValue && message.Sent==true)
+            {
+                @message.SentAt.ToLocalTime()
+            }
+            else
+            {
+                //for testing only
+                @message.SentAt.ToLocalTime()
+
+                <p>Message not sent, error: @message.FailureReason</p>
+
+            }
+            </td>
 
         </tr>
     }
@@ -47,6 +63,12 @@
 @section AdditionalStyles
 {
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" />
+    <style>
+        div.panel-body tr tr{
+            background-color: transparent;
+        }
+    </style>
+
 }
 @section Scripts
 {
@@ -61,6 +83,18 @@
 
                     }
                 ]
+            });
+            $("#collapsebutton").hide();
+            $("#expandbutton").click(function () {
+                $('div.panel-collapse').addClass('in').css("height", "");
+                $("#expandbutton").hide();
+                $("#collapsebutton").show();
+            });
+
+            $("#collapsebutton").click(function () {
+                $('div.panel-collapse').removeClass('in');
+                $("#expandbutton").show();
+                $("#collapsebutton").hide();
             });
 
         });
