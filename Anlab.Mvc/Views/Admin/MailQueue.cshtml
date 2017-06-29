@@ -1,0 +1,132 @@
+﻿@model List<Anlab.Core.Domain.MailMessage>
+@{
+    ViewData["Title"] = "Mail Queue";
+}
+
+<div id="collapsebutton" class="btn btn-default"><i class="glyphicon glyphicon-minus"></i> Collapse All</div>
+<div id="expandbutton" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> Expand All</div>
+
+<div style="padding-bottom:120px;">
+<table id="table" cellpadding="0" class="row-border stripe order-column">
+    <thead>
+        <tr>
+            <th>Status:</th>
+            <th>To:</th>
+            <th>Subject:</th>
+            <th>Sent At:</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var message in Model)
+    {
+        <tr>
+            <td>
+                @if (message.Sent.HasValue)
+                {
+                    if (message.Sent.Value)
+                    {
+                        <p>Sent</p>
+                    }
+                    else
+                    {
+                        <p>Failed</p>
+                    }
+                }
+                else
+                {
+                    <p>Pending</p>
+                }
+            </td>
+            <td>@message.SendTo</td>
+            <td data-search="@message.Subject">@message.Subject<br />
+                    <a data-toggle="collapse" href="#@message.Id" aria-expanded="true" aria-controls="@message.Id">Expand Body </a> |
+                    <a href="@Url.Action("ViewMessage",new { id = message.Id })" target="_blank">Open in a new window</a>
+                <div id="@message.Id" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        @Html.Raw(message.Body)
+                    </div>
+                    <a data-toggle="collapse" href="#@message.Id" aria-expanded="true" aria-controls="@message.Id">Collapse Body </a> |
+                    <a href="@Url.Action("ViewMessage",new { id = message.Id })" target="_blank">Open in a new window</a>   
+                </div>
+            </td>
+            <td>
+                Created At: @message.CreatedAt.ToLocalTime()<br />
+                @if (message.Sent.HasValue)
+                {
+                        @if (message.Sent.Value && message.SentAt.HasValue)
+                        {
+                            @:Sent At: 
+                            @message.SentAt.Value.ToLocalTime()
+                        }
+                        else
+                        {
+                            @:Error: 
+                            @message.FailureReason
+
+                        }
+                }
+                else
+                {
+                    <br />
+                }
+            </td>
+
+        </tr>
+    }
+
+    </tbody>
+</table>
+    </div>
+
+@section AdditionalStyles
+{
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" />
+    <style>
+        div.panel-body tr tr{
+            background-color: transparent;
+        }
+        table tbody{
+            vertical-align: top;
+        }
+        div.btn {
+            margin: 10px 0px;
+        }
+    </style>
+
+}
+@section Scripts
+{
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $("#table").dataTable({
+                "order": [[0, "asc"],[3,"desc"]],
+                "columnDefs": [
+                    {
+                        "type": "ordering", "targets": [0, 1, 2, 3]
+                    },
+                    {
+                        "width": "5%", "targets": [0]
+                    },
+                    {
+                        width: "55%", "targets":[2]
+                    }
+                ]
+            });
+
+            $("#collapsebutton").hide();
+            $("#expandbutton").click(function () {
+                $('div.panel-collapse').collapse("show");
+                $("#expandbutton").hide();
+                $("#collapsebutton").show();
+            });
+
+            $("#collapsebutton").click(function () {
+                $('div.panel-collapse').collapse("hide");
+                $("#expandbutton").show();
+                $("#collapsebutton").hide();
+            });
+
+        });
+    </script>
+}
