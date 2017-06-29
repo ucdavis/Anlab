@@ -7,7 +7,7 @@ namespace Anlab.Core.Domain
     public class MailMessage {
         public MailMessage()
         {
-            SentAt = DateTime.UtcNow;
+            CreatedAt = DateTime.UtcNow;
         }
 
         public int Id { get; set; }
@@ -26,5 +26,7 @@ namespace Anlab.Core.Domain
         public string FailureReason { get; set; }
 
         public DateTime SentAt { get; set; }
+
+        public DateTime CreatedAt { get; set; }
     }
 }
