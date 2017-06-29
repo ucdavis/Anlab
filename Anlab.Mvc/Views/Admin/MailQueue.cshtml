@@ -25,16 +25,19 @@
                 {
                     if (message.Sent.Value)
                     {
-                        <p>Sent</p>
+                        <i class="fa fa-check-circle" aria-hidden="true" title="Sent"></i>
+                        @:Sent
                     }
                     else
                     {
-                        <p>Failed</p>
+                        <i class="fa fa-times-circle" aria-hidden="true" title="Failed"></i>
+                        @:Failed
                     }
                 }
                 else
                 {
-                    <p>Pending</p>
+                    <i class="fa fa-refresh" aria-hidden="true" title="Pending"></i>
+                    @:Pending
                 }
             </td>
             <td>@message.SendTo</td>
@@ -91,6 +94,15 @@
         div.btn {
             margin: 10px 0px;
         }
+        i.fa-check-circle{
+            color: #289616;
+        }
+        i.fa-times-circle{
+            color: #db0a26;
+        }
+        i.fa-refresh{
+            color: #2c8ba5;
+        }
     </style>
 
 }
@@ -103,13 +115,10 @@
                 "order": [[0, "asc"],[3,"desc"]],
                 "columnDefs": [
                     {
-                        "type": "ordering", "targets": [0, 1, 2, 3]
+                        "type": "ordering", "targets": [0,1,2,3]
                     },
                     {
-                        "width": "5%", "targets": [0]
-                    },
-                    {
-                        width: "55%", "targets":[2]
+                        "width": "55%", "targets":[2]
                     }
                 ]
             });
