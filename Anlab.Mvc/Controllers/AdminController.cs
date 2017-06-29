@@ -123,8 +123,14 @@ namespace AnlabMvc.Controllers
             // TODO: show recently sent
 
             var messages = await _dbContext.MailMessages.Where(x => x.Sent == null).AsNoTracking().ToListAsync();
+            return View(messages);
+        }
 
-            return Json(messages);
+        public IActionResult ViewMessage(int id)
+        {
+
+            var message = _dbContext.MailMessages.AsNoTracking().SingleOrDefault(x => x.Id == id);
+            return View(message);
         }
     }
 }

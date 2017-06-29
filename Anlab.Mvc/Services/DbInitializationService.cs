@@ -84,6 +84,24 @@ namespace AnlabMvc.Services
             await _userManager.AddToRoleAsync(jasonUser, RoleCodes.Admin);
             await _userManager.AddToRoleAsync(jasonUser, RoleCodes.User);
 
+            var lauraUser = new User
+            {
+                Email = "laholstege@ucdavis.edu",
+                UserName = "laholstege@ucdavis.edu",
+                Name = "Laura Holstege"
+            };
+
+            var lauraUserPrincipal = new ClaimsPrincipal();
+            userPrincipal.AddIdentity(new ClaimsIdentity(new[] {
+                new Claim(ClaimTypes.NameIdentifier, "holstege"),
+                new Claim(ClaimTypes.Name, "Laura Holstege")
+            }));
+            var lauraLoginInfo = new ExternalLoginInfo(lauraUserPrincipal, "CAS", "holstege", null);
+
+            await _userManager.CreateAsync(lauraUser);
+            await _userManager.AddLoginAsync(lauraUser, lauraLoginInfo);
+            await _userManager.AddToRoleAsync(lauraUser, RoleCodes.Admin);
+            await _userManager.AddToRoleAsync(lauraUser, RoleCodes.User);
 
             #region Cal's login
             var calUser = new User
