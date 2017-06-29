@@ -2,70 +2,73 @@
 @{
     ViewData["Title"] = "Mail Queue";
 }
-<div id="collapsebutton" class="nodisp expandcollapse btn btn-small btn-success no-print" style="margin: 10px 0px;"><i class="glyphicon glyphicon-minus"></i> Collapse All</div>
-<div id="expandbutton" class="disp expandcollapse btn btn-small btn-success no-print" style="margin: 10px 0px;"><i class="glyphicon glyphicon-plus"></i> Expand All</div>
-<div  style="padding-bottom:120px;">
+
+<div id="collapsebutton" class="btn btn-default"><i class="glyphicon glyphicon-minus"></i> Collapse All</div>
+<div id="expandbutton" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> Expand All</div>
+
+<div style="padding-bottom:120px;">
 <table id="table" cellpadding="0" class="row-border stripe order-column">
     <thead>
         <tr>
-            <th>Sent:</th>
+            <th>Status:</th>
             <th>To:</th>
             <th>Subject:</th>
             <th>Sent At:</th>
-
         </tr>
     </thead>
-    <tbody style="vertical-align: top;">
+    <tbody>
     @foreach (var message in Model)
     {
         <tr>
             <td>
-
-                @if(message.Sent.HasValue && message.Sent == true)
+                @if (message.Sent.HasValue)
                 {
-                    <p>Yes</p>
+                    if (message.Sent == true)
+                    {
+                        <p>Sent</p>
+                    }
+                    else
+                    {
+                        <p>Failed</p>
+                    }
                 }
                 else
                 {
-                    <p>No</p>
+                    <p>Pending</p>
                 }
             </td>
-            <td>@message.SendTo
-                
-            </td>
-            <td data-search="@message.Subject">
-                @message.Subject<br />
-            <a data-toggle="collapse" href="#@message.Id" aria-expanded="true" aria-controls="@message.Id">
-                Expand Body
-            </a> |
-            <a href="ViewMessage/@message.Id" target="_blank">Open in new window</a>
-            <div id="@message.Id" class="panel-collapse collapse">
-                <div class="panel-body">
-                    @Html.Raw(message.Body)
+            <td>@message.SendTo</td>
+            <td data-search="@message.Subject">@message.Subject<br />
+                    <a data-toggle="collapse" href="#@message.Id" aria-expanded="true" aria-controls="@message.Id">Expand Body </a> |
+                    <a href="@Url.Action("ViewMessage",new { id = message.Id })" target="_blank">Open in a new window</a>
+                <div id="@message.Id" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        @Html.Raw(message.Body)
                     </div>
-                    <a data-toggle="collapse" href="#@message.Id" aria-expanded="true" aria-controls="@message.Id">
-                        Collapse Body
-                    </a> |
-                    <a href="ViewMessage/@message.Id" target="_blank">Open in new window</a>
-                
-            </div>
-        </td>
+                    <a data-toggle="collapse" href="#@message.Id" aria-expanded="true" aria-controls="@message.Id">Collapse Body </a> |
+                    <a href="@Url.Action("ViewMessage",new { id = message.Id })" target="_blank">Open in a new window</a>   
+                </div>
+            </td>
             <td>
+                Created At: @message.CreatedAt.ToLocalTime()<br />
+                @if (message.Sent.HasValue)
+                {
+                        @if (message.Sent == true && message.SentAt.HasValue)
+                        {
+                            @:Sent At: 
+                            @message.SentAt.Value.ToLocalTime()
+                        }
+                        else
+                        {
+                            @:Error: 
+                            @message.FailureReason
 
-            @if (message.Sent.HasValue && message.Sent==true)
-            {
-                <p> 
-                Created At: @message.CreatedAt.ToLocalTime()
-                <br />
-                Sent At: @message.SentAt.ToLocalTime()</p>
-            }
-            else
-            {
-                <p>
-                Created At: @message.CreatedAt.ToLocalTime()
-                <br />
-                Error: @message.FailureReason </p>
-            }
+                        }
+                }
+                else
+                {
+                    <br />
+                }
             </td>
 
         </tr>
@@ -82,6 +85,12 @@
         div.panel-body tr tr{
             background-color: transparent;
         }
+        table tbody{
+            vertical-align: top;
+        }
+        div.btn {
+            margin: 10px 0px;
+        }
     </style>
 
 }
@@ -95,27 +104,25 @@
                 "columnDefs": [
                     {
                         "type": "ordering", "targets": [0, 1, 2, 3]
-
                     },
                     {
                         "width": "5%", "targets": [0]
-
                     },
                     {
                         width: "55%", "targets":[2]
-
                     }
                 ]
             });
+
             $("#collapsebutton").hide();
             $("#expandbutton").click(function () {
-                $('div.panel-collapse').addClass('in').css("height", "");
+                $('div.panel-collapse').collapse("show");
                 $("#expandbutton").hide();
                 $("#collapsebutton").show();
             });
 
             $("#collapsebutton").click(function () {
-                $('div.panel-collapse').removeClass('in');
+                $('div.panel-collapse').collapse("hide");
                 $("#expandbutton").show();
                 $("#collapsebutton").hide();
             });

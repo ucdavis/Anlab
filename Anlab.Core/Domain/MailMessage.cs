@@ -25,7 +25,7 @@ namespace Anlab.Core.Domain
 
         public string FailureReason { get; set; }
 
-        public DateTime SentAt { get; set; }
+        public DateTime? SentAt { get; set; }
 
         public DateTime CreatedAt { get; set; }
     }
