@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Shouldly;
 using System.Linq;
 using System.Threading.Tasks;
+using Anlab.Core.Domain;
 using Test.Helpers;
 using Xunit;
 
@@ -116,6 +118,51 @@ namespace Test.TestsDatabase
 
         }
 
+        #region Reflection of Database.
 
+        /// <summary>
+        /// Tests all fields in the database have been tested.
+        /// If this fails and no other tests, it means that a field has been added which has not been tested above.
+        /// </summary>
+        [Fact]
+        public void TestAllFieldsInTheDatabaseHaveBeenTested()
+        {
+            #region Arrange
+            var expectedFields = new List<NameAndType>();
+            expectedFields.Add(new NameAndType("AdditionalEmails", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("ClientId", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)16)]"
+            }));
+            expectedFields.Add(new NameAndType("Created", "System.DateTime", new List<string>()));
+            expectedFields.Add(new NameAndType("Creator", "Anlab.Core.Domain.User", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.Schema.ForeignKeyAttribute(\"CreatorId\")]"
+            }));
+            expectedFields.Add(new NameAndType("CreatorId", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+            }));
+            expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>()));
+            expectedFields.Add(new NameAndType("JsonDetails", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("LabId", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)16)]"
+            }));
+            expectedFields.Add(new NameAndType("Project", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)256)]"
+            }));
+            expectedFields.Add(new NameAndType("Status", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Updated", "System.DateTime", new List<string>()));
+
+            #endregion Arrange
+
+            AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(Order));
+
+        }
+
+        #endregion Reflection of Database.	
     }
 }
