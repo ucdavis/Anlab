@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="TestsDatabase\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Anlab.Core\Anlab.Core.csproj" />
     <ProjectReference Include="..\Anlab.Mvc\AnlabMvc.csproj" />
   </ItemGroup>
