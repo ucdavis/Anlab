@@ -5,8 +5,6 @@
     ViewData["Title"] = "Confirmation";
 }
 
-<h2>Confirmation</h2>
-
 @Html.Partial("_OrderDetails")
 
 <form asp-controller="Lab" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
