@@ -5,8 +5,6 @@
     ViewData["Title"] = "Confirmation";
 }
 
-<h2>Confirmation</h2>
-
 <form asp-controller="order" asp-action="Delete" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
     <button type="submit" class="btn btn-danger pull-right"><i class="fa fa-trash" aria-hidden="true"> Delete Order</i></button>
 

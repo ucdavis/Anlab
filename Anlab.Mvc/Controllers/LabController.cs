@@ -17,11 +17,13 @@ namespace AnlabMvc.Controllers
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IOrderService _orderService;
+        private readonly IOrderMessageService _orderMessageService;
 
-        public LabController(ApplicationDbContext dbContext, IOrderService orderService)
+        public LabController(ApplicationDbContext dbContext, IOrderService orderService, IOrderMessageService orderMessageService)
         {
             _dbContext = dbContext;
             _orderService = orderService;
+            _orderMessageService = orderMessageService;
         }
 
         public IActionResult OpenOrders()
@@ -101,13 +103,6 @@ namespace AnlabMvc.Controllers
                 await _orderService.PopulateOrder(model, orderToUpdate);
                 _orderService.PopulateOrderWithLabDetails(model, orderToUpdate);
 
-                if (orderToUpdate.Status == OrderStatusCodes.Confirmed)
-                {
-                    orderToUpdate.Status = OrderStatusCodes.Received;
-                    await _orderService.SendOrderToAnlab(orderToUpdate);
-                }
-
-
                 idForRedirection = model.OrderId.Value;
                 await _dbContext.SaveChangesAsync();
             }
@@ -118,6 +113,51 @@ namespace AnlabMvc.Controllers
 
 
             return Json(new { success = true, id = idForRedirection });
+        }
+
+        public async Task<IActionResult> Confirmation(int id)
+        {
+            var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound(id);
+            }
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Confirmation(int id, bool confirm)
+        {
+            var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound(id);
+            }
+
+            if (order.Status != OrderStatusCodes.Confirmed)
+            {
+                ErrorMessage = "You can only receive a confirmed order";
+                return RedirectToAction("OpenOrders");
+            }
+
+            order.Status = OrderStatusCodes.Received;
+
+            await _orderService.SendOrderToAnlab(order);
+
+            await _orderMessageService.EnqueueReceivedMessage(order);
+
+            await _dbContext.SaveChangesAsync();
+
+            Message = "Order marked as received";
+            return RedirectToAction("OpenOrders");
+
         }
     }
 }
