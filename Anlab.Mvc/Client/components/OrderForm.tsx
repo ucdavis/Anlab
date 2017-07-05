@@ -172,8 +172,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         let postUrl = '/Order/Save';
         let returnUrl = '/Order/Confirmation/';
         if (this.state.isFromLab) {
-            postUrl = '/Lab/save';
-            returnUrl = '/Lab/Details/';
+            postUrl = '/Lab/Save';
+            returnUrl = '/Lab/Confirmation/';
         }
         this.setState({ ...this.state, isSubmitting: true });
         const selectedTests = this.getTests().selected;

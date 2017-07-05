@@ -1,0 +1,38 @@
+﻿@using Humanizer
+@model AnlabMvc.Models.Order.OrderReviewModel
+
+@{
+    ViewData["Title"] = "Confirmation";
+}
+
+<h2>Confirmation</h2>
+
+@Html.Partial("_OrderDetails")
+
+<form asp-controller="Lab" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
+    @Html.Hidden("confirm", true)
+    <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true">Confirm Received</i></button>    
+    <a asp-action="Edit" asp-route-id="@Model.Order.Id" class="btn btn-default">Edit Order</a>
+</form>
+
+
+<div class="form-group">
+    <strong>json Data</strong>
+    <span>@Model.Order.JsonDetails</span>
+</div>
+
+@section AdditionalStyles
+{
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" />
+}
+
+@section Scripts
+{
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            $("#table").dataTable();
+        });
+    </script>
+}

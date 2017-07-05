@@ -7,6 +7,7 @@ namespace AnlabMvc.Services
     public interface IOrderMessageService
     {
         Task EnqueueCreatedMessage(Order order);
+        Task EnqueueReceivedMessage(Order order);
     }
 
     public class OrderMessageService : IOrderMessageService
@@ -26,6 +27,20 @@ namespace AnlabMvc.Services
             var message = new MailMessage
             {
                 Subject = "Work Request Confirmation",
+                Body = body,
+                SendTo = order.Creator.Email
+            };
+
+            _mailService.EnqueueMessage(message);
+        }
+        public async Task EnqueueReceivedMessage(Order order)
+        {
+            //TODO: change body of email, right now it is the same as OrderCreated
+            var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderReceived", order);
+
+            var message = new MailMessage
+            {
+                Subject = "Order Received Confirmation",
                 Body = body,
                 SendTo = order.Creator.Email
             };
