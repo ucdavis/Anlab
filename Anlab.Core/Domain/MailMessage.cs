@@ -28,5 +28,9 @@ namespace Anlab.Core.Domain
         public DateTime? SentAt { get; set; }
 
         public DateTime CreatedAt { get; set; }
+
+        public Order Order { get; set; }
+
+        public User User { get; set; }
     }
 }

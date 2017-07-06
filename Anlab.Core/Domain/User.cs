@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Anlab.Core.Domain
@@ -27,5 +28,7 @@ namespace Anlab.Core.Domain
 
         [StringLength(16)]
         public string Account { get; set; }
+
+        public ICollection<MailMessage> MailMessages { get; set; }
     }
 }
