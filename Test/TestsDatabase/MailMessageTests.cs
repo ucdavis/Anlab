@@ -28,6 +28,7 @@ namespace Test.TestsDatabase
             expectedFields.Add(new NameAndType("CreatedAt", "System.DateTime", new List<string>()));
             expectedFields.Add(new NameAndType("FailureReason", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>()));
+            expectedFields.Add(new NameAndType("Order", "Anlab.Core.Domain.Order", new List<string>()));
             expectedFields.Add(new NameAndType("SendTo", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
@@ -38,6 +39,7 @@ namespace Test.TestsDatabase
             {
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
+            expectedFields.Add(new NameAndType("User", "Anlab.Core.Domain.User", new List<string>()));
 
             #endregion Arrange
 

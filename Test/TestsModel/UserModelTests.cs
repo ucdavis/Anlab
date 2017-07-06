@@ -46,7 +46,7 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("LockoutEnd", "System.Nullable`1[System.DateTimeOffset]", new List<string>()));
             expectedFields.Add(new NameAndType("Logins", "System.Collections.Generic.ICollection`1[Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin`1[System.String]]", new List<string>()));
 
-
+            expectedFields.Add(new NameAndType("MailMessages", "System.Collections.Generic.ICollection`1[Anlab.Core.Domain.MailMessage]", new List<string>()));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Name\")]",
