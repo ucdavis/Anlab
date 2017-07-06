@@ -38,7 +38,7 @@ build_script:
 - cmd: msbuild /t:Build /p:Configuration=%configuration%;RunOctoPack=true;PackageVersion=%APPVEYOR_BUILD_VERSION%;OctoPackReleaesNotesFile=..\commit.txt
 
 test_script:
-- cmd: xunit.console %appveyor_build_folder%\Test\bin\%configuration%\netcoreapp1.1\Test.dll /appveyor
+- cmd: xunit.console.clr4 %appveyor_build_folder%\Test\bin\%configuration%\netcoreapp1.1\Test.dll /appveyor
 - cmd: |
     cd Anlab.Mvc
     npm test
