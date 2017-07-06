@@ -28,7 +28,9 @@ namespace AnlabMvc.Services
             {
                 Subject = "Work Request Confirmation",
                 Body = body,
-                SendTo = order.Creator.Email
+                SendTo = order.Creator.Email,
+                Order = order,
+                User = order.Creator,
             };
 
             _mailService.EnqueueMessage(message);
@@ -42,7 +44,9 @@ namespace AnlabMvc.Services
             {
                 Subject = "Order Received Confirmation",
                 Body = body,
-                SendTo = order.Creator.Email
+                SendTo = order.Creator.Email,
+                Order = order,
+                User = order.Creator,
             };
 
             _mailService.EnqueueMessage(message);
