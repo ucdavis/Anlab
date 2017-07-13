@@ -29,7 +29,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
         const total = this.props.testItems.reduce((prev, item) => {
             // total for current item
             const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
-            const perTest = price * this.props.quantity;
+            const perTest = Math.ceil(price * this.props.quantity);
 
             return prev + perTest + item.setupCost;
         }, 0);
@@ -64,8 +64,8 @@ export class Summary extends React.Component<ISummaryProps, any> {
 
         const tests = this.props.testItems.map(item => {
             const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
-            const perTest = price * this.props.quantity;            
-            const rowTotalDisplay = (perTest + item.setupCost);
+            const perTest = Math.ceil(price * this.props.quantity);            
+            const rowTotalDisplay = Math.ceil(perTest + item.setupCost);
             return (
                 <tr key={item.id}>
                     <td>{item.analysis}</td>
