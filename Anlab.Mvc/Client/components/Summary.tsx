@@ -31,7 +31,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
             const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
             const perTest = price * this.props.quantity;
 
-            return prev + perTest + item.setupCost;
+            return prev + perTest + (this.props.payment.clientType === 'uc' ? item.internalSetupCost : item.externalSetupCost);
         }, 0);
 
         return total + grindTotal + foreignSoilTotal + filterWaterTotal + this.props.adjustmentAmount;
@@ -64,14 +64,15 @@ export class Summary extends React.Component<ISummaryProps, any> {
 
         const tests = this.props.testItems.map(item => {
             const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
+            const setupCost = this.props.payment.clientType === 'uc' ? item.internalSetupCost : item.externalSetupCost;
             const perTest = price * this.props.quantity;            
-            const rowTotalDisplay = (perTest + item.setupCost);
+            const rowTotalDisplay = (perTest + setupCost);
             return (
                 <tr key={item.id}>
                     <td>{item.analysis}</td>
                     <td><NumberFormat value={price} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
                     <td><NumberFormat value={perTest} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-                    <td><NumberFormat value={item.setupCost} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+                    <td><NumberFormat value={setupCost} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
                     <td><NumberFormat value={rowTotalDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
                 </tr>
             );
