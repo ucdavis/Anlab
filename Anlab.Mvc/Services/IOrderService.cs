@@ -79,7 +79,6 @@ namespace AnlabMvc.Services
         {
             // TODO: Do we really want to match on ID, or Code, or some combination?
             var selectedTestIds = orderDetails.SelectedTests.Select(t => t.Id);
-            //var tests = await _context.TestItems.Where(a => selectedTestIds.Contains(a.Id)).ToListAsync();
             var tests = PopulateSelectedTestsItemModel(selectedTestIds);
 
             var calcualtedTests = new List<TestDetails>();
