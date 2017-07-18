@@ -53,11 +53,34 @@ namespace AnlabMvc.Services
             return joined;
         }
 
+        private IList<TestItemModel> PopulateSelectedTestsItemModel(IEnumerable<int> selectedTestIds)
+        {
+            var prices = _itemPriceService.GetPrices();
+            var items = _context.TestItems.Where(a => selectedTestIds.Contains(a.Id)).AsNoTracking().ToList();
+
+            var joined = (from i in items
+                join p in prices on i.Code equals p.Code
+                select new TestItemModel
+                {
+                    Analysis = i.Analysis,
+                    Category = i.Category,
+                    Code = i.Code,
+                    ExternalCost = Math.Ceiling(p.Cost * 1.5m),
+                    Group = i.Group,
+                    Id = i.Id,
+                    InternalCost = Math.Ceiling(p.Cost),
+                    ExternalSetupCost = Math.Ceiling(p.SetupCost * 1.5m),
+                    InternalSetupCost = Math.Ceiling(p.SetupCost)
+                }).ToList();
+            return joined;
+        }
+
         private async Task<TestDetails[]> CalculateTestDetails(OrderDetails orderDetails)
         {
             // TODO: Do we really want to match on ID, or Code, or some combination?
             var selectedTestIds = orderDetails.SelectedTests.Select(t => t.Id);
-            var tests = await _context.TestItems.Where(a => selectedTestIds.Contains(a.Id)).ToListAsync();
+            //var tests = await _context.TestItems.Where(a => selectedTestIds.Contains(a.Id)).ToListAsync();
+            var tests = PopulateSelectedTestsItemModel(selectedTestIds);
 
             var calcualtedTests = new List<TestDetails>();
 
@@ -73,12 +96,12 @@ namespace AnlabMvc.Services
                     Id = dbTest.Id,
                     Analysis = dbTest.Analysis,
                     Code = dbTest.Code,
-                    SetupCost = dbTest.SetupCost,
+                    SetupCost = orderDetails.Payment.IsInternalClient ?  dbTest.InternalSetupCost : dbTest.ExternalSetupCost,
                     InternalCost = dbTest.InternalCost,
                     ExternalCost = dbTest.ExternalCost,
                     Cost = cost,
                     SubTotal = costAndQuantity,
-                    Total = costAndQuantity + dbTest.SetupCost
+                    Total = costAndQuantity + (orderDetails.Payment.IsInternalClient ? dbTest.InternalSetupCost : dbTest.ExternalSetupCost)
                 });
             }
 
