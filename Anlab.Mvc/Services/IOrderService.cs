@@ -16,15 +16,41 @@ namespace AnlabMvc.Services
         Task PopulateOrder(OrderSaveModel model, Order orderToUpdate);
         void PopulateOrderWithLabDetails(OrderSaveModel model, Order orderToUpdate);
         Task SendOrderToAnlab(Order order);
+
+        List<TestItemModel> PopulateTestItemModel();
     }
 
     public class OrderService : IOrderService
     {
         private readonly ApplicationDbContext _context;
+        private readonly ITestItemPriceService _itemPriceService;
 
-        public OrderService(ApplicationDbContext context)
+        public OrderService(ApplicationDbContext context, ITestItemPriceService itemPriceService)
         {
             _context = context;
+            _itemPriceService = itemPriceService;
+        }
+
+        public List<TestItemModel> PopulateTestItemModel()
+        {
+            var prices = _itemPriceService.GetPrices();
+            var items = _context.TestItems.AsNoTracking().ToList();
+
+            var joined = (from i in items
+                join p in prices on i.Code equals p.Code
+                select new TestItemModel
+                {
+                    Analysis = i.Analysis,
+                    Category = i.Category,
+                    Code = i.Code,
+                    ExternalCost = Math.Ceiling(p.Cost * 1.5m),
+                    Group = i.Group,
+                    Id = i.Id,
+                    InternalCost = Math.Ceiling(p.Cost),
+                    ExternalSetupCost = Math.Ceiling(p.SetupCost * 1.5m),
+                    InternalSetupCost = Math.Ceiling(p.SetupCost)
+                }).ToList();
+            return joined;
         }
 
         private async Task<TestDetails[]> CalculateTestDetails(OrderDetails orderDetails)

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Anlab.Core.Data;
 using AnlabMvc.Models.Order;
 using Anlab.Core.Domain;
+using Anlab.Core.Models;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,14 +19,14 @@ namespace AnlabMvc.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IOrderService _orderService;
         private readonly IOrderMessageService _orderMessageService;
-        private readonly ITestItemPriceService _itemPriceService;
 
-        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ITestItemPriceService itemPriceService)
+
+        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService)
         {
             _context = context;
             _orderService = orderService;
             _orderMessageService = orderMessageService;
-            _itemPriceService = itemPriceService;
+
         }
 
         public async Task<IActionResult> Index()
@@ -37,26 +38,7 @@ namespace AnlabMvc.Controllers
 
         public IActionResult Create()
         {
-            var prices = _itemPriceService.GetPrices();
-            var items = _context.TestItems.AsNoTracking().ToList();
-
-            var joined = (from i in items
-                join p in prices on i.Code equals p.Code
-                select new TestItem{Analysis = i.Analysis,
-                    Category = i.Category,
-                    ChargeSet = i.ChargeSet,
-                    Code = i.Code,
-                    ExternalCost = Math.Ceiling(p.Cost * 1.5m),
-                    FeeSchedule = i.FeeSchedule,
-                    Group = i.Group,
-                    GroupType = i.GroupType,
-                    Id = i.Id,
-                    InternalCost = Math.Ceiling(p.Cost),
-                    SetupCost = Math.Ceiling(p.SetupCost),
-                    Multiplier = i.Multiplier,
-                    Multiplies = i.Multiplies,
-                    Notes = i.Notes,
-                    Public = i.Public}).ToList();
+            var joined = _orderService.PopulateTestItemModel();
 
             var model = new OrderEditModel { TestItems = joined.ToArray() };
 
@@ -65,6 +47,7 @@ namespace AnlabMvc.Controllers
 
             return View(model);
         }
+
 
 
         public async Task<IActionResult> Edit(int id)
@@ -86,9 +69,10 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index");
             }
 
+            var joined = _orderService.PopulateTestItemModel();
 
             var model = new OrderEditModel {
-                TestItems = _context.TestItems.AsNoTracking().ToArray(),
+                TestItems = joined.ToArray(),
                 Order = order
             };
 

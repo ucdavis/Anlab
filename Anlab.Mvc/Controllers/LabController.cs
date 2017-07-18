@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
+using Anlab.Core.Models;
 using AnlabMvc.Models.Order;
 using AnlabMvc.Models.Roles;
 using AnlabMvc.Services;
@@ -58,12 +59,12 @@ namespace AnlabMvc.Controllers
             if (order == null)
             {
                 return NotFound(id);
-            }
-
+            }           
+            var joined = _orderService.PopulateTestItemModel();
 
             var model = new OrderEditModel
             {
-                TestItems = _dbContext.TestItems.AsNoTracking().ToArray(),
+                TestItems = joined.ToArray(),
                 Order = order
             };
 
