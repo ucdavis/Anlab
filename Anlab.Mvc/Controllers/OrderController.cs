@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,12 +18,14 @@ namespace AnlabMvc.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IOrderService _orderService;
         private readonly IOrderMessageService _orderMessageService;
+        private readonly ITestItemPriceService _itemPriceService;
 
-        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService)
+        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ITestItemPriceService itemPriceService)
         {
             _context = context;
             _orderService = orderService;
             _orderMessageService = orderMessageService;
+            _itemPriceService = itemPriceService;
         }
 
         public async Task<IActionResult> Index()
@@ -34,7 +37,28 @@ namespace AnlabMvc.Controllers
 
         public IActionResult Create()
         {
-            var model = new OrderEditModel { TestItems = _context.TestItems.AsNoTracking().ToArray() };
+            var prices = _itemPriceService.GetPrices();
+            var items = _context.TestItems.AsNoTracking().ToList();
+
+            var joined = (from i in items
+                join p in prices on i.Code equals p.Code
+                select new TestItem{Analysis = i.Analysis,
+                    Category = i.Category,
+                    ChargeSet = i.ChargeSet,
+                    Code = i.Code,
+                    ExternalCost = Math.Ceiling(p.Cost * 1.5m),
+                    FeeSchedule = i.FeeSchedule,
+                    Group = i.Group,
+                    GroupType = i.GroupType,
+                    Id = i.Id,
+                    InternalCost = Math.Ceiling(p.Cost),
+                    SetupCost = Math.Ceiling(p.SetupCost),
+                    Multiplier = i.Multiplier,
+                    Multiplies = i.Multiplies,
+                    Notes = i.Notes,
+                    Public = i.Public}).ToList();
+
+            var model = new OrderEditModel { TestItems = joined.ToArray() };
 
             var user = _context.Users.Single(a => a.Id == CurrentUserId);
             model.DefaultAccount = user.Account;

@@ -81,6 +81,7 @@ namespace AnlabMvc
             services.AddTransient<IMailService, MailService>();
             services.AddTransient<IOrderMessageService, OrderMessageService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<ITestItemPriceService, FakeTestItemPriceService>(); //TODO: Replace with non fake one.
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
