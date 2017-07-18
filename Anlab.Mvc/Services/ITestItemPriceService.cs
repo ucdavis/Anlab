@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Anlab.Core.Data;
 using Anlab.Core.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AnlabMvc.Services
 {
@@ -14,32 +16,31 @@ namespace AnlabMvc.Services
 
     public class FakeTestItemPriceService : ITestItemPriceService
     {
+        private readonly ApplicationDbContext _context;
+
+        public FakeTestItemPriceService(ApplicationDbContext context)
+        {
+            _context = context;
+        }
         public IList<TestItemPrices> GetPrices()
         {
+            var temp = _context.TestItems.AsNoTracking().ToList();
             var testItems = new List<TestItemPrices>();
-            var item = new TestItemPrices();
-            item.Code = "Al (KCL)";
-            item.Cost = 5.00m;
-            item.SetupCost = 30m;
-            testItems.Add(item);
+            var counter = 1;
+            foreach (var testItem in temp.OrderBy(a => a.Id))
+            {
+                if(testItems.Any(a => a.Code == testItem.Code))
+                    continue;
+                counter++;
+                var tip = new TestItemPrices();
+                tip.Code = testItem.Code;
+                tip.Cost = counter;
+                tip.SetupCost = counter % 2 == 0 ? 25 : 30;
+                tip.Multiplier = 1;
+                tip.Name = testItem.Analysis;
+                testItems.Add(tip);
+            }
 
-            item = new TestItemPrices();
-            item.Code = "NH4-N";
-            item.Cost = 4.00m;
-            item.SetupCost = 25m;
-            testItems.Add(item);
-
-            item = new TestItemPrices();
-            item.Code = "H2O";
-            item.Cost = 3.00m;
-            item.SetupCost = 20m;
-            testItems.Add(item);
-
-            item = new TestItemPrices();
-            item.Code = "Fake2";
-            item.Cost = 3.00m;
-            item.SetupCost = 20m;
-            testItems.Add(item);
 
             return testItems;
 
