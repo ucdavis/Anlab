@@ -42,13 +42,27 @@ namespace AnlabMvc.Services
             }
 
 
-            return testItems;
+            return await Task.FromResult(testItems);
 
         }
 
         public async Task<TestItemPrices> GetPrice(string code)
         {
-            throw new NotImplementedException();
+            var temp = await _context.TestItems.SingleOrDefaultAsync(a => a.Code == code);
+            if (temp == null)
+            {
+                return null;
+            }
+            var tip = new TestItemPrices
+            {
+                Code = temp.Code,
+                Cost = temp.Id + 1,
+                SetupCost = (temp.Id + 1)%2 == 0 ? 25 :30,
+                Multiplier = 1,
+                Name = temp.Analysis
+            };
+
+            return tip;
         }
     }
 }
