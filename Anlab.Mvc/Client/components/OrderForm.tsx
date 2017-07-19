@@ -8,9 +8,6 @@ import { Summary } from './Summary';
 import { AdditionalInfo } from './AdditionalInfo';
 import { Project } from "./Project";
 import { AdditionalEmails } from "./AdditionalEmails";
-import { Grind } from "./Grind";
-import { ForeignSoil } from "./ForeignSoil";
-import { WaterFilter } from "./WaterFilter";
 import { LabFields } from './LabFields';
 
 declare var window: any;
