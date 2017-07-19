@@ -52,6 +52,7 @@ namespace AnlabMvc
             services.AddMemoryCache();
 
             services.Configure<AzureOptions>(Configuration.GetSection("Authentication:Azure"));
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>

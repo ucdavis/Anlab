@@ -7,6 +7,7 @@ using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using AnlabMvc.Models.Order;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace AnlabMvc.Services
@@ -24,11 +25,13 @@ namespace AnlabMvc.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly ITestItemPriceService _itemPriceService;
+        private readonly AppSettings _appSettings;
 
-        public OrderService(ApplicationDbContext context, ITestItemPriceService itemPriceService)
+        public OrderService(ApplicationDbContext context, ITestItemPriceService itemPriceService, IOptions<AppSettings> appSettings)
         {
             _context = context;
             _itemPriceService = itemPriceService;
+            _appSettings = appSettings.Value;
         }
 
         public List<TestItemModel> PopulateTestItemModel()
@@ -43,11 +46,11 @@ namespace AnlabMvc.Services
                     Analysis = i.Analysis,
                     Category = i.Category,
                     Code = i.Code,
-                    ExternalCost = Math.Ceiling(p.Cost * 1.5m),
+                    ExternalCost = Math.Ceiling(p.Cost * _appSettings.NonUcRate),
                     Group = i.Group,
                     Id = i.Id,
                     InternalCost = Math.Ceiling(p.Cost),
-                    ExternalSetupCost = Math.Ceiling(p.SetupCost * 1.5m),
+                    ExternalSetupCost = Math.Ceiling(p.SetupCost * _appSettings.NonUcRate),
                     InternalSetupCost = Math.Ceiling(p.SetupCost)
                 }).ToList();
             return joined;
@@ -65,11 +68,11 @@ namespace AnlabMvc.Services
                     Analysis = i.Analysis,
                     Category = i.Category,
                     Code = i.Code,
-                    ExternalCost = Math.Ceiling(p.Cost * 1.5m),
+                    ExternalCost = Math.Ceiling(p.Cost * _appSettings.NonUcRate),
                     Group = i.Group,
                     Id = i.Id,
                     InternalCost = Math.Ceiling(p.Cost),
-                    ExternalSetupCost = Math.Ceiling(p.SetupCost * 1.5m),
+                    ExternalSetupCost = Math.Ceiling(p.SetupCost * _appSettings.NonUcRate),
                     InternalSetupCost = Math.Ceiling(p.SetupCost)
                 }).ToList();
             return joined;
