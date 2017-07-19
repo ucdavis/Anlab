@@ -11,9 +11,6 @@ interface ISummaryProps {
     onSubmit: Function;
     canSubmit: boolean;
     isCreate: boolean;
-    grind: boolean;
-    foreignSoil: boolean;
-    filterWater: boolean;
     hideError: boolean;
     isFromLab: boolean;
     status: string;
@@ -22,9 +19,6 @@ interface ISummaryProps {
 
 export class Summary extends React.Component<ISummaryProps, any> {
     totalCost = () => {
-        const grindTotal = this.grindCost() * this.props.quantity;
-        const foreignSoilTotal = this.foreignSoilCost() * this.props.quantity;
-        const filterWaterTotal = this.waterFilterCost() * this.props.quantity;
 
         const total = this.props.testItems.reduce((prev, item) => {
             // total for current item
@@ -34,31 +28,9 @@ export class Summary extends React.Component<ISummaryProps, any> {
             return prev + perTest + (this.props.payment.clientType === 'uc' ? item.internalSetupCost : item.externalSetupCost);
         }, 0);
 
-        return total + grindTotal + foreignSoilTotal + filterWaterTotal + this.props.adjustmentAmount;
+        return total  + this.props.adjustmentAmount;
     }
 
-    grindCost = () => {
-        if (this.props.grind) {
-            return this.props.payment.clientType === 'uc' ? 6 : 9;
-        } else {
-            return 0;
-        }
-    }
-
-    foreignSoilCost = () => {
-        if (this.props.foreignSoil) {
-            return this.props.payment.clientType === 'uc' ? 9 : 14;
-        } else {
-            return 0;
-        }
-    }
-    waterFilterCost = () => {
-        if (this.props.filterWater) {
-            return this.props.payment.clientType === 'uc' ? 11 : 17;
-        } else {
-            return 0;
-        }
-    }
 
     _renderTests = () => {
 
@@ -82,7 +54,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
     }
 
     _renderAdditionalFees = () => {
-        if (!(this.props.grind || this.props.foreignSoil || this.props.filterWater || this.props.adjustmentAmount !== 0)) {
+        if (!(this.props.adjustmentAmount !== 0)) {
             return null;
         }
 
@@ -97,29 +69,10 @@ export class Summary extends React.Component<ISummaryProps, any> {
                 </tr>
                 </thead>
                 <tbody>
-                    {this._renderGrindFee()}
-                    {this._renderForeignSoilFee()}
-                    {this._renderFilterWaterFee()}
                     {this._renderAdjustment()}
                 </tbody>
             </table>
         );
-    }
-
-    _renderGrindFee = () => {
-        if (!this.props.grind) {
-            return null;
-        }
-        const Price = this.grindCost();
-        const Total = Price * this.props.quantity;
-
-        return (
-            <tr>
-                <td>Grind</td>
-                <td><NumberFormat value={Price} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-                <td><NumberFormat value={Total} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-            </tr>
-            );
     }
 
     _renderAdjustment = () => {
@@ -136,37 +89,6 @@ export class Summary extends React.Component<ISummaryProps, any> {
         );
     }
 
-    _renderForeignSoilFee = () => {
-        if (!this.props.foreignSoil) {
-            return null;
-        }
-        const Price = this.foreignSoilCost();
-        const Total = Price * this.props.quantity;
-
-        return (
-            <tr>
-                <td>Foreign Soil</td>
-                <td><NumberFormat value={Price} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-                <td><NumberFormat value={Total} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-            </tr>
-        );
-    }
-
-    _renderFilterWaterFee = () => {
-        if (!this.props.filterWater) {
-            return null;
-        }
-        const Price = this.waterFilterCost();
-        const Total = Price * this.props.quantity;
-
-        return (
-            <tr>
-                <td>Filter</td>
-                <td><NumberFormat value={Price} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-                <td><NumberFormat value={Total} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-            </tr>
-        );
-    }
 
     render() {
         if (this.props.testItems.length === 0) {
