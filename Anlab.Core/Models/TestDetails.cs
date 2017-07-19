@@ -8,10 +8,6 @@
 
         public string Code { get; set; }
 
-        public decimal InternalCost { get; set; }
-
-        public decimal ExternalCost { get; set; }
-
         // The cost to run this test for one sample
         public decimal Cost { get; set; }
 

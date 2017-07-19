@@ -99,8 +99,6 @@ namespace AnlabMvc.Services
                     Analysis = dbTest.Analysis,
                     Code = dbTest.Code,
                     SetupCost = orderDetails.Payment.IsInternalClient ?  dbTest.InternalSetupCost : dbTest.ExternalSetupCost,
-                    InternalCost = dbTest.InternalCost,
-                    ExternalCost = dbTest.ExternalCost,
                     Cost = cost,
                     SubTotal = costAndQuantity,
                     Total = costAndQuantity + (orderDetails.Payment.IsInternalClient ? dbTest.InternalSetupCost : dbTest.ExternalSetupCost)
