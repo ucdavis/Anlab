@@ -39,29 +39,22 @@ namespace AnlabMvc.Services
             var prices = await _itemPriceService.GetPrices();
             var items = _context.TestItems.AsNoTracking().ToList();
 
-            var joined = (from i in items
-                join p in prices on i.Code equals p.Code
-                select new TestItemModel
-                {
-                    Analysis = i.Analysis,
-                    Category = i.Category,
-                    Code = i.Code,
-                    ExternalCost = Math.Ceiling(p.Cost * _appSettings.NonUcRate),
-                    Group = i.Group,
-                    Id = i.Id,
-                    InternalCost = Math.Ceiling(p.Cost),
-                    ExternalSetupCost = Math.Ceiling(p.SetupPrice * _appSettings.NonUcRate),
-                    InternalSetupCost = Math.Ceiling(p.SetupPrice)
-                }).ToList();
-            return joined;
+            return GetJoined(prices, items);
         }
+
+
 
         private async Task<IList<TestItemModel>> PopulateSelectedTestsItemModel(IEnumerable<int> selectedTestIds)
         {
             var prices = await _itemPriceService.GetPrices();
             var items = _context.TestItems.Where(a => selectedTestIds.Contains(a.Id)).AsNoTracking().ToList();
 
-            var joined = (from i in items
+            return GetJoined(prices, items);
+        }
+
+        private List<TestItemModel> GetJoined(IList<TestItemPrices> prices, List<TestItem> items)
+        {
+            return (from i in items
                 join p in prices on i.Code equals p.Code
                 select new TestItemModel
                 {
@@ -75,7 +68,6 @@ namespace AnlabMvc.Services
                     ExternalSetupCost = Math.Ceiling(p.SetupPrice * _appSettings.NonUcRate),
                     InternalSetupCost = Math.Ceiling(p.SetupPrice)
                 }).ToList();
-            return joined;
         }
 
         private async Task<TestDetails[]> CalculateTestDetails(OrderDetails orderDetails)
