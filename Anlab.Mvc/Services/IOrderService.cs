@@ -50,8 +50,8 @@ namespace AnlabMvc.Services
                     Group = i.Group,
                     Id = i.Id,
                     InternalCost = Math.Ceiling(p.Cost),
-                    ExternalSetupCost = Math.Ceiling(p.SetupCost * _appSettings.NonUcRate),
-                    InternalSetupCost = Math.Ceiling(p.SetupCost)
+                    ExternalSetupCost = Math.Ceiling(p.SetupPrice * _appSettings.NonUcRate),
+                    InternalSetupCost = Math.Ceiling(p.SetupPrice)
                 }).ToList();
             return joined;
         }
@@ -72,8 +72,8 @@ namespace AnlabMvc.Services
                     Group = i.Group,
                     Id = i.Id,
                     InternalCost = Math.Ceiling(p.Cost),
-                    ExternalSetupCost = Math.Ceiling(p.SetupCost * _appSettings.NonUcRate),
-                    InternalSetupCost = Math.Ceiling(p.SetupCost)
+                    ExternalSetupCost = Math.Ceiling(p.SetupPrice * _appSettings.NonUcRate),
+                    InternalSetupCost = Math.Ceiling(p.SetupPrice)
                 }).ToList();
             return joined;
         }

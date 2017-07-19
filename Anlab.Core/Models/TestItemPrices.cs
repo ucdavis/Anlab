@@ -14,6 +14,8 @@ namespace Anlab.Core.Models
         public decimal SetupCost { get; set; }
         public string Name { get; set; }
         public int Multiplier { get; set; }
+
+        public decimal SetupPrice => SetupCost * Multiplier;
     }
 
 }

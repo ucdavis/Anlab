@@ -36,7 +36,7 @@ namespace AnlabMvc.Services
                 tip.Code = testItem.Code;
                 tip.Cost = counter;
                 tip.SetupCost = counter % 2 == 0 ? 25 : 30;
-                tip.Multiplier = 1;
+                tip.Multiplier = testItem.Multiplier;
                 tip.Name = testItem.Analysis;
                 testItems.Add(tip);
             }
@@ -58,7 +58,7 @@ namespace AnlabMvc.Services
                 Code = temp.Code,
                 Cost = temp.Id + 1,
                 SetupCost = (temp.Id + 1)%2 == 0 ? 25 :30,
-                Multiplier = 1,
+                Multiplier = temp.Multiplier,
                 Name = temp.Analysis
             };
 
