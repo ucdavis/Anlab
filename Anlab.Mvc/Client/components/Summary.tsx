@@ -54,7 +54,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
     }
 
     _renderAdditionalFees = () => {
-        if (!(this.props.adjustmentAmount !== 0)) {
+        if (this.props.adjustmentAmount === 0) {
             return null;
         }
 
