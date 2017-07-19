@@ -60,7 +60,7 @@ namespace AnlabMvc.Controllers
             {
                 return NotFound(id);
             }           
-            var joined = _orderService.PopulateTestItemModel();
+            var joined = await _orderService.PopulateTestItemModel();
 
             var model = new OrderEditModel
             {

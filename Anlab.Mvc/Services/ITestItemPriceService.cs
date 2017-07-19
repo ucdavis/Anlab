@@ -10,8 +10,8 @@ namespace AnlabMvc.Services
 {
     public interface ITestItemPriceService
     {
-        IList<TestItemPrices> GetPrices();
-        TestItemPrices GetPrice(string code);
+        Task<IList<TestItemPrices>> GetPrices();
+        Task<TestItemPrices> GetPrice(string code);
     }
 
     public class FakeTestItemPriceService : ITestItemPriceService
@@ -22,7 +22,7 @@ namespace AnlabMvc.Services
         {
             _context = context;
         }
-        public IList<TestItemPrices> GetPrices()
+        public async Task<IList<TestItemPrices>> GetPrices()
         {
             var temp = _context.TestItems.AsNoTracking().ToList();
             var testItems = new List<TestItemPrices>();
@@ -46,7 +46,7 @@ namespace AnlabMvc.Services
 
         }
 
-        public TestItemPrices GetPrice(string code)
+        public async Task<TestItemPrices> GetPrice(string code)
         {
             throw new NotImplementedException();
         }

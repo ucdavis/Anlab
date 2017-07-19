@@ -36,9 +36,9 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var joined = _orderService.PopulateTestItemModel();
+            var joined = await  _orderService.PopulateTestItemModel();
 
             var model = new OrderEditModel { TestItems = joined.ToArray() };
 
@@ -69,7 +69,7 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index");
             }
 
-            var joined = _orderService.PopulateTestItemModel();
+            var joined = await _orderService.PopulateTestItemModel();
 
             var model = new OrderEditModel {
                 TestItems = joined.ToArray(),

@@ -18,7 +18,7 @@ namespace AnlabMvc.Services
         void PopulateOrderWithLabDetails(OrderSaveModel model, Order orderToUpdate);
         Task SendOrderToAnlab(Order order);
 
-        List<TestItemModel> PopulateTestItemModel();
+        Task<List<TestItemModel>> PopulateTestItemModel();
     }
 
     public class OrderService : IOrderService
@@ -34,9 +34,9 @@ namespace AnlabMvc.Services
             _appSettings = appSettings.Value;
         }
 
-        public List<TestItemModel> PopulateTestItemModel()
+        public async Task<List<TestItemModel>> PopulateTestItemModel()
         {
-            var prices = _itemPriceService.GetPrices();
+            var prices = await _itemPriceService.GetPrices();
             var items = _context.TestItems.AsNoTracking().ToList();
 
             var joined = (from i in items
@@ -56,9 +56,9 @@ namespace AnlabMvc.Services
             return joined;
         }
 
-        private IList<TestItemModel> PopulateSelectedTestsItemModel(IEnumerable<int> selectedTestIds)
+        private async Task<IList<TestItemModel>> PopulateSelectedTestsItemModel(IEnumerable<int> selectedTestIds)
         {
-            var prices = _itemPriceService.GetPrices();
+            var prices = await _itemPriceService.GetPrices();
             var items = _context.TestItems.Where(a => selectedTestIds.Contains(a.Id)).AsNoTracking().ToList();
 
             var joined = (from i in items
@@ -82,7 +82,7 @@ namespace AnlabMvc.Services
         {
             // TODO: Do we really want to match on ID, or Code, or some combination?
             var selectedTestIds = orderDetails.SelectedTests.Select(t => t.Id);
-            var tests = PopulateSelectedTestsItemModel(selectedTestIds);
+            var tests = await PopulateSelectedTestsItemModel(selectedTestIds);
 
             var calcualtedTests = new List<TestDetails>();
 
