@@ -12,7 +12,8 @@ export interface ITestItem {
     code: string;
     internalCost: number;
     externalCost: number;
-    setupCost: number;
+    internalSetupCost: number;
+    externalSetupCost: number;
     category: string;
 }
 

@@ -21,12 +21,6 @@ namespace Anlab.Core.Models
 
         public string Project { get; set; }
 
-        public bool Grind { get; set; } //Soil and Plant
-
-        public bool ForeignSoil { get; set; } //Soil
-
-        public bool FilterWater { get; set; } //Water
-
         public string LabComments { get; set; }
         public decimal AdjustmentAmount { get; set; }
     }

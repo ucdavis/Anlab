@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using AnlabMvc.Models.Order;
 using Anlab.Core.Domain;
+using Anlab.Core.Models;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +20,13 @@ namespace AnlabMvc.Controllers
         private readonly IOrderService _orderService;
         private readonly IOrderMessageService _orderMessageService;
 
+
         public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService)
         {
             _context = context;
             _orderService = orderService;
             _orderMessageService = orderMessageService;
+
         }
 
         public async Task<IActionResult> Index()
@@ -32,15 +36,18 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var model = new OrderEditModel { TestItems = _context.TestItems.AsNoTracking().ToArray() };
+            var joined = await  _orderService.PopulateTestItemModel();
+
+            var model = new OrderEditModel { TestItems = joined.ToArray() };
 
             var user = _context.Users.Single(a => a.Id == CurrentUserId);
             model.DefaultAccount = user.Account;
 
             return View(model);
         }
+
 
 
         public async Task<IActionResult> Edit(int id)
@@ -62,9 +69,10 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index");
             }
 
+            var joined = await _orderService.PopulateTestItemModel();
 
             var model = new OrderEditModel {
-                TestItems = _context.TestItems.AsNoTracking().ToArray(),
+                TestItems = joined.ToArray(),
                 Order = order
             };
 

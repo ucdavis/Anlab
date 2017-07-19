@@ -27,31 +27,6 @@
     <strong>Sample Type</strong>
     <span>@Model.OrderDetails.SampleType</span>
 </div>
-@if (string.Equals(Model.OrderDetails.SampleType, "Soil", StringComparison.OrdinalIgnoreCase))
-{
-    <div class="form-group">
-        <strong>Grind?</strong>
-        <span>@Model.OrderDetails.Grind</span>
-    </div> 
-    <div class="form-group">
-        <strong>ForeignSoil?</strong>
-        <span>@Model.OrderDetails.ForeignSoil</span>
-    </div> 
-}
-@if (string.Equals(Model.OrderDetails.SampleType, "Plant", StringComparison.OrdinalIgnoreCase))
-{
-    <div class="form-group">
-        <strong>Grind?</strong>
-        <span>@Model.OrderDetails.Grind</span>
-    </div>
-}
-@if (string.Equals(Model.OrderDetails.SampleType, "Water", StringComparison.OrdinalIgnoreCase))
-{
-    <div class="form-group">
-        <strong>Filter?</strong>
-        <span>@Model.OrderDetails.FilterWater</span>
-    </div>
-}
 
 <div class="form-group">
     <strong>Payment Method</strong>

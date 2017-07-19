@@ -8,9 +8,6 @@ import { Summary } from './Summary';
 import { AdditionalInfo } from './AdditionalInfo';
 import { Project } from "./Project";
 import { AdditionalEmails } from "./AdditionalEmails";
-import { Grind } from "./Grind";
-import { ForeignSoil } from "./ForeignSoil";
-import { WaterFilter } from "./WaterFilter";
 import { LabFields } from './LabFields';
 
 declare var window: any;
@@ -28,9 +25,6 @@ interface IOrderState {
     isValid: boolean;
     isSubmitting: boolean;
     additionalEmails: Array<string>;
-    grind: boolean;
-    foreignSoil: boolean;
-    filterWater: boolean;
     isErrorActive: boolean;
     errorMessage: string;
     isFromLab: boolean;
@@ -55,9 +49,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             isSubmitting: false,
             project: '',
             additionalEmails: [],
-            grind: false,
-            foreignSoil: false,
-            filterWater: false,
             isErrorActive: false,
             errorMessage: '',
             isFromLab: false,
@@ -88,9 +79,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.orderId = window.App.OrderId;
             initialState.project = orderInfo.Project;
             initialState.isValid = true;
-            initialState.grind = orderInfo.Grind;
-            initialState.foreignSoil = orderInfo.ForeignSoil;
-            initialState.filterWater = orderInfo.FilterWater;
             initialState.payment.clientType = orderInfo.Payment.ClientType;
             initialState.payment.account = orderInfo.Payment.Account;
             initialState.labComments = orderInfo.LabComments;
@@ -185,9 +173,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             project: this.state.project,
             payment: this.state.payment,
             sampleType: this.state.sampleType,
-            grind: this.state.grind,
-            foreignSoil: this.state.foreignSoil,
-            filterWater: this.state.filterWater,
             labComments: this.state.labComments,
             adjustmentAmount: this.state.adjustmentAmount,
             selectedTests,
@@ -219,7 +204,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
 
     render() {
-        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, grind, foreignSoil, filterWater, isFromLab, status, adjustmentAmount } = this.state;
+        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, isFromLab, status, adjustmentAmount } = this.state;
 
         const { filtered, selected} = this.getTests();
 
@@ -230,12 +215,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
                     <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
 
-                        <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
-
-                    <Grind grind={grind} handleChange={this.handleChange} sampleType={sampleType} />
-
-                      <ForeignSoil foreignSoil={foreignSoil} handleChange={this.handleChange} sampleType={sampleType} />
-                      <WaterFilter filterWater={filterWater} handleChange={this.handleChange} sampleType={sampleType} />
+                    <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
 
                     <div className="form_wrap">
                         <label className="form_header">How many samples will you require?</label>
@@ -258,9 +238,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                             quantity={quantity}
                             payment={payment}
                             onSubmit={this.onSubmit}
-                            grind={(grind && sampleType !== "Water")}
-                            foreignSoil={(foreignSoil && sampleType === "Soil")}
-                            filterWater={(filterWater && sampleType === "Water")}
                             isFromLab={isFromLab}
                             status={status}
                             adjustmentAmount={adjustmentAmount} />
