@@ -120,8 +120,6 @@ namespace AnlabMvc.Services
             orderDetails.SelectedTests = tests.ToArray();
             orderDetails.Total = orderDetails.SelectedTests.Sum(x=>x.Total);
 
-            AddAdditionalFees(orderDetails);
-
             orderToUpdate.SaveDetails(orderDetails);
             orderToUpdate.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails);
         }
@@ -139,34 +137,6 @@ namespace AnlabMvc.Services
             return;
         }
 
-        private static void AddAdditionalFees(OrderDetails orderDetails)
-        {
-            if (string.Equals(orderDetails.SampleType, "Water", StringComparison.OrdinalIgnoreCase))
-            {
-                if (orderDetails.FilterWater)
-                {
-                    orderDetails.Total += orderDetails.Quantity * (orderDetails.Payment.IsInternalClient ? 11 : 17);
-                }
-            }
-            if (string.Equals(orderDetails.SampleType, "Soil", StringComparison.OrdinalIgnoreCase))
-            {
-                if (orderDetails.Grind)
-                {
-                    orderDetails.Total += orderDetails.Quantity * (orderDetails.Payment.IsInternalClient ? 6 : 9);
-                }
-                if (orderDetails.ForeignSoil)
-                {
-                    orderDetails.Total += orderDetails.Quantity * (orderDetails.Payment.IsInternalClient ? 9 : 14);
-                }
-            }
-            if (string.Equals(orderDetails.SampleType, "Plant", StringComparison.OrdinalIgnoreCase))
-            {
-                if (orderDetails.Grind)
-                {
-                    orderDetails.Total += orderDetails.Quantity * (orderDetails.Payment.IsInternalClient ? 6 : 9);
-                }
-            }
-        }
     }
 }
 
