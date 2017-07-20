@@ -29,6 +29,12 @@ namespace AnlabMvc.Controllers
 
         }
 
+        public ActionResult Test()
+        {
+            _orderService.Test();
+            return null;
+        }
+
         public async Task<IActionResult> Index()
         {
             var model = await _context.Orders.Where(a => a.CreatorId == CurrentUserId).ToArrayAsync();

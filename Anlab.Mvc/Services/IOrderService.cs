@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using AnlabMvc.Models.Order;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -19,19 +21,23 @@ namespace AnlabMvc.Services
         Task SendOrderToAnlab(Order order);
 
         Task<List<TestItemModel>> PopulateTestItemModel();
+
+        void Test();
     }
 
     public class OrderService : IOrderService
     {
         private readonly ApplicationDbContext _context;
         private readonly ITestItemPriceService _itemPriceService;
+        private readonly ConnectionSettings _connectionSettings;
         private readonly AppSettings _appSettings;
 
-        public OrderService(ApplicationDbContext context, ITestItemPriceService itemPriceService, IOptions<AppSettings> appSettings)
+        public OrderService(ApplicationDbContext context, ITestItemPriceService itemPriceService, IOptions<AppSettings> appSettings, IOptions<ConnectionSettings> connectionSettings)
         {
             _context = context;
-            _itemPriceService = itemPriceService;
+            _itemPriceService = itemPriceService;            
             _appSettings = appSettings.Value;
+            _connectionSettings = connectionSettings.Value; //Will need to push to Anlab.
         }
 
         public async Task<List<TestItemModel>> PopulateTestItemModel()
@@ -42,6 +48,17 @@ namespace AnlabMvc.Services
             return GetJoined(prices, items);
         }
 
+        public void Test()
+        {
+            var connection = new SqlConnection(_connectionSettings.AnlabConnection);
+            using (connection)
+            {
+                connection.Open();
+                var test = connection.Query<TestItemPrices>(
+                    "SELECT  [ACODE] as Code,[APRICE] as Cost,[ANAME] as 'Name',[WORKUNIT] as Multiplier FROM [ANL_LIST] where ACODE = 'DIC-W'");
+                connection.Close();
+            }
+        }
 
 
         private async Task<IList<TestItemModel>> PopulateSelectedTestsItemModel(IEnumerable<int> selectedTestIds)

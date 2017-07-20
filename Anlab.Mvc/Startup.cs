@@ -53,6 +53,7 @@ namespace AnlabMvc
 
             services.Configure<AzureOptions>(Configuration.GetSection("Authentication:Azure"));
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.Configure<ConnectionSettings>(Configuration.GetSection("ConnectionSettings"));
 
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>

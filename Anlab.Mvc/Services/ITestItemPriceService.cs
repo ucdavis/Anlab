@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Models;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+
 
 namespace AnlabMvc.Services
 {
@@ -17,10 +21,12 @@ namespace AnlabMvc.Services
     public class FakeTestItemPriceService : ITestItemPriceService
     {
         private readonly ApplicationDbContext _context;
+        private readonly ConnectionSettings _connectionSettings;
 
-        public FakeTestItemPriceService(ApplicationDbContext context)
+        public FakeTestItemPriceService(ApplicationDbContext context, IOptions<ConnectionSettings> connectionSettings)
         {
             _context = context;
+            _connectionSettings = connectionSettings.Value;
         }
         public async Task<IList<TestItemPrices>> GetPrices()
         {
@@ -48,6 +54,7 @@ namespace AnlabMvc.Services
 
         public async Task<TestItemPrices> GetPrice(string code)
         {
+
             var temp = await _context.TestItems.SingleOrDefaultAsync(a => a.Code == code);
             if (temp == null)
             {
