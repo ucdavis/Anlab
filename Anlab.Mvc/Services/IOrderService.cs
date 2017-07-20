@@ -22,8 +22,6 @@ namespace AnlabMvc.Services
         Task SendOrderToAnlab(Order order);
 
         Task<List<TestItemModel>> PopulateTestItemModel();
-
-        void Test();
     }
 
     public class OrderService : IOrderService
@@ -47,15 +45,6 @@ namespace AnlabMvc.Services
             var items = _context.TestItems.AsNoTracking().ToList();
 
             return GetJoined(prices, items);
-        }
-
-        public void Test()
-        {
-            using (var db = new DbManager(_connectionSettings.AnlabConnection))
-            {
-                var test = db.Connection.Query<TestItemPrices>(
-                    "SELECT  [ACODE] as Code,[APRICE] as Cost,[ANAME] as 'Name',[WORKUNIT] as Multiplier FROM [ANL_LIST] where ACODE = 'DIC-W'");
-            }
         }
 
 

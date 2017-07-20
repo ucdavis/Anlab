@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Models;
+using AnlabMvc.Helpers;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -16,6 +17,37 @@ namespace AnlabMvc.Services
     {
         Task<IList<TestItemPrices>> GetPrices();
         Task<TestItemPrices> GetPrice(string code);
+    }
+
+    public class TestItemPriceService : ITestItemPriceService
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly ConnectionSettings _connectionSettings;
+
+        public TestItemPriceService(ApplicationDbContext context, IOptions<ConnectionSettings> connectionSettings)
+        {
+            _context = context;
+            _connectionSettings = connectionSettings.Value;
+        }
+
+
+        public async Task<IList<TestItemPrices>> GetPrices()
+        {
+            //TODO: Async
+            //TODO: Get the Setup cost if available. Otherwise hard code it
+            var codes = _context.TestItems.AsNoTracking().Select(a => a.Code).Distinct().ToArray();
+            using (var db = new DbManager(_connectionSettings.AnlabConnection))
+            {
+                List<TestItemPrices> prices = db.Connection.Query<TestItemPrices>("SELECT [ACODE] as Code,[APRICE] as Cost,[ANAME] as 'Name',[WORKUNIT] as Multiplier FROM [ANL_LIST] where ACODE in @codes", new { codes }).ToList();
+
+                return await Task.FromResult(prices);
+            }
+        }
+
+        public Task<TestItemPrices> GetPrice(string code)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class FakeTestItemPriceService : ITestItemPriceService
