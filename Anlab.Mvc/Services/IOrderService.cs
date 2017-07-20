@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
+using AnlabMvc.Helpers;
 using AnlabMvc.Models.Order;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
@@ -50,13 +51,10 @@ namespace AnlabMvc.Services
 
         public void Test()
         {
-            var connection = new SqlConnection(_connectionSettings.AnlabConnection);
-            using (connection)
+            using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {
-                connection.Open();
-                var test = connection.Query<TestItemPrices>(
+                var test = db.Connection.Query<TestItemPrices>(
                     "SELECT  [ACODE] as Code,[APRICE] as Cost,[ANAME] as 'Name',[WORKUNIT] as Multiplier FROM [ANL_LIST] where ACODE = 'DIC-W'");
-                connection.Close();
             }
         }
 
