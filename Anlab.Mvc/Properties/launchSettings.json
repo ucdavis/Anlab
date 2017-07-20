@@ -3,8 +3,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:44349/",
-      "sslPort": 0
+      "applicationUrl": "https://localhost:44349/",
+      "sslPort": 44349
     }
   },
   "profiles": {
@@ -18,5 +18,4 @@
     "AnlabMvc": {
       "commandName": "Project"
     }
-  }
 }
