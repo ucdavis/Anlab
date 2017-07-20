@@ -7,6 +7,7 @@ using Anlab.Core.Data;
 using Anlab.Core.Models;
 using AnlabMvc.Helpers;
 using Dapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -33,14 +34,13 @@ namespace AnlabMvc.Services
 
         public async Task<IList<TestItemPrices>> GetPrices()
         {
-            //TODO: Async
             //TODO: Get the Setup cost if available. Otherwise hard code it
             var codes = _context.TestItems.AsNoTracking().Select(a => a.Code).Distinct().ToArray();
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {
-                List<TestItemPrices> prices = db.Connection.Query<TestItemPrices>("SELECT [ACODE] as Code,[APRICE] as Cost,[ANAME] as 'Name',[WORKUNIT] as Multiplier FROM [ANL_LIST] where ACODE in @codes", new { codes }).ToList();
+                var prices = await db.Connection.QueryAsync<TestItemPrices>("SELECT [ACODE] as Code,[APRICE] as Cost,[ANAME] as 'Name',[WORKUNIT] as Multiplier FROM [ANL_LIST] where ACODE in @codes", new { codes });
 
-                return await Task.FromResult(prices);
+                return prices as IList<TestItemPrices>;
             }
         }
 
