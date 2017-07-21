@@ -57,14 +57,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Helpers\QueryResource.Designer.cs">
+    <Compile Update="Resources\QueryResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>QueryResource.resx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Update="Helpers\QueryResource.resx">
+    <EmbeddedResource Update="Resources\QueryResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>QueryResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>

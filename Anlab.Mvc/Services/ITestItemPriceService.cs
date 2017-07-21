@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Models;
 using AnlabMvc.Helpers;
+using AnlabMvc.Resources;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
