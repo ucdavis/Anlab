@@ -69,5 +69,14 @@ namespace AnlabMvc.Helpers {
                 return ResourceManager.GetString("AnlabItemPrices", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT [ACODE] as Code,[APRICE] as Cost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier FROM [ANL_LIST] where ACODE  = @code .
+        /// </summary>
+        internal static string AnlabPriceForCode {
+            get {
+                return ResourceManager.GetString("AnlabPriceForCode", resourceCulture);
+            }
+        }
     }
 }

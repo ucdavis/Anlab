@@ -44,9 +44,25 @@ namespace AnlabMvc.Services
             }
         }
 
-        public Task<TestItemPrices> GetPrice(string code)
+        public async Task<TestItemPrices> GetPrice(string code)
         {
-            throw new NotImplementedException();
+            var temp = await _context.TestItems.SingleOrDefaultAsync(a => a.Code == code);
+            if (temp == null)
+            {
+                return null;
+            }
+
+            using (var db = new DbManager(_connectionSettings.AnlabConnection))
+            {
+                IEnumerable<TestItemPrices> price = await db.Connection.QueryAsync<TestItemPrices>(QueryResource.AnlabPriceForCode, new { code });
+
+                if (price == null || price.Count() != 1)
+                {
+                    return null;
+                }
+
+                return price.ElementAt(0);
+            }
         }
     }
 

@@ -121,4 +121,8 @@
     <value>SELECT [ACODE] as Code,[APRICE] as Cost,[ANAME] as 'Name',[WORKUNIT] as Multiplier FROM [ANL_LIST] where ACODE in @codes</value>
     <comment>List of prices related values from Anlab. Currently not seeting the SetupCost</comment>
   </data>
+  <data name="AnlabPriceForCode" xml:space="preserve">
+    <value>SELECT [ACODE] as Code,[APRICE] as Cost,[ANAME] as 'Name',[WORKUNIT] as Multiplier FROM [ANL_LIST] where ACODE  = @code </value>
+    <comment>Price for a code. Currently not setting SetupCost</comment>
+  </data>
 </root>
