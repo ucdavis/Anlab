@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AnlabMvc.Helpers {
+namespace AnlabMvc.Resources {
     using System;
     using System.Reflection;
     
@@ -40,7 +40,7 @@ namespace AnlabMvc.Helpers {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AnlabMvc.Helpers.QueryResource", typeof(QueryResource).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AnlabMvc.Resources.QueryResource", typeof(QueryResource).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
