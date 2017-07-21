@@ -38,7 +38,7 @@ namespace AnlabMvc.Services
             var codes = _context.TestItems.AsNoTracking().Select(a => a.Code).Distinct().ToArray();
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {
-                var prices = await db.Connection.QueryAsync<TestItemPrices>("SELECT [ACODE] as Code,[APRICE] as Cost,[ANAME] as 'Name',[WORKUNIT] as Multiplier FROM [ANL_LIST] where ACODE in @codes", new { codes });
+                var prices = await db.Connection.QueryAsync<TestItemPrices>(QueryResource.AnlabItemPrices, new { codes });
 
                 return prices as IList<TestItemPrices>;
             }
