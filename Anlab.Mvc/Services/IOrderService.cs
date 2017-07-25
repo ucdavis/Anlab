@@ -122,8 +122,8 @@ namespace AnlabMvc.Services
 
         public async Task SendOrderToAnlab(Order order)
         {
-            //TODO: Implement this.
-            return;
+            await Task.Yield(); //TODO: Remove
+            throw new NotImplementedException();
         }
 
     }
