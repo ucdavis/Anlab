@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
-using AnlabMvc.Helpers;
 using AnlabMvc.Models.Order;
-using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -28,15 +25,13 @@ namespace AnlabMvc.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly ITestItemPriceService _itemPriceService;
-        private readonly ConnectionSettings _connectionSettings;
         private readonly AppSettings _appSettings;
 
-        public OrderService(ApplicationDbContext context, ITestItemPriceService itemPriceService, IOptions<AppSettings> appSettings, IOptions<ConnectionSettings> connectionSettings)
+        public OrderService(ApplicationDbContext context, ITestItemPriceService itemPriceService, IOptions<AppSettings> appSettings)
         {
             _context = context;
             _itemPriceService = itemPriceService;            
             _appSettings = appSettings.Value;
-            _connectionSettings = connectionSettings.Value; //Will need to push to Anlab.
         }
 
         public async Task<List<TestItemModel>> PopulateTestItemModel()
