@@ -30,7 +30,7 @@ namespace AnlabMvc.Services
         public OrderService(ApplicationDbContext context, ITestItemPriceService itemPriceService, IOptions<AppSettings> appSettings)
         {
             _context = context;
-            _itemPriceService = itemPriceService;
+            _itemPriceService = itemPriceService;            
             _appSettings = appSettings.Value;
         }
 
@@ -41,7 +41,6 @@ namespace AnlabMvc.Services
 
             return GetJoined(prices, items);
         }
-
 
 
         private async Task<IList<TestItemModel>> PopulateSelectedTestsItemModel(IEnumerable<int> selectedTestIds)
@@ -123,8 +122,8 @@ namespace AnlabMvc.Services
 
         public async Task SendOrderToAnlab(Order order)
         {
-            //TODO: Implement this.
-            return;
+            await Task.Yield(); //TODO: Remove
+            throw new NotImplementedException();
         }
 
     }

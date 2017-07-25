@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="AspNetCore.Security.CAS" Version="1.0.0" />
     <PackageReference Include="AzureActiveDirectorySearcher" Version="1.0.0" />
+    <PackageReference Include="Dapper" Version="1.50.2" />
     <PackageReference Include="Humanizer.Core" Version="2.2.0" />
     <PackageReference Include="Markdig" Version="0.11.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
@@ -54,6 +55,19 @@
     <None Update="Pages\**\*.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Resources\QueryResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>QueryResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\QueryResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>QueryResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Target Name="RunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->

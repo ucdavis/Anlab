@@ -1,10 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Models;
+using AnlabMvc.Helpers;
+using AnlabMvc.Resources;
+using Dapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+
 
 namespace AnlabMvc.Services
 {
@@ -14,13 +21,61 @@ namespace AnlabMvc.Services
         Task<TestItemPrices> GetPrice(string code);
     }
 
+    public class TestItemPriceService : ITestItemPriceService
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly ConnectionSettings _connectionSettings;
+
+        public TestItemPriceService(ApplicationDbContext context, IOptions<ConnectionSettings> connectionSettings)
+        {
+            _context = context;
+            _connectionSettings = connectionSettings.Value;
+        }
+
+
+        public async Task<IList<TestItemPrices>> GetPrices()
+        {
+            //TODO: Get the Setup cost if available. Otherwise hard code it
+            var codes = _context.TestItems.AsNoTracking().Select(a => a.Code).Distinct().ToArray();
+            using (var db = new DbManager(_connectionSettings.AnlabConnection))
+            {
+                var prices = await db.Connection.QueryAsync<TestItemPrices>(QueryResource.AnlabItemPrices, new { codes });
+
+                return prices as IList<TestItemPrices>;
+            }
+        }
+
+        public async Task<TestItemPrices> GetPrice(string code)
+        {
+            var temp = await _context.TestItems.SingleOrDefaultAsync(a => a.Code == code);
+            if (temp == null)
+            {
+                return null;
+            }
+
+            using (var db = new DbManager(_connectionSettings.AnlabConnection))
+            {
+                IEnumerable<TestItemPrices> price = await db.Connection.QueryAsync<TestItemPrices>(QueryResource.AnlabPriceForCode, new { code });
+
+                if (price == null || price.Count() != 1)
+                {
+                    return null;
+                }
+
+                return price.ElementAt(0);
+            }
+        }
+    }
+
     public class FakeTestItemPriceService : ITestItemPriceService
     {
         private readonly ApplicationDbContext _context;
+        private readonly ConnectionSettings _connectionSettings;
 
-        public FakeTestItemPriceService(ApplicationDbContext context)
+        public FakeTestItemPriceService(ApplicationDbContext context, IOptions<ConnectionSettings> connectionSettings)
         {
             _context = context;
+            _connectionSettings = connectionSettings.Value;
         }
         public async Task<IList<TestItemPrices>> GetPrices()
         {
@@ -48,6 +103,7 @@ namespace AnlabMvc.Services
 
         public async Task<TestItemPrices> GetPrice(string code)
         {
+
             var temp = await _context.TestItems.SingleOrDefaultAsync(a => a.Code == code);
             if (temp == null)
             {

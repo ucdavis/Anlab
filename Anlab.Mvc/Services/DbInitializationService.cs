@@ -39,6 +39,78 @@ namespace AnlabMvc.Services
 
         public async Task Initialize()
         {
+            string[] codesList = new[] {"ADFAF",
+                "ADFRF",
+                "ADIN",
+                "AG-W",
+                "AG-WT",
+                "AL",
+                "AL-CIT",
+                "AL-KCL",
+                "AL-OX",
+                "AL-PY",
+                "AL-W",
+                "AL-WT",
+                "ALK-WX",
+                "AS-PT",
+                "AS-ST",
+                "AS-W",
+                "AS-WT",
+                "ASH",
+                "ATM1",
+                "ATM10",
+                "ATM15",
+                "ATM1P5",
+                "ATM2",
+                "ATM5",
+                "ATMP1",
+                "ATMP3",
+                "ATMP5",
+                "ATMP7",
+                "AU",
+                "B-PMF",
+                "B-S",
+                "B-SX",
+                "B-W",
+                "B-WT",
+                "BA",
+                "BD",
+                "BRAY-P",
+                "C-P",
+                "C-P-CW",
+                "C-S",
+                "C-S-CW",
+                "CA-PMF",
+                "CA-S",
+                "CA-TOX",
+                "CA-W",
+                "CA-WT",
+                "CA-WX",
+                "CACO3",
+                "CAFFEINE",
+                "CARBAMAZ",
+                "CD",
+                "CD-S",
+                "CD-W",
+                "CD-WT",
+                "CD_TOT",
+                "CEC",
+                "CELLULOS",
+                "CL-P-IC",
+                "CL-S",
+                "CL-W",
+                "CL-W-IC",
+                "CL-WX",
+                "CL21-S",
+                "CLAY",
+                "CO",
+                "CO-S",
+                "CO_TOT",
+                "CO3-S",
+                "CO3-W",
+                "CR",
+                "CR-OXIDE"};
+            
             await _context.Database.EnsureCreatedAsync();
 
             if (_context.Users.Any()) return; // Do nothing if there is already user data in the system
@@ -140,7 +212,7 @@ namespace AnlabMvc.Services
             var aluminum = new TestItem
             {
                 Analysis = "Aluminum (KCl extraction)",
-                Code = "Al (KCL)",
+                Code = codesList[0],
                 InternalCost = 18,
                 ExternalCost = 27,
                 SetupCost = 30,
@@ -154,7 +226,7 @@ namespace AnlabMvc.Services
             var ammonium = new TestItem
             {
                 Analysis = "Ammonium-Nitrogen",
-                Code = "NH4-N",
+                Code = codesList[1],
                 InternalCost = 11,
                 ExternalCost = 17,
                 SetupCost = 30,
@@ -168,7 +240,7 @@ namespace AnlabMvc.Services
             var water1 = new TestItem
             {
                 Analysis = "Fake Test1",
-                Code = "H2O",
+                Code = codesList[2],
                 InternalCost = 8.42m,
                 ExternalCost = 12.33m,
                 SetupCost = 30,
@@ -182,7 +254,7 @@ namespace AnlabMvc.Services
             var water2 = new TestItem
             {
                 Analysis = "Fake Test2",
-                Code = "H2O-1",
+                Code = codesList[3],
                 InternalCost = 9.22m,
                 ExternalCost = 32.13m,
                 SetupCost = 30,
@@ -196,7 +268,7 @@ namespace AnlabMvc.Services
             var plant1 = new TestItem
             {
                 Analysis = "Fake Test3",
-                Code = "Fake",
+                Code = codesList[4],
                 InternalCost = 1.22m,
                 ExternalCost = 2.13m,
                 SetupCost = 30,
@@ -211,7 +283,7 @@ namespace AnlabMvc.Services
                 var plantx = new TestItem
                 {
                     Analysis = string.Format("Fake Plant{0}", i),
-                    Code = string.Format("Fake{0}", i),
+                    Code = codesList[i+5],
                     InternalCost = 1.22m,
                     ExternalCost = 2.13m,
                     SetupCost = 30,
@@ -228,7 +300,7 @@ namespace AnlabMvc.Services
                 var plantx = new TestItem
                 {
                     Analysis = string.Format("Fake Other{0}", i),
-                    Code = string.Format("Fake{0}", i),
+                    Code = codesList[i + 35],
                     InternalCost = 5.22m,
                     ExternalCost = 7.13m,
                     SetupCost = 30,
