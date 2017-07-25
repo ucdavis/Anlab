@@ -69,7 +69,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                         <td>
                             <Checkbox checked={selected} onChange={e => this.onSelection(item, e)} />
                         </td>
-                        <td><div data-toggle="tooltip" title={item.notes}>{item.analysis}</div></td>
+                        <td><div className="analysisTooltip" data-toggle="tooltip" title={item.notes}>{item.analysis}</div></td>
                         <td>{item.code}</td>
                         <td><NumberFormat value={priceDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
                     </tr>
