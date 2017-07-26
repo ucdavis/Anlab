@@ -24,19 +24,19 @@ namespace AnlabMvc.Services
     public class OrderService : IOrderService
     {
         private readonly ApplicationDbContext _context;
-        private readonly ITestItemPriceService _itemPriceService;
+        private readonly ILabworksService _labworksService;
         private readonly AppSettings _appSettings;
 
-        public OrderService(ApplicationDbContext context, ITestItemPriceService itemPriceService, IOptions<AppSettings> appSettings)
+        public OrderService(ApplicationDbContext context, ILabworksService labworksService, IOptions<AppSettings> appSettings)
         {
             _context = context;
-            _itemPriceService = itemPriceService;            
+            _labworksService = labworksService;            
             _appSettings = appSettings.Value;
         }
 
         public async Task<List<TestItemModel>> PopulateTestItemModel()
         {
-            var prices = await _itemPriceService.GetPrices();
+            var prices = await _labworksService.GetPrices();
             var items = _context.TestItems.AsNoTracking().ToList();
 
             return GetJoined(prices, items);
@@ -45,7 +45,7 @@ namespace AnlabMvc.Services
 
         private async Task<IList<TestItemModel>> PopulateSelectedTestsItemModel(IEnumerable<int> selectedTestIds)
         {
-            var prices = await _itemPriceService.GetPrices();
+            var prices = await _labworksService.GetPrices();
             var items = _context.TestItems.Where(a => selectedTestIds.Contains(a.Id)).AsNoTracking().ToList();
 
             return GetJoined(prices, items);

@@ -15,18 +15,18 @@ using Microsoft.Extensions.Options;
 
 namespace AnlabMvc.Services
 {
-    public interface ITestItemPriceService
+    public interface ILabworksService
     {
         Task<IList<TestItemPrices>> GetPrices();
         Task<TestItemPrices> GetPrice(string code);
     }
 
-    public class TestItemPriceService : ITestItemPriceService
+    public class LabworksService : ILabworksService
     {
         private readonly ApplicationDbContext _context;
         private readonly ConnectionSettings _connectionSettings;
 
-        public TestItemPriceService(ApplicationDbContext context, IOptions<ConnectionSettings> connectionSettings)
+        public LabworksService(ApplicationDbContext context, IOptions<ConnectionSettings> connectionSettings)
         {
             _context = context;
             _connectionSettings = connectionSettings.Value;
@@ -67,12 +67,12 @@ namespace AnlabMvc.Services
         }
     }
 
-    public class FakeTestItemPriceService : ITestItemPriceService
+    public class FakeLabworksService : ILabworksService
     {
         private readonly ApplicationDbContext _context;
         private readonly ConnectionSettings _connectionSettings;
 
-        public FakeTestItemPriceService(ApplicationDbContext context, IOptions<ConnectionSettings> connectionSettings)
+        public FakeLabworksService(ApplicationDbContext context, IOptions<ConnectionSettings> connectionSettings)
         {
             _context = context;
             _connectionSettings = connectionSettings.Value;
