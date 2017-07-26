@@ -74,8 +74,7 @@ namespace AnlabMvc.Services
         {
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {
-                IEnumerable<string> codes =
-                    await db.Connection.QueryAsync<string>(QueryResource.AnlabPriceForCode, new {orderRequest});
+                IEnumerable<string> codes = await db.Connection.QueryAsync<string>(QueryResource.AnlabTestsRunForOrder, new {orderRequest});
             }
             return null;
         }
