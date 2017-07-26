@@ -38,6 +38,8 @@ namespace Anlab.Core.Domain
 
         public string Status { get; set; }
 
+        public string OrderRequest { get; set; }
+
         public ICollection<MailMessage> MailMessages { get; set; }
 
         public OrderDetails GetOrderDetails()
