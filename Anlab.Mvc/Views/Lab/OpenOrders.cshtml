@@ -25,6 +25,7 @@
         <tr>
             <td>
                 <a asp-action="Edit" asp-route-id="@order.Id">Edit</a>
+                <a asp-action="UpdateFromCompletedTests" asp-route-id="@order.Id">Complete</a>
                 <a asp-action="Details" asp-route-id="@order.Id">Details</a>
             </td>
             <td>@order.Id</td>

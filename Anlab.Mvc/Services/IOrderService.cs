@@ -19,6 +19,8 @@ namespace AnlabMvc.Services
         Task SendOrderToAnlab(Order order);
 
         Task<List<TestItemModel>> PopulateTestItemModel();
+
+        Task OverwiteOrderWithTestsCompleted(Order orderToUpdate);
     }
 
     public class OrderService : IOrderService
@@ -120,6 +122,43 @@ namespace AnlabMvc.Services
             orderDetails.Total += orderDetails.AdjustmentAmount;
             orderToUpdate.SaveDetails(orderDetails);
         }
+
+        public async Task OverwiteOrderWithTestsCompleted(Order orderToUpdate)
+        {
+            if (string.IsNullOrWhiteSpace(orderToUpdate.OrderRequest))
+            {
+                throw new Exception("OrderRequest not populated"); //TODO: Something better
+            }
+            var testCodes = await _labworksService.GetTestCodesCompletedForOrder(orderToUpdate.OrderRequest);
+
+            var testIds = _context.TestItems.Where(a => testCodes.Contains(a.Code)).Select(s => s.Id).ToArray();
+            var tests = await PopulateSelectedTestsItemModel(testIds);
+
+            var orderDetails = orderToUpdate.GetOrderDetails();
+            var calcualtedTests = new List<TestDetails>();
+            foreach (var test in tests)
+            {
+                var cost = orderDetails.Payment.IsInternalClient ? test.InternalCost : test.ExternalCost;
+                var costAndQuantity = cost * orderDetails.Quantity;
+
+                calcualtedTests.Add(new TestDetails
+                {
+                    Id = test.Id,
+                    Analysis = test.Analysis,
+                    Code = test.Code,
+                    SetupCost = orderDetails.Payment.IsInternalClient ? test.InternalSetupCost : test.ExternalSetupCost,
+                    Cost = cost,
+                    SubTotal = costAndQuantity,
+                    Total = costAndQuantity + (orderDetails.Payment.IsInternalClient ? test.InternalSetupCost : test.ExternalSetupCost)
+                });
+            }
+
+            orderDetails.SelectedTests = calcualtedTests.ToArray();
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total);
+
+            orderToUpdate.SaveDetails(orderDetails);
+        }
+       
 
         public async Task SendOrderToAnlab(Order order)
         {

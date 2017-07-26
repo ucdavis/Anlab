@@ -31,7 +31,7 @@ namespace AnlabMvc.Controllers
 
         //public async Task<IActionResult> Test(string id)
         //{
-        //    var rtValue = await _labworksService.Test(id);
+        //    var rtValue = await _labworksService.GetTestCodesCompletedForOrder(id);
 
         //    return new JsonResult(rtValue);
         //}

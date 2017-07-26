@@ -160,5 +160,48 @@ namespace AnlabMvc.Controllers
             return RedirectToAction("OpenOrders");
 
         }
+
+        public async Task<IActionResult> UpdateFromCompletedTests(int id)
+        {
+            var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound(id);
+            }
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateFromCompletedTests(int id, bool confirm)
+        {
+            var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound(id);
+            }
+
+            if (order.Status != OrderStatusCodes.Received)
+            {
+                ErrorMessage = "You can only Complete a Received order";
+                //return RedirectToAction("OpenOrders");
+            }
+
+            order.Status = OrderStatusCodes.Complete;
+
+            await _orderService.OverwiteOrderWithTestsCompleted(order); //TODO: Just testing
+
+            await _dbContext.SaveChangesAsync();
+
+            Message = "Order marked as Complete";
+            return RedirectToAction("OpenOrders");
+
+        }
+
     }
 }

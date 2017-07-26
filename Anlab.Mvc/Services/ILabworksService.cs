@@ -19,9 +19,7 @@ namespace AnlabMvc.Services
     {
         Task<IList<TestItemPrices>> GetPrices();
         Task<TestItemPrices> GetPrice(string code);
-
-        Task<IList<TestItemPrices>> GetTestsAndPricesDone(string orderRequest);
-        Task<IList<string>> Test(string orderRequest);
+        Task<IList<string>> GetTestCodesCompletedForOrder(string orderRequest);
     }
 
     public class LabworksService : ILabworksService
@@ -70,21 +68,16 @@ namespace AnlabMvc.Services
             }
         }
 
-        public async Task<IList<TestItemPrices>> GetTestsAndPricesDone(string orderRequest)
-        {
-            using (var db = new DbManager(_connectionSettings.AnlabConnection))
-            {
-                IEnumerable<string> codes = await db.Connection.QueryAsync<string>(QueryResource.AnlabTestsRunForOrder, new {orderRequest});
-            }
-            return null;
-        }
-
-        public async Task<IList<string>> Test(string orderRequest)
+        public async Task<IList<string>> GetTestCodesCompletedForOrder(string orderRequest)
         {
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {
                 IEnumerable<string> codes =
                     await db.Connection.QueryAsync<string>(QueryResource.AnlabTestsRunForOrder, new {orderRequest});
+                if (codes.Count() <= 0)
+                {
+                    throw new Exception("No codes found");
+                }
                 return codes as IList<string>;
             }
 
@@ -145,12 +138,7 @@ namespace AnlabMvc.Services
             return tip;
         }
 
-        public Task<IList<TestItemPrices>> GetTestsAndPricesDone(string orderRequest)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IList<string>> Test(string orderRequest)
+        public Task<IList<string>> GetTestCodesCompletedForOrder(string orderRequest)
         {
             throw new NotImplementedException();
         }
