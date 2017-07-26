@@ -17,3 +17,14 @@
 
 <script src="~/dist/react.js" asp-append-version="true"></script>
 <script src="~/dist/order.js" asp-append-version="true"></script>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function() {
+            $('body').tooltip({
+                selector: '.analysisTooltip'
+            });
+        });
+    </script>
+}

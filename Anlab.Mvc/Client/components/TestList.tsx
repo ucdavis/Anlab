@@ -15,6 +15,7 @@ export interface ITestItem {
     internalSetupCost: number;
     externalSetupCost: number;
     category: string;
+    notes: string;
 }
 
 interface ITestListState {
@@ -64,11 +65,11 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                 const selected = !!this.props.selectedTests[item.id];
                 const priceDisplay = (this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost);
                 return (
-                    <tr key={item.id}>
+                    <tr key={item.id} >
                         <td>
                             <Checkbox checked={selected} onChange={e => this.onSelection(item, e)} />
                         </td>
-                        <td>{item.analysis}</td>
+                        <td><div className="analysisTooltip" data-toggle="tooltip" title={item.notes}>{item.analysis}</div></td>
                         <td>{item.code}</td>
                         <td><NumberFormat value={priceDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
                     </tr>

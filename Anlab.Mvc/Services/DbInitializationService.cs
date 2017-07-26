@@ -219,7 +219,8 @@ namespace AnlabMvc.Services
                 FeeSchedule = "16_0711",
                 Category = TestCategories.Soil,
                 Group = "SF",
-                Multiplier = 1
+                Multiplier = 1,
+                Notes = "This is a test tooltip"
             };
 
             // create sample tests
@@ -233,7 +234,8 @@ namespace AnlabMvc.Services
                 FeeSchedule = "16_0711",
                 Category = TestCategories.Soil,
                 Group = "SF",
-                Multiplier = 1
+                Multiplier = 1,
+                Notes = "Plain Jane Tooltip"
             };
 
             // create sample tests
@@ -290,7 +292,8 @@ namespace AnlabMvc.Services
                     FeeSchedule = "16_0711",
                     Category = TestCategories.Plant,
                     Group = i < 10 ? "SF" : "SS",
-                    Multiplier = 1
+                    Multiplier = 1,
+                    Notes = i%3 == 0 ? string.Format("Test Tooltip {0}", i) : string.Empty,
                 };
                 _context.Add(plantx);
             }
