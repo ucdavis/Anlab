@@ -125,4 +125,11 @@
     <value>SELECT [ACODE] as Code,[APRICE] as Cost,[ANAME] as 'Name',[WORKUNIT] as Multiplier FROM [ANL_LIST] where ACODE  = @code </value>
     <comment>Price for a code. Currently not setting SetupCost</comment>
   </data>
+  <data name="AnlabTestsRunForOrder" xml:space="preserve">
+    <value>SELECT DISTINCT [ACODE] as code
+FROM            [SAMPLE] INNER JOIN
+                         [ANALYSIS] ON [SAMPLE].[SAMPNO] = [ANALYSIS].[SAMPNO]
+WHERE        [SAMPLE].[LOGBATCH] = @orderRequest</value>
+    <comment>List of codes </comment>
+  </data>
 </root>

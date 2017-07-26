@@ -78,5 +78,17 @@ namespace AnlabMvc.Resources {
                 return ResourceManager.GetString("AnlabPriceForCode", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT DISTINCT [ACODE] as code
+        ///FROM            [SAMPLE] INNER JOIN
+        ///                         [ANALYSIS] ON [SAMPLE].[SAMPNO] = [ANALYSIS].[SAMPNO]
+        ///WHERE        [SAMPLE].[LOGBATCH] = @orderRequest.
+        /// </summary>
+        internal static string AnlabTestsRunForOrder {
+            get {
+                return ResourceManager.GetString("AnlabTestsRunForOrder", resourceCulture);
+            }
+        }
     }
 }

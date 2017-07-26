@@ -19,6 +19,9 @@ namespace AnlabMvc.Services
     {
         Task<IList<TestItemPrices>> GetPrices();
         Task<TestItemPrices> GetPrice(string code);
+
+        Task<IList<TestItemPrices>> GetTestsAndPricesDone(string orderRequest);
+        Task<IList<string>> Test(string orderRequest);
     }
 
     public class LabworksService : ILabworksService
@@ -39,7 +42,7 @@ namespace AnlabMvc.Services
             var codes = _context.TestItems.AsNoTracking().Select(a => a.Code).Distinct().ToArray();
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {
-                var prices = await db.Connection.QueryAsync<TestItemPrices>(QueryResource.AnlabItemPrices, new { codes });
+                var prices = await db.Connection.QueryAsync<TestItemPrices>(QueryResource.AnlabItemPrices, new {codes});
 
                 return prices as IList<TestItemPrices>;
             }
@@ -55,7 +58,8 @@ namespace AnlabMvc.Services
 
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {
-                IEnumerable<TestItemPrices> price = await db.Connection.QueryAsync<TestItemPrices>(QueryResource.AnlabPriceForCode, new { code });
+                IEnumerable<TestItemPrices> price =
+                    await db.Connection.QueryAsync<TestItemPrices>(QueryResource.AnlabPriceForCode, new {code});
 
                 if (price == null || price.Count() != 1)
                 {
@@ -64,6 +68,27 @@ namespace AnlabMvc.Services
 
                 return price.ElementAt(0);
             }
+        }
+
+        public async Task<IList<TestItemPrices>> GetTestsAndPricesDone(string orderRequest)
+        {
+            using (var db = new DbManager(_connectionSettings.AnlabConnection))
+            {
+                IEnumerable<string> codes =
+                    await db.Connection.QueryAsync<string>(QueryResource.AnlabPriceForCode, new {orderRequest});
+            }
+            return null;
+        }
+
+        public async Task<IList<string>> Test(string orderRequest)
+        {
+            using (var db = new DbManager(_connectionSettings.AnlabConnection))
+            {
+                IEnumerable<string> codes =
+                    await db.Connection.QueryAsync<string>(QueryResource.AnlabTestsRunForOrder, new {orderRequest});
+                return codes as IList<string>;
+            }
+
         }
     }
 
@@ -119,6 +144,16 @@ namespace AnlabMvc.Services
             };
 
             return tip;
+        }
+
+        public Task<IList<TestItemPrices>> GetTestsAndPricesDone(string orderRequest)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<string>> Test(string orderRequest)
+        {
+            throw new NotImplementedException();
         }
     }
 }
