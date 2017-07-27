@@ -34,6 +34,7 @@ namespace Test.TestsModel
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)16)]"
             }));
             expectedFields.Add(new NameAndType("MailMessages", "System.Collections.Generic.ICollection`1[Anlab.Core.Domain.MailMessage]", new List<string>()));
+            expectedFields.Add(new NameAndType("OrderRequest", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Project", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
