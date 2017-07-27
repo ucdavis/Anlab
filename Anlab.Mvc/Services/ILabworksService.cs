@@ -143,8 +143,8 @@ namespace AnlabMvc.Services
             var tip = new TestItemPrices
             {
                 Code = temp.Code,
-                Cost = temp.Id + 1,
-                SetupCost = (temp.Id + 1)%2 == 0 ? 25 :30,
+                Cost = 25,
+                SetupCost = 30,
                 Multiplier = temp.Multiplier,
                 Name = temp.Analysis
             };

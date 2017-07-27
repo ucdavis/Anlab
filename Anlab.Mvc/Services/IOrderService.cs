@@ -53,7 +53,7 @@ namespace AnlabMvc.Services
         /// </summary>
         /// <param name="selectedTestIds"></param>
         /// <returns></returns>
-        private async Task<IList<TestItemModel>> PopulateSelectedTestsItemModel(IEnumerable<int> selectedTestIds)
+        private async Task<IList<TestItemModel>> PopulateSelectedTestsItemModel(IEnumerable<string> selectedTestIds)
         {
             var prices = await _labworksService.GetPrices();
             var items = _context.TestItems.Where(a => selectedTestIds.Contains(a.Id)).AsNoTracking().ToList();

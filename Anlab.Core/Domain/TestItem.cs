@@ -8,7 +8,8 @@ namespace Anlab.Core.Domain
     public class TestItem
     {
         [Key]
-        public int Id { get; set; }
+        [StringLength(128)]
+        public string Id { get; set; }
 
         [Required]
         [StringLength(7)]
