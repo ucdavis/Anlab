@@ -83,7 +83,7 @@ namespace AnlabMvc.Resources {
         ///   Looks up a localized string similar to SELECT DISTINCT [ACODE] as code
         ///FROM            [SAMPLE] INNER JOIN
         ///                         [ANALYSIS] ON [SAMPLE].[SAMPNO] = [ANALYSIS].[SAMPNO]
-        ///WHERE        [SAMPLE].[LOGBATCH] = @orderRequest.
+        ///WHERE        [SAMPLE].[LOGBATCH] = @RequestNum.
         /// </summary>
         internal static string AnlabTestsRunForOrder {
             get {

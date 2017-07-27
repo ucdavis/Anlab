@@ -19,7 +19,7 @@ namespace AnlabMvc.Services
     {
         Task<IList<TestItemPrices>> GetPrices();
         Task<TestItemPrices> GetPrice(string code);
-        Task<IList<string>> GetTestCodesCompletedForOrder(string orderRequest);
+        Task<IList<string>> GetTestCodesCompletedForOrder(string RequestNum);
     }
 
     public class LabworksService : ILabworksService
@@ -79,15 +79,15 @@ namespace AnlabMvc.Services
         /// <summary>
         /// Get the test codes for an order that exist in labworks so we can update our order details with what was actually done.
         /// </summary>
-        /// <param name="orderRequest"></param>
+        /// <param name="RequestNum"></param>
         /// <returns></returns>
-        public async Task<IList<string>> GetTestCodesCompletedForOrder(string orderRequest)
+        public async Task<IList<string>> GetTestCodesCompletedForOrder(string RequestNum)
         {
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {
                 //TODO: maybe we should only return tests with a $ amount
                 IEnumerable<string> codes =
-                    await db.Connection.QueryAsync<string>(QueryResource.AnlabTestsRunForOrder, new {orderRequest});
+                    await db.Connection.QueryAsync<string>(QueryResource.AnlabTestsRunForOrder, new {RequestNum});
                 if (codes.Count() <= 0)
                 {
                     throw new Exception("No codes found");
@@ -152,7 +152,7 @@ namespace AnlabMvc.Services
             return tip;
         }
 
-        public Task<IList<string>> GetTestCodesCompletedForOrder(string orderRequest)
+        public Task<IList<string>> GetTestCodesCompletedForOrder(string RequestNum)
         {
             throw new NotImplementedException();
         }

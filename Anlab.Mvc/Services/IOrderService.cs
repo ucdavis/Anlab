@@ -110,11 +110,11 @@ namespace AnlabMvc.Services
         /// <returns></returns>
         public async Task OverwiteOrderWithTestsCompleted(Order orderToUpdate)
         {
-            if (string.IsNullOrWhiteSpace(orderToUpdate.OrderRequest))
+            if (string.IsNullOrWhiteSpace(orderToUpdate.RequestNum))
             {
-                throw new Exception("OrderRequest not populated"); //TODO: Something better
+                throw new Exception("RequestNum not populated"); //TODO: Something better
             }
-            var testCodes = await _labworksService.GetTestCodesCompletedForOrder(orderToUpdate.OrderRequest);
+            var testCodes = await _labworksService.GetTestCodesCompletedForOrder(orderToUpdate.RequestNum);
 
             var testIds = _context.TestItems.Where(a => testCodes.Contains(a.Code)).Select(s => s.Id).ToArray(); //TODO: Currently if the test code doesn't exist in our DB we ignore it, but this could cause issues if the test not found has a $ amount.
             var tests = await PopulateSelectedTestsItemModel(testIds);
