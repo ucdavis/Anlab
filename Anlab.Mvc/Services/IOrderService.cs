@@ -20,7 +20,7 @@ namespace AnlabMvc.Services
 
         Task<List<TestItemModel>> PopulateTestItemModel();
 
-        Task OverwiteOrderWithTestsCompleted(Order orderToUpdate);
+        Task<string> OverwiteOrderWithTestsCompleted(Order orderToUpdate);
     }
 
     public class OrderService : IOrderService
@@ -108,7 +108,7 @@ namespace AnlabMvc.Services
         /// </summary>
         /// <param name="orderToUpdate"></param>
         /// <returns></returns>
-        public async Task OverwiteOrderWithTestsCompleted(Order orderToUpdate)
+        public async Task<string> OverwiteOrderWithTestsCompleted(Order orderToUpdate)
         {
             if (string.IsNullOrWhiteSpace(orderToUpdate.RequestNum))
             {
@@ -116,8 +116,18 @@ namespace AnlabMvc.Services
             }
             var testCodes = await _labworksService.GetTestCodesCompletedForOrder(orderToUpdate.RequestNum);
 
-            var testIds = _context.TestItems.Where(a => testCodes.Contains(a.Code)).Select(s => s.Id).ToArray(); //TODO: Currently if the test code doesn't exist in our DB we ignore it, but this could cause issues if the test not found has a $ amount.
+            var testIds = _context.TestItems.Where(a => testCodes.Contains(a.Code)).Select(s => s.Id).ToArray(); 
             var tests = await PopulateSelectedTestsItemModel(testIds);
+
+            if (testCodes.Count != testIds.Length)
+            {
+                //Oh No!!! tests were returned that we don't know about
+                //TODO: Currently if the test code doesn't exist in our DB we ignore it, but this could cause issues if the test not found has a $ amount.
+                var foundCodes = _context.TestItems.Where(a => testIds.Contains(a.Id)).Select(s => s.Code).Distinct().ToList();
+                var missingCodes = testCodes.Except(foundCodes).ToList();
+
+                return string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", missingCodes));
+            }
 
             var orderDetails = orderToUpdate.GetOrderDetails();
             var calcualtedTests = new List<TestDetails>();
@@ -130,6 +140,8 @@ namespace AnlabMvc.Services
             orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total);
 
             orderToUpdate.SaveDetails(orderDetails);
+
+            return null;
         }
 
         /// <summary>

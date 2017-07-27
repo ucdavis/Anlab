@@ -123,7 +123,6 @@ namespace AnlabMvc.Services
                 "CD_TOT",
                 "CEC",
                 "CELLULOS",
-                "CL-P-IC",
                 "CL-S",
                 "CL-W",
                 "CL-W-IC",
