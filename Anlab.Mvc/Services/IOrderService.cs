@@ -122,7 +122,6 @@ namespace AnlabMvc.Services
             if (testCodes.Count != testIds.Length)
             {
                 //Oh No!!! tests were returned that we don't know about
-                //TODO: Currently if the test code doesn't exist in our DB we ignore it, but this could cause issues if the test not found has a $ amount.
                 var foundCodes = _context.TestItems.Where(a => testIds.Contains(a.Id)).Select(s => s.Code).Distinct().ToList();
                 var missingCodes = testCodes.Except(foundCodes).ToList();
 
