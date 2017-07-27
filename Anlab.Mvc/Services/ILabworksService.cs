@@ -15,36 +15,45 @@ using Microsoft.Extensions.Options;
 
 namespace AnlabMvc.Services
 {
-    public interface ITestItemPriceService
+    public interface ILabworksService
     {
         Task<IList<TestItemPrices>> GetPrices();
         Task<TestItemPrices> GetPrice(string code);
+        Task<IList<string>> GetTestCodesCompletedForOrder(string RequestNum);
     }
 
-    public class TestItemPriceService : ITestItemPriceService
+    public class LabworksService : ILabworksService
     {
         private readonly ApplicationDbContext _context;
         private readonly ConnectionSettings _connectionSettings;
 
-        public TestItemPriceService(ApplicationDbContext context, IOptions<ConnectionSettings> connectionSettings)
+        public LabworksService(ApplicationDbContext context, IOptions<ConnectionSettings> connectionSettings)
         {
             _context = context;
             _connectionSettings = connectionSettings.Value;
         }
 
-
+        /// <summary>
+        /// Get the Labworks prices for all test items in our db
+        /// </summary>
+        /// <returns></returns>
         public async Task<IList<TestItemPrices>> GetPrices()
         {
             //TODO: Get the Setup cost if available. Otherwise hard code it
             var codes = _context.TestItems.AsNoTracking().Select(a => a.Code).Distinct().ToArray();
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {
-                var prices = await db.Connection.QueryAsync<TestItemPrices>(QueryResource.AnlabItemPrices, new { codes });
+                var prices = await db.Connection.QueryAsync<TestItemPrices>(QueryResource.AnlabItemPrices, new {codes});
 
                 return prices as IList<TestItemPrices>;
             }
         }
 
+        /// <summary>
+        /// Get the Labwork price for a single test item code.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
         public async Task<TestItemPrices> GetPrice(string code)
         {
             var temp = await _context.TestItems.SingleOrDefaultAsync(a => a.Code == code);
@@ -55,7 +64,8 @@ namespace AnlabMvc.Services
 
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {
-                IEnumerable<TestItemPrices> price = await db.Connection.QueryAsync<TestItemPrices>(QueryResource.AnlabPriceForCode, new { code });
+                IEnumerable<TestItemPrices> price =
+                    await db.Connection.QueryAsync<TestItemPrices>(QueryResource.AnlabPriceForCode, new {code});
 
                 if (price == null || price.Count() != 1)
                 {
@@ -65,14 +75,35 @@ namespace AnlabMvc.Services
                 return price.ElementAt(0);
             }
         }
+
+        /// <summary>
+        /// Get the test codes for an order that exist in labworks so we can update our order details with what was actually done.
+        /// </summary>
+        /// <param name="RequestNum"></param>
+        /// <returns></returns>
+        public async Task<IList<string>> GetTestCodesCompletedForOrder(string RequestNum)
+        {
+            using (var db = new DbManager(_connectionSettings.AnlabConnection))
+            {
+                //TODO: maybe we should only return tests with a $ amount
+                IEnumerable<string> codes =
+                    await db.Connection.QueryAsync<string>(QueryResource.AnlabTestsRunForOrder, new {RequestNum});
+                if (codes.Count() <= 0)
+                {
+                    throw new Exception("No codes found");
+                }
+                return codes as IList<string>;
+            }
+
+        }
     }
 
-    public class FakeTestItemPriceService : ITestItemPriceService
+    public class FakeLabworksService : ILabworksService
     {
         private readonly ApplicationDbContext _context;
         private readonly ConnectionSettings _connectionSettings;
 
-        public FakeTestItemPriceService(ApplicationDbContext context, IOptions<ConnectionSettings> connectionSettings)
+        public FakeLabworksService(ApplicationDbContext context, IOptions<ConnectionSettings> connectionSettings)
         {
             _context = context;
             _connectionSettings = connectionSettings.Value;
@@ -119,6 +150,11 @@ namespace AnlabMvc.Services
             };
 
             return tip;
+        }
+
+        public Task<IList<string>> GetTestCodesCompletedForOrder(string RequestNum)
+        {
+            throw new NotImplementedException();
         }
     }
 }

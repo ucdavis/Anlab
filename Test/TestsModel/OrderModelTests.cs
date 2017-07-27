@@ -40,7 +40,8 @@ namespace Test.TestsModel
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)256)]"
                 
             }));
-            expectedFields.Add(new NameAndType("Status", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("RequestNum", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Status", "System.String", new List<string>()));            
             expectedFields.Add(new NameAndType("Updated", "System.DateTime", new List<string>()));           
             #endregion Arrange
 

@@ -49,6 +49,33 @@ namespace AnlabMvc.Services
                 "AL-KCL",
                 "AL-OX",
                 "AL-PY",
+                "-BCL-P-IC",
+                "-BNA-PMF",
+                "-DCL-P-IC",
+                "-DNA-PMF",
+                "-LCL-P-IC",
+                "-LNA-PMF",
+                "-PCL-P-IC",
+                "-PNA-PMF",
+                "-SCL-P-IC",
+                "-SNA-PMF",
+                "CL-P-IC",
+                "D",
+                "M",
+                "NA-PMF",
+                "-BNH4-W",
+                "-BNO3-W",
+                "-DNH4-W",
+                "-DNO3-W",
+                "-LNH4-W",
+                "-LNO3-W",
+                "-PNH4-W",
+                "-PNO3-W",
+                "-SNH4-W",
+                "-SNO3-W",
+                "G-NA-E",
+                "NH4-W",
+                "NO3-W",
                 "AL-W",
                 "AL-WT",
                 "ALK-WX",
@@ -110,7 +137,10 @@ namespace AnlabMvc.Services
                 "CO3-W",
                 "CR",
                 "CR-OXIDE"};
-            
+
+            var codesList2 = codesList.Distinct().ToArray();
+
+
             await _context.Database.EnsureCreatedAsync();
 
             if (_context.Users.Any()) return; // Do nothing if there is already user data in the system
@@ -199,93 +229,21 @@ namespace AnlabMvc.Services
 
             // create a new sample order
 
-            var order = new Order
-            {
-                ClientId = "XYZ",
-                CreatorId = scottUser.Id,
-                Project = "Test Project",
-            };
-
-            _context.Add(order);
+            CreateOrders(jasonUser);
+            CreateOrders(scottUser);
+            CreateOrders(calUser);
+            CreateOrders(lauraUser);
 
             // create sample tests
-            var aluminum = new TestItem
-            {
-                Analysis = "Aluminum (KCl extraction)",
-                Code = codesList[0],
-                InternalCost = 18,
-                ExternalCost = 27,
-                SetupCost = 30,
-                FeeSchedule = "16_0711",
-                Category = TestCategories.Soil,
-                Group = "SF",
-                Multiplier = 1,
-                Notes = "This is a test tooltip"
-            };
 
-            // create sample tests
-            var ammonium = new TestItem
-            {
-                Analysis = "Ammonium-Nitrogen",
-                Code = codesList[1],
-                InternalCost = 11,
-                ExternalCost = 17,
-                SetupCost = 30,
-                FeeSchedule = "16_0711",
-                Category = TestCategories.Soil,
-                Group = "SF",
-                Multiplier = 1,
-                Notes = "Plain Jane Tooltip"
-            };
+            var count = codesList2.Length;
 
-            // create sample tests
-            var water1 = new TestItem
-            {
-                Analysis = "Fake Test1",
-                Code = codesList[2],
-                InternalCost = 8.42m,
-                ExternalCost = 12.33m,
-                SetupCost = 30,
-                FeeSchedule = "16_0711",
-                Category = TestCategories.Water,
-                Group = "SF",
-                Multiplier = 1
-            };
-
-            // create sample tests
-            var water2 = new TestItem
-            {
-                Analysis = "Fake Test2",
-                Code = codesList[3],
-                InternalCost = 9.22m,
-                ExternalCost = 32.13m,
-                SetupCost = 30,
-                FeeSchedule = "16_0711",
-                Category = TestCategories.Water,
-                Group = "SF",
-                Multiplier = 1
-            };
-
-            // create sample tests
-            var plant1 = new TestItem
-            {
-                Analysis = "Fake Test3",
-                Code = codesList[4],
-                InternalCost = 1.22m,
-                ExternalCost = 2.13m,
-                SetupCost = 30,
-                FeeSchedule = "16_0711",
-                Category = TestCategories.Plant,
-                Group = "SF",
-                Multiplier = 1
-            };
-
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < count; i++)
             {
                 var plantx = new TestItem
                 {
                     Analysis = string.Format("Fake Plant{0}", i),
-                    Code = codesList[i+5],
+                    Code = codesList[i],
                     InternalCost = 1.22m,
                     ExternalCost = 2.13m,
                     SetupCost = 30,
@@ -293,33 +251,11 @@ namespace AnlabMvc.Services
                     Category = TestCategories.Plant,
                     Group = i < 10 ? "SF" : "SS",
                     Multiplier = 1,
-                    Notes = i%3 == 0 ? string.Format("Test Tooltip {0}", i) : string.Empty,
+                    Notes = i % 3 == 0 ? string.Format("Test Tooltip {0}", i) : string.Empty,
                 };
                 _context.Add(plantx);
             }
 
-            for (int i = 0; i < 5; i++)
-            {
-                var plantx = new TestItem
-                {
-                    Analysis = string.Format("Fake Other{0}", i),
-                    Code = codesList[i + 35],
-                    InternalCost = 5.22m,
-                    ExternalCost = 7.13m,
-                    SetupCost = 30,
-                    FeeSchedule = "16_0711",
-                    Category = TestCategories.Other,
-                    Group = i < 10 ? "SF" : "SS",
-                    Multiplier = 1
-                };
-                _context.Add(plantx);
-            }
-
-            _context.Add(aluminum);
-            _context.Add(ammonium);
-            _context.Add(water1);
-            _context.Add(water2);
-            _context.Add(plant1);
 
             await _context.SaveChangesAsync();
 
@@ -327,6 +263,36 @@ namespace AnlabMvc.Services
             // Seed with orders here, and maybe create users to test with
         }
 
+        private void CreateOrders(User user)
+        {
+            var xxx = @"{""Quantity"":2,""SampleType"":""Plant"",""AdditionalInfo"":"""",""SelectedTests"":[{""Id"":1,""Analysis"":""Fake Plant0"",""Code"":""ADFAF"",""Cost"":42.0,""SetupCost"":45.0,""SubTotal"":84.0,""Total"":129.0},{""Id"":62,""Analysis"":""Fake Plant9"",""Code"":""AL-PY"",""Cost"":33.0,""SetupCost"":45.0,""SubTotal"":66.0,""Total"":111.0},{""Id"":63,""Analysis"":""Fake Plant8"",""Code"":""AL-OX"",""Cost"":33.0,""SetupCost"":45.0,""SubTotal"":66.0,""Total"":111.0}],""Total"":351.0,""Payment"":{""ClientType"":""other"",""Account"":"""",""IsInternalClient"":false},""AdditionalEmails"":[],""Project"":""TestProj"",""LabComments"":"""",""AdjustmentAmount"":0.0}";
+
+            var order = new Order
+            {
+                ClientId = "XYZ",
+                CreatorId = user.Id,
+                Project = "Test Project",
+                Status = "Created",
+                RequestNum = "17P138",
+                JsonDetails = xxx
+            };
+
+
+            _context.Add(order);
+
+            order = new Order
+            {
+                ClientId = "XYZ",
+                CreatorId = user.Id,
+                Project = "Test Project",
+                Status = "Received",
+                RequestNum = "17P138",
+                JsonDetails = xxx
+            };
+
+
+            _context.Add(order);
+        }
     }
 
 }
