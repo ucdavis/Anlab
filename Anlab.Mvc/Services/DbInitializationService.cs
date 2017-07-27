@@ -243,7 +243,6 @@ namespace AnlabMvc.Services
                 {
                     Id = codesList2[i],
                     Analysis = string.Format("Fake Plant{0}", i),
-                    Code = codesList2[i],
                     InternalCost = 1.22m,
                     ExternalCost = 2.13m,
                     SetupCost = 30,

@@ -64,12 +64,11 @@ namespace AnlabMvc.Services
         private List<TestItemModel> GetJoined(IList<TestItemPrices> prices, List<TestItem> items)
         {
             return (from i in items
-                join p in prices on i.Code equals p.Code
+                join p in prices on i.Id equals p.Id
                 select new TestItemModel
                 {
                     Analysis = i.Analysis,
                     Category = i.Category,
-                    Code = i.Code,
                     ExternalCost = Math.Ceiling(p.Cost * _appSettings.NonUcRate),
                     Group = i.Group,
                     Id = i.Id,
@@ -116,13 +115,13 @@ namespace AnlabMvc.Services
             }
             var testCodes = await _labworksService.GetTestCodesCompletedForOrder(orderToUpdate.RequestNum);
 
-            var testIds = _context.TestItems.Where(a => testCodes.Contains(a.Code)).Select(s => s.Id).ToArray(); 
+            var testIds = _context.TestItems.Where(a => testCodes.Contains(a.Id)).Select(s => s.Id).ToArray(); 
             var tests = await PopulateSelectedTestsItemModel(testIds);
 
             if (testCodes.Count != testIds.Length)
             {
                 //Oh No!!! tests were returned that we don't know about
-                var foundCodes = _context.TestItems.Where(a => testIds.Contains(a.Id)).Select(s => s.Code).Distinct().ToList();
+                var foundCodes = _context.TestItems.Where(a => testIds.Contains(a.Id)).Select(s => s.Id).Distinct().ToList();
                 var missingCodes = testCodes.Except(foundCodes).ToList();
 
                 return string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", missingCodes));
@@ -158,7 +157,6 @@ namespace AnlabMvc.Services
             {
                 Id = test.Id,
                 Analysis = test.Analysis,
-                Code = test.Code,
                 SetupCost = orderDetails.Payment.IsInternalClient ? test.InternalSetupCost : test.ExternalSetupCost,
                 Cost = cost,
                 SubTotal = costAndQuantity,

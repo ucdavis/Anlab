@@ -17,11 +17,7 @@ namespace Anlab.Core.Domain
 
         [Required]
         [StringLength(512)]
-        public string Analysis { get; set; }
-        
-        [Required]
-        [StringLength(128)]
-        public string Code { get; set; }
+        public string Analysis { get; set; }       
 
         public decimal InternalCost { get; set; }
 
