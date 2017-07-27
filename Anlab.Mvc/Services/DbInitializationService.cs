@@ -229,14 +229,10 @@ namespace AnlabMvc.Services
 
             // create a new sample order
 
-            //var order = new Order
-            //{
-            //    ClientId = "XYZ",
-            //    CreatorId = scottUser.Id,
-            //    Project = "Test Project",
-            //};
-
-            //_context.Add(order);
+            CreateOrders(jasonUser);
+            CreateOrders(scottUser);
+            CreateOrders(calUser);
+            CreateOrders(lauraUser);
 
             // create sample tests
 
@@ -255,7 +251,7 @@ namespace AnlabMvc.Services
                     Category = TestCategories.Plant,
                     Group = i < 10 ? "SF" : "SS",
                     Multiplier = 1,
-                    Notes = i%3 == 0 ? string.Format("Test Tooltip {0}", i) : string.Empty,
+                    Notes = i % 3 == 0 ? string.Format("Test Tooltip {0}", i) : string.Empty,
                 };
                 _context.Add(plantx);
             }
@@ -267,6 +263,36 @@ namespace AnlabMvc.Services
             // Seed with orders here, and maybe create users to test with
         }
 
+        private void CreateOrders(User user)
+        {
+            var xxx = @"{""Quantity"":2,""SampleType"":""Plant"",""AdditionalInfo"":"""",""SelectedTests"":[{""Id"":1,""Analysis"":""Fake Plant0"",""Code"":""ADFAF"",""Cost"":42.0,""SetupCost"":45.0,""SubTotal"":84.0,""Total"":129.0},{""Id"":62,""Analysis"":""Fake Plant9"",""Code"":""AL-PY"",""Cost"":33.0,""SetupCost"":45.0,""SubTotal"":66.0,""Total"":111.0},{""Id"":63,""Analysis"":""Fake Plant8"",""Code"":""AL-OX"",""Cost"":33.0,""SetupCost"":45.0,""SubTotal"":66.0,""Total"":111.0}],""Total"":351.0,""Payment"":{""ClientType"":""other"",""Account"":"""",""IsInternalClient"":false},""AdditionalEmails"":[],""Project"":""TestProj"",""LabComments"":"""",""AdjustmentAmount"":0.0}";
+
+            var order = new Order
+            {
+                ClientId = "XYZ",
+                CreatorId = user.Id,
+                Project = "Test Project",
+                Status = "Created",
+                RequestNum = "17P138",
+                JsonDetails = xxx
+            };
+
+
+            _context.Add(order);
+
+            order = new Order
+            {
+                ClientId = "XYZ",
+                CreatorId = user.Id,
+                Project = "Test Project",
+                Status = "Received",
+                RequestNum = "17P138",
+                JsonDetails = xxx
+            };
+
+
+            _context.Add(order);
+        }
     }
 
 }
