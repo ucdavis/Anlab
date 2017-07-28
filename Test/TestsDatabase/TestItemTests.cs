@@ -32,11 +32,6 @@ namespace Test.TestsDatabase
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)64)]"
             }));
             expectedFields.Add(new NameAndType("ChargeSet", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("Code", "System.String", new List<string>
-            {
-                "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
-                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)128)]"
-            }));
             expectedFields.Add(new NameAndType("ExternalCost", "System.Decimal", new List<string>()));
             expectedFields.Add(new NameAndType("FeeSchedule", "System.String", new List<string>
             {
@@ -49,9 +44,10 @@ namespace Test.TestsDatabase
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)8)]"
             }));
             expectedFields.Add(new NameAndType("GroupType", "System.String", new List<string>()));
-            expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>
+            expectedFields.Add(new NameAndType("Id", "System.String", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.KeyAttribute()]"
+                "[System.ComponentModel.DataAnnotations.KeyAttribute()]",
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)128)]"
             }));
             expectedFields.Add(new NameAndType("InternalCost", "System.Decimal", new List<string>()));
             expectedFields.Add(new NameAndType("Multiplier", "System.Int32", new List<string>
