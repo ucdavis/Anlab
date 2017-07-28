@@ -11,11 +11,11 @@ namespace AnlabMvc.Models.Order
         public OverwriteOrderResult()
         {
             SelectedTests = new List<TestDetails>();
-            Errors = new List<string>();
+            MissingCodes = new List<string>();
         }
         public IList<TestDetails> SelectedTests { get; set; }
-        public IList<String> Errors { get; set; }
+        public IList<String> MissingCodes { get; set; }
 
-        public bool WasError => Errors.Count > 0;
+        public bool WasError => MissingCodes.Count > 0;
     }
 }

@@ -123,9 +123,8 @@ namespace AnlabMvc.Services
             {
                 //Oh No!!! tests were returned that we don't know about
                 var foundCodes = _context.TestItems.Where(a => testIds.Contains(a.Id)).Select(s => s.Id).Distinct().ToList();
-                var missingCodes = testCodes.Except(foundCodes).ToList();
-                rtValue.Errors.Add(string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", missingCodes)));
-
+                rtValue.MissingCodes = testCodes.Except(foundCodes).ToList();
+                
                 return rtValue;
             }
 

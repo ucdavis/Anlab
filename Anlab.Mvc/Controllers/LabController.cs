@@ -197,7 +197,7 @@ namespace AnlabMvc.Controllers
             var result = await _orderService.OverwiteOrderWithTestsCompleted(order); //TODO: Just testing
             if (result.WasError)
             {
-                ErrorMessage = string.Join("--",result.Errors);
+                ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
                 return RedirectToAction("UpdateFromCompletedTests");
             }
 
