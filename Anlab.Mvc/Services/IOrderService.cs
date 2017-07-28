@@ -20,7 +20,7 @@ namespace AnlabMvc.Services
 
         Task<List<TestItemModel>> PopulateTestItemModel();
 
-        Task<string> OverwiteOrderWithTestsCompleted(Order orderToUpdate);
+        Task<OverwriteOrderResult> OverwiteOrderWithTestsCompleted(Order orderToUpdate);
     }
 
     public class OrderService : IOrderService
@@ -107,8 +107,9 @@ namespace AnlabMvc.Services
         /// </summary>
         /// <param name="orderToUpdate"></param>
         /// <returns></returns>
-        public async Task<string> OverwiteOrderWithTestsCompleted(Order orderToUpdate)
+        public async Task<OverwriteOrderResult> OverwiteOrderWithTestsCompleted(Order orderToUpdate)
         {
+            var rtValue = new OverwriteOrderResult();
             if (string.IsNullOrWhiteSpace(orderToUpdate.RequestNum))
             {
                 throw new Exception("RequestNum not populated"); //TODO: Something better
@@ -123,8 +124,9 @@ namespace AnlabMvc.Services
                 //Oh No!!! tests were returned that we don't know about
                 var foundCodes = _context.TestItems.Where(a => testIds.Contains(a.Id)).Select(s => s.Id).Distinct().ToList();
                 var missingCodes = testCodes.Except(foundCodes).ToList();
+                rtValue.Errors.Add(string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", missingCodes)));
 
-                return string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", missingCodes));
+                return rtValue;
             }
 
             var orderDetails = orderToUpdate.GetOrderDetails();
@@ -134,12 +136,9 @@ namespace AnlabMvc.Services
                 CalculateTest(orderDetails, test, calcualtedTests);
             }
 
-            orderDetails.SelectedTests = calcualtedTests.ToArray();
-            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total);
+            rtValue.SelectedTests = calcualtedTests;
 
-            orderToUpdate.SaveDetails(orderDetails);
-
-            return null;
+            return rtValue;
         }
 
         /// <summary>

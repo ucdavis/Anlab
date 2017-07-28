@@ -194,12 +194,19 @@ namespace AnlabMvc.Controllers
 
             order.Status = OrderStatusCodes.Complete;
 
-            var errors = await _orderService.OverwiteOrderWithTestsCompleted(order); //TODO: Just testing
-            if (!string.IsNullOrWhiteSpace(errors))
+            var result = await _orderService.OverwiteOrderWithTestsCompleted(order); //TODO: Just testing
+            if (result.WasError)
             {
-                ErrorMessage = errors;
+                ErrorMessage = string.Join("--",result.Errors);
                 return RedirectToAction("UpdateFromCompletedTests");
             }
+
+            var orderDetails = order.GetOrderDetails();
+
+            orderDetails.SelectedTests = result.SelectedTests;
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total);
+
+            order.SaveDetails(orderDetails);
 
             await _dbContext.SaveChangesAsync();
 
