@@ -62,7 +62,7 @@ namespace AnlabMvc.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT [ACODE] as Code,[APRICE] as Cost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier FROM [ANL_LIST] where ACODE in @codes.
+        ///   Looks up a localized string similar to SELECT [ACODE] as Id,[APRICE] as Cost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier FROM [ANL_LIST] where ACODE in @codes.
         /// </summary>
         internal static string AnlabItemPrices {
             get {
@@ -71,7 +71,7 @@ namespace AnlabMvc.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT [ACODE] as Code,[APRICE] as Cost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier FROM [ANL_LIST] where ACODE  = @code .
+        ///   Looks up a localized string similar to SELECT [ACODE] as Id,[APRICE] as Cost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier FROM [ANL_LIST] where ACODE  = @code .
         /// </summary>
         internal static string AnlabPriceForCode {
             get {
@@ -80,7 +80,7 @@ namespace AnlabMvc.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT DISTINCT [ACODE] as code
+        ///   Looks up a localized string similar to SELECT DISTINCT [ACODE] as Id
         ///FROM            [SAMPLE] INNER JOIN
         ///                         [ANALYSIS] ON [SAMPLE].[SAMPNO] = [ANALYSIS].[SAMPNO]
         ///WHERE        [SAMPLE].[LOGBATCH] = @RequestNum.

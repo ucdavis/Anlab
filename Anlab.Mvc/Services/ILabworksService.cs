@@ -40,7 +40,7 @@ namespace AnlabMvc.Services
         public async Task<IList<TestItemPrices>> GetPrices()
         {
             //TODO: Get the Setup cost if available. Otherwise hard code it
-            var codes = _context.TestItems.AsNoTracking().Select(a => a.Code).Distinct().ToArray();
+            var codes = _context.TestItems.AsNoTracking().Select(a => a.Id).Distinct().ToArray();
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {
                 var prices = await db.Connection.QueryAsync<TestItemPrices>(QueryResource.AnlabItemPrices, new {codes});
@@ -56,7 +56,7 @@ namespace AnlabMvc.Services
         /// <returns></returns>
         public async Task<TestItemPrices> GetPrice(string code)
         {
-            var temp = await _context.TestItems.SingleOrDefaultAsync(a => a.Code == code);
+            var temp = await _context.TestItems.SingleOrDefaultAsync(a => a.Id == code);
             if (temp == null)
             {
                 return null;
@@ -115,11 +115,11 @@ namespace AnlabMvc.Services
             var counter = 1;
             foreach (var testItem in temp.OrderBy(a => a.Id))
             {
-                if(testItems.Any(a => a.Code == testItem.Code))
+                if(testItems.Any(a => a.Id == testItem.Id))
                     continue;
                 counter++;
                 var tip = new TestItemPrices();
-                tip.Code = testItem.Code;
+                tip.Id = testItem.Id;
                 tip.Cost = counter;
                 tip.SetupCost = counter % 2 == 0 ? 25 : 30;
                 tip.Multiplier = testItem.Multiplier;
@@ -135,16 +135,16 @@ namespace AnlabMvc.Services
         public async Task<TestItemPrices> GetPrice(string code)
         {
 
-            var temp = await _context.TestItems.SingleOrDefaultAsync(a => a.Code == code);
+            var temp = await _context.TestItems.SingleOrDefaultAsync(a => a.Id == code);
             if (temp == null)
             {
                 return null;
             }
             var tip = new TestItemPrices
             {
-                Code = temp.Code,
-                Cost = temp.Id + 1,
-                SetupCost = (temp.Id + 1)%2 == 0 ? 25 :30,
+                Id = temp.Id,
+                Cost = 25,
+                SetupCost = 30,
                 Multiplier = temp.Multiplier,
                 Name = temp.Analysis
             };

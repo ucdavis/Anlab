@@ -8,7 +8,8 @@ namespace Anlab.Core.Domain
     public class TestItem
     {
         [Key]
-        public int Id { get; set; }
+        [StringLength(128)]
+        public string Id { get; set; }
 
         [Required]
         [StringLength(7)]
@@ -16,11 +17,7 @@ namespace Anlab.Core.Domain
 
         [Required]
         [StringLength(512)]
-        public string Analysis { get; set; }
-        
-        [Required]
-        [StringLength(128)]
-        public string Code { get; set; }
+        public string Analysis { get; set; }       
 
         public decimal InternalCost { get; set; }
 

@@ -7,9 +7,8 @@ import NumberFormat from 'react-number-format';
 import { groupBy } from '../util/arrayHelpers';
 
 export interface ITestItem {
-    id: number;
+    id: string;
     analysis: string;
-    code: string;
     internalCost: number;
     externalCost: number;
     internalSetupCost: number;
@@ -48,7 +47,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
 
         if (loweredQuery) {
             filteredItems = this.props.items.filter(item => {
-                return item.analysis.toLowerCase().indexOf(loweredQuery) !== -1 || item.code.toLowerCase().indexOf(loweredQuery) !== -1;
+                return item.analysis.toLowerCase().indexOf(loweredQuery) !== -1 || item.id.toLowerCase().indexOf(loweredQuery) !== -1;
             });
         }
 
@@ -70,7 +69,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                             <Checkbox checked={selected} onChange={e => this.onSelection(item, e)} />
                         </td>
                         <td><div className="analysisTooltip" data-toggle="tooltip" title={item.notes}>{item.analysis}</div></td>
-                        <td>{item.code}</td>
+                        <td>{item.id}</td>
                         <td><NumberFormat value={priceDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
                     </tr>
                 );

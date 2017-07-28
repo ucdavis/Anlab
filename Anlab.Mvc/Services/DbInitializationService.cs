@@ -241,8 +241,8 @@ namespace AnlabMvc.Services
             {
                 var plantx = new TestItem
                 {
+                    Id = codesList2[i],
                     Analysis = string.Format("Fake Plant{0}", i),
-                    Code = codesList[i],
                     InternalCost = 1.22m,
                     ExternalCost = 2.13m,
                     SetupCost = 30,
@@ -277,7 +277,7 @@ namespace AnlabMvc.Services
             };
 
 
-            _context.Add(order);
+            //_context.Add(order);
 
             order = new Order
             {
@@ -290,7 +290,7 @@ namespace AnlabMvc.Services
             };
 
 
-            _context.Add(order);
+            //_context.Add(order);
         }
     }
 

@@ -6,7 +6,7 @@ namespace Anlab.Core.Models
 {
     public class TestItemModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Code { get; set; }
         public decimal InternalCost { get; set; }
         public decimal ExternalCost { get; set; }
