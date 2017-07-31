@@ -84,7 +84,8 @@ namespace AnlabMvc
             services.AddTransient<IOrderMessageService, OrderMessageService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             //services.AddTransient<ILabworksService, FakeLabworksService>(); //TODO: Replace with non fake one.
-            services.AddTransient<ILabworksService, LabworksService>(); 
+            services.AddTransient<ILabworksService, LabworksService>();
+            services.AddTransient<IFileStorageService, FileStorageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
