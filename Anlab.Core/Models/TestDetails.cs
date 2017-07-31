@@ -3,10 +3,8 @@
     public class TestDetails
     {
         //TODO: See about dumping ID here in case they change
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Analysis { get; set; }
-
-        public string Code { get; set; }
 
         // The cost to run this test for one sample
         public decimal Cost { get; set; }

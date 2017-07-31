@@ -194,7 +194,19 @@ namespace AnlabMvc.Controllers
 
             order.Status = OrderStatusCodes.Complete;
 
-            await _orderService.OverwiteOrderWithTestsCompleted(order); //TODO: Just testing
+            var result = await _orderService.OverwiteOrderWithTestsCompleted(order); //TODO: Just testing
+            if (result.WasError)
+            {
+                ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
+                return RedirectToAction("UpdateFromCompletedTests");
+            }
+
+            var orderDetails = order.GetOrderDetails();
+
+            orderDetails.SelectedTests = result.SelectedTests;
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total);
+
+            order.SaveDetails(orderDetails);
 
             await _dbContext.SaveChangesAsync();
 

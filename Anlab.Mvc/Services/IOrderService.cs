@@ -20,7 +20,7 @@ namespace AnlabMvc.Services
 
         Task<List<TestItemModel>> PopulateTestItemModel();
 
-        Task OverwiteOrderWithTestsCompleted(Order orderToUpdate);
+        Task<OverwriteOrderResult> OverwiteOrderWithTestsCompleted(Order orderToUpdate);
     }
 
     public class OrderService : IOrderService
@@ -53,7 +53,7 @@ namespace AnlabMvc.Services
         /// </summary>
         /// <param name="selectedTestIds"></param>
         /// <returns></returns>
-        private async Task<IList<TestItemModel>> PopulateSelectedTestsItemModel(IEnumerable<int> selectedTestIds)
+        private async Task<IList<TestItemModel>> PopulateSelectedTestsItemModel(IEnumerable<string> selectedTestIds)
         {
             var prices = await _labworksService.GetPrices();
             var items = _context.TestItems.Where(a => selectedTestIds.Contains(a.Id)).AsNoTracking().ToList();
@@ -64,12 +64,11 @@ namespace AnlabMvc.Services
         private List<TestItemModel> GetJoined(IList<TestItemPrices> prices, List<TestItem> items)
         {
             return (from i in items
-                join p in prices on i.Code equals p.Code
+                join p in prices on i.Id equals p.Id
                 select new TestItemModel
                 {
                     Analysis = i.Analysis,
                     Category = i.Category,
-                    Code = i.Code,
                     ExternalCost = Math.Ceiling(p.Cost * _appSettings.NonUcRate),
                     Group = i.Group,
                     Id = i.Id,
@@ -108,16 +107,26 @@ namespace AnlabMvc.Services
         /// </summary>
         /// <param name="orderToUpdate"></param>
         /// <returns></returns>
-        public async Task OverwiteOrderWithTestsCompleted(Order orderToUpdate)
+        public async Task<OverwriteOrderResult> OverwiteOrderWithTestsCompleted(Order orderToUpdate)
         {
+            var rtValue = new OverwriteOrderResult();
             if (string.IsNullOrWhiteSpace(orderToUpdate.RequestNum))
             {
                 throw new Exception("RequestNum not populated"); //TODO: Something better
             }
             var testCodes = await _labworksService.GetTestCodesCompletedForOrder(orderToUpdate.RequestNum);
 
-            var testIds = _context.TestItems.Where(a => testCodes.Contains(a.Code)).Select(s => s.Id).ToArray(); //TODO: Currently if the test code doesn't exist in our DB we ignore it, but this could cause issues if the test not found has a $ amount.
+            var testIds = _context.TestItems.Where(a => testCodes.Contains(a.Id)).Select(s => s.Id).ToArray(); 
             var tests = await PopulateSelectedTestsItemModel(testIds);
+
+            if (testCodes.Count != testIds.Length)
+            {
+                //Oh No!!! tests were returned that we don't know about
+                var foundCodes = _context.TestItems.Where(a => testIds.Contains(a.Id)).Select(s => s.Id).Distinct().ToList();
+                rtValue.MissingCodes = testCodes.Except(foundCodes).ToList();
+                
+                return rtValue;
+            }
 
             var orderDetails = orderToUpdate.GetOrderDetails();
             var calcualtedTests = new List<TestDetails>();
@@ -126,10 +135,9 @@ namespace AnlabMvc.Services
                 CalculateTest(orderDetails, test, calcualtedTests);
             }
 
-            orderDetails.SelectedTests = calcualtedTests.ToArray();
-            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total);
+            rtValue.SelectedTests = calcualtedTests;
 
-            orderToUpdate.SaveDetails(orderDetails);
+            return rtValue;
         }
 
         /// <summary>
@@ -147,7 +155,6 @@ namespace AnlabMvc.Services
             {
                 Id = test.Id,
                 Analysis = test.Analysis,
-                Code = test.Code,
                 SetupCost = orderDetails.Payment.IsInternalClient ? test.InternalSetupCost : test.ExternalSetupCost,
                 Cost = cost,
                 SubTotal = costAndQuantity,

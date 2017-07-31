@@ -123,7 +123,6 @@ namespace AnlabMvc.Services
                 "CD_TOT",
                 "CEC",
                 "CELLULOS",
-                "CL-P-IC",
                 "CL-S",
                 "CL-W",
                 "CL-W-IC",
@@ -242,8 +241,8 @@ namespace AnlabMvc.Services
             {
                 var plantx = new TestItem
                 {
+                    Id = codesList2[i],
                     Analysis = string.Format("Fake Plant{0}", i),
-                    Code = codesList[i],
                     InternalCost = 1.22m,
                     ExternalCost = 2.13m,
                     SetupCost = 30,
@@ -265,7 +264,7 @@ namespace AnlabMvc.Services
 
         private void CreateOrders(User user)
         {
-            var xxx = @"{""Quantity"":2,""SampleType"":""Plant"",""AdditionalInfo"":"""",""SelectedTests"":[{""Id"":1,""Analysis"":""Fake Plant0"",""Code"":""ADFAF"",""Cost"":42.0,""SetupCost"":45.0,""SubTotal"":84.0,""Total"":129.0},{""Id"":62,""Analysis"":""Fake Plant9"",""Code"":""AL-PY"",""Cost"":33.0,""SetupCost"":45.0,""SubTotal"":66.0,""Total"":111.0},{""Id"":63,""Analysis"":""Fake Plant8"",""Code"":""AL-OX"",""Cost"":33.0,""SetupCost"":45.0,""SubTotal"":66.0,""Total"":111.0}],""Total"":351.0,""Payment"":{""ClientType"":""other"",""Account"":"""",""IsInternalClient"":false},""AdditionalEmails"":[],""Project"":""TestProj"",""LabComments"":"""",""AdjustmentAmount"":0.0}";
+            var xxx = @"{""Quantity"":2,""SampleType"":""Plant"",""AdditionalInfo"":"""",""SelectedTests"":[{""Id"":""ADFAF"",""Analysis"":""Fake Plant0"",""Cost"":42.0,""SetupCost"":45.0,""SubTotal"":84.0,""Total"":129.0},{""Id"":""CA-PMF"",""Analysis"":""Fake Plant68"",""Cost"":21.0,""SetupCost"":45.0,""SubTotal"":42.0,""Total"":87.0},{""Id"":""AL-OX"",""Analysis"":""Fake Plant8"",""Cost"":33.0,""SetupCost"":45.0,""SubTotal"":66.0,""Total"":111.0}],""Total"":327.0,""Payment"":{""ClientType"":""other"",""Account"":"""",""IsInternalClient"":false},""AdditionalEmails"":[],""Project"":""2"",""LabComments"":"""",""AdjustmentAmount"":0.0}";
 
             var order = new Order
             {
