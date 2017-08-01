@@ -50,8 +50,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Group)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Public)
+            <td style="text-align: center">
+                @if (item.Public)
+                {
+                    <i class="fa fa-check" aria-hidden="true"></i>
+
+                }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Notes)
@@ -78,7 +82,11 @@
     <script type="text/javascript">
         $(function() {
             $("#table").dataTable({
-                "sorting": [[0, "asc"]]
+                "sorting": [[0, "asc"]],
+                "pageLength": 25,
+                "columnDefs": [
+                    { "width": "5%", "targets": 4 }
+                ]
             });
         });
     </script>
