@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Anlab.Core.Domain;
 using Anlab.Core.Data;
+using Microsoft.AspNetCore.Authorization;
+using AnlabMvc.Models.Roles;
 
 namespace AnlabMvc.Controllers
 {
+    [Authorize(Roles = RoleCodes.Admin)]
     public class TestItemsController : Controller
     {
         private readonly ApplicationDbContext _context;
