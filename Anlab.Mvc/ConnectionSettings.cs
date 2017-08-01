@@ -8,5 +8,6 @@ namespace AnlabMvc
     public class ConnectionSettings
     {
         public string AnlabConnection { get; set; }
+        public string StorageConnection { get; set; }
     }
 }

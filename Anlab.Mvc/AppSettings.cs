@@ -8,5 +8,6 @@ namespace AnlabMvc
     public class AppSettings
     {
         public decimal NonUcRate { get; set; } = 1.5m;
+        public string StorageUrlBase { get; set; }
     }
 }
