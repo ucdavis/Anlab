@@ -243,7 +243,6 @@ namespace AnlabMvc.Services
                 {
                     Id = codesList2[i],
                     Analysis = string.Format("Fake Plant{0}", i),
-                    FeeSchedule = "16_0711",
                     Category = TestCategories.Plant,
                     Group = i < 10 ? "SF" : "SS",
                     Notes = i % 3 == 0 ? string.Format("Test Tooltip {0}", i) : string.Empty,
