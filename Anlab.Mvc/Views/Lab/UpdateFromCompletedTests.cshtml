@@ -11,7 +11,14 @@
     
     <div class="form-group">
         <span>Upload Results</span>
-        <input type="file" class="form-control" name="uploadFile" />
+        @if (string.IsNullOrWhiteSpace(Model.Order.ResultsFileIdentifier))
+        {
+            <input type="file" class="form-control" name="uploadFile"/>
+        }
+        else
+        {
+            <div>Results File Identifier: @Model.Order.ResultsFileIdentifier</div>
+        }
     </div>
     
 
