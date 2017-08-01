@@ -243,13 +243,8 @@ namespace AnlabMvc.Services
                 {
                     Id = codesList2[i],
                     Analysis = string.Format("Fake Plant{0}", i),
-                    InternalCost = 1.22m,
-                    ExternalCost = 2.13m,
-                    SetupCost = 30,
-                    FeeSchedule = "16_0711",
                     Category = TestCategories.Plant,
                     Group = i < 10 ? "SF" : "SS",
-                    Multiplier = 1,
                     Notes = i % 3 == 0 ? string.Format("Test Tooltip {0}", i) : string.Empty,
                 };
                 _context.Add(plantx);
