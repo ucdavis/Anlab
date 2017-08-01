@@ -9,12 +9,18 @@
 </head>
 <body>
 
-<form asp-action="Edit">
+<form asp-action="Edit" id="editForm">
     <div class="form-horizontal">
         <h4>TestItem</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="Id" />
+        <div class="form-group">
+            <label asp-for="Id" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Id" class="form-control" />
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+        </div>        
         <div class="form-group">
             <label asp-for="Analysis" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -25,8 +31,12 @@
         <div class="form-group">
             <label asp-for="Category" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Category" class="form-control" />
-                <span asp-validation-for="Category" class="text-danger"></span>
+                <select asp-for="Category" class="form-control" form="editForm">
+                    <option value="Soil">Soil</option>
+                    <option value="Plant">Plant</option>
+                    <option value="Water">Water</option>
+                    <option value="Other">Other</option>
+                </select>
             </div>
         </div>
         <div class="form-group">
