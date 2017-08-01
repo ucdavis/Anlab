@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 
 namespace AnlabMvc.Controllers
 {
@@ -215,15 +214,11 @@ namespace AnlabMvc.Controllers
             FileUpload fileUpload = new FileUpload();
             fileUpload.ContentType = uploadFile.ContentType;
             fileUpload.Identifier = nameBase;
-            var filePath = Path.GetTempFileName();
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await uploadFile.CopyToAsync(stream);
-                fileUpload.Data = stream;
-            }
+            fileUpload.Data = uploadFile.OpenReadStream();
+            
+
             _fileStorageService.UploadFiles(fileUpload);
 
-            var yyy = fileUpload;
 
 
             order.Status = OrderStatusCodes.Complete;
