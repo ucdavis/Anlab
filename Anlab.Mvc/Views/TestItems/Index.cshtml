@@ -11,30 +11,36 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table id="table">
     <thead>
         <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Analysis)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Category)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Group)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Public)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Notes)
-                </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>  
+            <th>
+                @Html.DisplayNameFor(model => model.Analysis)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Group)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Public)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Notes)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Analysis)
             </td>
@@ -61,3 +67,19 @@
 </table>
 </body>
 </html>
+
+@section AdditionalStyles
+{
+    @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+}
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+    <script type="text/javascript">
+        $(function() {
+            $("#table").dataTable({
+                "sorting": [[0, "asc"]]
+            });
+        });
+    </script>
+}
