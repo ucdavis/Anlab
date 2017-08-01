@@ -11,8 +11,6 @@ namespace AnlabMvc.Models.Order
     {
         public Anlab.Core.Domain.Order Order { get; set; }
         public OrderDetails OrderDetails { get; set; }
-
-        public string ResultsUrl { get; set; } //TODO: Verify that we need this.
     }
 
 
