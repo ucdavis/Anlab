@@ -98,63 +98,66 @@ namespace AnlabMvc.Services
         }
     }
 
-    public class FakeLabworksService : ILabworksService
-    {
-        private readonly ApplicationDbContext _context;
-        private readonly ConnectionSettings _connectionSettings;
+    /// <summary>
+    /// Only uncomment if you can't access the Labworks db...
+    /// </summary>
+    //public class FakeLabworksService : ILabworksService
+    //{
+    //    private readonly ApplicationDbContext _context;
+    //    private readonly ConnectionSettings _connectionSettings;
 
-        public FakeLabworksService(ApplicationDbContext context, IOptions<ConnectionSettings> connectionSettings)
-        {
-            _context = context;
-            _connectionSettings = connectionSettings.Value;
-        }
-        public async Task<IList<TestItemPrices>> GetPrices()
-        {
-            var temp = _context.TestItems.AsNoTracking().ToList();
-            var testItems = new List<TestItemPrices>();
-            var counter = 1;
-            foreach (var testItem in temp.OrderBy(a => a.Id))
-            {
-                if(testItems.Any(a => a.Id == testItem.Id))
-                    continue;
-                counter++;
-                var tip = new TestItemPrices();
-                tip.Id = testItem.Id;
-                tip.Cost = counter;
-                tip.SetupCost = counter % 2 == 0 ? 25 : 30;
-                tip.Multiplier = testItem.Multiplier;
-                tip.Name = testItem.Analysis;
-                testItems.Add(tip);
-            }
+    //    public FakeLabworksService(ApplicationDbContext context, IOptions<ConnectionSettings> connectionSettings)
+    //    {
+    //        _context = context;
+    //        _connectionSettings = connectionSettings.Value;
+    //    }
+    //    public async Task<IList<TestItemPrices>> GetPrices()
+    //    {
+    //        var temp = _context.TestItems.AsNoTracking().ToList();
+    //        var testItems = new List<TestItemPrices>();
+    //        var counter = 1;
+    //        foreach (var testItem in temp.OrderBy(a => a.Id))
+    //        {
+    //            if(testItems.Any(a => a.Id == testItem.Id))
+    //                continue;
+    //            counter++;
+    //            var tip = new TestItemPrices();
+    //            tip.Id = testItem.Id;
+    //            tip.Cost = counter;
+    //            tip.SetupCost = counter % 2 == 0 ? 25 : 30;
+    //            tip.Multiplier = 1;
+    //            tip.Name = testItem.Analysis;
+    //            testItems.Add(tip);
+    //        }
 
 
-            return await Task.FromResult(testItems);
+    //        return await Task.FromResult(testItems);
 
-        }
+    //    }
 
-        public async Task<TestItemPrices> GetPrice(string code)
-        {
+    //    public async Task<TestItemPrices> GetPrice(string code)
+    //    {
 
-            var temp = await _context.TestItems.SingleOrDefaultAsync(a => a.Id == code);
-            if (temp == null)
-            {
-                return null;
-            }
-            var tip = new TestItemPrices
-            {
-                Id = temp.Id,
-                Cost = 25,
-                SetupCost = 30,
-                Multiplier = temp.Multiplier,
-                Name = temp.Analysis
-            };
+    //        var temp = await _context.TestItems.SingleOrDefaultAsync(a => a.Id == code);
+    //        if (temp == null)
+    //        {
+    //            return null;
+    //        }
+    //        var tip = new TestItemPrices
+    //        {
+    //            Id = temp.Id,
+    //            Cost = 25,
+    //            SetupCost = 30,
+    //            Multiplier = 1,
+    //            Name = temp.Analysis
+    //        };
 
-            return tip;
-        }
+    //        return tip;
+    //    }
 
-        public Task<IList<string>> GetTestCodesCompletedForOrder(string RequestNum)
-        {
-            throw new NotImplementedException();
-        }
-    }
+    //    public Task<IList<string>> GetTestCodesCompletedForOrder(string RequestNum)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
 }
