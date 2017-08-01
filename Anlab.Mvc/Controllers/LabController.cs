@@ -8,8 +8,10 @@ using AnlabMvc.Models.Order;
 using AnlabMvc.Models.Roles;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 namespace AnlabMvc.Controllers
 {
@@ -19,12 +21,14 @@ namespace AnlabMvc.Controllers
         private readonly ApplicationDbContext _dbContext;
         private readonly IOrderService _orderService;
         private readonly IOrderMessageService _orderMessageService;
+        private readonly IFileStorageService _fileStorageService;
 
-        public LabController(ApplicationDbContext dbContext, IOrderService orderService, IOrderMessageService orderMessageService)
+        public LabController(ApplicationDbContext dbContext, IOrderService orderService, IOrderMessageService orderMessageService, IFileStorageService fileStorageService)
         {
             _dbContext = dbContext;
             _orderService = orderService;
             _orderMessageService = orderMessageService;
+            _fileStorageService = fileStorageService;
         }
 
         public IActionResult OpenOrders()
@@ -177,7 +181,7 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateFromCompletedTests(int id, bool confirm)
+        public async Task<IActionResult> UpdateFromCompletedTests(int id, bool confirm, IFormFile uploadFile)
         {
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
