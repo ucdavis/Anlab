@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Models;
@@ -203,9 +204,17 @@ namespace AnlabMvc.Controllers
                 ErrorMessage = "You need to upload the results at this time.";
                 return RedirectToAction("UpdateFromCompletedTests");
             }
-            
+
+            var extension = Path.GetExtension(uploadFile.FileName);
+            var name = Path.GetFileNameWithoutExtension(uploadFile.FileName) ?? "UnknownFileName";
+            name = Regex.Replace(name, @"[^\w]", "-"); //replace anything non-word chars with -
+            var randomId = Guid.NewGuid().ToString();
+
+            var nameBase = string.Format("{0}-{1}{2}", randomId, name, extension);
+
             FileUpload fileUpload = new FileUpload();
             fileUpload.ContentType = uploadFile.ContentType;
+            fileUpload.Identifier = nameBase;
             var filePath = Path.GetTempFileName();
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
