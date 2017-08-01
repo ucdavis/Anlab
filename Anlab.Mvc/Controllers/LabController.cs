@@ -204,23 +204,6 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("UpdateFromCompletedTests");
             }
 
-            var extension = Path.GetExtension(uploadFile.FileName);
-            var name = Path.GetFileNameWithoutExtension(uploadFile.FileName) ?? "UnknownFileName";
-            name = Regex.Replace(name, @"[^\w]", "-"); //replace anything non-word chars with -
-            var randomId = Guid.NewGuid().ToString();
-
-            var nameBase = string.Format("{0}-{1}{2}", randomId, name, extension);
-
-            FileUpload fileUpload = new FileUpload();
-            fileUpload.ContentType = uploadFile.ContentType;
-            fileUpload.Identifier = nameBase;
-            fileUpload.Data = uploadFile.OpenReadStream();
-            
-
-            await _fileStorageService.UploadFiles(fileUpload);
-
-
-
             order.Status = OrderStatusCodes.Complete;
 
             var result = await _orderService.OverwiteOrderWithTestsCompleted(order); //TODO: Just testing
@@ -229,6 +212,10 @@ namespace AnlabMvc.Controllers
                 ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
                 return RedirectToAction("UpdateFromCompletedTests");
             }
+
+            //File Upload
+            order.ResultsFileIdentifier = await _fileStorageService.UploadFile(uploadFile);
+            
 
             var orderDetails = order.GetOrderDetails();
 
