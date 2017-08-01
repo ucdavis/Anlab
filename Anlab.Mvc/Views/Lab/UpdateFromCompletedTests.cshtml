@@ -7,11 +7,11 @@
 
 @Html.Partial("_OrderDetails")
 
-<form asp-controller="Lab" asp-action="UpdateFromCompletedTests" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
+<form method="post" asp-controller="Lab" enctype="multipart/form-data" asp-action="UpdateFromCompletedTests" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
     
     <div class="form-group">
         <span>Upload Results</span>
-        <input id="uploadFile" type="file" class="form-control" name="uploadFile" />
+        <input type="file" class="form-control" name="uploadFile" />
     </div>
     
 

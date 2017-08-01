@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Models;
+using AnlabMvc.Models.FileUploadModels;
 using AnlabMvc.Models.Order;
 using AnlabMvc.Models.Roles;
 using AnlabMvc.Services;
@@ -195,6 +197,25 @@ namespace AnlabMvc.Controllers
                 ErrorMessage = "You can only Complete a Received order";
                 //return RedirectToAction("OpenOrders");
             }
+
+            if (uploadFile == null || uploadFile.Length <= 0)
+            {
+                ErrorMessage = "You need to upload the results at this time.";
+                return RedirectToAction("UpdateFromCompletedTests");
+            }
+            
+            FileUpload fileUpload = new FileUpload();
+            fileUpload.ContentType = uploadFile.ContentType;
+            var filePath = Path.GetTempFileName();
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await uploadFile.CopyToAsync(stream);
+                fileUpload.Data = stream;
+            }
+            _fileStorageService.UploadFiles(fileUpload);
+
+            var yyy = fileUpload;
+
 
             order.Status = OrderStatusCodes.Complete;
 
