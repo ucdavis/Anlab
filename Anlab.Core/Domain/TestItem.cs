@@ -9,6 +9,7 @@ namespace Anlab.Core.Domain
     {
         [Key]
         [StringLength(128)]
+        [Display(Name = "Code")]
         public string Id { get; set; }
 
         [Required]
