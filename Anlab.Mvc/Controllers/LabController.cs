@@ -217,7 +217,7 @@ namespace AnlabMvc.Controllers
             fileUpload.Data = uploadFile.OpenReadStream();
             
 
-            _fileStorageService.UploadFiles(fileUpload);
+            await _fileStorageService.UploadFiles(fileUpload);
 
 
 

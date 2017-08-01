@@ -23,7 +23,7 @@ namespace AnlabMvc.Services
         /// <summary>
         /// uploads a number of files to blob storage
         /// </summary>
-        void UploadFiles(params FileUpload[] files);
+        Task UploadFiles(params FileUpload[] files);
 
         string GetFullUriFromIdentifier(string identifier);
     }
@@ -82,7 +82,7 @@ namespace AnlabMvc.Services
             return new SasResponse { UploadUrl = accessUrl, Url = blob.Uri.AbsoluteUri, Identifier = fileName };
         }
 
-        public async void UploadFiles(params FileUpload[] files)
+        public async Task UploadFiles(params FileUpload[] files)
         {
             CloudBlobContainer container = await GetContainer();
             foreach (var fileUpload in files)
