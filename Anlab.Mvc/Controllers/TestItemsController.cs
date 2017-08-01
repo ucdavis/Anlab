@@ -10,10 +10,11 @@ using Anlab.Core.Data;
 using Microsoft.AspNetCore.Authorization;
 using AnlabMvc.Models.Roles;
 
+
 namespace AnlabMvc.Controllers
 {
     [Authorize(Roles = RoleCodes.Admin)]
-    public class TestItemsController : Controller
+    public class TestItemsController : ApplicationController
     {
         private readonly ApplicationDbContext _context;
 
@@ -59,8 +60,14 @@ namespace AnlabMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Analysis,Category,Group,Public,Notes")] TestItem testItem)
         {
+            if (_context.TestItems.Any(t => t.Id == testItem.Id))
+            {
+                ErrorMessage = "Id already in use";
+                return View();
+            }
             if (ModelState.IsValid)
             {
+                
                 _context.Add(testItem);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
