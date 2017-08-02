@@ -1,0 +1,93 @@
+@model IEnumerable<Anlab.Core.Domain.TestItem>
+
+
+@{
+    ViewData["Title"] = "Test Items";
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-default">Create New</a>
+</p>
+<table id="table" class="row-border order-column hover">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>  
+            <th>
+                @Html.DisplayNameFor(model => model.Analysis)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Group)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Public)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Notes)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | 
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> | 
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Analysis)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Group)
+            </td>
+            <td style="text-align: center">
+                @if (item.Public)
+                {
+                    <i class="fa fa-check" aria-hidden="true"></i>
+
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Notes)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section AdditionalStyles
+{
+    @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+}
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+    <script type="text/javascript">
+        $(function() {
+            $("#table").dataTable({
+                "sorting": [[1, "asc"]],
+                "pageLength": 25,
+                "stateSave": true,
+                "stateDuration": 60 * 10,
+                "columnDefs": [
+                    { "width": "5%", "targets": 5 },
+                    { "width" : "15%", "targets": 0},
+                    { "orderable": false, "targets": 0 },
+                    { "searchable":false, "targets": 0 }
+                ]
+            });
+        });
+    </script>
+}

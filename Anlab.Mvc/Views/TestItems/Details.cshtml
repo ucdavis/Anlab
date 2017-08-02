@@ -1,0 +1,14 @@
+@model Anlab.Core.Domain.TestItem
+
+@{ 
+    ViewData["Title"] = "Test Item Details";
+}
+
+<div>
+    @Html.Partial("_TestItemsDetails")
+</div>
+<div>
+    <a asp-action="Index">Back to List</a> | 
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> | 
+    <a asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+</div>

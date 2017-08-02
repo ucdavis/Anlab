@@ -1,0 +1,20 @@
+@model Anlab.Core.Domain.TestItem
+
+@{
+    ViewData["Title"] = "Delete Test Item";
+}
+
+<div>
+    <hr />
+    <h3>Are you sure you want to delete this?</h3>
+    
+    @Html.Partial("_TestItemsDetails")
+    
+    <form asp-action="Delete">
+        <div class="form-actions no-color col-md-offset-1">
+            <input type="submit" value="Delete" class="btn btn-default" /> 
+        </div>
+        <a asp-action="Index">Back to List</a>
+
+    </form>
+</div>
