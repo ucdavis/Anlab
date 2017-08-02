@@ -57,7 +57,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
 
         Object.keys(grouped).map(groupName => {
             // push the group header
-            rows.push(<tr key={`group-${groupName}`} className="group-header"><td colSpan={4}>Group {groupName}</td></tr>);
+            rows.push(<tr key={`group-${groupName}`} className="group-header"><td colSpan={5}>Group {groupName}</td></tr>);
 
             // now get all tests for that group
             const testRows = grouped[groupName].map(item => {
@@ -68,9 +68,12 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                         <td>
                             <Checkbox checked={selected} onChange={e => this.onSelection(item, e)} />
                         </td>
-                        <td><div className="analysisTooltip" data-toggle="tooltip" title={item.notes}>{item.analysis}</div></td>
+                        <td>{item.analysis}</td>
                         <td>{item.id}</td>
                         <td><NumberFormat value={priceDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+                        <td width="5%">
+                            {item.notes ? <i className="fa fa-info-circle" aria-hidden="true" id="analysisTooltip" data-toggle="tooltip" title={item.notes}></i> : ""}
+                        </td>
                     </tr>
                 );
             });
@@ -94,6 +97,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                             <th>Analysis</th>
                             <th>Code</th>
                             <th>Price</th>
+                            <th>Notes</th>
                         </tr>
                     </thead>
                     <tbody>
