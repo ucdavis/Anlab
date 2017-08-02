@@ -43,7 +43,8 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("RequestNum", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("ResultsFileIdentifier", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Status", "System.String", new List<string>()));            
-            expectedFields.Add(new NameAndType("Updated", "System.DateTime", new List<string>()));           
+            expectedFields.Add(new NameAndType("Updated", "System.DateTime", new List<string>())); 
+            
             #endregion Arrange
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(Order));
