@@ -10,6 +10,7 @@ namespace Anlab.Core.Domain
         [Key]
         [StringLength(128)]
         [Display(Name = "Code")]
+        [RegularExpression(@"([A-Z0-9a-z\-])+", ErrorMessage = "Codes can only contain alphanumerics and dashes.")]
         public string Id { get; set; }
 
         [Required]
