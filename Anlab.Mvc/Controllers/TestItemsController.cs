@@ -64,13 +64,14 @@ namespace AnlabMvc.Controllers
             if (ModelState.IsValid)
             {
                 testItem.Id = testItem.Id.ToUpper();
-                if (_context.TestItems.Any(t => t.Id == testItem.Id))
+                if (TestItemExists(testItem.Id))
                 {
-                    ErrorMessage = "Id already in use";
+                    ErrorMessage = "Code Id already in use";
                     return View();
                 }
                 _context.Add(testItem);
                 await _context.SaveChangesAsync();
+                Message = "Test created";
                 return RedirectToAction("Index");
             }
             return View(testItem);
@@ -122,6 +123,7 @@ namespace AnlabMvc.Controllers
                         throw;
                     }
                 }
+                Message = "Edit saved";
                 return RedirectToAction("Index");
             }
             return View(testItem);
@@ -153,6 +155,7 @@ namespace AnlabMvc.Controllers
             var testItem = await _context.TestItems.SingleOrDefaultAsync(m => m.Id == id);
             _context.TestItems.Remove(testItem);
             await _context.SaveChangesAsync();
+            Message = "Test deleted";
             return RedirectToAction("Index");
         }
 
