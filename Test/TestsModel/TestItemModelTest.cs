@@ -30,6 +30,7 @@ namespace Test.TestsModel
             }));
             expectedFields.Add(new NameAndType("Id", "System.String", new List<string>
             {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Code\")]",
                 "[System.ComponentModel.DataAnnotations.KeyAttribute()]",
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)128)]"
             }));

@@ -38,8 +38,9 @@ namespace Test.TestsDatabase
             }));
             expectedFields.Add(new NameAndType("Id", "System.String", new List<string>
             {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Code\")]",
                 "[System.ComponentModel.DataAnnotations.KeyAttribute()]",
-                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)128)]"
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)128)]"                
             }));
             expectedFields.Add(new NameAndType("Notes", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Public", "System.Boolean", new List<string>()));
