@@ -66,7 +66,7 @@ namespace AnlabMvc.Controllers
                 testItem.Id = testItem.Id.ToUpper();
                 if (TestItemExists(testItem.Id))
                 {
-                    ErrorMessage = "Code Id already in use";
+                    ErrorMessage = "Code already in use";
                     return View();
                 }
                 _context.Add(testItem);
