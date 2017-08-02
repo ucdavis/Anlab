@@ -1,15 +1,11 @@
 @model Anlab.Core.Domain.TestItem
 
-
 @{
     ViewData["Title"] = "Create New Test Item";
 }
 
-
 <form asp-action="Create">
     <div class="form-horizontal">
-        <h2>Create New Test Item</h2>
-        <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <label asp-for="Id" class="col-md-2 control-label"></label>
