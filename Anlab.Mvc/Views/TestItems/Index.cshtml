@@ -1,12 +1,10 @@
 @model IEnumerable<Anlab.Core.Domain.TestItem>
 
-<!DOCTYPE html>
 
+@{
+    ViewData["Title"] = "Test Items";
+}
 <html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
-</head>
 <body>
 <p>
     <a asp-action="Create" class="btn btn-default">Create New</a>

@@ -1,15 +1,14 @@
 @model Anlab.Core.Domain.TestItem
 
-<!DOCTYPE html>
+
+@{
+    ViewData["Title"] = "Create New Test Item";
+}
 
 <html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Create</title>
-</head>
 <body>
 
-<form asp-action="Create" id="createForm">
+<form asp-action="Create">
     <div class="form-horizontal">
         <h2>Create New Test Item</h2>
         <hr />
@@ -37,3 +36,8 @@
 
 </body>
 </html>
+
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
