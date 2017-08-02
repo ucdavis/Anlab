@@ -60,15 +60,15 @@ namespace AnlabMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Analysis,Category,Group,Public,Notes")] TestItem testItem)
         {
-            testItem.Id = testItem.Id.ToUpper();
-            if (_context.TestItems.Any(t => t.Id == testItem.Id))
-            {
-                ErrorMessage = "Id already in use";
-                return View();
-            }
+
             if (ModelState.IsValid)
             {
-                
+                testItem.Id = testItem.Id.ToUpper();
+                if (_context.TestItems.Any(t => t.Id == testItem.Id))
+                {
+                    ErrorMessage = "Id already in use";
+                    return View();
+                }
                 _context.Add(testItem);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
