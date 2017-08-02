@@ -14,6 +14,7 @@
 <table id="table" class="row-border order-column hover">
     <thead>
         <tr>
+            <th></th>
             <th>
                 @Html.DisplayNameFor(model => model.Id)
             </th>  
@@ -32,12 +33,16 @@
             <th>
                 @Html.DisplayNameFor(model => model.Notes)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | 
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> | 
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Id)
             </td>
@@ -60,11 +65,6 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Notes)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
         </tr>
 }
     </tbody>
@@ -82,10 +82,13 @@
     <script type="text/javascript">
         $(function() {
             $("#table").dataTable({
-                "sorting": [[0, "asc"]],
+                "sorting": [[1, "asc"]],
                 "pageLength": 25,
                 "columnDefs": [
-                    { "width": "5%", "targets": 4 }
+                    { "width": "5%", "targets": 5 },
+                    { "width" : "15%", "targets": 0},
+                    { "orderable": false, "targets": 0 },
+                    { "searchable":false, "targets": 0 }
                 ]
             });
         });
