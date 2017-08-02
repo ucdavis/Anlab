@@ -84,6 +84,8 @@
             $("#table").dataTable({
                 "sorting": [[1, "asc"]],
                 "pageLength": 25,
+                "stateSave": true,
+                "stateDuration": 60 * 10,
                 "columnDefs": [
                     { "width": "5%", "targets": 5 },
                     { "width" : "15%", "targets": 0},
