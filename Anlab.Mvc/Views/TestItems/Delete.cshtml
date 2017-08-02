@@ -17,10 +17,11 @@
     @Html.Partial("_TestItemsDetails")
     
     <form asp-action="Delete">
-        <div class="form-actions no-color">
+        <div class="form-actions no-color col-md-offset-1">
             <input type="submit" value="Delete" class="btn btn-default" /> 
-            <a asp-action="Index">Back to List</a>
         </div>
+        <a asp-action="Index">Back to List</a>
+
     </form>
 </div>
 </body>
