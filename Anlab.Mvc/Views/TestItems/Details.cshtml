@@ -40,9 +40,18 @@
         <dt>
             @Html.DisplayNameFor(model => model.Public)
         </dt>
+        @if (Model.Public)
+        {
         <dd>
-            @Html.DisplayFor(model => model.Public)
+            Yes
         </dd>
+        }
+        else
+        {
+            <dd>
+                No
+            </dd>
+        }
         <dt>
             @Html.DisplayNameFor(model => model.Notes)
         </dt>
