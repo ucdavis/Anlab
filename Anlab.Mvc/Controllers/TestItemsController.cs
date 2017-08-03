@@ -9,7 +9,7 @@ using Anlab.Core.Domain;
 using Anlab.Core.Data;
 using Microsoft.AspNetCore.Authorization;
 using AnlabMvc.Models.Roles;
-
+using System.Text.Encodings.Web;
 
 namespace AnlabMvc.Controllers
 {
@@ -63,6 +63,9 @@ namespace AnlabMvc.Controllers
 
             if (ModelState.IsValid)
             {
+                var encoder = HtmlEncoder.Default;
+                testItem.Notes = encoder.Encode(testItem.Notes);
+
                 testItem.Id = testItem.Id.ToUpper();
                 if (TestItemExists(testItem.Id))
                 {
@@ -104,9 +107,11 @@ namespace AnlabMvc.Controllers
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
+                var encoder = HtmlEncoder.Default;
+                testItem.Notes = encoder.Encode(testItem.Notes);
+
                 try
                 {
                     _context.Update(testItem);
