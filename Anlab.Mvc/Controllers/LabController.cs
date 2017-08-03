@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Models;
+using AnlabMvc.Models.FileUploadModels;
 using AnlabMvc.Models.Order;
 using AnlabMvc.Models.Roles;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,12 +23,14 @@ namespace AnlabMvc.Controllers
         private readonly ApplicationDbContext _dbContext;
         private readonly IOrderService _orderService;
         private readonly IOrderMessageService _orderMessageService;
+        private readonly IFileStorageService _fileStorageService;
 
-        public LabController(ApplicationDbContext dbContext, IOrderService orderService, IOrderMessageService orderMessageService)
+        public LabController(ApplicationDbContext dbContext, IOrderService orderService, IOrderMessageService orderMessageService, IFileStorageService fileStorageService)
         {
             _dbContext = dbContext;
             _orderService = orderService;
             _orderMessageService = orderMessageService;
+            _fileStorageService = fileStorageService;
         }
 
         public IActionResult OpenOrders()
@@ -177,7 +183,7 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateFromCompletedTests(int id, bool confirm)
+        public async Task<IActionResult> UpdateFromCompletedTests(int id, bool confirm, IFormFile uploadFile)
         {
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
@@ -192,6 +198,12 @@ namespace AnlabMvc.Controllers
                 //return RedirectToAction("OpenOrders");
             }
 
+            if (uploadFile == null || uploadFile.Length <= 0)
+            {
+                ErrorMessage = "You need to upload the results at this time.";
+                return RedirectToAction("UpdateFromCompletedTests");
+            }
+
             order.Status = OrderStatusCodes.Complete;
 
             var result = await _orderService.OverwiteOrderWithTestsCompleted(order); //TODO: Just testing
@@ -200,6 +212,10 @@ namespace AnlabMvc.Controllers
                 ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
                 return RedirectToAction("UpdateFromCompletedTests");
             }
+
+            //File Upload
+            order.ResultsFileIdentifier = await _fileStorageService.UploadFile(uploadFile);
+            
 
             var orderDetails = order.GetOrderDetails();
 

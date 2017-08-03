@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AnlabMvc.Models.FileUploadModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
@@ -23,9 +25,11 @@ namespace AnlabMvc.Services
         /// <summary>
         /// uploads a number of files to blob storage
         /// </summary>
-        void UploadFiles(params FileUpload[] files);
+        Task UploadFiles(params FileUpload[] files);
 
         string GetFullUriFromIdentifier(string identifier);
+
+        Task<string> UploadFile(IFormFile file);
     }
 
     public class FileStorageService : IFileStorageService
@@ -82,7 +86,7 @@ namespace AnlabMvc.Services
             return new SasResponse { UploadUrl = accessUrl, Url = blob.Uri.AbsoluteUri, Identifier = fileName };
         }
 
-        public async void UploadFiles(params FileUpload[] files)
+        public async Task UploadFiles(params FileUpload[] files)
         {
             CloudBlobContainer container = await GetContainer();
             foreach (var fileUpload in files)
@@ -122,6 +126,26 @@ namespace AnlabMvc.Services
         public string GetFullUriFromIdentifier(string identifier)
         {
             return string.Format("{0}{1}", _appSettings.StorageUrlBase, identifier);
+        }
+
+        public async Task<string> UploadFile(IFormFile file)
+        {
+            var extension = Path.GetExtension(file.FileName);
+            var name = Path.GetFileNameWithoutExtension(file.FileName) ?? "UnknownFileName";
+            name = Regex.Replace(name, @"[^\w]", "-"); //replace anything non-word chars with -
+            var randomId = Guid.NewGuid().ToString();
+
+            var nameBase = string.Format("{0}-{1}{2}", randomId, name, extension);
+
+            FileUpload fileUpload = new FileUpload();
+            fileUpload.ContentType = file.ContentType;
+            fileUpload.Identifier = nameBase;
+            fileUpload.Data = file.OpenReadStream();
+
+
+            await UploadFiles(fileUpload);
+
+            return fileUpload.Identifier;
         }
     }
 }

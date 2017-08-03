@@ -7,9 +7,23 @@
 
 @Html.Partial("_OrderDetails")
 
-<form asp-controller="Lab" asp-action="UpdateFromCompletedTests" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
+<form method="post" asp-controller="Lab" enctype="multipart/form-data" asp-action="UpdateFromCompletedTests" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
+    
+    <div class="form-group">
+        <span>Upload Results</span>
+        @if (string.IsNullOrWhiteSpace(Model.Order.ResultsFileIdentifier))
+        {
+            <input type="file" class="form-control" name="uploadFile"/>
+        }
+        else
+        {
+            <div>Results File Identifier: @Model.Order.ResultsFileIdentifier</div>
+        }
+    </div>
+    
+
     @Html.Hidden("confirm", true)
-    <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true"> Confirm Completed (Update Tests from Labworks)</i></button>    
+    <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true"> Confirm Completed (Update Tests from Labworks)</i></button>
 </form>
 
 
