@@ -97,6 +97,8 @@ namespace AnlabMvc.Controllers
         }
 
         [Authorize(Roles = RoleCodes.Admin)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddUserToRole(string userId, string role, bool add)
         {
             var user = _dbContext.Users.Single(a => a.Id == userId);
