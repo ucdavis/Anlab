@@ -176,7 +176,8 @@ namespace AnlabMvc.Services
             orderDetails.Total = orderDetails.SelectedTests.Sum(x=>x.Total);
 
             orderToUpdate.SaveDetails(orderDetails);
-            orderToUpdate.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails);
+
+            orderToUpdate.AdditionalEmails = orderDetails.AdditionalEmails != null ? string.Join(";", orderDetails.AdditionalEmails): null;
         }
 
         public void PopulateOrderWithLabDetails(OrderSaveModel model, Order orderToUpdate)

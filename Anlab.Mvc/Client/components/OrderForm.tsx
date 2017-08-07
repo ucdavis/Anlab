@@ -74,7 +74,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
             initialState.quantity = orderInfo.Quantity;
             initialState.additionalInfo = orderInfo.AdditionalInfo;
-            initialState.additionalEmails = orderInfo.AdditionalEmails;
+            initialState.additionalEmails = orderInfo.AdditionalEmails != null? orderInfo.AdditionalEmails : [];
             initialState.sampleType = orderInfo.SampleType;
             initialState.orderId = window.App.OrderId;
             initialState.project = orderInfo.Project;
@@ -178,12 +178,11 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             selectedTests,
         }
         const that = this;
+        var antiforgery = $("input[name='__RequestVerificationToken']").val();
+        //__RequestVerificationToken: antiforgery
         $.post({
-            
             url: postUrl,
-            data: JSON.stringify(order),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
+            data: { model: order, __RequestVerificationToken: antiforgery }
         }).success((response) => {
             if (response.success === true) {
                 const redirectId = response.id;

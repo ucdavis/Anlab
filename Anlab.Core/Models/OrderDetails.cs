@@ -17,7 +17,7 @@ namespace Anlab.Core.Models
 
         public Payment Payment { get; set; }
 
-        public IList<string> AdditionalEmails { get; set; }
+        public string[] AdditionalEmails { get; set; }
 
         public string Project { get; set; }
 

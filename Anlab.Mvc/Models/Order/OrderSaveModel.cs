@@ -8,6 +8,7 @@ namespace AnlabMvc.Models.Order
 {
     public class OrderSaveModel
     {
+
         public int? OrderId { get; set; }
         [Range(1, 100)]
         public int Quantity { get; set; }
@@ -28,7 +29,7 @@ namespace AnlabMvc.Models.Order
 
         public Payment Payment { get; set; }
 
-        public IList<string> AdditionalEmails { get; set; }
+        public string[] AdditionalEmails { get; set; }
 
         public string LabComments { get; set; }
         public decimal AdjustmentAmount { get; set; }

@@ -81,7 +81,7 @@ namespace AnlabMvc.Controllers
         
 
         [HttpPost]
-        public async Task<IActionResult> Save([FromBody]OrderSaveModel model)
+        public async Task<IActionResult> Save(OrderSaveModel model)
         {
             if (!ModelState.IsValid)
             {
