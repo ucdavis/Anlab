@@ -273,7 +273,7 @@ namespace Test.TestsController
             {
                 output.WriteLine(o.ToString()); //Output shows 
             }
-            result.Count().ShouldBe(2);
+            result.Count().ShouldBe(3);
 
             #endregion Assert
         }
@@ -314,6 +314,26 @@ namespace Test.TestsController
 
             #region Assert
             result.Count().ShouldBeGreaterThan(0, "AuthorizeAttribute not found.");
+
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// #3
+        /// </summary>
+        [Fact]
+        public void TestControllerHasAutoValidateAntiforgeryTokenAttribute()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass.GetTypeInfo();
+            #endregion Arrange
+
+            #region Act
+            var result = controllerClass.GetCustomAttributes(true).OfType<AutoValidateAntiforgeryTokenAttribute>();
+            #endregion Act
+
+            #region Assert
+            result.Count().ShouldBeGreaterThan(0, "AutoValidateAntiforgeryTokenAttribute not found.");
 
             #endregion Assert
         }
