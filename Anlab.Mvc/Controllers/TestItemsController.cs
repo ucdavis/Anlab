@@ -63,9 +63,11 @@ namespace AnlabMvc.Controllers
 
             if (ModelState.IsValid)
             {
-                var encoder = HtmlEncoder.Default;
-                testItem.Notes = encoder.Encode(testItem.Notes);
-
+                if (testItem.Notes != null)
+                {
+                    var encoder = HtmlEncoder.Default;
+                    testItem.Notes = encoder.Encode(testItem.Notes);
+                }
                 testItem.Id = testItem.Id.ToUpper();
                 if (TestItemExists(testItem.Id))
                 {
@@ -109,9 +111,11 @@ namespace AnlabMvc.Controllers
             }
             if (ModelState.IsValid)
             {
-                var encoder = HtmlEncoder.Default;
-                testItem.Notes = encoder.Encode(testItem.Notes);
-
+                if (testItem.Notes != null)
+                {
+                    var encoder = HtmlEncoder.Default;
+                    testItem.Notes = encoder.Encode(testItem.Notes);
+                }
                 try
                 {
                     _context.Update(testItem);
