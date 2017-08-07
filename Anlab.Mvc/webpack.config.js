@@ -21,7 +21,7 @@ module.exports = (env) => {
             'root': './Client/root.tsx',
             'order': './Client/order.tsx',
             'react': ['react', 'react-dom', 'react-router', 'react-toolbox'],
-            'markdown': ['markdown']
+            'showdown': ['showdown']
         },
         resolve: { extensions: [ '.js', '.jsx', '.ts', '.tsx' ] },
         output: {

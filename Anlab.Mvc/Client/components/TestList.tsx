@@ -6,7 +6,7 @@ import { IPayment } from './PaymentSelection';
 import NumberFormat from 'react-number-format';
 import { groupBy } from '../util/arrayHelpers';
 
-import { markdown } from 'markdown';
+import showdown from 'showdown';
 
 export interface ITestItem {
     id: string;
@@ -57,6 +57,8 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
 
         const rows = [];
 
+        var converter = new showdown.Converter();
+
         Object.keys(grouped).map(groupName => {
             // push the group header
             rows.push(<tr key={`group-${groupName}`} className="group-header"><td colSpan={5}>Group {groupName}</td></tr>);
@@ -65,7 +67,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
             const testRows = grouped[groupName].map(item => {
                 const selected = !!this.props.selectedTests[item.id];
                 const priceDisplay = (this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost);
-                const tooltipContent = markdown.toHTML(item.notes);
+                const tooltipContent = converter.makeHtml(item.notes);
                 return (
                     <tr key={item.id} >
                         <td>

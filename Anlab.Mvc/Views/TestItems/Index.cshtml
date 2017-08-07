@@ -5,7 +5,6 @@
     ViewData["Title"] = "Test Items";
 }
 
-
 <p>
     <a asp-action="Create" class="btn btn-default">Create New</a>
 </p>
@@ -63,13 +62,14 @@
             <td>
                 @if (!String.IsNullOrEmpty(item.Notes))
                 {
-                    <i class="analysisTooltip fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-html="true" data-placement="right" title="@item.Notes"></i>
+                    <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@item.Notes')" title="@item.Notes" aria-hidden="true" data-toggle="tooltip" data-html="true" data-placement="right"></i>
                 }
             </td>
         </tr>
 }
     </tbody>
 </table>
+
 
 @section AdditionalStyles
 {
@@ -95,10 +95,22 @@
         });
     </script>
     <script type="text/javascript">
-                $(function () {
-                    $('body').tooltip({
-                        selector: '.analysisTooltip'
-                    });
-                });
+        $(function () {
+            $('body').tooltip({
+                selector: '.analysisTooltip'
+            });
+        });
     </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.7.2/showdown.min.js"></script>
+
+    <script type="text/javascript">
+        function renderTitle(title) {
+            var converter = new showdown.Converter();
+            var newContent = converter.makeHtml(title);
+            $('.analysisTooltip').attr('data-original-title', newContent);
+
+        }
+    </script>
+
 }
