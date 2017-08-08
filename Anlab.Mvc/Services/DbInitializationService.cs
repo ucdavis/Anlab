@@ -8,6 +8,7 @@ using Anlab.Core.Domain;
 using AnlabMvc.Models.Roles;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Text.Encodings.Web;
 
 namespace AnlabMvc.Services
 {
@@ -246,7 +247,10 @@ namespace AnlabMvc.Services
                     Category = TestCategories.Plant,
                     Group = i < 10 ? "SF" : "SS",
                     Notes = i % 3 == 0 ? string.Format("Test Tooltip {0}", i) : string.Empty,
+                    NotesEncoded = string.Empty
                 };
+                var encoder = HtmlEncoder.Default;
+                plantx.NotesEncoded = encoder.Encode(plantx.Notes);
                 _context.Add(plantx);
             }
 
