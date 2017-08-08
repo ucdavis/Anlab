@@ -60,9 +60,9 @@
                 }
             </td>
             <td>
-                @if (!String.IsNullOrEmpty(item.Notes))
+                @if (!String.IsNullOrEmpty(item.NotesEncoded))
                 {
-                    <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@item.Notes')" title="@item.Notes" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
+                    <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@item.NotesEncoded')" title="@item.NotesEncoded" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
                 }
             </td>
         </tr>
@@ -86,8 +86,6 @@
                 "stateSave": true,
                 "stateDuration": 60 * 10,
                 "columnDefs": [
-                    { "width": "5%", "targets": 5 },
-                    { "width": "15%", "targets": 0 },
                     { "orderable": false, "targets": 0 },
                     { "searchable":false, "targets": 0 }
                 ]

@@ -29,6 +29,7 @@ namespace Anlab.Core.Domain
         public bool Public { get; set; }
 
         public string Notes { get; set; }
+        public string NotesEncoded { get; set; }
     }
 
     public static class TestCategories

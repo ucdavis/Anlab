@@ -75,7 +75,7 @@ namespace AnlabMvc.Services
                     InternalCost = Math.Ceiling(p.Cost),
                     ExternalSetupCost = Math.Ceiling(p.SetupPrice * _appSettings.NonUcRate),
                     InternalSetupCost = Math.Ceiling(p.SetupPrice),
-                    Notes = i.Notes,
+                    Notes = i.NotesEncoded,
                 }).ToList();
         }
 
