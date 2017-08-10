@@ -11,6 +11,8 @@ namespace AnlabMvc.Models.Order
     {
         public Anlab.Core.Domain.Order Order { get; set; }
         public OrderDetails OrderDetails { get; set; }
+
+        public IList<TestItem> TestItems { get; set; }
     }
 
 
