@@ -178,12 +178,10 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             selectedTests,
         }
         const that = this;
+        var antiforgery = $("input[name='__RequestVerificationToken']").val();
         $.post({
-            
             url: postUrl,
-            data: JSON.stringify(order),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
+            data: { model: order, __RequestVerificationToken: antiforgery }
         }).success((response) => {
             if (response.success === true) {
                 const redirectId = response.id;

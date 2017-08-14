@@ -4,9 +4,6 @@
     ViewData["Title"] = "Admin Index";
 }
 
-<h2>Admin Index</h2>
-
-
 <table id="table">
     <thead>
         <tr>
@@ -24,19 +21,28 @@
             <td>
                 @if (user.IsUser)
                 {
-                    <a class="btn btn-danger" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="User" asp-route-add="false">Remove from User Role</a>
+                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="User" asp-route-add="false" asp-antiforgery="true">                        
+                        <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i> User</button>
+                    </form>
+                    
                 }
                 else
                 {
-                    <a class="btn btn-default" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="User" asp-route-add="true">Add to User Role</a>
+                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="User" asp-route-add="true" asp-antiforgery="true">                        
+                        <button class="btn btn-default" type="submit"><i class="fa fa-plus"></i> User</button>
+                    </form>                    
                 }
                 @if (user.IsAdmin)
                 {
-                    <a class="btn btn-danger" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="Admin" asp-route-add="false">Remove from Admin Role</a>
+                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="Admin" asp-route-add="false" asp-antiforgery="true">                        
+                        <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i> Admin</button>
+                    </form>                    
                 }
                 else
                 {
-                    <a class="btn btn-default" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="Admin" asp-route-add="true">Add to Admin Role</a>
+                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="Admin" asp-route-add="true" asp-antiforgery="true">                        
+                        <button class="btn btn-default" type="submit"><i class="fa fa-plus"></i> Admin</button>
+                    </form>                       
                 }
 
                 
@@ -60,6 +66,8 @@
     <script type="text/javascript">
         $(function () {
             $("#table").dataTable({
+                "stateSave": true,
+                "stateDuration": 60 * 10,
                 "sorting": [[2, "desc"]]
             });
         });

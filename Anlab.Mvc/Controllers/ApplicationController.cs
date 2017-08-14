@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AnlabMvc.Controllers
 {
+    [AutoValidateAntiforgeryToken]
     public class ApplicationController : Controller
     {
         public string CurrentUserId => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
