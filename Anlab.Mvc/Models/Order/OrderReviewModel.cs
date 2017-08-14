@@ -13,6 +13,8 @@ namespace AnlabMvc.Models.Order
         public OrderDetails OrderDetails { get; set; }
 
         public IList<TestItem> TestItems { get; set; }
+
+        public bool HideLabDetails { get; set; } = true;
     }
 
 
