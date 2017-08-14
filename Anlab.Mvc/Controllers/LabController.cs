@@ -179,6 +179,9 @@ namespace AnlabMvc.Controllers
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
+            model.TestItems = _dbContext.TestItems
+                .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
+            model.HideLabDetails = false;
 
             return View(model);
         }
