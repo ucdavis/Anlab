@@ -247,11 +247,8 @@ namespace AnlabMvc.Services
                     Category = TestCategories.Plant,
                     Group = i < 10 ? "SF" : "SS",
                     Notes = i % 3 == 0 ? string.Format("Test Tooltip {0}", i) : string.Empty,
-                    NotesEncoded = string.Empty,
                     Public = true
                 };
-                var encoder = HtmlEncoder.Default;
-                plantx.NotesEncoded = encoder.Encode(plantx.Notes);
                 _context.Add(plantx);
             }
 

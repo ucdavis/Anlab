@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using System.Text.Encodings.Web;
 
 namespace Anlab.Core.Domain
 {
@@ -29,7 +30,14 @@ namespace Anlab.Core.Domain
         public bool Public { get; set; }
 
         public string Notes { get; set; }
-        public string NotesEncoded { get; set; }
+        public string NotesEncoded
+        {
+            get
+            {
+                var encoder = HtmlEncoder.Default;
+                return encoder.Encode(Notes);
+            }
+        }
     }
 
     public static class TestCategories

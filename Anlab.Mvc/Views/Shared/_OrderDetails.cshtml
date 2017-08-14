@@ -72,7 +72,7 @@
             <td>@test.SetupCost.ToString("C")</td>
             <td>@test.Total.ToString("C")</td>
             <td>
-                @if (temp != null && !String.IsNullOrEmpty(temp.NotesEncoded))
+                @if (temp != null && !String.IsNullOrEmpty(temp.Notes))
                 {
                     <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@temp.NotesEncoded')" title="@temp.NotesEncoded" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
                 }    
