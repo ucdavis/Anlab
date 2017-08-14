@@ -18,7 +18,7 @@ namespace AnlabMvc.Services
         void PopulateOrderWithLabDetails(OrderSaveModel model, Order orderToUpdate);
         Task SendOrderToAnlab(Order order);
 
-        Task<List<TestItemModel>> PopulateTestItemModel();
+        Task<List<TestItemModel>> PopulateTestItemModel(bool showAll = false);
 
         Task<OverwriteOrderResult> OverwiteOrderWithTestsCompleted(Order orderToUpdate);
     }
@@ -40,12 +40,16 @@ namespace AnlabMvc.Services
         /// A list of all our db test items with the labwork prices
         /// </summary>
         /// <returns></returns>
-        public async Task<List<TestItemModel>> PopulateTestItemModel()
+        public async Task<List<TestItemModel>> PopulateTestItemModel(bool showAll = false)
         {
             var prices = await _labworksService.GetPrices();
-            var items = _context.TestItems.AsNoTracking().ToList();
+            var items = _context.TestItems.AsNoTracking();
+            if (!showAll)
+            {
+                items = items.Where(a => a.Public);
+            }
 
-            return GetJoined(prices, items);
+            return GetJoined(prices, items.ToList());
         }
 
         /// <summary>
