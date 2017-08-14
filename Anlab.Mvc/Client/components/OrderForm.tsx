@@ -179,7 +179,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         }
         const that = this;
         var antiforgery = $("input[name='__RequestVerificationToken']").val();
-        //__RequestVerificationToken: antiforgery
         $.post({
             url: postUrl,
             data: { model: order, __RequestVerificationToken: antiforgery }
