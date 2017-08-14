@@ -177,7 +177,7 @@ namespace AnlabMvc.Services
 
             orderToUpdate.SaveDetails(orderDetails);
 
-            orderToUpdate.AdditionalEmails = orderDetails.AdditionalEmails != null ? string.Join(";", orderDetails.AdditionalEmails): null;
+            orderToUpdate.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails);
         }
 
         public void PopulateOrderWithLabDetails(OrderSaveModel model, Order orderToUpdate)

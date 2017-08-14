@@ -29,7 +29,7 @@ namespace AnlabMvc.Models.Order
 
         public Payment Payment { get; set; }
 
-        public string[] AdditionalEmails { get; set; }
+        public string[] AdditionalEmails { get; set; } = new string[0];
 
         public string LabComments { get; set; }
         public decimal AdjustmentAmount { get; set; }
