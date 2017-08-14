@@ -69,7 +69,6 @@ namespace AnlabMvc.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult EditUser(string id, [Bind("FirstName,LastName,Name,Phone,Account,ClientId")]User user)
         {
             var userToUpdate = _dbContext.Users.SingleOrDefault(a => a.Id == id);
@@ -98,7 +97,6 @@ namespace AnlabMvc.Controllers
 
         [Authorize(Roles = RoleCodes.Admin)]
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddUserToRole(string userId, string role, bool add)
         {
             var user = _dbContext.Users.Single(a => a.Id == userId);
