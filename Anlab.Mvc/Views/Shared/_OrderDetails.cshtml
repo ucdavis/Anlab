@@ -48,25 +48,36 @@
 
 <table id="table">
     <thead>
-        <tr>
-            <th>Analysis</th>
-            <th>Code</th>
-            <th>Fee (* Qty @Model.OrderDetails.Quantity)</th>
-            <th>SetupCost</th>
-            <th>Sample Total</th>
-
-        </tr>
+    <tr>
+        <th>Analysis</th>
+        <th>Code</th>
+        <th>Fee (* Qty @Model.OrderDetails.Quantity)</th>
+        <th>SetupCost</th>
+        <th>Sample Total</th>
+        <th>Notes</th>
+    </tr>
     </thead>
     <tbody>
-        @foreach (var test in @Model.OrderDetails.SelectedTests)
+    @foreach (var test in @Model.OrderDetails.SelectedTests)
+    {
+        var temp = Model.TestItems.Where(a => a.Id == test.Id).FirstOrDefault();
+        if (Model.HideLabDetails && !temp.Public)
         {
-            <tr>
-                <td>@test.Analysis</td>
-                <td>@test.Id</td>
-                <td>@test.SubTotal.ToString("C")</td>
-                <td>@test.SetupCost.ToString("C")</td>
-                <td>@test.Total.ToString("C")</td>
-            </tr>
+            continue;
         }
+        <tr>
+            <td>@test.Analysis</td>
+            <td>@test.Id</td>
+            <td>@test.SubTotal.ToString("C")</td>
+            <td>@test.SetupCost.ToString("C")</td>
+            <td>@test.Total.ToString("C")</td>
+            <td>
+                @if (temp != null && !String.IsNullOrEmpty(temp.NotesEncoded))
+                {
+                    <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@temp.NotesEncoded')" title="@temp.NotesEncoded" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
+                }    
+            </td>
+        </tr>
+    }
     </tbody>
 </table>

@@ -48,6 +48,9 @@ namespace AnlabMvc.Controllers
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
+            model.TestItems = _dbContext.TestItems
+                .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
+            model.HideLabDetails = false;
 
             return View(model);
         }
@@ -60,7 +63,7 @@ namespace AnlabMvc.Controllers
             {
                 return NotFound(id);
             }           
-            var joined = await _orderService.PopulateTestItemModel();
+            var joined = await _orderService.PopulateTestItemModel(true);
 
             var model = new OrderEditModel
             {
@@ -128,6 +131,9 @@ namespace AnlabMvc.Controllers
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
+            model.TestItems = _dbContext.TestItems
+                .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
+            model.HideLabDetails = false;
 
             return View(model);
         }
@@ -173,6 +179,9 @@ namespace AnlabMvc.Controllers
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
+            model.TestItems = _dbContext.TestItems
+                .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
+            model.HideLabDetails = false;
 
             return View(model);
         }
