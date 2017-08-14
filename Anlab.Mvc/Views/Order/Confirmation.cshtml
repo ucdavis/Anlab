@@ -38,4 +38,23 @@
             $("#table").dataTable();
         });
     </script>
+    
+    <script type="text/javascript">
+        $(function () {
+            $('body').tooltip({
+                selector: '.analysisTooltip'
+            });
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.7.2/showdown.min.js"></script>
+
+    <script type="text/javascript">
+        function renderTitle(title) {
+            var converter = new showdown.Converter();
+            var newContent = converter.makeHtml(title);
+            $('.analysisTooltip').attr('data-original-title', newContent);
+
+        }
+    </script>
 }

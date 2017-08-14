@@ -6,6 +6,8 @@ import { IPayment } from './PaymentSelection';
 import NumberFormat from 'react-number-format';
 import { groupBy } from '../util/arrayHelpers';
 
+import showdown from 'showdown';
+
 export interface ITestItem {
     id: string;
     analysis: string;
@@ -55,6 +57,8 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
 
         const rows = [];
 
+        var converter = new showdown.Converter();
+
         Object.keys(grouped).map(groupName => {
             // push the group header
             rows.push(<tr key={`group-${groupName}`} className="group-header"><td colSpan={5}>Group {groupName}</td></tr>);
@@ -63,6 +67,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
             const testRows = grouped[groupName].map(item => {
                 const selected = !!this.props.selectedTests[item.id];
                 const priceDisplay = (this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost);
+                const tooltipContent = converter.makeHtml(item.notes);
                 return (
                     <tr key={item.id} >
                         <td>
@@ -72,7 +77,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                         <td>{item.id}</td>
                         <td><NumberFormat value={priceDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
                         <td width="5%">
-                            {item.notes ? <i className="analysisTooltip fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" title={item.notes}></i> : ""}
+                            {item.notes ? <i className="analysisTooltip fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-html="true" title={tooltipContent}></i> : ""}
                         </td>
                     </tr>
                 );

@@ -60,12 +60,16 @@
                 }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Notes)
+                @if (!String.IsNullOrEmpty(item.Notes))
+                {
+                    <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@item.NotesEncoded')" title="@item.NotesEncoded" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
+                }
             </td>
         </tr>
 }
     </tbody>
 </table>
+
 
 @section AdditionalStyles
 {
@@ -82,12 +86,29 @@
                 "stateSave": true,
                 "stateDuration": 60 * 10,
                 "columnDefs": [
-                    { "width": "5%", "targets": 5 },
-                    { "width" : "15%", "targets": 0},
                     { "orderable": false, "targets": 0 },
                     { "searchable":false, "targets": 0 }
                 ]
             });
         });
     </script>
+    <script type="text/javascript">
+        $(function () {
+            $('body').tooltip({
+                selector: '.analysisTooltip'
+            });
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.7.2/showdown.min.js"></script>
+
+    <script type="text/javascript">
+        function renderTitle(title) {
+            var converter = new showdown.Converter();
+            var newContent = converter.makeHtml(title);
+            $('.analysisTooltip').attr('data-original-title', newContent);
+
+        }
+    </script>
+
 }
