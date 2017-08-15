@@ -69,6 +69,11 @@ namespace AnlabMvc.Controllers
             {
                 return NotFound(id);
             }           
+            if(order.Status == OrderStatusCodes.Received)
+            {
+                ErrorMessage = "You cannot edit an order marked as received";
+                return RedirectToAction("OpenOrders");
+            }
             var joined = await _orderService.PopulateTestItemModel(true);
 
             var model = new OrderEditModel
