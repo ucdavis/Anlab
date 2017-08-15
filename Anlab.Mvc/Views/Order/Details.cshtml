@@ -28,5 +28,8 @@
         $(function() {
             $("#table").dataTable();
         });
-    </script>
+    </script>   
+
+    @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
+
 }
