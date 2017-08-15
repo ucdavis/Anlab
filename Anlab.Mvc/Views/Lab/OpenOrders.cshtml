@@ -1,3 +1,4 @@
+@using AnlabMvc.Models.Order;
 @model IList<Order>
 @{
     ViewData["Title"] = "OpenOrders";
@@ -24,7 +25,10 @@
     {
         <tr>
             <td>
-                <a asp-action="Edit" asp-route-id="@order.Id">Edit</a>
+                @if (order.Status != OrderStatusCodes.Received)
+                {
+                    <a asp-action="Edit" asp-route-id="@order.Id">Edit</a>
+                }
                 <a asp-action="UpdateFromCompletedTests" asp-route-id="@order.Id">Complete</a>
                 <a asp-action="Details" asp-route-id="@order.Id">Details</a>
             </td>
