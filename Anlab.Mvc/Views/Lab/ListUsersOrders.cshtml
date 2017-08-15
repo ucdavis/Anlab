@@ -1,3 +1,4 @@
+@using AnlabMvc.Models.Order
 @model IList<Order>
 
 @{
@@ -22,7 +23,14 @@
     {
         <tr>
             <td>
-                <a asp-action="Edit" asp-route-id="@order.Id">Edit</a>
+                @if (order.Status == OrderStatusCodes.Confirmed)
+                {
+                    <a asp-action="Edit" asp-route-id="@order.Id">Edit</a>
+                }
+                @if (order.Status == OrderStatusCodes.Received)
+                {
+                    <a asp-action="UpdateFromCompletedTests" asp-route-id="@order.Id">Complete</a>
+                }
                 <a asp-action="Details" asp-route-id="@order.Id">Details</a>
             </td>
             <td>@order.Id</td>
