@@ -46,6 +46,27 @@
     <span>@(String.Format("{0:C}", Model.OrderDetails.Total))</span>
 </div>
 
+@if (Model.OrderDetails.AdjustmentAmount > 0)
+{
+    <div class="form-group">
+        <strong>Adjustment Amount</strong>
+        <span>@(String.Format("{0:C}", Model.OrderDetails.AdjustmentAmount))</span>
+    </div>
+
+    <div class="form-group">
+        <strong>Grand Total</strong>
+        <span>@(String.Format("{0:C}", Model.OrderDetails.GrandTotal))</span>
+    </div>
+}
+
+@if (Model.OrderDetails.LabComments != null)
+{
+    <div class="form-group">
+        <strong>Lab Comments</strong>
+        <span>@Model.OrderDetails.LabComments</span>
+    </div>
+}
+
 <table id="table">
     <thead>
     <tr>
