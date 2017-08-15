@@ -8,7 +8,6 @@ import { Summary } from './Summary';
 import { AdditionalInfo } from './AdditionalInfo';
 import { Project } from "./Project";
 import { AdditionalEmails } from "./AdditionalEmails";
-import { LabFields } from './LabFields';
 
 declare var window: any;
 declare var $: any;
@@ -81,8 +80,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.isValid = true;
             initialState.payment.clientType = orderInfo.Payment.ClientType;
             initialState.payment.account = orderInfo.Payment.Account;
-            initialState.labComments = orderInfo.LabComments;
-            initialState.adjustmentAmount = orderInfo.AdjustmentAmount;
 
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
@@ -173,8 +170,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             project: this.state.project,
             payment: this.state.payment,
             sampleType: this.state.sampleType,
-            labComments: this.state.labComments,
-            adjustmentAmount: this.state.adjustmentAmount,
             selectedTests,
         }
         const that = this;
@@ -193,13 +188,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             that.setState({ ...that.state, isSubmitting: false, isErrorActive: true, errorMessage: "An internal error occured..." });
         });
     }
-
-    renderLab = () => {
-        if (this.state.isFromLab) {
-            return (<LabFields labComments={this.state.labComments} adjustmentAmount={this.state.adjustmentAmount} handleChange={this.handleChange} />);
-        }
-    }
-
 
     render() {
         const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, isFromLab, status, adjustmentAmount } = this.state;
@@ -222,7 +210,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail}/>
                     <Project project={project} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
-                    {this.renderLab()}
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
                     <div style={{ height: 600 }}></div>
                 </div>
@@ -237,8 +224,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                             payment={payment}
                             onSubmit={this.onSubmit}
                             isFromLab={isFromLab}
-                            status={status}
-                            adjustmentAmount={adjustmentAmount} />
+                            status={status} />
                     </div>
                 </div>
 

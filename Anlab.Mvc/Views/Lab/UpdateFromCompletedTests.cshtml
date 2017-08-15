@@ -7,7 +7,7 @@
 
 @Html.Partial("_OrderDetails")
 
-<form method="post" asp-controller="Lab" enctype="multipart/form-data" asp-action="UpdateFromCompletedTests" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
+<form method="post" asp-controller="Lab" enctype="multipart/form-data" asp-action="UpdateFromCompletedTests" asp-route-id="@Model.Order.Id" class="form-horizontal">
     
     <div class="form-group">
         <span>Upload Results</span>
@@ -19,6 +19,12 @@
         {
             <div>Results File Identifier: @Model.Order.ResultsFileIdentifier</div>
         }
+        <span>Add Lab Comments</span>
+        <input type="text" class="form-control" name="labComments" />
+        <span>Add Adjustment Amount</span>
+        <input type="hidden" class="form-control" id="prevTotal" value="@Model.OrderDetails.Total"/>
+        <input type="text" class="form-control" id="adjustmentAmount" name="adjustmentAmount"/>
+        New Amount: $<span class="newTotal">@Model.OrderDetails.Total</span>
     </div>
     
 
@@ -44,6 +50,15 @@
     <script type="text/javascript">
         $(function() {
             $("#table").dataTable();
+        });
+    </script>
+    <script type="text/javascript">
+        $('#adjustmentAmount').on('keyup', function () {
+            var prevTotal = $('#prevTotal').val();
+            var adjustAmt = $(this).val();
+            var totalCost = parseFloat(prevTotal) + parseFloat(adjustAmt);
+            $('.newTotal').html(totalCost);
+
         });
     </script>
 }
