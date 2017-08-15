@@ -23,6 +23,11 @@ namespace Anlab.Core.Models
 
         public string LabComments { get; set; }
         public decimal AdjustmentAmount { get; set; }
+        public decimal GrandTotal { get
+            {
+                return AdjustmentAmount + Total;
+            }
+        }
     }
 
 }

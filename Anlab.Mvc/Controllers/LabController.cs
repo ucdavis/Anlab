@@ -119,9 +119,6 @@ namespace AnlabMvc.Controllers
                     return Json(new {success = false, message = "You may only edit a Confirmed order."});
                 }
 
-                await _orderService.PopulateOrder(model, orderToUpdate);
-                _orderService.PopulateOrderWithLabDetails(model, orderToUpdate);
-
                 idForRedirection = model.OrderId.Value;
                 await _dbContext.SaveChangesAsync();
             }
@@ -201,7 +198,7 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateFromCompletedTests(int id, bool confirm, IFormFile uploadFile)
+        public async Task<IActionResult> UpdateFromCompletedTests(int id, bool confirm, IFormFile uploadFile, string labComments, decimal adjustmentAmount)
         {
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
@@ -233,12 +230,11 @@ namespace AnlabMvc.Controllers
 
             //File Upload
             order.ResultsFileIdentifier = await _fileStorageService.UploadFile(uploadFile);
-            
 
             var orderDetails = order.GetOrderDetails();
 
-            orderDetails.SelectedTests = result.SelectedTests;
-            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total);
+            orderDetails.LabComments = labComments;
+            orderDetails.AdjustmentAmount = adjustmentAmount;
 
             order.SaveDetails(orderDetails);
 

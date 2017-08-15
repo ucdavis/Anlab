@@ -56,9 +56,11 @@
         $('#adjustmentAmount').on('keyup', function () {
             var prevTotal = $('#prevTotal').val();
             var adjustAmt = $(this).val();
-            var totalCost = parseFloat(prevTotal) + parseFloat(adjustAmt);
+            if (adjustAmt)
+                var totalCost = parseFloat(prevTotal) + parseFloat(adjustAmt);
+            else
+                var totalCost = prevTotal;
             $('.newTotal').html(totalCost);
-
         });
     </script>
 }
