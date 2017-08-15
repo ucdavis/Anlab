@@ -110,6 +110,11 @@ namespace AnlabMvc.Controllers
             {
                 var orderToUpdate = await _dbContext.Orders.SingleAsync(a => a.Id == model.OrderId.Value);
 
+                if (orderToUpdate.Status != OrderStatusCodes.Confirmed)
+                {
+                    return Json(new { success = false, message = "You may only edit a Confirmed order." });
+                }
+
                 await _orderService.PopulateOrder(model, orderToUpdate);
                 _orderService.PopulateOrderWithLabDetails(model, orderToUpdate);
 
