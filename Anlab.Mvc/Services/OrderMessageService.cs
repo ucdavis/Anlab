@@ -54,12 +54,25 @@ namespace AnlabMvc.Services
         }
         public async Task EnqueueCompletedMessage(Order order)
         {
-            //TODO: change body of email, right now it is the same as OrderCreated
-            var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderCompleted", order);
+            var orderDetails = order.GetOrderDetails();
+            var body = string.Empty;
+            var subject = string.Empty;
+            if(orderDetails.Payment.IsInternalClient)
+            {
+                subject = "Order Completed Confirmation";
+                //TODO: change body of email, right now it is the same as OrderCreated
+                body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderCompleted", order);
+            }
+            else
+            {
+                subject = "Order Completed Confirmation - Awaiting Payment";
+                //TODO: change body of email, right now it is the same as OrderCreated
+                body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderCompleted", order);
+            }
 
             var message = new MailMessage
             {
-                Subject = "Order Completed Confirmation",
+                Subject = subject,
                 Body = body,
                 SendTo = order.Creator.Email,
                 Order = order,
