@@ -59,7 +59,7 @@
     </div>
 }
 
-@if (Model.OrderDetails.LabComments != null)
+@if (!String.IsNullOrWhiteSpace(Model.OrderDetails.LabComments))
 {
     <div class="form-group">
         <strong>Lab Comments</strong>

@@ -15,7 +15,7 @@ namespace AnlabMvc.Services
     public interface IOrderService
     {
         Task PopulateOrder(OrderSaveModel model, Order orderToUpdate);
-
+        void PopulateOrderWithLabDetails(OrderSaveModel model, Order orderToUpdate);
         Task SendOrderToAnlab(Order order);
 
         Task<List<TestItemModel>> PopulateTestItemModel(bool showAll = false);
@@ -182,6 +182,13 @@ namespace AnlabMvc.Services
             orderToUpdate.SaveDetails(orderDetails);
 
             orderToUpdate.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails);
+        }
+
+        public void PopulateOrderWithLabDetails(OrderSaveModel model, Order orderToUpdate)
+        {
+            var orderDetails = orderToUpdate.GetOrderDetails();
+            orderDetails.Total += orderDetails.AdjustmentAmount;
+            orderToUpdate.SaveDetails(orderDetails);
         }
 
         public async Task SendOrderToAnlab(Order order)
