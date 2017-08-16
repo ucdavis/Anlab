@@ -14,7 +14,6 @@ interface ISummaryProps {
     hideError: boolean;
     isFromLab: boolean;
     status: string;
-    adjustmentAmount: number;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
@@ -28,7 +27,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
             return prev + perTest + (this.props.payment.clientType === 'uc' ? item.internalSetupCost : item.externalSetupCost);
         }, 0);
 
-        return total  + this.props.adjustmentAmount;
+        return total;
     }
 
 
@@ -53,43 +52,6 @@ export class Summary extends React.Component<ISummaryProps, any> {
         return tests;
     }
 
-    _renderAdditionalFees = () => {
-        if (this.props.adjustmentAmount === 0) {
-            return null;
-        }
-
-
-        return (
-            <table className="table">
-                <thead>
-                <tr>
-                    <th>Fee Type</th>
-                    <th>Fee</th>
-                    <th>Total</th>
-                </tr>
-                </thead>
-                <tbody>
-                    {this._renderAdjustment()}
-                </tbody>
-            </table>
-        );
-    }
-
-    _renderAdjustment = () => {
-        if (this.props.adjustmentAmount === 0) {
-            return null;
-        }
-
-        return (
-            <tr>
-                <td>Adjustment</td>
-                <td></td>
-                <td><NumberFormat value={this.props.adjustmentAmount} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-            </tr>
-        );
-    }
-
-
     render() {
         if (this.props.testItems.length === 0) {
             return null;
@@ -105,7 +67,6 @@ export class Summary extends React.Component<ISummaryProps, any> {
         const errorText = "Please correct any errors and complete any required fields before you " + saveText.toLowerCase();
         return (
             <div>
-                {this._renderAdditionalFees()}
                 <table className="table">
                     <thead>
                         <tr>
