@@ -13,22 +13,22 @@
         <span>Upload Results</span>
         @if (string.IsNullOrWhiteSpace(Model.Order.ResultsFileIdentifier))
         {
-            <input type="file" class="form-control" name="uploadFile"/>
+            <input type="file" class="form-control" name="UploadFile"/>
         }
         else
         {
             <div>Results File Identifier: @Model.Order.ResultsFileIdentifier</div>
         }
         <span>Add Lab Comments</span>
-        <textarea class="form-control" name="labComments"></textarea>
+        <textarea class="form-control" name="LabComments"></textarea>
         <span>Add Adjustment Amount</span>
         <input type="hidden" class="form-control" id="prevTotal" value="@Model.OrderDetails.Total"/>
-        <input type="text" class="form-control" id="adjustmentAmount" name="adjustmentAmount"/>
+        <input type="text" class="form-control" id="AdjustmentAmount" name="AdjustmentAmount"/>
         New Amount: $<span id="newTotal">@Model.OrderDetails.Total</span>
     </div>
     
 
-    @Html.Hidden("confirm", true)
+    @Html.Hidden("Confirm", true)
     <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true"> Confirm Completed (Update Tests from Labworks)</i></button>
 </form>
 
@@ -54,7 +54,7 @@
     </script>
 
     <script type="text/javascript">
-        $('#adjustmentAmount').on('keyup', function () {
+        $('#AdjustmentAmount').on('keyup', function () {
             var prevTotal = $('#prevTotal').val();
             var adjustAmt = $(this).val();
             if (adjustAmt)

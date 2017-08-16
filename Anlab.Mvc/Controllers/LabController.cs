@@ -212,7 +212,7 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateFromCompletedTests(int id, bool confirm, IFormFile uploadFile, string labComments, decimal adjustmentAmount)
+        public async Task<IActionResult> UpdateFromCompletedTests(int id, UpdateFromCompletedTestsModel model)
         {
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
@@ -227,7 +227,7 @@ namespace AnlabMvc.Controllers
                 //return RedirectToAction("OpenOrders");
             }
 
-            if (uploadFile == null || uploadFile.Length <= 0)
+            if (model.UploadFile == null || model.UploadFile.Length <= 0)
             {
                 ErrorMessage = "You need to upload the results at this time.";
                 return RedirectToAction("UpdateFromCompletedTests");
@@ -243,15 +243,15 @@ namespace AnlabMvc.Controllers
             }
 
             //File Upload
-            order.ResultsFileIdentifier = await _fileStorageService.UploadFile(uploadFile);
+            order.ResultsFileIdentifier = await _fileStorageService.UploadFile(model.UploadFile);
 
             var orderDetails = order.GetOrderDetails();
 
             orderDetails.SelectedTests = result.SelectedTests;
             orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total);
 
-            orderDetails.LabComments = labComments;
-            orderDetails.AdjustmentAmount = adjustmentAmount;
+            orderDetails.LabComments = model.LabComments;
+            orderDetails.AdjustmentAmount = model.AdjustmentAmount;
 
             order.SaveDetails(orderDetails);
 
