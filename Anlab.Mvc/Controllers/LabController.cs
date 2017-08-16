@@ -242,6 +242,8 @@ namespace AnlabMvc.Controllers
 
             order.SaveDetails(orderDetails);
 
+            await _orderMessageService.EnqueueCompletedMessage(order);
+
             await _dbContext.SaveChangesAsync();
 
             Message = "Order marked as Complete";
