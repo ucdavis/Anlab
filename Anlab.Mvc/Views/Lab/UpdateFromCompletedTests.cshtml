@@ -52,6 +52,7 @@
             $("#table").dataTable();
         });
     </script>
+
     <script type="text/javascript">
         $('#adjustmentAmount').on('keyup', function () {
             var prevTotal = $('#prevTotal').val();
@@ -63,4 +64,6 @@
             $('.newTotal').html(totalCost);
         });
     </script>
+                                                                  
+    @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
 }

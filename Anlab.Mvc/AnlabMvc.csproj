@@ -7,6 +7,7 @@
     <PackageTargetFallback>portable-net45+win8</PackageTargetFallback>
     <Version>1.0.0.0</Version>
     <Description>Order and results management system for AnLab@UCDavis</Description>
+    <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AspNetCore.Security.CAS" Version="1.0.0" />
