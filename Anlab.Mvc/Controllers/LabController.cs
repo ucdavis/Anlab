@@ -119,6 +119,9 @@ namespace AnlabMvc.Controllers
                     return Json(new {success = false, message = "You may only edit a Confirmed order."});
                 }
 
+                await _orderService.PopulateOrder(model, orderToUpdate);
+                _orderService.PopulateOrderWithLabDetails(model, orderToUpdate);
+
                 idForRedirection = model.OrderId.Value;
                 await _dbContext.SaveChangesAsync();
             }
