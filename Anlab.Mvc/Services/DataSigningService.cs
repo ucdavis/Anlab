@@ -27,14 +27,14 @@ namespace AnlabMvc.Services
 
         public string Sign(IDictionary<string, string> paramsArray)
         {
-            return Sign(BuildDataToSign(paramsArray), _cyberSourceSettings.SecretKey);
+            return SignData(BuildDataToSign(paramsArray), _cyberSourceSettings.SecretKey);
         }
 
         public bool Check(IDictionary<string, string> paramsArray, string signature)
         {
             try
             {
-                return signature == Sign(BuildDataToSign(paramsArray), _cyberSourceSettings.SecretKey);
+                return signature == SignData(BuildDataToSign(paramsArray), _cyberSourceSettings.SecretKey);
             }
             catch (Exception ex)
             {
@@ -43,7 +43,7 @@ namespace AnlabMvc.Services
             }
         }
 
-        private static string Sign(string data, string secretKey)
+        private static string SignData(string data, string secretKey)
         {
             var encoding = new UTF8Encoding();
             byte[] keyByte = encoding.GetBytes(secretKey);

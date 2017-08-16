@@ -42,7 +42,7 @@ namespace AnlabMvc.Controllers
 
             if (order.Status != OrderStatusCodes.Complete)
             {
-                ErrorMessage = "You can't edit an order that has been confirmed.";
+                ErrorMessage = "You Pay until the Order is complete.";
                 return RedirectToAction("Index", "Order");
             }
 
