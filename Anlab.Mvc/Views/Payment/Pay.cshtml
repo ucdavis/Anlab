@@ -1,0 +1,21 @@
+
+@{
+    ViewData["Title"] = "Pay";    
+    var paymentDict = (Dictionary<string, string>)ViewBag.PaymentDictionary;
+}
+<div>
+    @foreach (var key in paymentDict)
+    {
+        <p>@key.Key -- @key.Value</p>
+    }
+</div>
+
+<form action="@ViewBag.CyberSourceUrl" method="post" autocomplete="off">
+    @foreach (var pair in paymentDict)
+    {
+        <input type="hidden" name="@pair.Key" value="@pair.Value" />        
+    }
+    <input type="hidden" name="signature" value="@ViewBag.Signature" />
+    <input type="submit" id="submit" value="Confirm" />
+</form>
+

@@ -40,7 +40,7 @@ namespace AnlabMvc.Services
 
         public async Task Initialize()
         {
-            string[] codesList = new[] {"ADFAF",
+            string[] codesList = new[] {"()","ADFAF",
                 "ADFRF",
                 "ADIN",
                 "AG-W",
