@@ -61,13 +61,13 @@ namespace AnlabMvc.Services
             {
                 subject = "Order Completed Confirmation";
                 //TODO: change body of email, right now it is the same as OrderCreated
-                body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderCompleted", order);
+                body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderCompletedHasPayment", order);
             }
             else
             {
                 subject = "Order Completed Confirmation - Awaiting Payment";
                 //TODO: change body of email, right now it is the same as OrderCreated
-                body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderCompleted", order);
+                body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderCompletedNeedsPayment", order);
             }
 
             var message = new MailMessage
