@@ -120,7 +120,6 @@ namespace AnlabMvc.Controllers
                 }
 
                 await _orderService.PopulateOrder(model, orderToUpdate);
-                _orderService.PopulateOrderWithLabDetails(model, orderToUpdate);
 
                 idForRedirection = model.OrderId.Value;
                 await _dbContext.SaveChangesAsync();
