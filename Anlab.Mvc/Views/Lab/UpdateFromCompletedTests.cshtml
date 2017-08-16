@@ -20,11 +20,11 @@
             <div>Results File Identifier: @Model.Order.ResultsFileIdentifier</div>
         }
         <span>Add Lab Comments</span>
-        <input type="text" class="form-control" name="labComments" />
+        <textarea class="form-control" name="labComments"></textarea>
         <span>Add Adjustment Amount</span>
         <input type="hidden" class="form-control" id="prevTotal" value="@Model.OrderDetails.Total"/>
         <input type="text" class="form-control" id="adjustmentAmount" name="adjustmentAmount"/>
-        New Amount: $<span class="newTotal">@Model.OrderDetails.Total</span>
+        New Amount: $<span id="newTotal">@Model.OrderDetails.Total</span>
     </div>
     
 
@@ -61,7 +61,7 @@
                 var totalCost = parseFloat(prevTotal) + parseFloat(adjustAmt);
             else
                 var totalCost = prevTotal;
-            $('.newTotal').html(totalCost);
+            $('#newTotal').html(totalCost);
         });
     </script>
                                                                   
