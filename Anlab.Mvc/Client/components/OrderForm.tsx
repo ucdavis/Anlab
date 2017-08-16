@@ -28,8 +28,6 @@ interface IOrderState {
     errorMessage: string;
     isFromLab: boolean;
     status: string;
-    labComments: string;
-    adjustmentAmount: number;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -52,8 +50,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             errorMessage: '',
             isFromLab: false,
             status: '',
-            labComments: '',
-            adjustmentAmount: 0,
         };
 
         if (window.App.defaultAccount) {            
@@ -190,7 +186,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     }
 
     render() {
-        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, isFromLab, status, adjustmentAmount } = this.state;
+        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, isFromLab, status} = this.state;
 
         const { filtered, selected} = this.getTests();
 
