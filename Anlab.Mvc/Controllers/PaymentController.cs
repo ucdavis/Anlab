@@ -29,11 +29,17 @@ namespace AnlabMvc.Controllers
         public ActionResult Pay(int id)
         {
             var order = _context.Orders.SingleOrDefault(o => o.Id == id);
+            var user = _context.Users.SingleOrDefault(x => x.Id == CurrentUserId);
 
             if (order == null)
             {
                 return NotFound(id);
             }
+            if (user == null)
+            {
+                return NotFound(CurrentUserId);
+            }
+
             if (order.CreatorId != CurrentUserId)
             {
                 ErrorMessage = "You don't have access to this order.";
@@ -57,9 +63,24 @@ namespace AnlabMvc.Controllers
             dictionary.Add("signed_date_time", DateTime.UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"));
             dictionary.Add("unsigned_field_names", string.Empty);
             dictionary.Add("locale", "en");
+            dictionary.Add("bill_to_email", user.Email);
+
+
+            if (string.IsNullOrWhiteSpace($"{user.FirstName}{user.LastName}"))
+            {
+                
+            }
+            dictionary.Add("bill_to_forename", user.GetFirstName());
+            dictionary.Add("bill_to_surname", user.GetLastName());
+
+            dictionary.Add("bill_to_address_country", "US");
+            dictionary.Add("bill_to_address_state", "CA");
+
 
             var fieldNames = string.Join(",", dictionary.Keys);
             dictionary.Add("signed_field_names", "signed_field_names," + fieldNames);
+
+
 
             ViewBag.Signature = _dataSigningService.Sign(dictionary);
             ViewBag.PaymentDictionary = dictionary;
