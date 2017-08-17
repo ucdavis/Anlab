@@ -23,7 +23,7 @@ namespace AnlabMvc.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var model = await _context.Orders.Where(a => a.CreatorId == CurrentUserId && a.Status == OrderStatusCodes.Complete)
+            var model = await _context.Orders.Where(a => a.Status == OrderStatusCodes.Complete)
                 .ToArrayAsync();
 
             return View(model);
@@ -59,7 +59,7 @@ namespace AnlabMvc.Controllers
             var order = await _context.Orders.SingleOrDefaultAsync(o => o.ShareIdentifier == id);
 
             var result = await _fileStorageService.GetSharedAccessSignature(order.ResultsFileIdentifier);
-            return Redirect(result.UploadUrl);
+            return Redirect(result.AccessUrl);
         }
     }
 }

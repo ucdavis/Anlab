@@ -83,7 +83,7 @@ namespace AnlabMvc.Services
             });
 
             var accessUrl = string.Format("{0}{1}", blob.Uri.AbsoluteUri, sas);
-            return new SasResponse { UploadUrl = accessUrl, Url = blob.Uri.AbsoluteUri, Identifier = fileName };
+            return new SasResponse { AccessUrl = accessUrl, Url = blob.Uri.AbsoluteUri, Identifier = fileName };
         }
 
         public async Task UploadFiles(params FileUpload[] files)

@@ -8,7 +8,7 @@ namespace AnlabMvc.Models.FileUploadModels
     public class SasResponse
     {
         public string Url { get; set; }
-        public string UploadUrl { get; set; }
+        public string AccessUrl { get; set; }
         public string Identifier { get; set; }
     }
 }
