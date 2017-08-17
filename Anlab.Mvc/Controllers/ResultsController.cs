@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace AnlabMvc.Controllers
 {
-    [Authorize]
     public class ResultsController : ApplicationController
     {
         private readonly ApplicationDbContext _context;
