@@ -7,6 +7,7 @@ using Anlab.Core.Data;
 using AnlabMvc.Models.Order;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace AnlabMvc.Controllers
@@ -28,14 +29,13 @@ namespace AnlabMvc.Controllers
 
         public ActionResult Pay(int id)
         {
-            var order = _context.Orders.SingleOrDefault(o => o.Id == id);
-            var user = _context.Users.SingleOrDefault(x => x.Id == CurrentUserId);
+            var order = _context.Orders.Include(i => i.Creator).SingleOrDefault(o => o.Id == id);
 
             if (order == null)
             {
                 return NotFound(id);
             }
-            if (user == null)
+            if (order.Creator == null)
             {
                 return NotFound(CurrentUserId);
             }
@@ -52,10 +52,27 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index", "Order");
             }
 
+            Dictionary<string, string> dictionary = SetDictionaryValues(order, order.Creator);
+
+            ViewBag.Signature = _dataSigningService.Sign(dictionary);
+            ViewBag.PaymentDictionary = dictionary;
+            ViewBag.CyberSourceUrl = _appSettings.CyberSourceUrl;
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+            model.TestItems = _context.TestItems
+                .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
+
+            return View(model);
+        }
+
+        private Dictionary<string, string> SetDictionaryValues(Anlab.Core.Domain.Order order, Anlab.Core.Domain.User user)
+        {
             var dictionary = new Dictionary<string, string>();
             dictionary.Add("transaction_type", "sale");
             dictionary.Add("reference_number", order.Id.ToString());
-            dictionary.Add("amount", order.GetOrderDetails().GrandTotal.ToString("F2")); 
+            dictionary.Add("amount", order.GetOrderDetails().GrandTotal.ToString("F2"));
             dictionary.Add("currency", "USD");
             dictionary.Add("access_key", _cyberSourceSettings.AccessKey);
             dictionary.Add("profile_id", _cyberSourceSettings.ProfileId);
@@ -75,16 +92,7 @@ namespace AnlabMvc.Controllers
 
             var fieldNames = string.Join(",", dictionary.Keys);
             dictionary.Add("signed_field_names", "signed_field_names," + fieldNames);
-
-
-
-            ViewBag.Signature = _dataSigningService.Sign(dictionary);
-            ViewBag.PaymentDictionary = dictionary;
-            ViewBag.CyberSourceUrl = _appSettings.CyberSourceUrl;
-
-            return View();
+            return dictionary;
         }
-
-
     }
 }
