@@ -55,7 +55,7 @@ namespace AnlabMvc.Controllers
             var dictionary = new Dictionary<string, string>();
             dictionary.Add("transaction_type", "sale");
             dictionary.Add("reference_number", order.Id.ToString());
-            dictionary.Add("amount", order.GetOrderDetails().Total.ToString("F2")); //TODO: Use GrandTotal once the other branch is pulled in.
+            dictionary.Add("amount", order.GetOrderDetails().GrandTotal.ToString("F2")); 
             dictionary.Add("currency", "USD");
             dictionary.Add("access_key", _cyberSourceSettings.AccessKey);
             dictionary.Add("profile_id", _cyberSourceSettings.ProfileId);
