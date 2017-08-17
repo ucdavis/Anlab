@@ -4,11 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using AnlabMvc.Models.Configuration;
 using Anlab.Core.Data;
+using AnlabMvc.Models.CyberSource;
 using AnlabMvc.Models.Order;
 using AnlabMvc.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Serilog;
+using Newtonsoft.Json;
 
 namespace AnlabMvc.Controllers
 {
@@ -65,6 +69,48 @@ namespace AnlabMvc.Controllers
                 .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
 
             return View(model);
+        }
+
+        //public async Task<ActionResult> Receipt(ReceiptResponseModel response)
+        //{
+        //    Log.ForContext("response", response, true).Information("Receipt response received");
+
+        //    // check signature
+        //    var dictionary = Request.Form.ToDictionary(x => x.Key.ToString(), x => x.Value.ToString());
+        //    if (!_dataSigningService.Check(dictionary, response.Signature))
+        //    {
+        //        Log.Error("Check Signature Failure");
+        //        TempData["ErrorMessage"] = string.Format("An error has occurred. If you experience further problems, contact us.");
+        //    }
+        //}
+
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult ProviderNotify(ReceiptResponseModel response)
+        {
+            Log.ForContext("response", response, true).Information("Provider Notification Received");
+
+            // check signature
+            var dictionary = Request.Form.ToDictionary(x => x.Key.ToString(), x => x.Value.ToString());
+            if (!_dataSigningService.Check(dictionary, response.Signature))
+            {
+                Log.Error("Check Signature Failure");
+            }
+            else
+            {
+                //Do payment stuff.
+                var order = _context.Orders.SingleOrDefault(a => a.Id == response.Req_Reference_Number);
+                if (order == null)
+                {
+                    Log.Error("Order not found {0}", response.Req_Reference_Number);
+                }
+                else
+                {
+                    order.Status = "Paid"; //TODO, Flag or add to the list of codes.
+                }
+            }
+
+            return new JsonResult(new { });
         }
 
         private Dictionary<string, string> SetDictionaryValues(Anlab.Core.Domain.Order order, Anlab.Core.Domain.User user)
