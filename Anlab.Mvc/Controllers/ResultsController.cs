@@ -54,5 +54,12 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> Download(Guid id)
+        {
+            var order = await _context.Orders.SingleOrDefaultAsync(o => o.ShareIdentifier == id);
+
+            var result = await _fileStorageService.GetSharedAccessSignature(order.ResultsFileIdentifier);
+            return Redirect(result.UploadUrl);
+        }
     }
 }

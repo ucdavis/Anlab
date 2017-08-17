@@ -8,8 +8,11 @@
 <h2>Results</h2>
 
 <div>
-    <p><strong>Download Results: </strong><i class="fa fa-download" aria-hidden="true"></i></p>
-    @Model.Order.ResultsFileIdentifier
+    <p><strong>Download Results </strong>
+    <a asp-action="Download" asp-route-id="@Model.Order.ShareIdentifier">
+        <i class="fa fa-download" aria-hidden="true"></i>
+        </a>
+    </p>
 </div>
 
 @Html.Partial("_OrderDetails")
