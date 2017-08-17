@@ -71,21 +71,29 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
-        //public async Task<ActionResult> Receipt(ReceiptResponseModel response)
-        //{
-        //    Log.ForContext("response", response, true).Information("Receipt response received");
 
-        //    // check signature
-        //    var dictionary = Request.Form.ToDictionary(x => x.Key.ToString(), x => x.Value.ToString());
-        //    if (!_dataSigningService.Check(dictionary, response.Signature))
-        //    {
-        //        Log.Error("Check Signature Failure");
-        //        TempData["ErrorMessage"] = string.Format("An error has occurred. If you experience further problems, contact us.");
-        //    }
-        //}
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public ActionResult Receipt(ReceiptResponseModel response)
+        {
+            Log.ForContext("response", response, true).Information("Receipt response received");
+
+            // check signature
+            var dictionary = Request.Form.ToDictionary(x => x.Key.ToString(), x => x.Value.ToString());
+            if (!_dataSigningService.Check(dictionary, response.Signature))
+            {
+                Log.Error("Check Signature Failure");
+                TempData["ErrorMessage"] = string.Format("An error has occurred. Payment not processed. If you experience further problems, contact us.");
+                return RedirectToAction("Index", "Home");
+            }
+            ViewBag.PaymentDictionary = dictionary; //Debugging. Remove when not needed
+
+            return View(response);
+        }
 
         [HttpPost]
         [AllowAnonymous]
+        [IgnoreAntiforgeryToken]
         public ActionResult ProviderNotify(ReceiptResponseModel response)
         {
             Log.ForContext("response", response, true).Information("Provider Notification Received");
