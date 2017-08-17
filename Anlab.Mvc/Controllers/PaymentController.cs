@@ -66,10 +66,6 @@ namespace AnlabMvc.Controllers
             dictionary.Add("bill_to_email", user.Email);
 
 
-            if (string.IsNullOrWhiteSpace($"{user.FirstName}{user.LastName}"))
-            {
-                
-            }
             dictionary.Add("bill_to_forename", user.GetFirstName());
             dictionary.Add("bill_to_surname", user.GetLastName());
 
