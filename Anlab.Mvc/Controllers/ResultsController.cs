@@ -7,9 +7,11 @@ using Anlab.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using AnlabMvc.Models.Order;
 using AnlabMvc.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AnlabMvc.Controllers
 {
+    [Authorize]
     public class ResultsController : ApplicationController
     {
         private readonly ApplicationDbContext _context;
@@ -21,28 +23,18 @@ namespace AnlabMvc.Controllers
             _fileStorageService = fileStorageService;
         }
 
-        public async Task<IActionResult> Index()
-        {
-            var model = await _context.Orders.Where(a => a.Status == OrderStatusCodes.Complete)
-                .ToArrayAsync();
-
-            return View(model);
-        }
-
         public async Task<IActionResult> Link(Guid id)
         {
             var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.ShareIdentifier == id);
 
             if (order == null)
             {
-                ErrorMessage = "id: " + id;
-                return RedirectToAction("Index");
+                return NotFound();
             }
 
             if (order.Status != OrderStatusCodes.Complete)
             {
-                ErrorMessage = "You can only view results of complete orders.";
-                return RedirectToAction("Index");
+                return NotFound(order.Id);
             }
 
             var model = new OrderReviewModel();
