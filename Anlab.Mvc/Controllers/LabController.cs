@@ -120,7 +120,6 @@ namespace AnlabMvc.Controllers
                 }
 
                 await _orderService.PopulateOrder(model, orderToUpdate);
-                _orderService.PopulateOrderWithLabDetails(model, orderToUpdate);
 
                 idForRedirection = model.OrderId.Value;
                 await _dbContext.SaveChangesAsync();
@@ -191,6 +190,18 @@ namespace AnlabMvc.Controllers
                 return NotFound(id);
             }
 
+            var result = await _orderService.OverwiteOrderWithTestsCompleted(order); //TODO: Just testing
+            if (result.WasError)
+            {
+                ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
+                return RedirectToAction("OpenOrders");
+            }
+            var orderDetails = order.GetOrderDetails();
+            orderDetails.SelectedTests = result.SelectedTests;
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total);
+
+            order.SaveDetails(orderDetails);
+
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
@@ -201,7 +212,7 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateFromCompletedTests(int id, bool confirm, IFormFile uploadFile)
+        public async Task<IActionResult> UpdateFromCompletedTests(int id, UpdateFromCompletedTestsModel model)
         {
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
@@ -216,7 +227,7 @@ namespace AnlabMvc.Controllers
                 //return RedirectToAction("OpenOrders");
             }
 
-            if (uploadFile == null || uploadFile.Length <= 0)
+            if (model.UploadFile == null || model.UploadFile.Length <= 0)
             {
                 ErrorMessage = "You need to upload the results at this time.";
                 return RedirectToAction("UpdateFromCompletedTests");
@@ -228,19 +239,23 @@ namespace AnlabMvc.Controllers
             if (result.WasError)
             {
                 ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
-                return RedirectToAction("UpdateFromCompletedTests");
+                return RedirectToAction("OpenOrders");
             }
 
             //File Upload
-            order.ResultsFileIdentifier = await _fileStorageService.UploadFile(uploadFile);
-            
+            order.ResultsFileIdentifier = await _fileStorageService.UploadFile(model.UploadFile);
 
             var orderDetails = order.GetOrderDetails();
 
             orderDetails.SelectedTests = result.SelectedTests;
             orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total);
 
+            orderDetails.LabComments = model.LabComments;
+            orderDetails.AdjustmentAmount = model.AdjustmentAmount;
+
             order.SaveDetails(orderDetails);
+
+            await _orderMessageService.EnqueueCompletedMessage(order);
 
             await _dbContext.SaveChangesAsync();
 
