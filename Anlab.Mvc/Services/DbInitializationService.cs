@@ -270,7 +270,8 @@ namespace AnlabMvc.Services
                 Project = "Test Project",
                 Status = "Created",
                 RequestNum = "17P138",
-                JsonDetails = xxx
+                JsonDetails = xxx,
+                ShareIdentifier = Guid.NewGuid()
             };
 
 
@@ -283,7 +284,8 @@ namespace AnlabMvc.Services
                 Project = "Test Project",
                 Status = "Received",
                 RequestNum = "17P138",
-                JsonDetails = xxx
+                JsonDetails = xxx,
+                ShareIdentifier = Guid.NewGuid()
             };
 
 

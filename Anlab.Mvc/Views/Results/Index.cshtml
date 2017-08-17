@@ -1,0 +1,64 @@
+@using AnlabMvc.Models.Order
+@model IList<Order>
+
+@{
+    ViewData["Title"] = "Orders";
+}
+
+
+<table id="table">
+    <thead>
+    <tr>
+        <th></th>
+        <th>Id</th>
+        <th>Created</th>
+        <th>Updated</th>
+        <th>Project</th>
+        <th>Status</th>
+        
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var order in Model)
+    {
+        <tr>
+            <td>
+                <a asp-action="Link" asp-route-id="@order.ShareIdentifier">View Results</a>
+            </td>
+            <td>@order.Id</td>
+            <td>@order.Created</td>
+            <td>@order.Updated</td>
+            <td>@order.Project</td>
+            <td>@order.Status</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@section AdditionalStyles
+{
+    @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+}
+
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+
+    <script type="text/javascript">
+        $(function() {
+            $("#table").dataTable({
+                "sorting": [[2, "desc"]],
+                "columnDefs": [
+                    {
+                        "type": "date", "targets" : [2,3]
+                    },
+                    {
+                        "targets": [0],
+                        "orderable": false                        
+                    },
+
+                ]
+            });
+        });
+    </script>
+}

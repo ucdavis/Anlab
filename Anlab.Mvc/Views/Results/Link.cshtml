@@ -1,0 +1,39 @@
+@using Humanizer
+@model AnlabMvc.Models.Order.OrderReviewModel
+
+@{
+    ViewData["Title"] = "Results";
+}
+
+<h2>Results</h2>
+
+<div>
+    <p><strong>Download Results: </strong><i class="fa fa-download" aria-hidden="true"></i></p>
+    @Model.Order.ResultsFileIdentifier
+</div>
+
+@Html.Partial("_OrderDetails")
+
+<div class="form-group">
+    <strong>json Data</strong>
+    <span>@Model.Order.JsonDetails</span>
+</div>
+
+@section AdditionalStyles
+{
+    @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+}
+
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+
+    <script type="text/javascript">
+        $(function() {
+            $("#table").dataTable();
+        });
+    </script>
+
+    @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
+
+}
