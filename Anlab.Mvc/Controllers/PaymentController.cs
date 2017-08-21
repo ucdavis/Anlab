@@ -21,13 +21,15 @@ namespace AnlabMvc.Controllers
     public class PaymentController : ApplicationController
     {
         private readonly ApplicationDbContext _context;
+        private readonly IOrderMessageService _orderMessageService;
         private readonly IDataSigningService _dataSigningService;
         private readonly AppSettings _appSettings;
         private readonly CyberSourceSettings _cyberSourceSettings;
 
-        public PaymentController(ApplicationDbContext context, IDataSigningService dataSigningService, IOptions<CyberSourceSettings> cyberSourceSettings, IOptions<AppSettings> appSettings)
+        public PaymentController(ApplicationDbContext context, IOrderMessageService orderMessageService, IDataSigningService dataSigningService, IOptions<CyberSourceSettings> cyberSourceSettings, IOptions<AppSettings> appSettings)
         {
             _context = context;
+            _orderMessageService = orderMessageService;
             _dataSigningService = dataSigningService;
             _appSettings = appSettings.Value;
             _cyberSourceSettings = cyberSourceSettings.Value;
@@ -257,7 +259,7 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         [AllowAnonymous]
         [IgnoreAntiforgeryToken]
-        public ActionResult ProviderNotify(ReceiptResponseModel response)
+        public async Task<ActionResult> ProviderNotify(ReceiptResponseModel response)
         {
             Log.ForContext("response", response, true).Information("Provider Notification Received");
 
@@ -284,7 +286,14 @@ namespace AnlabMvc.Controllers
                         order.Status = OrderStatusCodes.Paid;
                         _context.SaveChanges(true);
 
-                        //TODO: Generate Email
+                        try
+                        {
+                            await _orderMessageService.EnqueuePaidMessage(order);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, ex.Message);
+                        }
                     }
                 }
             }
