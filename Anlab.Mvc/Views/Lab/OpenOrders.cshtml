@@ -25,14 +25,19 @@
     {
         <tr>
             <td>
-                <a asp-action="Details" asp-route-id="@order.Id">Details</a>
                 @if (order.Status == OrderStatusCodes.Confirmed)
                 {
+                    <a asp-action="Details" asp-route-id="@order.Id">Details</a>
                     <a asp-action="Edit" asp-route-id="@order.Id">Edit</a>
                 }
                 @if (order.Status == OrderStatusCodes.Received)
                 {
+                    <a asp-action="Details" asp-route-id="@order.Id">Details</a>
                     <a asp-action="UpdateFromCompletedTests" asp-route-id="@order.Id">Complete</a>
+                }
+                @if (order.Status == OrderStatusCodes.Complete)
+                {
+                    <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier">Results</a>
                 }
             </td>
             <td>@order.Id</td>

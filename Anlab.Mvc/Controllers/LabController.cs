@@ -36,7 +36,7 @@ namespace AnlabMvc.Controllers
         public IActionResult OpenOrders()
         {
             //TODO: update this when we know status. Add filter?
-            var orders = _dbContext.Orders.Where(a => a.Status != OrderStatusCodes.Created && a.Status != OrderStatusCodes.Complete)
+            var orders = _dbContext.Orders.Where(a => a.Status != OrderStatusCodes.Created)
                 .Include(i => i.Creator).ToList();
 
             return View(orders);
