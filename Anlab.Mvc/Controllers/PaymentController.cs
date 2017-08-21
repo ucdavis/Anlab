@@ -89,24 +89,7 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            try
-            {
-                var paymentEvent = new PaymentEvent();
-                paymentEvent.Transaction_Id = response.Transaction_Id;
-                paymentEvent.Auth_Amount = response.Auth_Amount;
-                paymentEvent.Decision = response.Decision;
-                paymentEvent.Reason_Code = response.Reason_Code;
-                paymentEvent.Req_Reference_Number = response.Req_Reference_Number;
-                paymentEvent.ReturnedResults = JsonConvert.SerializeObject(dictionary);
-
-                _context.PaymentEvents.Add(paymentEvent);
-                _context.SaveChanges(true);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            //ProcessPaymentEvent(response, dictionary); //For testing locally, can enable this.
 
             var order = _context.Orders.SingleOrDefault(a => a.Id == response.Req_Reference_Number);
             if (order == null)
@@ -131,6 +114,28 @@ namespace AnlabMvc.Controllers
             return View(response);
         }
 
+        private void ProcessPaymentEvent(ReceiptResponseModel response, Dictionary<string, string> dictionary)
+        {
+            try
+            {
+                var paymentEvent = new PaymentEvent();
+                paymentEvent.Transaction_Id = response.Transaction_Id;
+                paymentEvent.Auth_Amount = response.Auth_Amount;
+                paymentEvent.Decision = response.Decision;
+                paymentEvent.Reason_Code = response.Reason_Code;
+                paymentEvent.Req_Reference_Number = response.Req_Reference_Number;
+                paymentEvent.ReturnedResults = JsonConvert.SerializeObject(dictionary);
+
+                _context.PaymentEvents.Add(paymentEvent);
+                _context.SaveChanges(true);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, ex.Message);
+                
+            }
+        }
+
         //TODO: Cancel url
 
         [HttpPost]
@@ -148,6 +153,8 @@ namespace AnlabMvc.Controllers
             }
             else
             {
+                ProcessPaymentEvent(response, dictionary);
+
                 //Do payment stuff.
                 var order = _context.Orders.SingleOrDefault(a => a.Id == response.Req_Reference_Number);
                 if (order == null)
