@@ -33,7 +33,7 @@ namespace AnlabMvc.Controllers
             _fileStorageService = fileStorageService;
         }
 
-        public IActionResult OpenOrders()
+        public IActionResult Orders()
         {
             //TODO: update this when we know status. Add filter?
             var orders = _dbContext.Orders.Where(a => a.Status != OrderStatusCodes.Created)
@@ -72,7 +72,7 @@ namespace AnlabMvc.Controllers
             if(order.Status == OrderStatusCodes.Received)
             {
                 ErrorMessage = "You cannot edit an order marked as received";
-                return RedirectToAction("OpenOrders");
+                return RedirectToAction("Orders");
             }
             var joined = await _orderService.PopulateTestItemModel(true);
 
@@ -165,7 +165,7 @@ namespace AnlabMvc.Controllers
             if (order.Status != OrderStatusCodes.Confirmed)
             {
                 ErrorMessage = "You can only receive a confirmed order";
-                return RedirectToAction("OpenOrders");
+                return RedirectToAction("Orders");
             }
 
             order.Status = OrderStatusCodes.Received;
@@ -177,7 +177,7 @@ namespace AnlabMvc.Controllers
             await _dbContext.SaveChangesAsync();
 
             Message = "Order marked as received";
-            return RedirectToAction("OpenOrders");
+            return RedirectToAction("Orders");
 
         }
 
@@ -194,7 +194,7 @@ namespace AnlabMvc.Controllers
             if (result.WasError)
             {
                 ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
-                return RedirectToAction("OpenOrders");
+                return RedirectToAction("Orders");
             }
             var orderDetails = order.GetOrderDetails();
             orderDetails.SelectedTests = result.SelectedTests;
@@ -224,7 +224,7 @@ namespace AnlabMvc.Controllers
             if (order.Status != OrderStatusCodes.Received)
             {
                 ErrorMessage = "You can only Complete a Received order";
-                //return RedirectToAction("OpenOrders");
+                //return RedirectToAction("Orders");
             }
 
             if (model.UploadFile == null || model.UploadFile.Length <= 0)
@@ -239,7 +239,7 @@ namespace AnlabMvc.Controllers
             if (result.WasError)
             {
                 ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
-                return RedirectToAction("OpenOrders");
+                return RedirectToAction("Orders");
             }
 
             //File Upload
@@ -260,7 +260,7 @@ namespace AnlabMvc.Controllers
             await _dbContext.SaveChangesAsync();
 
             Message = "Order marked as Complete";
-            return RedirectToAction("OpenOrders");
+            return RedirectToAction("Orders");
 
         }
 
