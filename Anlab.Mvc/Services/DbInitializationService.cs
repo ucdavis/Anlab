@@ -9,6 +9,7 @@ using AnlabMvc.Models.Roles;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Text.Encodings.Web;
+using AnlabMvc.Models.Order;
 
 namespace AnlabMvc.Services
 {
@@ -281,7 +282,7 @@ namespace AnlabMvc.Services
                 ClientId = "XYZ",
                 CreatorId = user.Id,
                 Project = "Test Project",
-                Status = "Received",
+                Status = OrderStatusCodes.Complete,
                 RequestNum = "17P138",
                 JsonDetails = xxx
             };

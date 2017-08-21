@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using AnlabMvc.Models.Configuration;
 using Anlab.Core.Data;
+using Anlab.Core.Domain;
 using AnlabMvc.Models.CyberSource;
 using AnlabMvc.Models.Order;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Serilog;
@@ -52,7 +54,7 @@ namespace AnlabMvc.Controllers
 
             if (order.Status != OrderStatusCodes.Complete)
             {
-                ErrorMessage = "You Pay until the Order is complete.";
+                ErrorMessage = "You cannot Pay until the Order is complete."; //TODO: Change to awaiting Payment
                 return RedirectToAction("Index", "Order");
             }
 
@@ -83,13 +85,53 @@ namespace AnlabMvc.Controllers
             if (!_dataSigningService.Check(dictionary, response.Signature))
             {
                 Log.Error("Check Signature Failure");
-                TempData["ErrorMessage"] = string.Format("An error has occurred. Payment not processed. If you experience further problems, contact us.");
+                ErrorMessage = string.Format("An error has occurred. Payment not processed. If you experience further problems, contact us.");
                 return RedirectToAction("Index", "Home");
             }
+
+            try
+            {
+                var paymentEvent = new PaymentEvent();
+                paymentEvent.Transaction_Id = response.Transaction_Id;
+                paymentEvent.Auth_Amount = response.Auth_Amount;
+                paymentEvent.Decision = response.Decision;
+                paymentEvent.Reason_Code = response.Reason_Code;
+                paymentEvent.Req_Reference_Number = response.Req_Reference_Number;
+                paymentEvent.ReturnedResults = JsonConvert.SerializeObject(dictionary);
+
+                _context.PaymentEvents.Add(paymentEvent);
+                _context.SaveChanges(true);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+            var order = _context.Orders.SingleOrDefault(a => a.Id == response.Req_Reference_Number);
+            if (order == null)
+            {
+                Log.Error("Order not found {0}", response.Req_Reference_Number);
+                ErrorMessage = "Order for payment not found. Please contact technical support.";
+                return NotFound(response.Req_Reference_Number);
+            }
+            if (order.CreatorId != CurrentUserId)
+            {
+                ErrorMessage = "You don't have access to this order.";
+                return NotFound(response.Req_Reference_Number);
+            }
+
+            //Ok, check response
+
+
+
+
             ViewBag.PaymentDictionary = dictionary; //Debugging. Remove when not needed
 
             return View(response);
         }
+
+        //TODO: Cancel url
 
         [HttpPost]
         [AllowAnonymous]
