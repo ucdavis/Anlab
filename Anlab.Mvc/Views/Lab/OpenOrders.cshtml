@@ -5,6 +5,19 @@
 }
 
 
+<table border="0" cellspacing="5" cellpadding="5">
+    <tbody>
+        <tr>
+            <td>Minimum Date:</td>
+            <td><input name="min" id="min" type="text"></td>
+        </tr>
+        <tr>
+            <td>Maximum Date:</td>
+            <td><input name="max" id="max" type="text"></td>
+        </tr>
+    </tbody>
+</table>
+
 <table id="table">
     <thead>
     <tr>
@@ -55,11 +68,14 @@
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+    <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
 }
 
 @section Scripts
 {
     @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <script type="text/javascript">
         $(function() {
@@ -75,6 +91,31 @@
                     },
 
                 ]
+            });
+
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    var min = $('#min').datepicker("getDate");
+                    var max = $('#max').datepicker("getDate");
+                    var startDate = new Date(data[5]);
+                    //don't account for time
+                    startDate.setHours(0, 0, 0, 0);
+                    if (min == null && max == null) { return true; }
+                    if (min == null && startDate <= max) { return true; }
+                    if (max == null && startDate >= min) { return true; }
+                    if (startDate <= max && startDate >= min) { return true; }
+                    return false;
+                }
+            );
+
+
+            $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+            $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+            var table = $('#table').DataTable();
+
+            // Event listener to the two range filtering inputs to redraw on input
+            $('#min, #max').change(function () {
+                table.draw();
             });
         });
     </script>
