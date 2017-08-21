@@ -8,6 +8,7 @@ namespace AnlabMvc.Services
     {
         Task EnqueueCreatedMessage(Order order);
         Task EnqueueReceivedMessage(Order order);
+        Task EnqueuePaidMessage(Order order);
         Task EnqueueCompletedMessage(Order order);
     }
 
@@ -52,6 +53,28 @@ namespace AnlabMvc.Services
 
             _mailService.EnqueueMessage(message);
         }
+
+        public async Task EnqueuePaidMessage(Order order)
+        {
+            var orderDetails = order.GetOrderDetails();
+            var body = string.Empty;
+            var subject = "Order Payment Confirmation";
+            //TODO: change body of email, right now it is the same as OrderCreated
+            body = await _viewRenderService.RenderViewToStringAsync("Templates/_PaymentReceived", order);
+
+
+            var message = new MailMessage
+            {
+                Subject = subject,
+                Body = body,
+                SendTo = order.Creator.Email,
+                Order = order,
+                User = order.Creator,
+            };
+
+            _mailService.EnqueueMessage(message);
+        }
+
         public async Task EnqueueCompletedMessage(Order order)
         {
             var orderDetails = order.GetOrderDetails();
