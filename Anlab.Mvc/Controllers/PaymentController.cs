@@ -105,6 +105,58 @@ namespace AnlabMvc.Controllers
             }
 
             //Ok, check response
+            // general error, bad request
+            if (string.Equals(response.Decision, ReplyCodes.Error) ||
+                response.Reason_Code == ReasonCodes.BadRequestError ||
+                response.Reason_Code == ReasonCodes.MerchantAccountError)
+            {
+                //TODO: send to general error page
+                Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Warning("Unsuccessful Reply");
+                ErrorMessage = "An error has occurred. If you experience further problems, please contact us";
+                return RedirectToAction("Index", "Home");
+            }
+
+            // this is only possible on a hosted payment page
+            if (string.Equals(response.Decision, ReplyCodes.Cancel))
+            {
+                Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Warning("Cancelled Reply");
+                ErrorMessage = "The payment process was canceled before it could complete. If you experience further problems, please contact us";
+                return RedirectToAction("Index", "Home");
+            }
+
+            // manual review required
+            if (string.Equals(response.Decision, ReplyCodes.Review))
+            {
+                //TODO: send to general error page
+                Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Warning("Manual Review Reply");
+                ErrorMessage = "Error with Credit Card. Please contact issuing bank. If you experience further problems, please contact us";
+                return RedirectToAction("Index", "Home");
+            }
+
+            // bad cc information, return to payment page
+            if (string.Equals(response.Decision, ReplyCodes.Decline))
+            {
+                if (response.Reason_Code == ReasonCodes.AvsFailure)
+                {
+                    Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Warning("Avs Failure");
+                    ErrorMessage = "We’re sorry, but it appears that the billing address that you entered does not match the billing address registered with your card. Please verify that the billing address and zip code you entered are the ones registered with your card issuer and try again. If you experience further problems, please contact us";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                if (response.Reason_Code == ReasonCodes.BankTimeoutError ||
+                    response.Reason_Code == ReasonCodes.ProcessorTimeoutError)
+                {
+                    Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Error("Bank Timeout Error");
+                    ErrorMessage = "Error contacting Credit Card issuing bank. Please wait a few minutes and try again. If you experience further problems, please contact us";
+                }
+                else
+                {
+                    Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Warning("Declined Card Error");
+                    ErrorMessage = "We’re sorry but your credit card was declined. Please use an alternative credit card and try submitting again. If you experience further problems, please contact us";
+                }
+
+                return RedirectToAction("Index", "Home");
+            }
 
 
 
@@ -112,6 +164,30 @@ namespace AnlabMvc.Controllers
             ViewBag.PaymentDictionary = dictionary; //Debugging. Remove when not needed
 
             return View(response);
+        }
+
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public ActionResult Cancel(ReceiptResponseModel response)
+        {
+            {
+                Log.ForContext("response", response, true).Information("Cancel response received");
+
+                // check signature
+                var dictionary = Request.Form.ToDictionary(x => x.Key.ToString(), x => x.Value.ToString());
+                if (!_dataSigningService.Check(dictionary, response.Signature))
+                {
+                    Log.Error("Check Signature Failure");
+                    ErrorMessage =
+                        string.Format(
+                            "An error has occurred. Payment not processed. If you experience further problems, contact us.");
+                    return RedirectToAction("Index", "Home");
+                }
+                ViewBag.PaymentDictionary = dictionary; //Debugging. Remove when not needed
+                ProcessPaymentEvent(response, dictionary); //TODO: Do we want to try to write cancel events?
+
+                return View(response);
+            }
         }
 
         private void ProcessPaymentEvent(ReceiptResponseModel response, Dictionary<string, string> dictionary)

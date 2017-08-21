@@ -24,7 +24,7 @@ namespace AnlabMvc.Models.CyberSource
         /// <summary>
         /// Numeric value corresponding to the result of the credit card request.
         /// </summary>
-        public string Reason_Code { get; set; }
+        public int Reason_Code { get; set; }
         /// <summary>
         /// Amount that was authorized.
         /// </summary>

@@ -22,7 +22,7 @@ namespace Anlab.Core.Domain
 
         public string Decision { get; set; }
 
-        public string Reason_Code { get; set; }
+        public int Reason_Code { get; set; }
         public string Auth_Amount { get; set; }
 
         /// <summary>
