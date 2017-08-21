@@ -158,6 +158,29 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            // good cc info, partial payment
+            if (string.Equals(response.Decision, ReplyCodes.Accept) &&
+                response.Reason_Code == ReasonCodes.PartialApproveError)
+            {
+                //I Don't think this can happen.
+                //TODO: credit card was partially billed. flag transaction for review
+                //TODO: send to general error page
+                Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Error("Partial Payment Error");
+                ErrorMessage = "We’re sorry but a Partial Payment Error was detected. Please contact us";
+                return RedirectToAction("Index", "Home");
+            }
+
+            //Should be good, 
+            if (response.Decision != ReplyCodes.Accept)
+            {
+                Log.Error("Got past all the other checks. But it still wasn't Accepted");
+            }
+            else
+            {
+                order.Status = OrderStatusCodes.Paid;
+                _context.SaveChanges(true);
+                Message = "Payment Processed. Thank You.";
+            }
 
 
 
@@ -212,7 +235,7 @@ namespace AnlabMvc.Controllers
             }
         }
 
-        //TODO: Cancel url
+      
 
         [HttpPost]
         [AllowAnonymous]
@@ -239,7 +262,11 @@ namespace AnlabMvc.Controllers
                 }
                 else
                 {
-                    order.Status = "Paid"; //TODO, Flag or add to the list of codes.
+                    if (response.Decision == ReplyCodes.Accept)
+                    {
+                        order.Status = OrderStatusCodes.Paid;
+                        _context.SaveChanges(true);
+                    }
                 }
             }
 
