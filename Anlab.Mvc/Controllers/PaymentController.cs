@@ -104,71 +104,13 @@ namespace AnlabMvc.Controllers
                 return NotFound(response.Req_Reference_Number);
             }
 
-            //Ok, check response
-            // general error, bad request
-            if (string.Equals(response.Decision, ReplyCodes.Error) ||
-                response.Reason_Code == ReasonCodes.BadRequestError ||
-                response.Reason_Code == ReasonCodes.MerchantAccountError)
+            var responeValid = CheckResponse(response);
+            if (!responeValid.IsValid)
             {
-                //TODO: send to general error page
-                Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Warning("Unsuccessful Reply");
-                ErrorMessage = "An error has occurred. If you experience further problems, please contact us";
-                return RedirectToAction("Index", "Home");
+                ErrorMessage = ErrorMessage = string.Format("Errors detected: {0}", string.Join(",", responeValid.Errors));
+                return RedirectToAction("Pay", new {id = order.Id});
             }
 
-            // this is only possible on a hosted payment page
-            if (string.Equals(response.Decision, ReplyCodes.Cancel))
-            {
-                Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Warning("Cancelled Reply");
-                ErrorMessage = "The payment process was canceled before it could complete. If you experience further problems, please contact us";
-                return RedirectToAction("Index", "Home");
-            }
-
-            // manual review required
-            if (string.Equals(response.Decision, ReplyCodes.Review))
-            {
-                //TODO: send to general error page
-                Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Warning("Manual Review Reply");
-                ErrorMessage = "Error with Credit Card. Please contact issuing bank. If you experience further problems, please contact us";
-                return RedirectToAction("Index", "Home");
-            }
-
-            // bad cc information, return to payment page
-            if (string.Equals(response.Decision, ReplyCodes.Decline))
-            {
-                if (response.Reason_Code == ReasonCodes.AvsFailure)
-                {
-                    Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Warning("Avs Failure");
-                    ErrorMessage = "We’re sorry, but it appears that the billing address that you entered does not match the billing address registered with your card. Please verify that the billing address and zip code you entered are the ones registered with your card issuer and try again. If you experience further problems, please contact us";
-                    return RedirectToAction("Index", "Home");
-                }
-
-                if (response.Reason_Code == ReasonCodes.BankTimeoutError ||
-                    response.Reason_Code == ReasonCodes.ProcessorTimeoutError)
-                {
-                    Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Error("Bank Timeout Error");
-                    ErrorMessage = "Error contacting Credit Card issuing bank. Please wait a few minutes and try again. If you experience further problems, please contact us";
-                }
-                else
-                {
-                    Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Warning("Declined Card Error");
-                    ErrorMessage = "We’re sorry but your credit card was declined. Please use an alternative credit card and try submitting again. If you experience further problems, please contact us";
-                }
-
-                return RedirectToAction("Index", "Home");
-            }
-
-            // good cc info, partial payment
-            if (string.Equals(response.Decision, ReplyCodes.Accept) &&
-                response.Reason_Code == ReasonCodes.PartialApproveError)
-            {
-                //I Don't think this can happen.
-                //TODO: credit card was partially billed. flag transaction for review
-                //TODO: send to general error page
-                Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Error("Partial Payment Error");
-                ErrorMessage = "We’re sorry but a Partial Payment Error was detected. Please contact us";
-                return RedirectToAction("Index", "Home");
-            }
 
             //Should be good, 
             if (response.Decision != ReplyCodes.Accept)
@@ -187,6 +129,81 @@ namespace AnlabMvc.Controllers
             ViewBag.PaymentDictionary = dictionary; //Debugging. Remove when not needed
 
             return View(response);
+        }
+
+        private CheckResponseResults CheckResponse(ReceiptResponseModel response)
+        {
+            var rtValue = new CheckResponseResults();
+            //Ok, check response
+            // general error, bad request
+            if (string.Equals(response.Decision, ReplyCodes.Error) ||
+                response.Reason_Code == ReasonCodes.BadRequestError ||
+                response.Reason_Code == ReasonCodes.MerchantAccountError)
+            {
+                //TODO: send to general error page
+                Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code)
+                    .Warning("Unsuccessful Reply");
+                rtValue.Errors.Add("An error has occurred. If you experience further problems, please contact us");
+            }
+
+            // this is only possible on a hosted payment page
+            if (string.Equals(response.Decision, ReplyCodes.Cancel))
+            {
+                Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Warning("Cancelled Reply");
+                rtValue.Errors.Add("The payment process was canceled before it could complete. If you experience further problems, please contact us");
+            }
+
+            // manual review required
+            if (string.Equals(response.Decision, ReplyCodes.Review))
+            {
+                //TODO: send to general error page
+                Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Warning("Manual Review Reply");
+                rtValue.Errors.Add("Error with Credit Card. Please contact issuing bank. If you experience further problems, please contact us");
+            }
+
+            // bad cc information, return to payment page
+            if (string.Equals(response.Decision, ReplyCodes.Decline))
+            {
+                if (response.Reason_Code == ReasonCodes.AvsFailure)
+                {
+                    Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Warning("Avs Failure");
+                    rtValue.Errors.Add("We’re sorry, but it appears that the billing address that you entered does not match the billing address registered with your card. Please verify that the billing address and zip code you entered are the ones registered with your card issuer and try again. If you experience further problems, please contact us");
+                }
+
+                if (response.Reason_Code == ReasonCodes.BankTimeoutError ||
+                    response.Reason_Code == ReasonCodes.ProcessorTimeoutError)
+                {
+                    Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Error("Bank Timeout Error");
+                    rtValue.Errors.Add("Error contacting Credit Card issuing bank. Please wait a few minutes and try again. If you experience further problems, please contact us");
+                }
+                else
+                {
+                    Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Warning("Declined Card Error");
+                    rtValue.Errors.Add("We’re sorry but your credit card was declined. Please use an alternative credit card and try submitting again. If you experience further problems, please contact us");
+                }
+            }
+
+            // good cc info, partial payment
+            if (string.Equals(response.Decision, ReplyCodes.Accept) &&
+                response.Reason_Code == ReasonCodes.PartialApproveError)
+            {
+                //I Don't think this can happen.
+                //TODO: credit card was partially billed. flag transaction for review
+                //TODO: send to general error page
+                Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Error("Partial Payment Error");
+                rtValue.Errors.Add("We’re sorry but a Partial Payment Error was detected. Please contact us");
+            }
+            if (rtValue.Errors.Count <= 0)
+            {
+                rtValue.IsValid = true;
+            }
+            return rtValue;
+        }
+
+        private class CheckResponseResults
+        {
+            public bool IsValid { get; set; } = false;
+            public IList<string> Errors { get; set; } = new List<string>();
         }
 
         [HttpPost]
@@ -266,6 +283,8 @@ namespace AnlabMvc.Controllers
                     {
                         order.Status = OrderStatusCodes.Paid;
                         _context.SaveChanges(true);
+
+                        //TODO: Generate Email
                     }
                 }
             }
