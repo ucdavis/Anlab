@@ -16,10 +16,10 @@
         <input type="hidden" name="@pair.Key" value="@pair.Value" />
     }
     <input type="hidden" name="signature" value="@ViewBag.Signature" />
-    <button type="submit" class="btn btn-primary"><i class="fa fa-money" aria-hidden="true"> @(String.Format("{0:C}", Model.OrderDetails.GrandTotal)) Pay Now</i></button>
+    <button type="submit" class="btn btn-primary"><i class="fa fa-credit-card" aria-hidden="true"> @(String.Format("{0:C}", Model.OrderDetails.GrandTotal)) Pay Now</i></button>
 </form>
 
-<div>
+@*<div>
     <h2>Debugging Info</h2>
     
     <div>
@@ -28,7 +28,7 @@
             <p>@key.Key -- @key.Value</p>
         }
     </div>
-</div>
+</div>*@
 
 @section AdditionalStyles
 {

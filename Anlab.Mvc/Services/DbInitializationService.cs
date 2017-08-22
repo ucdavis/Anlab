@@ -282,7 +282,7 @@ namespace AnlabMvc.Services
                 ClientId = "XYZ",
                 CreatorId = user.Id,
                 Project = "Test Project",
-                Status = OrderStatusCodes.Complete,
+                Status = OrderStatusCodes.AwaitingPayment,
                 RequestNum = "17P138",
                 JsonDetails = xxx
             };

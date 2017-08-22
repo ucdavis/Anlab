@@ -106,33 +106,124 @@ namespace AnlabMvc.Controllers
                 return NotFound(response.Req_Reference_Number);
             }
 
-            var responeValid = CheckResponse(response);
-            if (!responeValid.IsValid)
+            var responseValid = CheckResponse(response);
+            if (!responseValid.IsValid)
             {
-                ErrorMessage = ErrorMessage = string.Format("Errors detected: {0}", string.Join(",", responeValid.Errors));
+                ErrorMessage = ErrorMessage = string.Format("Errors detected: {0}", string.Join(",", responseValid.Errors));
                 return RedirectToAction("Pay", new {id = order.Id});
             }
 
-
-            //Should be good, 
-            if (response.Decision != ReplyCodes.Accept)
-            {
-                Log.Error("Got past all the other checks. But it still wasn't Accepted");
-            }
-            else
+            //Should be good,   
+            if (order.Status == OrderStatusCodes.AwaitingPayment)
             {
                 order.Status = OrderStatusCodes.Paid;
                 _context.SaveChanges(true);
-                Message = "Payment Processed. Thank You.";
             }
-
-
+            Message = "Payment Processed. Thank You.";
 
             //ViewBag.PaymentDictionary = dictionary; //Debugging. Remove when not needed
 
             return View(response);
         }
 
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public ActionResult Cancel(ReceiptResponseModel response)
+        {
+            {
+                Log.ForContext("response", response, true).Information("Cancel response received");
+
+                // check signature
+                var dictionary = Request.Form.ToDictionary(x => x.Key.ToString(), x => x.Value.ToString());
+                if (!_dataSigningService.Check(dictionary, response.Signature))
+                {
+                    Log.Error("Check Signature Failure");
+                    ErrorMessage = "An error has occurred. Payment not processed. If you experience further problems, contact us.";
+                    return RedirectToAction("Index", "Home");
+                }
+                //ViewBag.PaymentDictionary = dictionary; //Debugging. Remove when not needed
+                ProcessPaymentEvent(response, dictionary); //TODO: Do we want to try to write cancel events?
+
+                return View(response);
+            }
+        }
+        
+        [HttpPost]
+        [AllowAnonymous]
+        [IgnoreAntiforgeryToken]
+        public async Task<ActionResult> ProviderNotify(ReceiptResponseModel response)
+        {
+            Log.ForContext("response", response, true).Information("Provider Notification Received");
+
+            // check signature
+            var dictionary = Request.Form.ToDictionary(x => x.Key.ToString(), x => x.Value.ToString());
+            if (!_dataSigningService.Check(dictionary, response.Signature))
+            {
+                Log.Error("Check Signature Failure");
+            }
+            else
+            {
+                ProcessPaymentEvent(response, dictionary);
+
+                //Do payment stuff.
+                var order = _context.Orders.SingleOrDefault(a => a.Id == response.Req_Reference_Number);
+                if (order == null)
+                {
+                    Log.Error("Order not found {0}", response.Req_Reference_Number);
+                }
+                else
+                {
+                    if (response.Decision == ReplyCodes.Accept)
+                    {
+                        if (order.Status == OrderStatusCodes.AwaitingPayment)
+                        {
+                            order.Status = OrderStatusCodes.Paid;
+                            _context.SaveChanges(true);
+                        }
+                        
+                        try
+                        {
+                            await _orderMessageService.EnqueuePaidMessage(order);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, ex.Message);
+                        }
+                    }
+                }
+            }
+
+            return new JsonResult(new { });
+        }
+
+        private void ProcessPaymentEvent(ReceiptResponseModel response, Dictionary<string, string> dictionary)
+        {
+            try
+            {
+                var paymentEvent = new PaymentEvent();
+                paymentEvent.Transaction_Id = response.Transaction_Id;
+                paymentEvent.Auth_Amount = response.Auth_Amount;
+                paymentEvent.Decision = response.Decision;
+                paymentEvent.Reason_Code = response.Reason_Code;
+                paymentEvent.Req_Reference_Number = response.Req_Reference_Number;
+                paymentEvent.ReturnedResults = JsonConvert.SerializeObject(dictionary);
+
+                _context.PaymentEvents.Add(paymentEvent);
+                _context.SaveChanges(true);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, ex.Message);
+
+            }
+        }
+
+        /// <summary>
+        /// These are copied from Give and moved into a private method.
+        /// They have only had basic testing done against them.
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns></returns>
         private CheckResponseResults CheckResponse(ReceiptResponseModel response)
         {
             var rtValue = new CheckResponseResults();
@@ -142,7 +233,6 @@ namespace AnlabMvc.Controllers
                 response.Reason_Code == ReasonCodes.BadRequestError ||
                 response.Reason_Code == ReasonCodes.MerchantAccountError)
             {
-                //TODO: send to general error page
                 Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code)
                     .Warning("Unsuccessful Reply");
                 rtValue.Errors.Add("An error has occurred. If you experience further problems, please contact us");
@@ -158,7 +248,6 @@ namespace AnlabMvc.Controllers
             // manual review required
             if (string.Equals(response.Decision, ReplyCodes.Review))
             {
-                //TODO: send to general error page
                 Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Warning("Manual Review Reply");
                 rtValue.Errors.Add("Error with Credit Card. Please contact issuing bank. If you experience further problems, please contact us");
             }
@@ -195,9 +284,18 @@ namespace AnlabMvc.Controllers
                 Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Error("Partial Payment Error");
                 rtValue.Errors.Add("We’re sorry but a Partial Payment Error was detected. Please contact us");
             }
+
             if (rtValue.Errors.Count <= 0)
             {
-                rtValue.IsValid = true;
+                if (response.Decision != ReplyCodes.Accept)
+                {
+                    Log.Error("Got past all the other checks. But it still wasn't Accepted");
+                    rtValue.Errors.Add("Unknown Error. Please contact us.");
+                }
+                else
+                {
+                    rtValue.IsValid = true;
+                }
             }
             return rtValue;
         }
@@ -206,99 +304,6 @@ namespace AnlabMvc.Controllers
         {
             public bool IsValid { get; set; } = false;
             public IList<string> Errors { get; set; } = new List<string>();
-        }
-
-        [HttpPost]
-        [IgnoreAntiforgeryToken]
-        public ActionResult Cancel(ReceiptResponseModel response)
-        {
-            {
-                Log.ForContext("response", response, true).Information("Cancel response received");
-
-                // check signature
-                var dictionary = Request.Form.ToDictionary(x => x.Key.ToString(), x => x.Value.ToString());
-                if (!_dataSigningService.Check(dictionary, response.Signature))
-                {
-                    Log.Error("Check Signature Failure");
-                    ErrorMessage =
-                        string.Format(
-                            "An error has occurred. Payment not processed. If you experience further problems, contact us.");
-                    return RedirectToAction("Index", "Home");
-                }
-                ViewBag.PaymentDictionary = dictionary; //Debugging. Remove when not needed
-                ProcessPaymentEvent(response, dictionary); //TODO: Do we want to try to write cancel events?
-
-                return View(response);
-            }
-        }
-
-        private void ProcessPaymentEvent(ReceiptResponseModel response, Dictionary<string, string> dictionary)
-        {
-            try
-            {
-                var paymentEvent = new PaymentEvent();
-                paymentEvent.Transaction_Id = response.Transaction_Id;
-                paymentEvent.Auth_Amount = response.Auth_Amount;
-                paymentEvent.Decision = response.Decision;
-                paymentEvent.Reason_Code = response.Reason_Code;
-                paymentEvent.Req_Reference_Number = response.Req_Reference_Number;
-                paymentEvent.ReturnedResults = JsonConvert.SerializeObject(dictionary);
-
-                _context.PaymentEvents.Add(paymentEvent);
-                _context.SaveChanges(true);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, ex.Message);
-                
-            }
-        }
-
-      
-
-        [HttpPost]
-        [AllowAnonymous]
-        [IgnoreAntiforgeryToken]
-        public async Task<ActionResult> ProviderNotify(ReceiptResponseModel response)
-        {
-            Log.ForContext("response", response, true).Information("Provider Notification Received");
-
-            // check signature
-            var dictionary = Request.Form.ToDictionary(x => x.Key.ToString(), x => x.Value.ToString());
-            if (!_dataSigningService.Check(dictionary, response.Signature))
-            {
-                Log.Error("Check Signature Failure");
-            }
-            else
-            {
-                ProcessPaymentEvent(response, dictionary);
-
-                //Do payment stuff.
-                var order = _context.Orders.SingleOrDefault(a => a.Id == response.Req_Reference_Number);
-                if (order == null)
-                {
-                    Log.Error("Order not found {0}", response.Req_Reference_Number);
-                }
-                else
-                {
-                    if (response.Decision == ReplyCodes.Accept)
-                    {
-                        order.Status = OrderStatusCodes.Paid;
-                        _context.SaveChanges(true);
-
-                        try
-                        {
-                            await _orderMessageService.EnqueuePaidMessage(order);
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Error(ex, ex.Message);
-                        }
-                    }
-                }
-            }
-
-            return new JsonResult(new { });
         }
 
         private Dictionary<string, string> SetDictionaryValues(Anlab.Core.Domain.Order order, Anlab.Core.Domain.User user)
