@@ -5,18 +5,16 @@
 }
 
 
-<table border="0" cellspacing="5" cellpadding="5">
+<table border="0" cellspacing="5" cellpadding="5" align="left">
     <tbody>
         <tr>
             <td>Minimum Date:</td>
-            <td><input name="min" id="min" type="text"></td>
-        </tr>
-        <tr>
             <td>Maximum Date:</td>
-            <td><input name="max" id="max" type="text"></td>
+            <td>Status: </td>
         </tr>
         <tr>
-            <td>Status:</td>
+            <td><input name="min" id="min" type="text"></td>
+            <td><input name="max" id="max" type="text"></td>
             <td>
                 <select name="status" id="status">
                     <option value="All">Show All</option>
@@ -28,6 +26,7 @@
         </tr>
     </tbody>
 </table>
+
 
 <table id="table">
     <thead>
@@ -80,6 +79,13 @@
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
     <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+
+    <style>
+        #max, #min, #status {
+            margin: 5px 5px 5px 0;
+            height: 30px;
+        }
+    </style>
 }
 
 @section Scripts
@@ -101,8 +107,10 @@
                         "orderable": false                        
                     },
 
-                ]
+                ],
+                "dom": '<lf<t>ip>'
             });
+
 
             $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
             $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
