@@ -115,11 +115,19 @@
     @RenderBody()
 
 </div>
+
 <footer>
-  <div class="footer_contents"><p class="discreet">&copy; The Regents of the University of California, Davis campus, 20017-@(DateTime.UtcNow.Date.ToString("yy")).</p>
-    <p class="discreet">Version: @VersionFinder.Version</p></div>
-
-
+    <div class="footer_contents">        
+        <p class="discreet">
+            &copy; The Regents of the University of California, Davis campus, 20017-@(DateTime.UtcNow.Date.ToString("yy")).
+        @if (User != null && User.IsInRole(RoleCodes.Admin) && ViewBag.OrderId != null)
+        {
+            <a asp-controller="Lab" asp-action="JsonDetails" asp-route-id="@ViewBag.OrderId" target="_blank" class="pull-right"><i class="fa fa-code"></i></a>
+        }
+        </p>
+        <p class="discreet">Version: @VersionFinder.Version </p>
+    </div>
+      
 </footer>
 
 

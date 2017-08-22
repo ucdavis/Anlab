@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    ViewBag.OrderId = Model.Order.Id;
 }
 
 <h2>Details</h2>
@@ -10,10 +11,6 @@
 
 @Html.Partial("_OrderDetails")
 
-<div class="form-group">
-    <strong>json Data</strong>
-    <span>@Model.Order.JsonDetails</span>
-</div>
 
 @section AdditionalStyles
 {

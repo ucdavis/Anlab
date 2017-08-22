@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Confirmation";
+    ViewBag.OrderId = Model.Order.Id;
 }
 
 <form asp-controller="order" asp-action="Delete" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
@@ -17,12 +18,6 @@
     <button type="submit" class="btn btn-primary"><i class="fa fa-money" aria-hidden="true"> @(String.Format("{0:C}", Model.OrderDetails.Total)) Confirm and Send</i></button>    
     <a asp-action="Edit" asp-route-id="@Model.Order.Id" class="btn btn-default">Edit Order</a>
 </form>
-
-
-<div class="form-group">
-    <strong>json Data</strong>
-    <span>@Model.Order.JsonDetails</span>
-</div>
 
 @section AdditionalStyles
 {

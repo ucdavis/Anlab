@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Pay";
     var paymentDict = (Dictionary<string, string>)ViewBag.PaymentDictionary;
+    ViewBag.OrderId = Model.Order.Id;
 }
 <h2>Details</h2>
 

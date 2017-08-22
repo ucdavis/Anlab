@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Confirmation";
+    ViewBag.OrderId = Model.Order.Id;
 }
 
 @Html.Partial("_OrderDetails")
@@ -12,12 +13,6 @@
     <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true">Confirm Received</i></button>    
     <a asp-action="Edit" asp-route-id="@Model.Order.Id" class="btn btn-default">Edit Order</a>
 </form>
-
-
-<div class="form-group">
-    <strong>json Data</strong>
-    <span>@Model.Order.JsonDetails</span>
-</div>
 
 @section AdditionalStyles
 {
