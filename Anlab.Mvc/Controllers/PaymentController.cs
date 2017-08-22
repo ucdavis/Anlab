@@ -54,9 +54,9 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index", "Order");
             }
 
-            if (order.Status != OrderStatusCodes.Complete)
+            if (order.Status != OrderStatusCodes.AwaitingPayment)
             {
-                ErrorMessage = "You cannot Pay until the Order is complete."; //TODO: Change to awaiting Payment
+                ErrorMessage = "You cannot Pay until the Order is ready."; 
                 return RedirectToAction("Index", "Order");
             }
 
@@ -87,7 +87,7 @@ namespace AnlabMvc.Controllers
             if (!_dataSigningService.Check(dictionary, response.Signature))
             {
                 Log.Error("Check Signature Failure");
-                ErrorMessage = string.Format("An error has occurred. Payment not processed. If you experience further problems, contact us.");
+                ErrorMessage = "An error has occurred. Payment not processed. If you experience further problems, contact us.";
                 return RedirectToAction("Index", "Home");
             }
 
@@ -128,7 +128,7 @@ namespace AnlabMvc.Controllers
 
 
 
-            ViewBag.PaymentDictionary = dictionary; //Debugging. Remove when not needed
+            //ViewBag.PaymentDictionary = dictionary; //Debugging. Remove when not needed
 
             return View(response);
         }
