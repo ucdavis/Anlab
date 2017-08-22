@@ -8,9 +8,9 @@
 <table border="0" cellspacing="5" cellpadding="5" align="left">
     <tbody>
         <tr>
-            <td>Minimum Date:</td>
-            <td>Maximum Date:</td>
-            <td>Status: </td>
+            <td><label>Minimum Date:</label></td>
+            <td><label>Maximum Date:</label></td>
+            <td><label>Status:</label></td>
         </tr>
         <tr>
             <td><input name="min" id="min" type="text"></td>
@@ -82,7 +82,7 @@
 
     <style>
         #max, #min, #status {
-            margin: 5px 5px 5px 0;
+            margin: 0 5px 5px 0;
             height: 30px;
         }
     </style>
@@ -100,15 +100,14 @@
                 "sorting": [[2, "desc"]],
                 "columnDefs": [
                     {
-                        "type": "date", "targets" : [2,3]
+                        "type": "date", "targets" : [4,5]
                     },
                     {
                         "targets": [0],
                         "orderable": false                        
                     },
 
-                ],
-                "dom": '<lf<t>ip>'
+                ]
             });
 
 
