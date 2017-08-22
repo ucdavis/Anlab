@@ -336,6 +336,18 @@ namespace AnlabMvc.Services
         {
             //Meh
             CreateTestItem("()", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
+            CreateTestItem("-BCL-P-IC", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
+            CreateTestItem("-BNA-PMF", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
+            CreateTestItem("-DCL-P-IC", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
+            CreateTestItem("-DNA-PMF", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
+            CreateTestItem("-LCL-P-IC", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
+            CreateTestItem("-LNA-PMF", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
+            CreateTestItem("-PCL-P-IC", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
+            CreateTestItem("-PNA-PMF", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
+            CreateTestItem("-SCL-P-IC", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
+            CreateTestItem("-SNA-PMF", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
+            CreateTestItem("D", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
+            CreateTestItem("M", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
 
             //Soil
             CreateTestItem("GRIND", "Grind", TestCategories.Soil, "Special");
