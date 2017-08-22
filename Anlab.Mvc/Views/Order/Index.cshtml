@@ -28,12 +28,16 @@
         <tr>
             <td>@if (order.Status == OrderStatusCodes.Created)
                 {
-                    <a asp-action="Confirmation" asp-route-id="@order.Id">Confirm</a>
-                    <a asp-action="Edit" asp-route-id="@order.Id">Edit</a>
+                    <a asp-action="Confirmation" asp-route-id="@order.Id"><i class="fa fa-check"> Confirm</i></a>
+                    <a asp-action="Edit" asp-route-id="@order.Id"><i class="fa fa-edit"> Edit</i></a>
                 }
                 else
                 {
-                    <a asp-action="Details" asp-route-id="@order.Id">Details</a>
+                    <a asp-action="Details" asp-route-id="@order.Id"><i class="fa fa-eye"> Details</i></a>
+                    if (order.Status == OrderStatusCodes.AwaitingPayment)
+                    {
+                        <a asp-controller="Payment" asp-action="Pay" asp-route-id="@order.Id"><i class="fa fa-credit-card-alt"> Pay</i> </a>
+                    }
                 }
             </td>
             <td>@order.Id</td>
