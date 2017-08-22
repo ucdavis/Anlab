@@ -270,12 +270,32 @@ namespace AnlabMvc.Services
                 ClientId = "XYZ",
                 CreatorId = user.Id,
                 Project = "Test Project",
-                Status = "Created",
+                Status = OrderStatusCodes.Created,
                 RequestNum = "17P138",
                 JsonDetails = xxx
             };
+            _context.Add(order);
 
+            order = new Order
+            {
+                ClientId = "XYZ",
+                CreatorId = user.Id,
+                Project = "Test Project",
+                Status = OrderStatusCodes.Confirmed,
+                RequestNum = "17P138",
+                JsonDetails = xxx
+            };
+            _context.Add(order);
 
+            order = new Order
+            {
+                ClientId = "XYZ",
+                CreatorId = user.Id,
+                Project = "Test Project",
+                Status = OrderStatusCodes.Received,
+                RequestNum = "17P138",
+                JsonDetails = xxx
+            };
             _context.Add(order);
 
             order = new Order
@@ -287,8 +307,28 @@ namespace AnlabMvc.Services
                 RequestNum = "17P138",
                 JsonDetails = xxx
             };
+            _context.Add(order);
 
+            order = new Order
+            {
+                ClientId = "XYZ",
+                CreatorId = user.Id,
+                Project = "Test Project",
+                Status = OrderStatusCodes.Paid,
+                RequestNum = "17P138",
+                JsonDetails = xxx
+            };
+            _context.Add(order);
 
+            order = new Order
+            {
+                ClientId = "XYZ",
+                CreatorId = user.Id,
+                Project = "Test Project",
+                Status = OrderStatusCodes.Complete,
+                RequestNum = "17P138",
+                JsonDetails = xxx
+            };
             _context.Add(order);
         }
 
