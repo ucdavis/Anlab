@@ -1,13 +1,13 @@
 @model AnlabMvc.Models.CyberSource.ReceiptResponseModel
 @{
     ViewData["Title"] = "Receipt";
-    var paymentDict = (Dictionary<string, string>)ViewBag.PaymentDictionary;
+    //var paymentDict = (Dictionary<string, string>)ViewBag.PaymentDictionary;
 }
 
-<h2>Receipt</h2>
-<h1>@Model.Auth_Amount</h1>
+<h1>Thank you for your payment.</h1>
+<h2>@Model.Auth_Amount</h2>
 
-<div>
+@*<div>
     <h2>Debugging Info</h2>
 
     <div>
@@ -16,4 +16,4 @@
             <p>@key.Key -- @key.Value</p>
         }
     </div>
-</div>
+</div>*@
