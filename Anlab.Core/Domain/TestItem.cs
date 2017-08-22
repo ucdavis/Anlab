@@ -34,6 +34,10 @@ namespace Anlab.Core.Domain
         {
             get
             {
+                if (Notes == null)
+                {
+                    return null;
+                }
                 var encoder = HtmlEncoder.Default;
                 return encoder.Encode(Notes);
             }
