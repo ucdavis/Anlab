@@ -2,7 +2,7 @@
 import PlantSvg from '../media/plant.svg';
 import SoilSvg from '../media/soil.svg';
 import WaterSvg from '../media/water.svg';
-import OtherSvg from '../media/icecream.svg';
+import OtherSvg from '../media/compost.svg';
 
 interface ISampleTypeProps {
     sampleType: string;
