@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using System.Text.Encodings.Web;
 
@@ -8,7 +9,7 @@ namespace Anlab.Core.Domain
 {
     public class TestItem
     {
-        [Key]
+        [Key, Column(Order = 0)]
         [StringLength(128)]
         [Display(Name = "Code")]
         [RegularExpression(@"([A-Z0-9a-z\-#])+", ErrorMessage = "Codes can only contain alphanumerics, #, and dashes.")]
@@ -21,6 +22,7 @@ namespace Anlab.Core.Domain
 
         [Required]
         [StringLength(64)]
+        [Key, Column(Order = 1)]
         public string Category { get; set; }
 
         [Required]

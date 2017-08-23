@@ -64,7 +64,7 @@ namespace AnlabMvc.Controllers
             if (ModelState.IsValid)
             {
                 testItem.Id = testItem.Id.ToUpper();
-                if (TestItemExists(testItem.Id))
+                if (TestItemExists(testItem.Id, testItem.Category.ToUpper()))
                 {
                     ErrorMessage = "Code already in use";
                     return View();
@@ -113,7 +113,7 @@ namespace AnlabMvc.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TestItemExists(testItem.Id))
+                    if (!TestItemExists(testItem.Id, testItem.Category))
                     {
                         return NotFound();
                     }
@@ -158,9 +158,9 @@ namespace AnlabMvc.Controllers
             return RedirectToAction("Index");
         }
 
-        private bool TestItemExists(string id)
+        private bool TestItemExists(string id, string category)
         {
-            return _context.TestItems.Any(e => e.Id == id);
+            return _context.TestItems.Any(e => string.Equals(e.Id, id, StringComparison.OrdinalIgnoreCase) &&  string.Equals(e.Category, category, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
