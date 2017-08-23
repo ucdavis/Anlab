@@ -30,7 +30,7 @@ namespace AnlabMvc.Controllers
         }
 
         // GET: TestItems/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(string id, string category)
         {
             if (id == null)
             {
@@ -38,7 +38,7 @@ namespace AnlabMvc.Controllers
             }
 
             var testItem = await _context.TestItems
-                .SingleOrDefaultAsync(m => m.Id == id);
+                .SingleOrDefaultAsync(m => m.Id == id && m.Category == category);
             if (testItem == null)
             {
                 return NotFound();
@@ -64,9 +64,9 @@ namespace AnlabMvc.Controllers
             if (ModelState.IsValid)
             {
                 testItem.Id = testItem.Id.ToUpper();
-                if (TestItemExists(testItem.Id, testItem.Category.ToUpper()))
+                if (TestItemExists(testItem.Id, testItem.Category))
                 {
-                    ErrorMessage = "Code already in use";
+                    ErrorMessage = "Code and Category already in use";
                     return View();
                 }
                 _context.Add(testItem);
@@ -78,14 +78,14 @@ namespace AnlabMvc.Controllers
         }
 
         // GET: TestItems/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(string id, string category)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var testItem = await _context.TestItems.SingleOrDefaultAsync(m => m.Id == id);
+            var testItem = await _context.TestItems.SingleOrDefaultAsync(m => m.Id == id && m.Category == category);
             if (testItem == null)
             {
                 return NotFound();
@@ -98,22 +98,34 @@ namespace AnlabMvc.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Analysis,Category,Group,Public,Notes")] TestItem testItem)
+        public async Task<IActionResult> Edit(string id, string originalCategory, [Bind("Id,Analysis,Category,Group,Public,Notes")] TestItem testItem)
         {
+
             if (id != testItem.Id)
             {
                 return NotFound();
             }
+
+            var testItemToUpdate = _context.TestItems.Single(a => a.Id == id && a.Category == originalCategory);
+            testItemToUpdate.Analysis = testItem.Analysis;
+            testItemToUpdate.Group = testItem.Group;
+            testItemToUpdate.Public = testItem.Public;
+            testItemToUpdate.Notes = testItem.Notes;
+            if (originalCategory != testItem.Category)
+            {
+                ErrorMessage = "Category not changed";
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(testItem);
+                    _context.Update(testItemToUpdate);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TestItemExists(testItem.Id, testItem.Category))
+                    if (!TestItemExists(testItemToUpdate.Id, testItemToUpdate.Category))
                     {
                         return NotFound();
                     }
@@ -129,7 +141,7 @@ namespace AnlabMvc.Controllers
         }
 
         // GET: TestItems/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(string id, string category)
         {
             if (id == null)
             {
@@ -137,7 +149,7 @@ namespace AnlabMvc.Controllers
             }
 
             var testItem = await _context.TestItems
-                .SingleOrDefaultAsync(m => m.Id == id);
+                .SingleOrDefaultAsync(m => m.Id == id && m.Category == category);
             if (testItem == null)
             {
                 return NotFound();
@@ -149,9 +161,9 @@ namespace AnlabMvc.Controllers
         // POST: TestItems/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(string id, string category)
         {
-            var testItem = await _context.TestItems.SingleOrDefaultAsync(m => m.Id == id);
+            var testItem = await _context.TestItems.SingleOrDefaultAsync(m => m.Id == id && m.Category == category);
             _context.TestItems.Remove(testItem);
             await _context.SaveChangesAsync();
             Message = "Test deleted";
