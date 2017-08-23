@@ -28,7 +28,9 @@ namespace Test.TestsDatabase
             }));
             expectedFields.Add(new NameAndType("Category", "System.String", new List<string>
             {
+                "[System.ComponentModel.DataAnnotations.KeyAttribute()]",
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
+                "[System.ComponentModel.DataAnnotations.Schema.ColumnAttribute(Order = 1)]",
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)64)]"
             }));
             expectedFields.Add(new NameAndType("Group", "System.String", new List<string>
@@ -39,8 +41,9 @@ namespace Test.TestsDatabase
             expectedFields.Add(new NameAndType("Id", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Code\")]",
-                "[System.ComponentModel.DataAnnotations.KeyAttribute()]",
-                "[System.ComponentModel.DataAnnotations.RegularExpressionAttribute(\"([A-Z0-9a-z\\-])+\", ErrorMessage = \"Codes can only contain alphanumerics and dashes.\")]",
+                "[System.ComponentModel.DataAnnotations.KeyAttribute()]",                
+                "[System.ComponentModel.DataAnnotations.RegularExpressionAttribute(\"([A-Z0-9a-z\\-#])+\", ErrorMessage = \"Codes can only contain alphanumerics, #, and dashes.\")]",
+                "[System.ComponentModel.DataAnnotations.Schema.ColumnAttribute(Order = 0)]",
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)128)]"                
             }));
             expectedFields.Add(new NameAndType("Notes", "System.String", new List<string>()));
