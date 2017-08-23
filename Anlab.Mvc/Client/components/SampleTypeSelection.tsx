@@ -35,7 +35,7 @@ export class SampleTypeSelection extends React.Component<ISampleTypeProps, any> 
                     </div>
                     <div className={this.props.sampleType === "Other" ? activeDiv : inactiveDiv} onClick={() => this.handleChange("Other")}>
                         <OtherSvg />
-                        <h3>Other</h3>
+                        <h3>Compost - Manure</h3>
                     </div>
                 </div>
             </div>
