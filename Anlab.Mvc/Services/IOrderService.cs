@@ -55,11 +55,12 @@ namespace AnlabMvc.Services
         /// A list of test items with the labwork prices for a set of test ids
         /// </summary>
         /// <param name="selectedTestIds"></param>
+        /// <param name="category"></param>
         /// <returns></returns>
-        private async Task<IList<TestItemModel>> PopulateSelectedTestsItemModel(IEnumerable<string> selectedTestIds)
+        private async Task<IList<TestItemModel>> PopulateSelectedTestsItemModel(IEnumerable<string> selectedTestIds, string category)
         {
             var prices = await _labworksService.GetPrices();
-            var items = _context.TestItems.Where(a => selectedTestIds.Contains(a.Id)).AsNoTracking().ToList();
+            var items = _context.TestItems.Where(a => a.Category == category && selectedTestIds.Contains(a.Id)).AsNoTracking().ToList();
 
             return GetJoined(prices, items);
         }
@@ -91,7 +92,7 @@ namespace AnlabMvc.Services
         {
             // TODO: Do we really want to match on ID, or Code, or some combination?
             var selectedTestIds = orderDetails.SelectedTests.Select(t => t.Id);
-            var tests = await PopulateSelectedTestsItemModel(selectedTestIds);
+            var tests = await PopulateSelectedTestsItemModel(selectedTestIds, orderDetails.SampleType);
 
             var calcualtedTests = new List<TestDetails>();
 
@@ -119,8 +120,10 @@ namespace AnlabMvc.Services
             }
             var testCodes = await _labworksService.GetTestCodesCompletedForOrder(orderToUpdate.RequestNum);
 
-            var testIds = _context.TestItems.Where(a => testCodes.Contains(a.Id)).Select(s => s.Id).ToArray(); 
-            var tests = await PopulateSelectedTestsItemModel(testIds);
+            var category = orderToUpdate.GetOrderDetails().SampleType;
+
+            var testIds = _context.TestItems.Where(a => a.Category == category && testCodes.Contains(a.Id)).Select(s => s.Id).ToArray(); 
+            var tests = await PopulateSelectedTestsItemModel(testIds, category);
 
             if (testCodes.Count != testIds.Length)
             {
