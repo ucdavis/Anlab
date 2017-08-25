@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using System.Text.Encodings.Web;
 
@@ -22,6 +23,13 @@ namespace Anlab.Core.Domain
         [Required]
         [StringLength(64)]
         public string Category { get; set; }
+
+        [NotMapped]
+        //public string[] Categories => Category?.Split('|');
+        public string[] Categories {
+            get => Category != null ? Category.Split('|') : new string[0];
+            set => Category = string.Join("|", value);
+        }
 
         [Required]
         [StringLength(8)]
