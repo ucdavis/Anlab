@@ -25,7 +25,6 @@ namespace Anlab.Core.Domain
         public string Category { get; set; }
 
         [NotMapped]
-        //public string[] Categories => Category?.Split('|');
         public string[] Categories {
             get => Category != null ? Category.Split('|') : new string[0];
             set => Category = string.Join("|", value);

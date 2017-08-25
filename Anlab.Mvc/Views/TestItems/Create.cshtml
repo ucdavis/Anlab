@@ -31,4 +31,9 @@
 @section Scripts
 {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script type="text/javascript">
+        $(function () {
+            $('#Categories').tooltip();
+        });
+    </script>
 }
