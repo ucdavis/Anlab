@@ -16,6 +16,7 @@ export interface ITestItem {
     internalSetupCost: number;
     externalSetupCost: number;
     category: string;
+    categories: string[];
     notes: string;
 }
 
