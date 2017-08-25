@@ -265,13 +265,13 @@ namespace AnlabMvc.Controllers
         }
 
         [Authorize(Roles = RoleCodes.Admin)]
-        public async Task<JsonResult> JsonDetails(int id)
+        public async Task<ActionResult> JsonDetails(int id)
         {
             var order = await _dbContext.Orders.SingleOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
             {
-                return null;//NotFound(id);
+                return NotFound(id);
             }
 
             return new JsonResult(order.GetOrderDetails());
