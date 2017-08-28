@@ -1,0 +1,140 @@
+@using AnlabMvc.Models.Order;
+@model IList<Order>
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<table border="0" cellspacing="5" cellpadding="5" align="left">
+    <tbody>
+        <tr>
+            <td><label>Minimum Date:</label></td>
+            <td><label>Maximum Date:</label></td>
+            <td><label>Status:</label></td>
+        </tr>
+        <tr>
+            <td><input name="min" id="min" type="text"></td>
+            <td><input name="max" id="max" type="text"></td>
+            <td>
+                <select name="status" id="status">
+                    <option value="All">Show All</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Received">Received</option>
+                    <option value="Complete">Complete</option>
+                </select>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<table id="table">
+    <thead>
+    <tr>
+        <th></th>
+        <th>Id</th>
+        <th>User</th>
+        <th>ClientId</th>
+        <th>Created</th>
+        <th>Updated</th>
+        <th>Project</th>
+        <th>Status</th> 
+    </tr>
+    </thead>
+    <tbody>
+
+    @foreach (var order in Model)
+    {
+        <tr>
+            <td>
+                @if (order.Status == OrderStatusCodes.Confirmed)
+                {
+                    <a asp-action="Details" asp-route-id="@order.Id">Details</a>
+                    <a asp-action="Edit" asp-route-id="@order.Id">Edit</a>
+                }
+                @if (order.Status == OrderStatusCodes.Received)
+                {
+                    <a asp-action="Details" asp-route-id="@order.Id">Details</a>
+                    <a asp-action="UpdateFromCompletedTests" asp-route-id="@order.Id">Complete</a>
+                }
+                @if (order.Status == OrderStatusCodes.Complete)
+                {
+                    <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier">Results</a>
+                }
+            </td>
+            <td>@order.Id</td>
+            <td>@order.Creator.Email</td>
+            <td>@order.Creator.ClientId</td>
+            <td>@order.Created</td>
+            <td>@order.Updated</td>
+            <td>@order.Project</td>
+            <td>@order.Status</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@section AdditionalStyles
+{
+    @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+    <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+
+    <style>
+        #max, #min, #status {
+            margin: 0 5px 5px 0;
+            height: 30px;
+        }
+    </style>
+}
+
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            var table = $("#table").DataTable({
+                "sorting": [[2, "desc"]],
+                "columnDefs": [
+                    {
+                        "type": "date", "targets" : [4,5]
+                    },
+                    {
+                        "targets": [0],
+                        "orderable": false
+                    }
+                ]
+            });
+
+
+            $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+            $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+
+           //Event listener to the two range filtering inputs to redraw on input
+            $('#min, #max, #status').change(function () {
+                table.draw();
+            });
+        });
+
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+                var min = $('#min').datepicker("getDate");
+                var max = $('#max').datepicker("getDate");
+                var startDate = new Date(data[4]);
+                startDate.setHours(0, 0, 0, 0);
+
+                var status = data[7];
+                var statusFilter = $('#status').val();
+
+                if (statusFilter == "All" || status == statusFilter) {
+                    if (min == null && max == null) { return true; }
+                    if (min == null && startDate <= max) { return true; }
+                    if (max == null && startDate >= min) { return true; }
+                    if (startDate <= max && startDate >= min) { return true; }
+                }
+                return false;
+            }
+        );
+
+    </script>
+}
