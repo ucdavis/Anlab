@@ -23,7 +23,7 @@ namespace Anlab.Core.Models
         [DataType(DataType.MultilineText)]
         public string LabComments { get; set; }
         public decimal AdjustmentAmount { get; set; }
-        public decimal GrandTotal { get
+        public decimal FinalTotal { get
             {
                 return AdjustmentAmount + Total;
             }

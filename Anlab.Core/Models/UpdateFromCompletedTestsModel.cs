@@ -10,6 +10,6 @@ namespace Anlab.Core.Models
         public bool Confirm { get; set; }
         public IFormFile UploadFile { get; set; }
         public string LabComments { get; set; }
-        public decimal AdjustmentAmount { get; set; }
+        public decimal FinalTotal { get; set; }
     }
 }
