@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Anlab.Core.Domain;
 
 namespace AnlabMvc.Controllers
 {
@@ -25,6 +26,8 @@ namespace AnlabMvc.Controllers
         private readonly IOrderMessageService _orderMessageService;
         private readonly IFileStorageService _fileStorageService;
 
+        private readonly int _maxShownOrders = 1000;
+
         public LabController(ApplicationDbContext dbContext, IOrderService orderService, IOrderMessageService orderMessageService, IFileStorageService fileStorageService)
         {
             _dbContext = dbContext;
@@ -35,12 +38,24 @@ namespace AnlabMvc.Controllers
 
         public IActionResult Orders()
         {
-            //TODO: update this when we know status. Add filter?
-            var orders = _dbContext.Orders.Where(a => a.Status != OrderStatusCodes.Created)
-                .Include(i => i.Creator).ToList();
+            var orders = _dbContext.Orders
+                .Where(a => a.Status != OrderStatusCodes.Created)
+                .Select(c => new Order
+                {
+                    Id = c.Id,
+                    Creator = new User { Email = c.Creator.Email, ClientId = c.Creator.ClientId },
+                    Created = c.Created,
+                    Updated = c.Updated,
+                    Project = c.Project,
+                    Status = c.Status,
+                    ShareIdentifier = c.ShareIdentifier
+                })
+                .Take(_maxShownOrders)
+                .ToList();
 
             return View(orders);
         }
+
 
         public async Task<IActionResult> Details(int id)
         {

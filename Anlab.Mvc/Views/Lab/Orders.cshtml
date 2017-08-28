@@ -4,7 +4,6 @@
     ViewData["Title"] = "Orders";
 }
 
-
 <table border="0" cellspacing="5" cellpadding="5" align="left">
     <tbody>
         <tr>
@@ -27,7 +26,6 @@
     </tbody>
 </table>
 
-
 <table id="table">
     <thead>
     <tr>
@@ -38,12 +36,11 @@
         <th>Created</th>
         <th>Updated</th>
         <th>Project</th>
-        <th>Status</th>
-
-        
+        <th>Status</th> 
     </tr>
     </thead>
     <tbody>
+
     @foreach (var order in Model)
     {
         <tr>
@@ -104,9 +101,8 @@
                     },
                     {
                         "targets": [0],
-                        "orderable": false                        
-                    },
-
+                        "orderable": false
+                    }
                 ]
             });
 
@@ -114,7 +110,7 @@
             $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
             $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
 
-            // Event listener to the two range filtering inputs to redraw on input
+           //Event listener to the two range filtering inputs to redraw on input
             $('#min, #max, #status').change(function () {
                 table.draw();
             });
@@ -124,7 +120,7 @@
             function (settings, data, dataIndex) {
                 var min = $('#min').datepicker("getDate");
                 var max = $('#max').datepicker("getDate");
-                var startDate = new Date(data[5]);
+                var startDate = new Date(data[4]);
                 startDate.setHours(0, 0, 0, 0);
 
                 var status = data[7];
