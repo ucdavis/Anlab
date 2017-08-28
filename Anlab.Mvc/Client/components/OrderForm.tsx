@@ -6,7 +6,7 @@ import { SampleTypeSelection } from './SampleTypeSelection';
 import { Quantity } from './Quantity';
 import { Summary } from './Summary';
 import { AdditionalInfo } from './AdditionalInfo';
-import { Project } from "./Project";``
+import { Project } from "./Project";
 import { AdditionalEmails } from "./AdditionalEmails";
 
 declare var window: any;
