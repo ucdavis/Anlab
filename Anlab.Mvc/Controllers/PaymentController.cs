@@ -147,7 +147,7 @@ namespace AnlabMvc.Controllers
                 return View(response);
             }
         }
-        
+
         [HttpPost]
         [AllowAnonymous]
         [IgnoreAntiforgeryToken]
@@ -160,39 +160,36 @@ namespace AnlabMvc.Controllers
             if (!_dataSigningService.Check(dictionary, response.Signature))
             {
                 Log.Error("Check Signature Failure");
+                return new JsonResult(new { });
             }
-            else
+
+            ProcessPaymentEvent(response, dictionary);
+
+            //Do payment stuff.
+            var order = _context.Orders.SingleOrDefault(a => a.Id == response.Req_Reference_Number);
+            if (order == null)
             {
-                ProcessPaymentEvent(response, dictionary);
-
-                //Do payment stuff.
-                var order = _context.Orders.SingleOrDefault(a => a.Id == response.Req_Reference_Number);
-                if (order == null)
-                {
-                    Log.Error("Order not found {0}", response.Req_Reference_Number);
-                }
-                else
-                {
-                    if (response.Decision == ReplyCodes.Accept)
-                    {
-                        if (order.Status == OrderStatusCodes.AwaitingPayment)
-                        {
-                            order.Status = OrderStatusCodes.Paid;
-                            _context.SaveChanges(true);
-                        }
-                        
-                        try
-                        {
-                            await _orderMessageService.EnqueuePaidMessage(order);
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Error(ex, ex.Message);
-                        }
-                    }
-                }
+                Log.Error("Order not found {0}", response.Req_Reference_Number);
+                return new JsonResult(new { });
             }
 
+            if (response.Decision == ReplyCodes.Accept)
+            {
+                if (order.Status == OrderStatusCodes.AwaitingPayment)
+                {
+                    order.Status = OrderStatusCodes.Paid;
+                    _context.SaveChanges(true);
+                }
+
+                try
+                {
+                    await _orderMessageService.EnqueuePaidMessage(order);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, ex.Message);
+                }
+            }
             return new JsonResult(new { });
         }
 
