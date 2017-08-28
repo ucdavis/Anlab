@@ -3,7 +3,6 @@
 
 @{
     ViewData["Title"] = "Confirmation";
-    ViewBag.OrderId = Model.Order.Id;
 }
 
 <form asp-controller="order" asp-action="Delete" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
