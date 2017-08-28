@@ -24,6 +24,7 @@ namespace Test.TestsDatabase
             expectedFields.Add(new NameAndType("Auth_Amount", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Decision", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("OccuredAt", "System.DateTime", new List<string>()));
+            expectedFields.Add(new NameAndType("Order", "Anlab.Core.Domain.Order", new List<string>()));
             expectedFields.Add(new NameAndType("Reason_Code", "System.Int32", new List<string>()));
             expectedFields.Add(new NameAndType("Req_Reference_Number", "System.Int32", new List<string>())); //Order Id
             expectedFields.Add(new NameAndType("ReturnedResults", "System.String", new List<string>()));
