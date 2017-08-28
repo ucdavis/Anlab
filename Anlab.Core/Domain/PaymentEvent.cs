@@ -20,8 +20,6 @@ namespace Anlab.Core.Domain
         /// </summary>
         public int Req_Reference_Number { get; set; }
 
-        public Order Order { get; set; }
-
         public string Decision { get; set; }
 
         public int Reason_Code { get; set; }

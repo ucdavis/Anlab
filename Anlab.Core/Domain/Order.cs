@@ -12,7 +12,6 @@ namespace Anlab.Core.Domain
     {
         public Order()
         {
-            PaymentEvents = new List<PaymentEvent>();
             MailMessages = new List<MailMessage>();
         }
         public int Id { get; set; }
@@ -47,7 +46,8 @@ namespace Anlab.Core.Domain
         public string ResultsFileIdentifier { get; set; }
 
         public ICollection<MailMessage> MailMessages { get; set; }
-        public ICollection<PaymentEvent> PaymentEvents { get; set; }
+
+        public PaymentEvent ApprovedPayment { get; set; }
 
         public OrderDetails GetOrderDetails()
         {

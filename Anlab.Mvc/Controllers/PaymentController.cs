@@ -91,7 +91,7 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            //ProcessPaymentEvent(response, dictionary); //For testing locally, can enable this.
+            //var test = ProcessPaymentEvent(response, dictionary); //For testing locally, can enable this.
 
             var order = _context.Orders.SingleOrDefault(a => a.Id == response.Req_Reference_Number);
             if (order == null)
@@ -116,6 +116,7 @@ namespace AnlabMvc.Controllers
             //Should be good,   
             if (order.Status == OrderStatusCodes.AwaitingPayment)
             {
+                //order.ApprovedPayment = test; //Debugging
                 order.Status = OrderStatusCodes.Paid;
                 _context.SaveChanges(true);
             }
@@ -163,7 +164,7 @@ namespace AnlabMvc.Controllers
                 return new JsonResult(new { });
             }
 
-            ProcessPaymentEvent(response, dictionary);
+            var payment = ProcessPaymentEvent(response, dictionary);
 
             //Do payment stuff.
             var order = _context.Orders.SingleOrDefault(a => a.Id == response.Req_Reference_Number);
@@ -175,11 +176,12 @@ namespace AnlabMvc.Controllers
 
             if (response.Decision == ReplyCodes.Accept)
             {
+                order.ApprovedPayment = payment;
                 if (order.Status == OrderStatusCodes.AwaitingPayment)
                 {
                     order.Status = OrderStatusCodes.Paid;
-                    _context.SaveChanges(true);
                 }
+                _context.SaveChanges(true);
 
                 try
                 {
@@ -193,7 +195,7 @@ namespace AnlabMvc.Controllers
             return new JsonResult(new { });
         }
 
-        private void ProcessPaymentEvent(ReceiptResponseModel response, Dictionary<string, string> dictionary)
+        private PaymentEvent ProcessPaymentEvent(ReceiptResponseModel response, Dictionary<string, string> dictionary)
         {
             try
             {
@@ -204,19 +206,18 @@ namespace AnlabMvc.Controllers
                 paymentEvent.Decision = response.Decision;
                 paymentEvent.Reason_Code = response.Reason_Code;
                 paymentEvent.Req_Reference_Number = response.Req_Reference_Number;
-
-                var order = _context.Orders.SingleOrDefault(a => a.Id == paymentEvent.Req_Reference_Number);
-                paymentEvent.Order = order;
                 paymentEvent.ReturnedResults = JsonConvert.SerializeObject(dictionary);
 
                 _context.PaymentEvents.Add(paymentEvent);
                 _context.SaveChanges(true);
+                return paymentEvent;
             }
             catch (Exception ex)
             {
                 Log.Error(ex, ex.Message);
 
             }
+            return null;
         }
 
         /// <summary>
