@@ -1,4 +1,7 @@
+@using System.Runtime.InteropServices.ComTypes
 @model Anlab.Core.Domain.TestItem
+    
+@Html.HiddenFor(a => a.Category)
 
 <div class="form-group">
     <label asp-for="Analysis" class="col-md-2 control-label"></label>
@@ -10,7 +13,7 @@
 <div class="form-group">
     <label asp-for="Category" class="col-md-2 control-label"></label>
     <div class="col-md-10">
-        <select asp-for="Category" class="form-control">
+        <select asp-for="Categories" class="form-control" multiple="multiple">
             <option value="Soil">Soil</option>
             <option value="Plant">Plant</option>
             <option value="Water">Water</option>
