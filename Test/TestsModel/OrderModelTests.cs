@@ -14,6 +14,7 @@ namespace Test.TestsModel
             #region Arrange
             var expectedFields = new List<NameAndType>();
             expectedFields.Add(new NameAndType("AdditionalEmails", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("ApprovedPayment", "Anlab.Core.Domain.PaymentEvent", new List<string>()));
             expectedFields.Add(new NameAndType("ClientId", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)16)]"
@@ -33,8 +34,7 @@ namespace Test.TestsModel
             {
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)16)]"
             }));
-            expectedFields.Add(new NameAndType("MailMessages", "System.Collections.Generic.ICollection`1[Anlab.Core.Domain.MailMessage]", new List<string>()));
-            expectedFields.Add(new NameAndType("PaymentEvents", "System.Collections.Generic.ICollection`1[Anlab.Core.Domain.PaymentEvent]", new List<string>()));
+            expectedFields.Add(new NameAndType("MailMessages", "System.Collections.Generic.ICollection`1[Anlab.Core.Domain.MailMessage]", new List<string>()));            
             expectedFields.Add(new NameAndType("Project", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
