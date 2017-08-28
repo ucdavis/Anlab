@@ -197,12 +197,16 @@ namespace AnlabMvc.Controllers
         {
             try
             {
+                
                 var paymentEvent = new PaymentEvent();
                 paymentEvent.Transaction_Id = response.Transaction_Id;
                 paymentEvent.Auth_Amount = response.Auth_Amount;
                 paymentEvent.Decision = response.Decision;
                 paymentEvent.Reason_Code = response.Reason_Code;
                 paymentEvent.Req_Reference_Number = response.Req_Reference_Number;
+
+                var order = _context.Orders.SingleOrDefault(a => a.Id == paymentEvent.Req_Reference_Number);
+                paymentEvent.Order = order;
                 paymentEvent.ReturnedResults = JsonConvert.SerializeObject(dictionary);
 
                 _context.PaymentEvents.Add(paymentEvent);
