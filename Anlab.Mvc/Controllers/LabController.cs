@@ -26,7 +26,7 @@ namespace AnlabMvc.Controllers
         private readonly IOrderMessageService _orderMessageService;
         private readonly IFileStorageService _fileStorageService;
 
-        private readonly int _maxShownOrders = 1000;
+        private const int _maxShownOrders = 1000;
 
         public LabController(ApplicationDbContext dbContext, IOrderService orderService, IOrderMessageService orderMessageService, IFileStorageService fileStorageService)
         {
