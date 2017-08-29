@@ -7,17 +7,13 @@ describe('<AdditionalEmails />', () => {
         const target = mount(<AdditionalEmails addedEmails={[]} onDeleteEmail={null} onEmailAdded={null} />);
         expect(target.find('input').length).toEqual(1);
     });
-    it('should render a Button', () => {
-        const target = mount(<AdditionalEmails addedEmails={[]} onDeleteEmail={null} onEmailAdded={null} />);
-        expect(target.find('Button').length).toEqual(1);
-    });
     it('should render a label', () => {
         const target = mount(<AdditionalEmails addedEmails={[]} onDeleteEmail={null} onEmailAdded={null} />);
         expect(target.find('label').length).toEqual(2);
     });
     it('should render existing emails', () => {
         const target = mount(<AdditionalEmails addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]} onDeleteEmail={null} onEmailAdded={null} />);
-        expect(target.find('Button').length).toEqual(4);
+        expect(target.find('Button').length).toEqual(3);
     });
     it('should render existing emails1', () => {
         const target = mount(<AdditionalEmails addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]} onDeleteEmail={null} onEmailAdded={null} />);
