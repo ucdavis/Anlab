@@ -1,3 +1,4 @@
+@using Humanizer
 @model IEnumerable<Anlab.Core.Domain.TestItem>
 
 
@@ -47,7 +48,7 @@
                 @Html.DisplayFor(modelItem => item.Analysis)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Category)
+                @item.Category.Humanize(LetterCasing.Title)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Group)
