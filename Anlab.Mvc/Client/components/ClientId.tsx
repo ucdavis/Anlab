@@ -25,7 +25,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     }
     validate = (v: string) => {
         let error = null;
-        if (v.trim() === "") {
+        if (this.props.isFromLab && v.trim() === "") {
             error = "The client id is required";
         }
 
