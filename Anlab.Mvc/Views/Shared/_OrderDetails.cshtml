@@ -75,7 +75,6 @@
         <th>Fee (* Qty @Model.OrderDetails.Quantity)</th>
         <th>SetupCost</th>
         <th>Sample Total</th>
-        <th>Notes</th>
     </tr>
     </thead>
     <tbody>
@@ -87,17 +86,17 @@
             continue;
         }
         <tr>
-            <td>@test.Analysis</td>
+            <td>
+                @test.Analysis
+                @if (temp != null && !String.IsNullOrEmpty(temp.Notes))
+                {
+                    <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@temp.NotesEncoded')" title="@temp.NotesEncoded" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
+                }   
+            </td>
             <td>@test.Id</td>
             <td>@test.SubTotal.ToString("C")</td>
             <td>@test.SetupCost.ToString("C")</td>
             <td>@test.Total.ToString("C")</td>
-            <td>
-                @if (temp != null && !String.IsNullOrEmpty(temp.Notes))
-                {
-                    <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@temp.NotesEncoded')" title="@temp.NotesEncoded" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
-                }    
-            </td>
         </tr>
     }
     </tbody>
