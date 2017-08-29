@@ -41,106 +41,6 @@ namespace AnlabMvc.Services
 
         public async Task Initialize()
         {
-            string[] codesList = new[] {"ADFAF", "()",
-                "ADFRF",
-                "ADIN",
-                "AG-W",
-                "AG-WT",
-                "AL",
-                "AL-CIT",
-                "AL-KCL",
-                "AL-OX",
-                "AL-PY",
-                "-BCL-P-IC",
-                "-BNA-PMF",
-                "-DCL-P-IC",
-                "-DNA-PMF",
-                "-LCL-P-IC",
-                "-LNA-PMF",
-                "-PCL-P-IC",
-                "-PNA-PMF",
-                "-SCL-P-IC",
-                "-SNA-PMF",
-                "CL-P-IC",
-                "D",
-                "M",
-                "NA-PMF",
-                "-BNH4-W",
-                "-BNO3-W",
-                "-DNH4-W",
-                "-DNO3-W",
-                "-LNH4-W",
-                "-LNO3-W",
-                "-PNH4-W",
-                "-PNO3-W",
-                "-SNH4-W",
-                "-SNO3-W",
-                "G-NA-E",
-                "NH4-W",
-                "NO3-W",
-                "AL-W",
-                "AL-WT",
-                "ALK-WX",
-                "AS-PT",
-                "AS-ST",
-                "AS-W",
-                "AS-WT",
-                "ASH",
-                "ATM1",
-                "ATM10",
-                "ATM15",
-                "ATM1P5",
-                "ATM2",
-                "ATM5",
-                "ATMP1",
-                "ATMP3",
-                "ATMP5",
-                "ATMP7",
-                "AU",
-                "B-PMF",
-                "B-S",
-                "B-SX",
-                "B-W",
-                "B-WT",
-                "BA",
-                "BD",
-                "BRAY-P",
-                "C-P",
-                "C-P-CW",
-                "C-S",
-                "C-S-CW",
-                "CA-PMF",
-                "CA-S",
-                "CA-TOX",
-                "CA-W",
-                "CA-WT",
-                "CA-WX",
-                "CACO3",
-                "CAFFEINE",
-                "CARBAMAZ",
-                "CD",
-                "CD-S",
-                "CD-W",
-                "CD-WT",
-                "CD_TOT",
-                "CEC",
-                "CELLULOS",
-                "CL-S",
-                "CL-W",
-                "CL-W-IC",
-                "CL-WX",
-                "CL21-S",
-                "CLAY",
-                "CO",
-                "CO-S",
-                "CO_TOT",
-                "CO3-S",
-                "CO3-W",
-                "CR",
-                "CR-OXIDE"};
-
-            var codesList2 = codesList.Distinct().ToArray();
-
 
             await _context.Database.EnsureCreatedAsync();
 
@@ -238,21 +138,7 @@ namespace AnlabMvc.Services
             // create sample tests
 
             LoadTestItems();
-            //var count = codesList2.Length;
 
-            //for (int i = 0; i < count; i++)
-            //{
-            //    var plantx = new TestItem
-            //    {
-            //        Id = codesList2[i],
-            //        Analysis = string.Format("Fake Plant{0}", i),
-            //        Category = TestCategories.Plant,
-            //        Group = i < 10 ? "SF" : "SS",
-            //        Notes = i % 3 == 0 ? string.Format("Test Tooltip {0}", i) : string.Empty,
-            //        Public = true
-            //    };
-            //    _context.Add(plantx);
-            //}
 
 
             await _context.SaveChangesAsync();
@@ -352,7 +238,7 @@ namespace AnlabMvc.Services
             CreateTestItem("M", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
 
             //Soil
-            CreateTestItem("GRIND", "Grind", TestCategories.Soil, "Special");
+            CreateTestItem("GRIND", "Grind", string.Format("{0}|{1}|{2}", TestCategories.Soil, TestCategories.Plant,TestCategories.Other ), "Special");
             CreateTestItem("SP-FOR", "Imported Soil", TestCategories.Soil, "Special");
 
             CreateTestItem("#SALIN", "Soil Salinity Group 1 [SP, pH, EC, Ca, Mg, Na, Cl, B, HCO3, CO3]", TestCategories.Soil, "DISCOUNTED GROUPS:");
@@ -363,7 +249,7 @@ namespace AnlabMvc.Services
             CreateTestItem("#NAF-S", "Nitrate & Ammonium [NO3-N, NH4-N]", TestCategories.Soil, "DISCOUNTED GROUPS:");
             CreateTestItem("#XCAT", "Exchangeable Cations [X-K, X-Na, X-Ca, X-Mg]", TestCategories.Soil, "DISCOUNTED GROUPS:");
             CreateTestItem("#MICRE", "Extractable Micronutrients [DTPA: Zn, Mn, Fe, Cu]", TestCategories.Soil, "DISCOUNTED GROUPS:");
-            CreateTestItem("#AD-MICR", "Acid Digestible Micronutrients [Zn, Mn, Fe, Cu]", TestCategories.Soil, "DISCOUNTED GROUPS:");
+            CreateTestItem("#AD-MICR", "Acid Digestible Micronutrients [Zn, Mn, Fe, Cu]", string.Format("{0}|{1}", TestCategories.Soil, TestCategories.Water), "DISCOUNTED GROUPS:");
 
             CreateTestItem("TOC-S", "TOC", TestCategories.Soil, "FERTILITY:");
             CreateTestItem("C-S", "C", TestCategories.Soil, "FERTILITY:");
@@ -435,11 +321,11 @@ namespace AnlabMvc.Services
             CreateTestItem("NH4S-WET", "NH4-N (undried soil) ", TestCategories.Soil, "ALTERNATE METHODS:");
             CreateTestItem("#NN-WET	", "Nitrate & Ammonium (undried soil) [NO3-N, NH4-N]", TestCategories.Soil, "ALTERNATE METHODS:");
 
-            CreateTestItem("NO3-W", "NO3-N", TestCategories.Soil, "TESTS ON CLIENT-PROVIDED EXTRACTS:");
-            CreateTestItem("NH4-W", "NH4-N", TestCategories.Soil, "TESTS ON CLIENT-PROVIDED EXTRACTS:");
-            CreateTestItem("#NA-E", "Nitrate & Ammonium [NO3-N, NH4-N]", TestCategories.Soil, "TESTS ON CLIENT-PROVIDED EXTRACTS:");
+            CreateTestItem("NO3-W", "NO3-N", string.Format("{0}|{1}", TestCategories.Soil, TestCategories.Water), "TESTS ON CLIENT-PROVIDED EXTRACTS:");
+            CreateTestItem("NH4-W", "NH4-N", string.Format("{0}|{1}", TestCategories.Soil, TestCategories.Water), "TESTS ON CLIENT-PROVIDED EXTRACTS:");
+            CreateTestItem("#NA-E", "Nitrate & Ammonium [NO3-N, NH4-N]", string.Format("{0}|{1}", TestCategories.Soil, TestCategories.Water), "TESTS ON CLIENT-PROVIDED EXTRACTS:");
 
-            CreateTestItem("WRAP", "Sample Encapsulation (for N &/or C isotope testing)", TestCategories.Soil, "OTHER SERVICES REQUESTED:");
+            CreateTestItem("WRAP", "Sample Encapsulation (for N &/or C isotope testing)", string.Format("{0}|{1}", TestCategories.Soil, TestCategories.Plant), "OTHER SERVICES REQUESTED:");
 
             //Plant
             
@@ -496,7 +382,7 @@ namespace AnlabMvc.Services
             CreateTestItem("SO4-PM", "SO4-S", TestCategories.Plant, "EXTRACTABLES:");
 
             CreateTestItem("DM", "DM", TestCategories.Plant, "FEED TESTS:");
-            CreateTestItem("DM55", "Partial DM (dried at 55OC)", TestCategories.Plant, "FEED TESTS:");
+            CreateTestItem("DM55", "Partial DM (dried at 55OC)", string.Format("{0}|{1}",TestCategories.Plant, TestCategories.Other), "FEED TESTS:");
             CreateTestItem("#PROT", "Protein", TestCategories.Plant, "FEED TESTS:");
             CreateTestItem("ADFRF", "ADF", TestCategories.Plant, "FEED TESTS:");
             CreateTestItem("#ADFAF", "ADF (ash free)", TestCategories.Plant, "FEED TESTS:");
@@ -524,19 +410,16 @@ namespace AnlabMvc.Services
 
             CreateTestItem("PH-M", "pH (water 1:5)", TestCategories.Plant, "MANURE and COMPOST TESTS:");
             CreateTestItem("EC-M", "EC (water 1:5)", TestCategories.Plant, "MANURE and COMPOST TESTS:");
-            //CreateTestItem("DM55", "Partial DM (dried at 55OC)", TestCategories.Plant, "MANURE and COMPOST TESTS:"); //Duplicated above in the feed tests
-
-            CreateTestItem("WRAP x", "Sample Encapsulation (for N &/or C isotope testing)", TestCategories.Plant, "OTHER SERVICES REQUESTED:"); //Added the x otherwise it conflicts with the other wrap. Will have the same issue with Grind
+            
+            
             CreateTestItem("MICRO", "Acid Digestion (for analysis by ICP-MS)", TestCategories.Plant, "OTHER SERVICES REQUESTED:");
 
 
             //Water
             CreateTestItem("#WSUIT", "Water Suitability Group 1 [pH, EC, SAR, Ca, Mg, Na, Cl, B, HCO3, CO3]", TestCategories.Water, "DISCOUNTED GROUPS:");
             CreateTestItem("#WSUIT-2", "Water Suitability Group 2 [pH, EC, SAR, Ca, Mg, Na, Cl, B]", TestCategories.Water, "DISCOUNTED GROUPS:");
-            CreateTestItem("#AD-SALTS", "Acid Digestible Salts [K, Ca, Mg, Na]", TestCategories.Water, "DISCOUNTED GROUPS:");
-            CreateTestItem("#AD-MICR w", "Acid Digestible Micronutrients [Zn, Mn, Fe, Cu]", TestCategories.Water, "DISCOUNTED GROUPS:"); //Added w to avoid duplicate
-            CreateTestItem("#AD-HM", "Acid Digestible Heavy Metals [Cd, Cr, Pb, Ni]", TestCategories.Water, "DISCOUNTED GROUPS:");
-            CreateTestItem("#NA-E w", "Nitrate & Ammonium [NO3-N, NH4-N]", TestCategories.Water, "DISCOUNTED GROUPS:"); //Added w to avoid duplicate
+            CreateTestItem("#AD-SALTS", "Acid Digestible Salts [K, Ca, Mg, Na]", TestCategories.Water, "DISCOUNTED GROUPS:");            
+            CreateTestItem("#AD-HM", "Acid Digestible Heavy Metals [Cd, Cr, Pb, Ni]", TestCategories.Water, "DISCOUNTED GROUPS:");            
             CreateTestItem("#CRBBI", "Bicarbonate & Carbonate [HCO3, CO3]", TestCategories.Water, "DISCOUNTED GROUPS:");
             CreateTestItem("#IC-PANEL", "Ion Chromatography Panel [Cl, SO4]", TestCategories.Water, "DISCOUNTED GROUPS:");
             CreateTestItem("#ANIONS", "Anion Panel [Cl, SO4-S (soluble S), NO3-N, HCO3]", TestCategories.Water, "DISCOUNTED GROUPS:");
@@ -550,8 +433,6 @@ namespace AnlabMvc.Services
             CreateTestItem("TOC-W", "TOC", TestCategories.Water, "???");
             CreateTestItem("DOC-W", "DOC", TestCategories.Water, "???", "DOC-WF for unfiltered samples");
             CreateTestItem("TN-W", "Total N", TestCategories.Water, "???");
-            CreateTestItem("NO3-W w", "NO3-N", TestCategories.Water, "???"); //Added w to avoid duplicate
-            CreateTestItem("NH4-W w", "NH4-N", TestCategories.Water, "???"); //Added w to avoid duplicate
             CreateTestItem("TKN-W", "TKN", TestCategories.Water, "???");
             CreateTestItem("#SAR-W", "SAR", TestCategories.Water, "???");
             CreateTestItem("#ESP-W", "ESP", TestCategories.Water, "???");
