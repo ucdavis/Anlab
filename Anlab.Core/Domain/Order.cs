@@ -10,7 +10,10 @@ namespace Anlab.Core.Domain
 {
     public class Order :IDatedEntity
     {
-
+        public Order()
+        {
+            MailMessages = new List<MailMessage>();
+        }
         public int Id { get; set; }
         
         [Required]
@@ -44,6 +47,8 @@ namespace Anlab.Core.Domain
         public Guid ShareIdentifier { get; set; }
 
         public ICollection<MailMessage> MailMessages { get; set; }
+
+        public PaymentEvent ApprovedPayment { get; set; }
 
         public OrderDetails GetOrderDetails()
         {

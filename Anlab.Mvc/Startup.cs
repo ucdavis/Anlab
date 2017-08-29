@@ -54,6 +54,7 @@ namespace AnlabMvc
             services.Configure<AzureOptions>(Configuration.GetSection("Authentication:Azure"));
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<ConnectionSettings>(Configuration.GetSection("ConnectionSettings"));
+            services.Configure<CyberSourceSettings>(Configuration.GetSection("CyberSourceSettings"));
 
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -86,6 +87,7 @@ namespace AnlabMvc
             //services.AddTransient<ILabworksService, FakeLabworksService>(); //TODO: Replace with non fake one.
             services.AddTransient<ILabworksService, LabworksService>();
             services.AddTransient<IFileStorageService, FileStorageService>();
+            services.AddSingleton<IDataSigningService, DataSigningService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

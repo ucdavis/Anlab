@@ -1,0 +1,19 @@
+@model AnlabMvc.Models.CyberSource.ReceiptResponseModel
+@{
+    ViewData["Title"] = "Receipt";
+    //var paymentDict = (Dictionary<string, string>)ViewBag.PaymentDictionary;
+}
+
+<h1>Thank you for your payment of <i class="fa fa-usd">@Model.Auth_Amount</i></h1>
+
+
+@*<div>
+    <h2>Debugging Info</h2>
+
+    <div>
+        @foreach (var key in paymentDict)
+        {
+            <p>@key.Key -- @key.Value</p>
+        }
+    </div>
+</div>*@

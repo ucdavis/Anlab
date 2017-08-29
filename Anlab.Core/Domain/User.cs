@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
@@ -30,5 +31,30 @@ namespace Anlab.Core.Domain
         public string Account { get; set; }
 
         public ICollection<MailMessage> MailMessages { get; set; }
+
+        public string GetFirstName()
+        {
+            if (!string.IsNullOrWhiteSpace($"{FirstName}{LastName}"))
+            {
+                return FirstName;
+            }
+            if (Name.Split(' ').Length == 2)
+            {
+                return Name.Split(' ')[0];
+            }
+            return String.Empty;
+        }
+        public string GetLastName()
+        {
+            if (!string.IsNullOrWhiteSpace($"{FirstName}{LastName}"))
+            {
+                return LastName;
+            }
+            if (Name.Split(' ').Length == 2)
+            {
+                return Name.Split(' ')[1];
+            }
+            return String.Empty;
+        }
     }
 }

@@ -8,11 +8,6 @@
 
 @Html.Partial("_OrderDetails")
 
-<div class="form-group">
-    <strong>json Data</strong>
-    <span>@Model.Order.JsonDetails</span>
-</div>
-
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }

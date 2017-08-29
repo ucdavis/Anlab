@@ -20,7 +20,7 @@ namespace AnlabMvc.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class QueryResource {
@@ -83,7 +83,7 @@ namespace AnlabMvc.Resources {
         ///   Looks up a localized string similar to SELECT DISTINCT [ACODE] as Id
         ///FROM            [SAMPLE] INNER JOIN
         ///                         [ANALYSIS] ON [SAMPLE].[SAMPNO] = [ANALYSIS].[SAMPNO]
-        ///WHERE        [SAMPLE].[LOGBATCH] = @RequestNum.
+        ///WHERE        [ACODE] != &apos;()&apos; and [SAMPLE].[LOGBATCH] = @RequestNum.
         /// </summary>
         internal static string AnlabTestsRunForOrder {
             get {
