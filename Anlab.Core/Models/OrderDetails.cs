@@ -28,6 +28,7 @@ namespace Anlab.Core.Models
                 return AdjustmentAmount + Total;
             }
         }
+        public string ClientId { get; set; }
     }
 
 }

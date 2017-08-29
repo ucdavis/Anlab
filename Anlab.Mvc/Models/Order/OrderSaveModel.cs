@@ -33,5 +33,6 @@ namespace AnlabMvc.Models.Order
 
         public string LabComments { get; set; }
         public decimal AdjustmentAmount { get; set; }
+        public string ClientId { get; set; }
     }
 }
