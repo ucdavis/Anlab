@@ -13,7 +13,7 @@
         <span>Upload Results</span>
         @if (string.IsNullOrWhiteSpace(Model.Order.ResultsFileIdentifier))
         {
-            <input type="file" class="form-control" name="UploadFile"/>
+            <input type="file" class="form-control" name="UploadFile" required/>
         }
         else
         {
