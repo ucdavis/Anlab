@@ -168,7 +168,7 @@ namespace AnlabMvc.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Confirmation(int id, bool confirm)
+        public async Task<IActionResult> Confirmation(int id, bool confirm, string requestNum)
         {
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
@@ -183,7 +183,14 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Orders");
             }
 
+            if(String.IsNullOrWhiteSpace(requestNum))
+            {
+                ErrorMessage = "A request number is required";
+                return RedirectToAction("Confirmation");
+            }
+
             order.Status = OrderStatusCodes.Received;
+            order.RequestNum = requestNum;
 
             await _orderService.SendOrderToAnlab(order);
 
