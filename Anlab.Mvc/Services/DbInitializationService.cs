@@ -170,7 +170,8 @@ namespace AnlabMvc.Services
                 Project = "Test Project",
                 Status = OrderStatusCodes.Confirmed,
                 RequestNum = "17P138",
-                JsonDetails = xxx
+                JsonDetails = xxx,
+                ShareIdentifier = Guid.NewGuid()
             };
             _context.Add(order);
 
@@ -181,7 +182,8 @@ namespace AnlabMvc.Services
                 Project = "Test Project",
                 Status = OrderStatusCodes.Received,
                 RequestNum = "17P138",
-                JsonDetails = xxx
+                JsonDetails = xxx,
+                ShareIdentifier = Guid.NewGuid()
             };
             _context.Add(order);
 
@@ -192,7 +194,8 @@ namespace AnlabMvc.Services
                 Project = "Test Project",
                 Status = OrderStatusCodes.AwaitingPayment,
                 RequestNum = "17P138",
-                JsonDetails = xxx
+                JsonDetails = xxx,
+                ShareIdentifier = Guid.NewGuid()
             };
             _context.Add(order);
 
@@ -203,7 +206,8 @@ namespace AnlabMvc.Services
                 Project = "Test Project",
                 Status = OrderStatusCodes.Paid,
                 RequestNum = "17P138",
-                JsonDetails = xxx
+                JsonDetails = xxx,
+                ShareIdentifier = Guid.NewGuid()
             };
             _context.Add(order);
 
@@ -223,7 +227,7 @@ namespace AnlabMvc.Services
         private void LoadTestItems()
         {
             //Meh
-            CreateTestItem("()", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
+            //CreateTestItem("()", "Just to get it to pass", TestCategories.Soil, "Special", null, false); //We now filter this out in the query
             CreateTestItem("-BCL-P-IC", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
             CreateTestItem("-BNA-PMF", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
             CreateTestItem("-DCL-P-IC", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
