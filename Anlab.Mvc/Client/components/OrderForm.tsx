@@ -8,6 +8,7 @@ import { Summary } from './Summary';
 import { AdditionalInfo } from './AdditionalInfo';
 import { Project } from "./Project";
 import { AdditionalEmails } from "./AdditionalEmails";
+import { ClientId } from "./ClientId";
 
 declare var window: any;
 declare var $: any;
@@ -28,6 +29,7 @@ interface IOrderState {
     errorMessage: string;
     isFromLab: boolean;
     status: string;
+    clientId: string;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -50,6 +52,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             errorMessage: '',
             isFromLab: false,
             status: '',
+            clientId: ''
         };
 
         if (window.App.defaultAccount) {            
@@ -76,6 +79,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.isValid = true;
             initialState.payment.clientType = orderInfo.Payment.ClientType;
             initialState.payment.account = orderInfo.Payment.Account;
+            initialState.clientId = orderInfo.ClientId;
 
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
@@ -167,6 +171,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             payment: this.state.payment,
             sampleType: this.state.sampleType,
             selectedTests,
+            clientId: this.state.clientId
         }
         const that = this;
         var antiforgery = $("input[name='__RequestVerificationToken']").val();
@@ -186,7 +191,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     }
 
     render() {
-        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, isFromLab, status} = this.state;
+        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, isFromLab, status, clientId} = this.state;
 
         const { filtered, selected} = this.getTests();
 
@@ -205,6 +210,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     </div>
                     <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail}/>
                     <Project project={project} handleChange={this.handleChange} />
+                    <ClientId clientId={clientId} isFromLab={isFromLab} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
                     <div style={{ height: 600 }}></div>

@@ -170,6 +170,7 @@ namespace AnlabMvc.Services
         public async Task PopulateOrder(OrderSaveModel model, Order orderToUpdate)
         {
             orderToUpdate.Project = model.Project;
+            orderToUpdate.ClientId = model.ClientId;
             orderToUpdate.JsonDetails = JsonConvert.SerializeObject(model);
             var orderDetails = orderToUpdate.GetOrderDetails();
 
