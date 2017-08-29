@@ -92,6 +92,7 @@ namespace AnlabMvc.Controllers
             }
 
             //var test = ProcessPaymentEvent(response, dictionary); //For testing locally, can enable this.
+            //_context.SaveChanges();
 
             var order = _context.Orders.SingleOrDefault(a => a.Id == response.Req_Reference_Number);
             if (order == null)
@@ -114,12 +115,6 @@ namespace AnlabMvc.Controllers
             }
 
             //Should be good,   
-            if (order.Status == OrderStatusCodes.AwaitingPayment)
-            {
-                //order.ApprovedPayment = test; //Debugging
-                order.Status = OrderStatusCodes.Paid;
-                _context.SaveChanges(true);
-            }
             Message = "Payment Processed. Thank You.";
 
             //ViewBag.PaymentDictionary = dictionary; //Debugging. Remove when not needed
@@ -143,7 +138,7 @@ namespace AnlabMvc.Controllers
                     return RedirectToAction("Index", "Home");
                 }
                 //ViewBag.PaymentDictionary = dictionary; //Debugging. Remove when not needed
-                ProcessPaymentEvent(response, dictionary); //TODO: Do we want to try to write cancel events?
+                //ProcessPaymentEvent(response, dictionary); //TODO: Do we want to try to write cancel events?
 
                 return View(response);
             }
@@ -181,7 +176,7 @@ namespace AnlabMvc.Controllers
                 {
                     order.Status = OrderStatusCodes.Paid;
                 }
-                _context.SaveChanges(true);
+                
 
                 try
                 {
@@ -192,32 +187,26 @@ namespace AnlabMvc.Controllers
                     Log.Error(ex, ex.Message);
                 }
             }
+            _context.SaveChanges();
             return new JsonResult(new { });
         }
 
         private PaymentEvent ProcessPaymentEvent(ReceiptResponseModel response, Dictionary<string, string> dictionary)
         {
-            try
-            {
-                
-                var paymentEvent = new PaymentEvent();
-                paymentEvent.Transaction_Id = response.Transaction_Id;
-                paymentEvent.Auth_Amount = response.Auth_Amount;
-                paymentEvent.Decision = response.Decision;
-                paymentEvent.Reason_Code = response.Reason_Code;
-                paymentEvent.Req_Reference_Number = response.Req_Reference_Number;
-                paymentEvent.ReturnedResults = JsonConvert.SerializeObject(dictionary);
 
-                _context.PaymentEvents.Add(paymentEvent);
-                _context.SaveChanges(true);
-                return paymentEvent;
-            }
-            catch (Exception ex)
+            var paymentEvent = new PaymentEvent
             {
-                Log.Error(ex, ex.Message);
+                Transaction_Id       = response.Transaction_Id,
+                Auth_Amount          = response.Auth_Amount,
+                Decision             = response.Decision,
+                Reason_Code          = response.Reason_Code,
+                Req_Reference_Number = response.Req_Reference_Number,
+                ReturnedResults      = JsonConvert.SerializeObject(dictionary)
+            };
 
-            }
-            return null;
+            _context.PaymentEvents.Add(paymentEvent);
+
+            return paymentEvent;
         }
 
         /// <summary>
