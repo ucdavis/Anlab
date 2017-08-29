@@ -60,13 +60,22 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
         return emails;
     }
 
+    _renderAddButton = () => {
+        if (this.state.email.length > 0) {
+            return (<Button label='Add Email' flat primary onClick={this.onClick} />);
+        } else {
+            return null;
+        }
+        
+    }
+
     render() {
         return (
             <div className="form_wrap">
                 <label className="form_header">Should anyone else be notified for this test?</label>
                 {this._renderEmails()}
                 <Input type='text' value={this.state.email} label='Email To Add' maxLength={50} onChange={this.onEmailChanged}/>
-                <Button label='Add this' flat primary onClick={this.onClick} />
+                {this._renderAddButton()}
             </div>
         );
     }
