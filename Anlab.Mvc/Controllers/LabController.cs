@@ -266,7 +266,7 @@ namespace AnlabMvc.Controllers
             orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total);
 
             orderDetails.LabComments = model.LabComments;
-            orderDetails.AdjustmentAmount = model.AdjustmentAmount;
+            orderDetails.AdjustmentAmount = model.GrandTotal - orderDetails.Total;
 
             order.SaveDetails(orderDetails);
 
