@@ -7,7 +7,7 @@
 
 @Html.Partial("_OrderDetails")
 
-<form asp-controller="Lab" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
+<form asp-controller="Lab" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post">
     @Html.Hidden("confirm", true)
     <div class="form-group">
         <strong>Request Number:</strong>
