@@ -23,7 +23,7 @@
         <textarea class="form-control" name="LabComments"></textarea>
         <span>Adjust Final Total:</span>
         <input type="hidden" class="form-control" id="prevTotal" value="@Model.OrderDetails.Total"/>
-        <input type="text" class="form-control" id="FinalTotal" name="FinalTotal"/>
+        <input type="text" class="form-control" id="GrandTotal" name="GrandTotal" autocomplete="off"/>
         <div>Current Total: $@Model.OrderDetails.Total</div>
         <div>Adjustment Amount: $<span id="adjustAmt">@Model.OrderDetails.AdjustmentAmount</span></div>
     </div>
@@ -55,11 +55,11 @@
     </script>
 
     <script type="text/javascript">
-        $('#FinalTotal').on('keyup', function () {
+        $('#GrandTotal').on('keyup', function () {
             var prevTotal = $('#prevTotal').val();
-            var finalTotal = $(this).val();
-            if (finalTotal)
-                var adjustAmt = parseFloat(finalTotal) - parseFloat(prevTotal);
+            var grandTotal = $(this).val();
+            if (grandTotal)
+                var adjustAmt = parseFloat(grandTotal) - parseFloat(prevTotal);
             else
                 var adjustAmt = 0;
             $('#adjustAmt').html(adjustAmt);
