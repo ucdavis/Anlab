@@ -43,7 +43,8 @@ namespace AnlabMvc.Controllers
                 .Select(c => new Order
                 {
                     Id = c.Id,
-                    Creator = new User { Email = c.Creator.Email, ClientId = c.Creator.ClientId },
+                    ClientId = c.ClientId,
+                    Creator = new User { Email = c.Creator.Email },
                     Created = c.Created,
                     Updated = c.Updated,
                     Project = c.Project,
