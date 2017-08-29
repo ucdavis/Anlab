@@ -45,19 +45,18 @@
     {
         <tr>
             <td>
+                <a asp-action="Details" asp-route-id="@order.Id"><i class="fa fa-eye"> Details</i></a>
                 @if (order.Status == OrderStatusCodes.Confirmed)
                 {
-                    <a asp-action="Details" asp-route-id="@order.Id">Details</a>
-                    <a asp-action="Edit" asp-route-id="@order.Id">Edit</a>
+                    <a asp-action="Confirmation" asp-route-id="@order.Id"><i class="fa fa-check"> Receive</i></a>
                 }
                 @if (order.Status == OrderStatusCodes.Received)
-                {
-                    <a asp-action="Details" asp-route-id="@order.Id">Details</a>
-                    <a asp-action="UpdateFromCompletedTests" asp-route-id="@order.Id">Complete</a>
+                {                 
+                    <a asp-action="UpdateFromCompletedTests" asp-route-id="@order.Id"><i class="fa fa-upload" style="color: red"> Finalize</i></a>
                 }
                 @if (order.Status == OrderStatusCodes.Complete)
                 {
-                    <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier">Results</a>
+                    <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier"><i class="fa fa-download"> Results</i></a>
                 }
             </td>
             <td>@order.Id</td>

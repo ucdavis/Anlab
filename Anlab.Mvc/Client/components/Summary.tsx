@@ -60,8 +60,8 @@ export class Summary extends React.Component<ISummaryProps, any> {
         let infoText = this.props.isCreate ? "Go ahead and place your order" : "Go ahead and update your order";        
         if (this.props.isFromLab) {
             if (this.props.status === "Confirmed") {
-                saveText = "Receive Order";
-                infoText = "Receive Order. Make any changes needed first.";
+                saveText = "Update Order";
+                infoText = "Update Order. Make any changes before receiving.";
             }
         }
         const errorText = "Please correct any errors and complete any required fields before you " + saveText.toLowerCase();
