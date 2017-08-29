@@ -129,7 +129,7 @@
     <value>SELECT DISTINCT [ACODE] as Id
 FROM            [SAMPLE] INNER JOIN
                          [ANALYSIS] ON [SAMPLE].[SAMPNO] = [ANALYSIS].[SAMPNO]
-WHERE        [SAMPLE].[LOGBATCH] = @RequestNum</value>
+WHERE        [ACODE] != '()' and [SAMPLE].[LOGBATCH] = @RequestNum</value>
     <comment>List of codes </comment>
   </data>
 </root>
