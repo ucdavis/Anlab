@@ -17,21 +17,11 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
 
     constructor(props) {
         super(props);
-        if (this.props.clientId)
-        {
-            this.state = {
-                internalValue: this.props.clientId,
-                error: null
-            };
-        }
-        else
-        {
-            this.state = {
-                internalValue: null,
-                error: null
-            };
-        }
 
+        this.state = {
+            internalValue: this.props.clientId,
+            error: null
+        };
     }
     validate = (v: string) => {
         let error = null;
