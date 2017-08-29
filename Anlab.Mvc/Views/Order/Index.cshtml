@@ -31,6 +31,10 @@
                     <a asp-action="Confirmation" asp-route-id="@order.Id"><i class="fa fa-check"> Confirm</i></a>
                     <a asp-action="Edit" asp-route-id="@order.Id"><i class="fa fa-edit"> Edit</i></a>
                 }
+                else if(order.Status == OrderStatusCodes.Complete)
+                {
+                    <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier">Results</a>
+                }
                 else
                 {
                     <a asp-action="Details" asp-route-id="@order.Id"><i class="fa fa-eye"> Details</i></a>

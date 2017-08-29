@@ -13,6 +13,7 @@ namespace Anlab.Core.Models
         public decimal InternalSetupCost { get; set; }
         public decimal ExternalSetupCost { get; set; }
         public string Category { get; set; }
+        public string[] Categories => Category.Split('|');
         public string Group { get; set; }
         public string Analysis { get; set; }
         public string Description { get; set; }

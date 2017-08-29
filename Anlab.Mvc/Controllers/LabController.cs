@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Anlab.Core.Domain;
 
 namespace AnlabMvc.Controllers
 {
@@ -25,6 +26,8 @@ namespace AnlabMvc.Controllers
         private readonly IOrderMessageService _orderMessageService;
         private readonly IFileStorageService _fileStorageService;
 
+        private const int _maxShownOrders = 1000;
+
         public LabController(ApplicationDbContext dbContext, IOrderService orderService, IOrderMessageService orderMessageService, IFileStorageService fileStorageService)
         {
             _dbContext = dbContext;
@@ -33,14 +36,26 @@ namespace AnlabMvc.Controllers
             _fileStorageService = fileStorageService;
         }
 
-        public IActionResult OpenOrders()
+        public IActionResult Orders()
         {
-            //TODO: update this when we know status. Add filter?
-            var orders = _dbContext.Orders.Where(a => a.Status != OrderStatusCodes.Created && a.Status != OrderStatusCodes.Complete)
-                .Include(i => i.Creator).ToList();
+            var orders = _dbContext.Orders
+                .Where(a => a.Status != OrderStatusCodes.Created)
+                .Select(c => new Order
+                {
+                    Id = c.Id,
+                    Creator = new User { Email = c.Creator.Email, ClientId = c.Creator.ClientId },
+                    Created = c.Created,
+                    Updated = c.Updated,
+                    Project = c.Project,
+                    Status = c.Status,
+                    ShareIdentifier = c.ShareIdentifier
+                })
+                .Take(_maxShownOrders)
+                .ToList();
 
             return View(orders);
         }
+
 
         public async Task<IActionResult> Details(int id)
         {
@@ -72,7 +87,7 @@ namespace AnlabMvc.Controllers
             if(order.Status == OrderStatusCodes.Received)
             {
                 ErrorMessage = "You cannot edit an order marked as received";
-                return RedirectToAction("OpenOrders");
+                return RedirectToAction("Orders");
             }
             var joined = await _orderService.PopulateTestItemModel(true);
 
@@ -165,7 +180,7 @@ namespace AnlabMvc.Controllers
             if (order.Status != OrderStatusCodes.Confirmed)
             {
                 ErrorMessage = "You can only receive a confirmed order";
-                return RedirectToAction("OpenOrders");
+                return RedirectToAction("Orders");
             }
 
             order.Status = OrderStatusCodes.Received;
@@ -177,7 +192,7 @@ namespace AnlabMvc.Controllers
             await _dbContext.SaveChangesAsync();
 
             Message = "Order marked as received";
-            return RedirectToAction("OpenOrders");
+            return RedirectToAction("Orders");
 
         }
 
@@ -194,7 +209,7 @@ namespace AnlabMvc.Controllers
             if (result.WasError)
             {
                 ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
-                return RedirectToAction("OpenOrders");
+                return RedirectToAction("Orders");
             }
             var orderDetails = order.GetOrderDetails();
             orderDetails.SelectedTests = result.SelectedTests;
@@ -224,7 +239,7 @@ namespace AnlabMvc.Controllers
             if (order.Status != OrderStatusCodes.Received)
             {
                 ErrorMessage = "You can only Complete a Received order";
-                //return RedirectToAction("OpenOrders");
+                //return RedirectToAction("Orders");
             }
 
             if (model.UploadFile == null || model.UploadFile.Length <= 0)
@@ -239,7 +254,7 @@ namespace AnlabMvc.Controllers
             if (result.WasError)
             {
                 ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
-                return RedirectToAction("OpenOrders");
+                return RedirectToAction("Orders");
             }
 
             //File Upload
@@ -260,7 +275,7 @@ namespace AnlabMvc.Controllers
             await _dbContext.SaveChangesAsync();
 
             Message = "Order marked as Complete";
-            return RedirectToAction("OpenOrders");
+            return RedirectToAction("Orders");
 
         }
 

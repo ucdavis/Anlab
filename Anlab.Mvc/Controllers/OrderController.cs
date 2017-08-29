@@ -123,6 +123,7 @@ namespace AnlabMvc.Controllers
                 {
                     CreatorId = CurrentUserId,
                     Status = OrderStatusCodes.Created,
+                    ShareIdentifier = Guid.NewGuid(),
                 };
                 await _orderService.PopulateOrder(model, order);
 

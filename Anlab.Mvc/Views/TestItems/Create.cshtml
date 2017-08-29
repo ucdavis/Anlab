@@ -31,4 +31,16 @@
 @section Scripts
 {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+
+    <script type="text/javascript">
+
+        $(function() {
+            $('#Categories').multiselect();
+        });
+    </script>
+}
+@section AdditionalStyles
+{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css">
 }

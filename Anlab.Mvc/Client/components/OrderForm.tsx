@@ -140,7 +140,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
     getTests = () => {
         const { testItems, payment, selectedTests, sampleType, quantity } = this.state;
-        const filtered = testItems.filter(item => item.category === sampleType);
+        const filtered = testItems.filter(item => item.categories.indexOf(sampleType) !== -1);
         return {
             filtered,
             selected: filtered.filter(item => !!selectedTests[item.id])

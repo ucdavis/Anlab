@@ -246,14 +246,14 @@ describe('<SampleTypeSelection/>', () => {
             const expectedTag = target.find('div').at(1).childAt(3).find('SVG');
             //console.log(target.find('div').at(1).childAt(0).debug());
             expect(expectedTag.length).toEqual(1);
-            expect(expectedTag.find('title').at(0).text()).toEqual('icecream');
+            expect(expectedTag.find('title').at(0).text()).toEqual('compost');
         });
         it('should have h3', () => {
             const target = mount(<SampleTypeSelection sampleType="Other" onSampleSelected={null} />);
             const expectedTag = target.find('div').at(1).childAt(3).find('h3');
             //console.log(target.find('div').at(1).childAt(0).debug());
             expect(expectedTag.length).toEqual(1);
-            expect(expectedTag.text()).toEqual('Other');
+            expect(expectedTag.text()).toEqual('Compost - Manure');
         });
 
         it('should call on click with soil parameter', () => {
