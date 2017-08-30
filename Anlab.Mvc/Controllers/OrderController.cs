@@ -46,8 +46,8 @@ namespace AnlabMvc.Controllers
 
             var model = new OrderEditModel {
                 TestItems = joined.ToArray(),
-                InternalProcessingFee = proc.Cost,
-                ExternalProcessingFee = proc.Cost * _appSettings.NonUcRate
+                InternalProcessingFee = Math.Ceiling(proc.Cost),
+                ExternalProcessingFee = Math.Ceiling(proc.Cost * _appSettings.NonUcRate)
             };
 
             var user = _context.Users.Single(a => a.Id == CurrentUserId);
