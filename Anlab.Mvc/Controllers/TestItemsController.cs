@@ -10,6 +10,7 @@ using Anlab.Core.Data;
 using Microsoft.AspNetCore.Authorization;
 using AnlabMvc.Models.Roles;
 using System.Text.Encodings.Web;
+using AnlabMvc.Services;
 
 namespace AnlabMvc.Controllers
 {
@@ -17,10 +18,12 @@ namespace AnlabMvc.Controllers
     public class TestItemsController : ApplicationController
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILabworksService _labworksService;
 
-        public TestItemsController(ApplicationDbContext context)
+        public TestItemsController(ApplicationDbContext context, ILabworksService labworksService)
         {
             _context = context;
+            _labworksService = labworksService;
         }
 
         // GET: TestItems
@@ -43,6 +46,8 @@ namespace AnlabMvc.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.Price = await _labworksService.GetPrice(testItem.Id);
 
             return View(testItem);
         }
@@ -92,6 +97,7 @@ namespace AnlabMvc.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Price = await _labworksService.GetPrice(testItem.Id);
             return View(testItem);
         }
 
@@ -130,6 +136,7 @@ namespace AnlabMvc.Controllers
                 Message = "Edit saved";
                 return RedirectToAction("Index");
             }
+            ViewBag.Price = await _labworksService.GetPrice(testItem.Id);
             return View(testItem);
         }
 
@@ -147,6 +154,7 @@ namespace AnlabMvc.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Price = await _labworksService.GetPrice(testItem.Id);
 
             return View(testItem);
         }

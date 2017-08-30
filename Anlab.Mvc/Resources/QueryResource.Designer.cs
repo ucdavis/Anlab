@@ -62,7 +62,9 @@ namespace AnlabMvc.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT [ACODE] as Id,[APRICE] as Cost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier FROM [ANL_LIST] where ACODE in @codes.
+        ///   Looks up a localized string similar to DECLARE @setup int;
+        ///SELECT @setup = APRICE from dbo.ANL_LIST where ACODE = &apos;SETUP&apos;
+        ///SELECT [ACODE] as Id,[APRICE] as Cost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier, @setup as SetupCost FROM [ANL_LIST] where ACODE in @codes.
         /// </summary>
         internal static string AnlabItemPrices {
             get {
@@ -71,7 +73,9 @@ namespace AnlabMvc.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT [ACODE] as Id,[APRICE] as Cost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier FROM [ANL_LIST] where ACODE  = @code .
+        ///   Looks up a localized string similar to DECLARE @setup int;
+        ///SELECT @setup = APRICE from dbo.ANL_LIST where ACODE = &apos;SETUP&apos;
+        ///SELECT [ACODE] as Id,[APRICE] as Cost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier, @setup as SetupCost FROM [ANL_LIST] where ACODE  = @code.
         /// </summary>
         internal static string AnlabPriceForCode {
             get {

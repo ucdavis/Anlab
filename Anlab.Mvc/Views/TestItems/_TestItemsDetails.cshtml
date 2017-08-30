@@ -1,4 +1,8 @@
-﻿@model Anlab.Core.Domain.TestItem
+﻿@using Anlab.Core.Models
+@model Anlab.Core.Domain.TestItem
+@{
+    var testItemPrice = (TestItemPrices)ViewBag.Price;
+}
 
 <dl class="dl-horizontal">
     <dt>
@@ -45,5 +49,12 @@
     </dt>
     <dd>
         @Html.DisplayFor(model => model.Notes)
+    </dd>
+    <dt>
+        Price
+    </dt>
+    <dd>
+
+        @(testItemPrice != null ? testItemPrice.Cost.ToString("C") : String.Empty)
     </dd>
 </dl>
