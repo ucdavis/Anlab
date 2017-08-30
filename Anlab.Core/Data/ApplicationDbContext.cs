@@ -81,12 +81,12 @@ namespace Anlab.Core.Data
             // Add your customizations after calling base.OnModelCreating(builder);
 
             // prevent duplicate FKs when running migrations
-            builder.Entity<User>()
-                .HasMany(e => e.Roles)
-                .WithOne()
-                .HasForeignKey(e => e.UserId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
+            //builder.Entity<User>()
+            //    .HasMany(e => e.Roles)
+            //    .WithOne()
+            //    .HasForeignKey(e => e.UserId)
+            //    .IsRequired()
+            //    .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

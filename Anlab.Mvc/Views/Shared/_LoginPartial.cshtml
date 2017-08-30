@@ -3,19 +3,19 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
-@if (SignInManager.IsSignedIn(User))
+
+@if (User.Identity.IsAuthenticated)
 {
-    var user = await UserManager.GetUserAsync(User);
     <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
             <li>
-                <a asp-area="" asp-controller="Profile" asp-action="Index" title="Manage">Hello @user.Name!</a>
+                <a asp-area="" asp-controller="Profile" asp-action="Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
             </li>
             <li>
                 <button type="submit" class="btn btn-navbar">Log out</button>
             </li>
         </ul>
-    </form>
+    </form>        
 }
 else
 {
