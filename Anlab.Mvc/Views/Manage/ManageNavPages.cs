@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-namespace WebApplication4.Views.Manage
+namespace AnlabMvc.Views.Manage
 {
     public static class ManageNavPages
     {

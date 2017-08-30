@@ -68,7 +68,7 @@ namespace AnlabMvc
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.ConfigureApplicationCookie(options => options.LoginPath = "/Account/LogIn");
+            //services.ConfigureApplicationCookie(options => options.LoginPath = "/Account/LogIn");
 
             services.AddAuthentication()
                 .AddGoogle(options =>

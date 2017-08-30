@@ -32,6 +32,11 @@ namespace Anlab.Core.Domain
 
         public ICollection<MailMessage> MailMessages { get; set; }
 
+        /// <summary>
+        /// Navigation property for the roles this user belongs to.
+        /// </summary>
+        public virtual ICollection<IdentityUserRole<int>> Roles { get; } = new List<IdentityUserRole<int>>();
+
         public string GetFirstName()
         {
             if (!string.IsNullOrWhiteSpace($"{FirstName}{LastName}"))

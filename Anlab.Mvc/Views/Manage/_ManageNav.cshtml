@@ -1,5 +1,8 @@
-﻿@using WebApplication4.Views.Manage
-@inject SignInManager<ApplicationUser> SignInManager
+﻿@using System.Linq
+@using Anlab.Core.Domain
+@using AnlabMvc.Views.Manage
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }

@@ -1,4 +1,7 @@
-﻿@model GenerateRecoveryCodesViewModel
+﻿@using System.Linq
+@using AnlabMvc.Models.ManageViewModels
+@using AnlabMvc.Views.Manage
+@model AnlabMvc.Models.ManageViewModels.GenerateRecoveryCodesViewModel
 @{
     ViewData["Title"] = "Recovery codes";
     ViewData.AddActivePage(ManageNavPages.TwoFactorAuthentication);
