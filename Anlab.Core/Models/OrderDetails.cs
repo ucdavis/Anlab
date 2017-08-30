@@ -29,6 +29,7 @@ namespace Anlab.Core.Models
             }
         }
         public string ClientId { get; set; }
+        public decimal ProcessingFee { get; set; } = 50; //TODO get from db
     }
 
 }

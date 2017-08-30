@@ -30,6 +30,7 @@ interface IOrderState {
     isFromLab: boolean;
     status: string;
     clientId: string;
+    processingFee: number;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -52,7 +53,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             errorMessage: '',
             isFromLab: false,
             status: '',
-            clientId: ''
+            clientId: '',
+            processingFee: null
         };
 
         if (window.App.defaultAccount) {            
@@ -80,6 +82,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.payment.clientType = orderInfo.Payment.ClientType;
             initialState.payment.account = orderInfo.Payment.Account;
             initialState.clientId = orderInfo.ClientId;
+            initialState.processingFee = orderInfo.ProcessingFee;
 
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
@@ -171,7 +174,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             payment: this.state.payment,
             sampleType: this.state.sampleType,
             selectedTests,
-            clientId: this.state.clientId
+            clientId: this.state.clientId,
+            processingFee: this.state.processingFee
         }
         const that = this;
         var antiforgery = $("input[name='__RequestVerificationToken']").val();
@@ -191,7 +195,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     }
 
     render() {
-        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, isFromLab, status, clientId} = this.state;
+        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, isFromLab, status, clientId, processingFee } = this.state;
 
         const { filtered, selected} = this.getTests();
 
@@ -226,7 +230,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                             payment={payment}
                             onSubmit={this.onSubmit}
                             isFromLab={isFromLab}
-                            status={status} />
+                            status={status}
+                            processingFee={processingFee} />
                     </div>
                 </div>
 
