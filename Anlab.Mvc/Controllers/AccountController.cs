@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Anlab.Core.Domain;
@@ -269,6 +270,7 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction(nameof(Login));
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
+
             if (info == null)
             {
                 return RedirectToAction(nameof(Login));
@@ -294,6 +296,18 @@ namespace AnlabMvc.Controllers
                 var firstName = info.Principal.FindFirstValue(ClaimTypes.GivenName);
                 var lastName = info.Principal.FindFirstValue(ClaimTypes.Surname);
                 var name = info.Principal.FindFirstValue(ClaimTypes.Name);
+
+                if (info.LoginProvider.Equals("UCDavis", StringComparison.OrdinalIgnoreCase))
+                {
+                    email = info.Principal.FindFirstValue(ClaimTypes.Name);
+                    name = info.Principal.FindFirstValue("name");
+                }
+
+                //return Json(new
+                //{
+                //    claims = info.Principal.Claims.Select(x => new { x.Type, x.Value})
+                //});
+
                 return View("ExternalLogin", new ExternalLoginViewModel { Email = email, FirstName = firstName, LastName = lastName, Name = name });
             }
         }
