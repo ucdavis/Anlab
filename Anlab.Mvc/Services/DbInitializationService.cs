@@ -62,7 +62,7 @@ namespace AnlabMvc.Services
                 new Claim(ClaimTypes.NameIdentifier, "postit"),
                 new Claim(ClaimTypes.Name, "Scott Kirkland")
             }));
-            var loginInfo = new ExternalLoginInfo(userPrincipal, "CAS", "postit", null);
+            var loginInfo = new ExternalLoginInfo(userPrincipal, "UCDavis", "l7kj8J21RN8ZBZbP_LyOj-weGA10rxp9irsiDkQ1CRE", null);
 
             await _userManager.CreateAsync(scottUser);
             await _userManager.AddLoginAsync(scottUser, loginInfo);
@@ -81,7 +81,7 @@ namespace AnlabMvc.Services
                 new Claim(ClaimTypes.Name, "Jason Sylvestre")
             }));
             var jasonLoginInfo = new ExternalLoginInfo(jasonUserPrincipal, "CAS", "jsylvest", null);
-
+            
             await _userManager.CreateAsync(jasonUser);
             await _userManager.AddLoginAsync(jasonUser, jasonLoginInfo);
             await _userManager.AddToRoleAsync(jasonUser, RoleCodes.Admin);
@@ -131,7 +131,7 @@ namespace AnlabMvc.Services
             // create a new sample order
 
             CreateOrders(jasonUser);
-            CreateOrders(scottUser);
+            //CreateOrders(scottUser);
             CreateOrders(calUser);
             CreateOrders(lauraUser);
 
