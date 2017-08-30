@@ -10,6 +10,7 @@ using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace AnlabMvc.Controllers
 {
@@ -20,13 +21,15 @@ namespace AnlabMvc.Controllers
         private readonly IOrderService _orderService;
         private readonly IOrderMessageService _orderMessageService;
         private readonly ILabworksService _labworksService;
+        private readonly AppSettings _appSettings;
 
-        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ILabworksService labworksService)
+        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ILabworksService labworksService, IOptions<AppSettings> appSettings)
         {
             _context = context;
             _orderService = orderService;
             _orderMessageService = orderMessageService;
             _labworksService = labworksService;
+            _appSettings = appSettings.Value;
         }
 
         public async Task<IActionResult> Index()
@@ -39,11 +42,12 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> Create()
         {
             var joined = await  _orderService.PopulateTestItemModel();
-            //var proc = await _labworksService.GetPrice("PROC");
+            var proc = await _labworksService.GetPrice("PROC");
 
             var model = new OrderEditModel {
                 TestItems = joined.ToArray(),
-                ProcessingFee = 20
+                InternalProcessingFee = proc.Cost,
+                ExternalProcessingFee = proc.Cost * _appSettings.NonUcRate
             };
 
             var user = _context.Users.Single(a => a.Id == CurrentUserId);

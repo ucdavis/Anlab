@@ -178,7 +178,7 @@ namespace AnlabMvc.Services
             var tests = await CalculateTestDetails(orderDetails);
 
             orderDetails.SelectedTests = tests.ToArray();
-            orderDetails.Total = orderDetails.SelectedTests.Sum(x=>x.Total);
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
 
             orderToUpdate.SaveDetails(orderDetails);
 

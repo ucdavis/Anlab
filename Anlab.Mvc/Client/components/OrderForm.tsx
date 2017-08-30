@@ -30,7 +30,8 @@ interface IOrderState {
     isFromLab: boolean;
     status: string;
     clientId: string;
-    processingFee: number;
+    internalProcessingFee: number;
+    externalProcessingFee: number;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -54,7 +55,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             isFromLab: false,
             status: '',
             clientId: '',
-            processingFee: 10
+            internalProcessingFee: window.App.orderData.internalProcessingFee,
+            externalProcessingFee: window.App.orderData.externalProcessingFee
         };
 
         if (window.App.defaultAccount) {            
@@ -82,7 +84,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.payment.clientType = orderInfo.Payment.ClientType;
             initialState.payment.account = orderInfo.Payment.Account;
             initialState.clientId = orderInfo.ClientId;
-            initialState.processingFee = orderInfo.ProcessingFee;
+            initialState.internalProcessingFee = orderInfo.InternalProcessingFee;
+            initialState.externalProcessingFee = orderInfo.ExternalProcessingFee;
 
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
@@ -175,7 +178,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             sampleType: this.state.sampleType,
             selectedTests,
             clientId: this.state.clientId,
-            processingFee: this.state.processingFee
+            internalProcessingFee: this.state.internalProcessingFee,
+            externalProcessingFee: this.state.externalProcessingFee
         }
         const that = this;
         var antiforgery = $("input[name='__RequestVerificationToken']").val();
@@ -195,9 +199,11 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     }
 
     render() {
-        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, isFromLab, status, clientId, processingFee } = this.state;
+        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, isFromLab, status, clientId, internalProcessingFee, externalProcessingFee } = this.state;
 
-        const { filtered, selected} = this.getTests();
+        const { filtered, selected } = this.getTests();
+
+        const processingFee = this.state.payment.clientType === 'uc' ? this.state.internalProcessingFee : this.state.externalProcessingFee; 
 
         return (
             <div className="row">

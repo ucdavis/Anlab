@@ -29,7 +29,8 @@ namespace Anlab.Core.Models
             }
         }
         public string ClientId { get; set; }
-        public decimal ProcessingFee { get; set; }
+        public decimal InternalProcessingFee { get; set; }
+        public decimal ExternalProcessingFee { get; set; }
     }
 
 }
