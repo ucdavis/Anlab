@@ -54,7 +54,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             isFromLab: false,
             status: '',
             clientId: '',
-            processingFee: null
+            processingFee: 10
         };
 
         if (window.App.defaultAccount) {            

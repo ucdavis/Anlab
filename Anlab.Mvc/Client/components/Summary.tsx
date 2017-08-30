@@ -28,7 +28,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
             return prev + perTest + (this.props.payment.clientType === 'uc' ? item.internalSetupCost : item.externalSetupCost);
         }, 0);
 
-        return total + 50;
+        return total + this.props.processingFee;
     }
 
 
@@ -85,7 +85,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
                         <tr>
                             <th>Processing Fee</th>
                             <td colSpan={3}></td>
-                            <td><NumberFormat value={50} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+                            <td><NumberFormat value={this.props.processingFee} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
                         </tr>
                         <tr>
                             <td colSpan={4}></td>

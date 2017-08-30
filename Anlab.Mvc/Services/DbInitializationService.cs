@@ -149,7 +149,7 @@ namespace AnlabMvc.Services
 
         private void CreateOrders(User user)
         {
-            var xxx = @"{""Quantity"":2,""SampleType"":""Soil"",""AdditionalInfo"":""Sample"",""SelectedTests"":[{""Id"":""PH-S"",""Analysis"":""pH"",""Cost"":20.0,""SetupCost"":45.0,""SubTotal"":40.0,""Total"":85.0},{""Id"":""EC-S"",""Analysis"":""EC"",""Cost"":20.0,""SetupCost"":45.0,""SubTotal"":40.0,""Total"":85.0},{""Id"":""ESP-S"",""Analysis"":""ESP"",""Cost"":0.0,""SetupCost"":0.0,""SubTotal"":0.0,""Total"":0.0},{""Id"":""HCO3-S"",""Analysis"":""HCO3"",""Cost"":20.0,""SetupCost"":45.0,""SubTotal"":40.0,""Total"":85.0},{""Id"":""GRIND"",""Analysis"":""Grind"",""Cost"":9.0,""SetupCost"":45.0,""SubTotal"":18.0,""Total"":63.0},{""Id"":""SP-FOR"",""Analysis"":""Imported Soil"",""Cost"":14.0,""SetupCost"":0.0,""SubTotal"":28.0,""Total"":28.0}],""Total"":346.0,""Payment"":{""ClientType"":""other"",""Account"":null,""IsInternalClient"":false},""AdditionalEmails"":[],""Project"":""2"",""LabComments"":null,""AdjustmentAmount"":0.0,""GrandTotal"":346.0, ""ClientId"":""XYZ""}";
+            var xxx = @"{""Quantity"":2,""SampleType"":""Soil"",""AdditionalInfo"":""Sample"",""SelectedTests"":[{""Id"":""PH-S"",""Analysis"":""pH"",""Cost"":20.0,""SetupCost"":45.0,""SubTotal"":40.0,""Total"":85.0},{""Id"":""EC-S"",""Analysis"":""EC"",""Cost"":20.0,""SetupCost"":45.0,""SubTotal"":40.0,""Total"":85.0},{""Id"":""ESP-S"",""Analysis"":""ESP"",""Cost"":0.0,""SetupCost"":0.0,""SubTotal"":0.0,""Total"":0.0},{""Id"":""HCO3-S"",""Analysis"":""HCO3"",""Cost"":20.0,""SetupCost"":45.0,""SubTotal"":40.0,""Total"":85.0},{""Id"":""GRIND"",""Analysis"":""Grind"",""Cost"":9.0,""SetupCost"":45.0,""SubTotal"":18.0,""Total"":63.0},{""Id"":""SP-FOR"",""Analysis"":""Imported Soil"",""Cost"":14.0,""SetupCost"":0.0,""SubTotal"":28.0,""Total"":28.0}],""Total"":346.0,""Payment"":{""ClientType"":""other"",""Account"":null,""IsInternalClient"":false},""AdditionalEmails"":[],""Project"":""2"",""LabComments"":null,""AdjustmentAmount"":0.0,""GrandTotal"":346.0, ""ClientId"":""XYZ"", ""ProcessingFee"":30}";
 
             var order = new Order
             {
@@ -226,6 +226,8 @@ namespace AnlabMvc.Services
 
         private void LoadTestItems()
         {
+            CreateTestItem("PROC", "Processing Fee", TestCategories.Other, "Special", null, false);
+
             //Meh
             //CreateTestItem("()", "Just to get it to pass", TestCategories.Soil, "Special", null, false); //We now filter this out in the query
             CreateTestItem("-BCL-P-IC", "Just to get it to pass", TestCategories.Soil, "Special", null, false);

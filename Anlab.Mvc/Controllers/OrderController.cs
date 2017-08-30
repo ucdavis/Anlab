@@ -19,14 +19,14 @@ namespace AnlabMvc.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IOrderService _orderService;
         private readonly IOrderMessageService _orderMessageService;
+        private readonly ILabworksService _labworksService;
 
-
-        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService)
+        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ILabworksService labworksService)
         {
             _context = context;
             _orderService = orderService;
             _orderMessageService = orderMessageService;
-
+            _labworksService = labworksService;
         }
 
         public async Task<IActionResult> Index()
@@ -39,8 +39,12 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> Create()
         {
             var joined = await  _orderService.PopulateTestItemModel();
+            //var proc = await _labworksService.GetPrice("PROC");
 
-            var model = new OrderEditModel { TestItems = joined.ToArray() };
+            var model = new OrderEditModel {
+                TestItems = joined.ToArray(),
+                ProcessingFee = 20
+            };
 
             var user = _context.Users.Single(a => a.Id == CurrentUserId);
             model.DefaultAccount = user.Account;
