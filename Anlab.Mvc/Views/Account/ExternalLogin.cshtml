@@ -17,10 +17,13 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="ExternalLoginConfirmation" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+            @Html.HiddenFor(a => a.FirstName, new {})
+            @Html.HiddenFor(a => a.LastName, new { })
+            @Html.HiddenFor(a => a.Name, new { })
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Email"></label>
-                <input asp-for="Email" class="form-control" />
+                <input asp-for="Email" class="form-control"/>
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-default">Register</button>

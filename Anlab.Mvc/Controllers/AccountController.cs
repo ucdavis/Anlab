@@ -291,7 +291,10 @@ namespace AnlabMvc.Controllers
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["LoginProvider"] = info.LoginProvider;
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                return View("ExternalLogin", new ExternalLoginViewModel { Email = email });
+                var firstName = info.Principal.FindFirstValue(ClaimTypes.GivenName);
+                var lastName = info.Principal.FindFirstValue(ClaimTypes.Surname);
+                var name = info.Principal.FindFirstValue(ClaimTypes.Name);
+                return View("ExternalLogin", new ExternalLoginViewModel { Email = email, FirstName = firstName, LastName = lastName, Name = name });
             }
         }
 
@@ -308,7 +311,11 @@ namespace AnlabMvc.Controllers
                 {
                     throw new ApplicationException("Error loading external login information during confirmation.");
                 }
-                var user = new User { UserName = model.Email, Email = model.Email };
+                var user = new User { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, Name = model.Name};
+                if (string.IsNullOrWhiteSpace(user.Name))
+                {
+                    user.Name = user.Email;
+                }
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
