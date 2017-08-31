@@ -84,8 +84,8 @@ namespace AnlabMvc
             services.AddTransient<IMailService, MailService>();
             services.AddTransient<IOrderMessageService, OrderMessageService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            //services.AddTransient<ILabworksService, FakeLabworksService>(); //TODO: Replace with non fake one.
-            services.AddTransient<ILabworksService, LabworksService>();
+            services.AddTransient<ILabworksService, FakeLabworksService>(); //TODO: Replace with non fake one.
+            //services.AddTransient<ILabworksService, LabworksService>();
             services.AddTransient<IFileStorageService, FileStorageService>();
             services.AddSingleton<IDataSigningService, DataSigningService>();
         }
