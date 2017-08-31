@@ -23,6 +23,8 @@ namespace AnlabMvc.Controllers
         private readonly ILabworksService _labworksService;
         private readonly AppSettings _appSettings;
 
+        private const string processingCode = "PROC"; 
+
         public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ILabworksService labworksService, IOptions<AppSettings> appSettings)
         {
             _context = context;
@@ -42,7 +44,7 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> Create()
         {
             var joined = await  _orderService.PopulateTestItemModel();
-            var proc = await _labworksService.GetPrice("PROC");
+            var proc = await _labworksService.GetPrice(processingCode);
 
             var model = new OrderEditModel {
                 TestItems = joined.ToArray(),
@@ -78,10 +80,13 @@ namespace AnlabMvc.Controllers
             }
 
             var joined = await _orderService.PopulateTestItemModel();
+            var proc = await _labworksService.GetPrice(processingCode);
 
             var model = new OrderEditModel {
                 TestItems = joined.ToArray(),
-                Order = order
+                Order = order,
+                InternalProcessingFee = Math.Ceiling(proc.Cost),
+                ExternalProcessingFee = Math.Ceiling(proc.Cost * _appSettings.NonUcRate)
             };
 
             return View(model); 
