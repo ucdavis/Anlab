@@ -41,11 +41,11 @@ namespace AnlabMvc.Controllers
 
             if (order == null)
             {
-                return NotFound(id);
+                return NotFound();
             }
             if (order.Creator == null)
             {
-                return NotFound(CurrentUserId);
+                return NotFound();
             }
 
             if (order.CreatorId != CurrentUserId)

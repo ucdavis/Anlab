@@ -64,7 +64,7 @@ namespace AnlabMvc.Controllers
 
             if (order == null)
             {
-                return NotFound(id);
+                return NotFound();
             }
 
             var model = new OrderReviewModel();
@@ -83,7 +83,7 @@ namespace AnlabMvc.Controllers
 
             if (order == null)
             {
-                return NotFound(id);
+                return NotFound();
             }           
             if(order.Status == OrderStatusCodes.Received)
             {
@@ -155,7 +155,7 @@ namespace AnlabMvc.Controllers
 
             if (order == null)
             {
-                return NotFound(id);
+                return NotFound();
             }
 
             var model = new OrderReviewModel();
@@ -175,7 +175,7 @@ namespace AnlabMvc.Controllers
 
             if (order == null)
             {
-                return NotFound(id);
+                return NotFound();
             }
 
             if (order.Status != OrderStatusCodes.Confirmed)
@@ -210,7 +210,7 @@ namespace AnlabMvc.Controllers
 
             if (order == null)
             {
-                return NotFound(id);
+                return NotFound();
             }
 
             var result = await _orderService.OverwiteOrderWithTestsCompleted(order); //TODO: Just testing
@@ -241,7 +241,7 @@ namespace AnlabMvc.Controllers
 
             if (order == null)
             {
-                return NotFound(id);
+                return NotFound();
             }
 
             if (order.Status != OrderStatusCodes.Received)
@@ -294,7 +294,7 @@ namespace AnlabMvc.Controllers
 
             if (order == null)
             {
-                return NotFound(id);
+                return NotFound();
             }
 
             return new JsonResult(order.GetOrderDetails());

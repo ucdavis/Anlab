@@ -33,7 +33,7 @@ namespace AnlabMvc.Controllers
 
             if (order.Status != OrderStatusCodes.Complete)
             {
-                return NotFound(order.Id);
+                return NotFound();
             }
 
             var model = new OrderReviewModel();
