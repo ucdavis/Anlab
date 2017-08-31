@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AnlabMvc.Controllers
 {
@@ -14,9 +15,20 @@ namespace AnlabMvc.Controllers
 
             return View();
         }
-        public IActionResult Error()
+
+        public IActionResult TestException()
         {
-            return View();
+            throw new Exception("Test exception. If this was a real exception, you would need to run in circles, scream and shout.");
+        }
+
+        public IActionResult TestNotFound1()
+        {
+            return NotFound();
+        }
+
+        public IActionResult TestNotFound2()
+        {
+            return NotFound("Not Found with a message.");
         }
     }
 }
