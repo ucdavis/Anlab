@@ -84,8 +84,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.payment.clientType = orderInfo.Payment.ClientType;
             initialState.payment.account = orderInfo.Payment.Account;
             initialState.clientId = orderInfo.ClientId;
-            initialState.internalProcessingFee = orderInfo.InternalProcessingFee;
-            initialState.externalProcessingFee = orderInfo.ExternalProcessingFee;
+            initialState.internalProcessingFee = window.App.orderData.internalProcessingFee;
+            initialState.externalProcessingFee = window.App.orderData.externalProcessingFee;
 
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
