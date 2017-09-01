@@ -21,14 +21,13 @@ namespace AnlabMvc.Controllers
             throw new Exception("Test exception. If this was a real exception, you would need to run in circles, scream and shout.");
         }
 
-        public IActionResult TestNotFound1()
+        public IActionResult TestNotFound(string id)
         {
-            return NotFound();
-        }
-
-        public IActionResult TestNotFound2()
-        {
-            return NotFound("Not Found with a message.");
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return NotFound();
+            }
+            return NotFound(id);
         }
     }
 }
