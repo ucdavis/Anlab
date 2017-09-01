@@ -10,6 +10,7 @@ using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace AnlabMvc.Controllers
 {
@@ -19,14 +20,18 @@ namespace AnlabMvc.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IOrderService _orderService;
         private readonly IOrderMessageService _orderMessageService;
+        private readonly ILabworksService _labworksService;
+        private readonly AppSettings _appSettings;
 
+        private const string processingCode = "PROC"; 
 
-        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService)
+        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ILabworksService labworksService, IOptions<AppSettings> appSettings)
         {
             _context = context;
             _orderService = orderService;
             _orderMessageService = orderMessageService;
-
+            _labworksService = labworksService;
+            _appSettings = appSettings.Value;
         }
 
         public async Task<IActionResult> Index()
@@ -39,8 +44,13 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> Create()
         {
             var joined = await  _orderService.PopulateTestItemModel();
+            var proc = await _labworksService.GetPrice(processingCode);
 
-            var model = new OrderEditModel { TestItems = joined.ToArray() };
+            var model = new OrderEditModel {
+                TestItems = joined.ToArray(),
+                InternalProcessingFee = Math.Ceiling(proc.Cost),
+                ExternalProcessingFee = Math.Ceiling(proc.Cost * _appSettings.NonUcRate)
+            };
 
             var user = _context.Users.Single(a => a.Id == CurrentUserId);
             model.DefaultAccount = user.Account;
@@ -70,10 +80,13 @@ namespace AnlabMvc.Controllers
             }
 
             var joined = await _orderService.PopulateTestItemModel();
+            var proc = await _labworksService.GetPrice(processingCode);
 
             var model = new OrderEditModel {
                 TestItems = joined.ToArray(),
-                Order = order
+                Order = order,
+                InternalProcessingFee = Math.Ceiling(proc.Cost),
+                ExternalProcessingFee = Math.Ceiling(proc.Cost * _appSettings.NonUcRate)
             };
 
             return View(model); 

@@ -21,7 +21,8 @@ describe('<Summary />', () => {
                                                 hideError={true}
                                                 isCreate={true}
                                                 onSubmit={null}
-                                                testItems={testItems} />);
+                                                testItems={testItems}
+                                                processingFee={null}/>);
                 const internal = target.instance();
                 expect(internal.totalCost()).toEqual(14.03);
             });
@@ -35,7 +36,8 @@ describe('<Summary />', () => {
                                                 hideError={true}
                                                 isCreate={true}
                                                 onSubmit={null}
-                                                testItems={testItems} />);
+                                                testItems={testItems}
+                                                processingFee={null} />);
                 const internal = target.instance();
                 expect(internal.totalCost()).toEqual(20.09); //(3 * 3.03) + 11
             });
@@ -49,7 +51,8 @@ describe('<Summary />', () => {
                                                 hideError={true}
                                                 isCreate={true}
                                                 onSubmit={null}
-                                                testItems={testItems} />);
+                                                testItems={testItems}
+                                                processingFee={null} />);
                 const internal = target.instance();
                 expect(internal.totalCost()).toEqual(18.06); //(7.06 + 11 )
             });
@@ -63,7 +66,8 @@ describe('<Summary />', () => {
                                                 hideError={true}
                                                 isCreate={true}
                                                 onSubmit={null}
-                                                testItems={testItems} />);
+                                                testItems={testItems}
+                                                processingFee={null} />);
                 const internal = target.instance();
                 expect(internal.totalCost()).toEqual(32.18); //(3 * 7.06) + 11
             });
@@ -74,7 +78,7 @@ describe('<Summary />', () => {
         it('should render nothing if no tests are selected', () => {
             const testItems: Array<ITestItem> = [];
             const payment = { clientType: 'other', account: '' };
-            const target = mount(<Summary isFromLab={false} quantity={1} payment={payment}  status="Test" canSubmit={false}   hideError={true} isCreate={true} onSubmit={null} testItems={testItems} />);
+            const target = mount(<Summary isFromLab={false} quantity={1} payment={payment} status="Test" canSubmit={false} hideError={true} isCreate={true} onSubmit={null} testItems={testItems} processingFee={null} />);
             expect(target.find('div').length).toEqual(0);
         });
         it('should render something if tests are selected', () => {
@@ -83,7 +87,7 @@ describe('<Summary />', () => {
                 { analysis: '2ABC', id: '2C-ABC', internalCost: 1.01, externalCost: 4.03, internalSetupCost: 6, externalSetupCost: 7, category: 'Cat2', categories: ['Cat2'], notes: '' }
             ]
             const payment = { clientType: 'other', account: '' };
-            const target = mount(<Summary isFromLab={false} quantity={1} payment={payment}  status="Test" canSubmit={false}   hideError={true} isCreate={true} onSubmit={null} testItems={testItems} />);
+            const target = mount(<Summary isFromLab={false} quantity={1} payment={payment} status="Test" canSubmit={false} hideError={true} isCreate={true} onSubmit={null} testItems={testItems} processingFee={null} />);
             expect(target.find('div').length).toBeGreaterThan(0);
         });
     });

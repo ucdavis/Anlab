@@ -14,6 +14,7 @@ interface ISummaryProps {
     hideError: boolean;
     isFromLab: boolean;
     status: string;
+    processingFee: number;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
@@ -27,7 +28,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
             return prev + perTest + (this.props.payment.clientType === 'uc' ? item.internalSetupCost : item.externalSetupCost);
         }, 0);
 
-        return total;
+        return total + this.props.processingFee;
     }
 
 
@@ -81,6 +82,11 @@ export class Summary extends React.Component<ISummaryProps, any> {
                         {this._renderTests()}
                     </tbody>
                     <tfoot>
+                        <tr>
+                            <th>Processing Fee</th>
+                            <td colSpan={3}></td>
+                            <td><NumberFormat value={this.props.processingFee} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+                        </tr>
                         <tr>
                             <td colSpan={4}></td>
                             <td><NumberFormat value={this.totalCost()} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>

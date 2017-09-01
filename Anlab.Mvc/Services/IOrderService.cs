@@ -171,13 +171,14 @@ namespace AnlabMvc.Services
         {
             orderToUpdate.Project = model.Project;
             orderToUpdate.ClientId = model.ClientId;
+
             orderToUpdate.JsonDetails = JsonConvert.SerializeObject(model);
             var orderDetails = orderToUpdate.GetOrderDetails();
 
             var tests = await CalculateTestDetails(orderDetails);
 
             orderDetails.SelectedTests = tests.ToArray();
-            orderDetails.Total = orderDetails.SelectedTests.Sum(x=>x.Total);
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
 
             orderToUpdate.SaveDetails(orderDetails);
 
