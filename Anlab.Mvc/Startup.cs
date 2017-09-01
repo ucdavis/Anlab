@@ -111,8 +111,11 @@ namespace AnlabMvc
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error/Error");
             }
+
+            app.UseStatusCodePagesWithRedirects("/Error/Index/{0}");
+            app.UseStatusCodePagesWithReExecute("/Error/Index/{0}");
 
             app.UseStaticFiles();
 
@@ -170,10 +173,8 @@ namespace AnlabMvc
                     name: "pages",
                     template: "pages/{id}",
                     defaults: new { controller = "Pages", action = "ViewPage" });
-
-                routes.MapSpaFallbackRoute(
-                    name: "spa-fallback",
-                    defaults: new { controller = "Home", action = "Index" });
+                
+                //No fallback                
             });
         }
     }

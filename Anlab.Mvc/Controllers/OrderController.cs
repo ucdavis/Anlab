@@ -65,7 +65,7 @@ namespace AnlabMvc.Controllers
             var order = await _context.Orders.SingleOrDefaultAsync(o=>o.Id == id);
 
             if (order == null){
-                return NotFound(id);
+                return NotFound();
             }
             if (order.CreatorId != CurrentUserId)
             {
@@ -156,13 +156,13 @@ namespace AnlabMvc.Controllers
 
             if (order == null)
             {
-                return NotFound(id);
+                return NotFound();
             }
 
             if (order.CreatorId != CurrentUserId)
             {
                 ErrorMessage = "You don't have access to this order.";
-                return NotFound(id);
+                return NotFound();
             }
 
             if (order.Status == OrderStatusCodes.Created)
@@ -185,13 +185,13 @@ namespace AnlabMvc.Controllers
 
             if (order == null)
             {
-                return NotFound(id);
+                return NotFound();
             }
 
             if (order.CreatorId != CurrentUserId)
             {
                 ErrorMessage = "You don't have access to this order.";
-                return NotFound(id);
+                return NotFound();
             }
 
 
@@ -211,13 +211,13 @@ namespace AnlabMvc.Controllers
 
             if (order == null)
             {
-                return NotFound(id);
+                return NotFound();
             }
 
             if (order.CreatorId != CurrentUserId)
             {
                 ErrorMessage = "You don't have access to this order.";
-                return NotFound(id);
+                return NotFound();
             }
 
             if (order.Status != OrderStatusCodes.Created)
@@ -244,13 +244,13 @@ namespace AnlabMvc.Controllers
 
             if (order == null)
             {
-                return NotFound(id);
+                return NotFound();
             }
 
             if (order.CreatorId != CurrentUserId)
             {
                 ErrorMessage = "You don't have access to this order.";
-                return NotFound(id);
+                return NotFound();
             }
 
             if (order.Status != OrderStatusCodes.Created)
