@@ -21,6 +21,14 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Category)
+                <select name="category" id="category">
+                    <option value="All">All</option>
+                    <option value="Soil">Soil</option>
+                    <option value="Plant">Plant</option>
+                    <option value="Water">Water</option>
+                    <option value="Other">Other</option>
+                </select>
+
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Group)
@@ -81,17 +89,35 @@
     @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
     <script type="text/javascript">
         $(function() {
-            $("#table").dataTable({
+            var table = $("#table").DataTable({
                 "sorting": [[1, "asc"]],
                 "pageLength": 25,
                 "stateSave": true,
                 "stateDuration": 60 * 10,
                 "columnDefs": [
-                    { "orderable": false, "targets": 0 },
+                    { "orderable": false, "targets": [0,3] },
                     { "searchable":false, "targets": 0 }
                 ]
             });
+
+            $('#category').change(function () {
+                table.draw();
+            });
         });
+
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+
+                var category = data[3];
+                var categoryFilter = $('#category').val();
+
+                if (categoryFilter == "All" || category.indexOf(categoryFilter) !== -1) {
+                    return true;
+                }
+                return false;
+            }
+        );
+
     </script>
     <script type="text/javascript">
         $(function () {
