@@ -30,7 +30,6 @@
     <thead>
     <tr>
         <th></th>
-        <th>Id</th>
         <th>User</th>
         <th>ClientId</th>
         <th>Created</th>
@@ -59,7 +58,6 @@
                     <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier"><i class="fa fa-download"> Results</i></a>
                 }
             </td>
-            <td>@order.Id</td>
             <td>@order.Creator.Email</td>
             <td>@order.ClientId</td>
             <td>@order.Created</td>
@@ -93,10 +91,10 @@
     <script type="text/javascript">
         $(function() {
             var table = $("#table").DataTable({
-                "sorting": [[2, "desc"]],
+                "sorting": [[1, "desc"]],
                 "columnDefs": [
                     {
-                        "type": "date", "targets" : [4,5]
+                        "type": "date", "targets" : [3,4]
                     },
                     {
                         "targets": [0],
@@ -121,10 +119,10 @@
             function (settings, data, dataIndex) {
                 var min = $('#min').datepicker("getDate");
                 var max = $('#max').datepicker("getDate");
-                var startDate = new Date(data[4]);
+                var startDate = new Date(data[3]);
                 startDate.setHours(0, 0, 0, 0);
 
-                var status = data[7];
+                var status = data[6];
                 var statusFilter = $('#status').val();
 
                 if (statusFilter == "All" || status == statusFilter) {

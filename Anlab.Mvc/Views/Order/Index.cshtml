@@ -14,7 +14,6 @@
     <thead>
     <tr>
         <th></th>
-        <th>Id</th>
         <th>Created</th>
         <th>Updated</th>
         <th>Project</th>
@@ -44,7 +43,6 @@
                     }
                 }
             </td>
-            <td>@order.Id</td>
             <td>@order.Created</td>
             <td>@order.Updated</td>
             <td>@order.Project</td>
@@ -66,10 +64,10 @@
     <script type="text/javascript">
         $(function() {
             $("#table").dataTable({
-                "sorting": [[2, "desc"]],
+                "sorting": [[1, "desc"]],
                 "columnDefs": [
                     {
-                        "type": "date", "targets" : [2,3]
+                        "type": "date", "targets" : [1,2]
                     },
                     {
                         "targets": [0],
