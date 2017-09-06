@@ -50,6 +50,8 @@ namespace Anlab.Core.Domain
 
         public PaymentEvent ApprovedPayment { get; set; }
 
+        public bool Paid { get; set; } = false;
+
         public OrderDetails GetOrderDetails()
         {
             try

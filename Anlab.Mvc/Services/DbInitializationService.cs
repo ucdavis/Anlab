@@ -192,7 +192,7 @@ namespace AnlabMvc.Services
                 ClientId = "XYZ",
                 CreatorId = user.Id,
                 Project = "Test Project",
-                Status = OrderStatusCodes.AwaitingPayment,
+                Status = OrderStatusCodes.Accepted,
                 RequestNum = "17P138",
                 JsonDetails = xxx,
                 ShareIdentifier = Guid.NewGuid()
@@ -204,7 +204,8 @@ namespace AnlabMvc.Services
                 ClientId = "XYZ",
                 CreatorId = user.Id,
                 Project = "Test Project",
-                Status = OrderStatusCodes.Paid,
+                Status = OrderStatusCodes.Accepted,
+                Paid = true,
                 RequestNum = "17P138",
                 JsonDetails = xxx,
                 ShareIdentifier = Guid.NewGuid()

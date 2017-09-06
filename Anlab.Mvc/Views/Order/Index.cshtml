@@ -18,7 +18,7 @@
         <th>Updated</th>
         <th>Project</th>
         <th>Status</th>
-        
+        <th>Paid</th>
     </tr>
     </thead>
     <tbody>
@@ -37,9 +37,9 @@
                 else
                 {
                     <a asp-action="Details" asp-route-id="@order.Id"><i class="fa fa-eye"> Details</i></a>
-                    if (order.Status == OrderStatusCodes.AwaitingPayment)
+                    if (order.Status == OrderStatusCodes.Accepted && !order.Paid)
                     {
-                        <a asp-controller="Payment" asp-action="Pay" asp-route-id="@order.Id"><i class="fa fa-credit-card-alt"> Pay</i> </a>
+                        <a asp-controller="Payment" asp-action="Pay" asp-route-id="@order.ShareIdentifier"><i class="fa fa-credit-card-alt"> Pay</i> </a>
                     }
                 }
             </td>
@@ -47,6 +47,13 @@
             <td>@order.Updated</td>
             <td>@order.Project</td>
             <td>@order.Status</td>
+            <td style="text-align: center">
+                @if (order.Paid)
+                {
+                    <i class="fa fa-check" aria-hidden="true"></i>
+
+                }
+            </td>
         </tr>
     }
     </tbody>
