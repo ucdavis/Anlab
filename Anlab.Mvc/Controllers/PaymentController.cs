@@ -35,28 +35,18 @@ namespace AnlabMvc.Controllers
             _cyberSourceSettings = cyberSourceSettings.Value;
         }
 
-        public ActionResult Pay(int id)
+        public ActionResult Pay(Guid id)
         {
-            var order = _context.Orders.Include(i => i.Creator).SingleOrDefault(o => o.Id == id);
+            var order = _context.Orders.Include(i => i.Creator).SingleOrDefault(a => a.ShareIdentifier == id);
 
             if (order == null)
             {
                 return NotFound();
             }
-            if (order.Creator == null)
-            {
-                return NotFound();
-            }
 
-            if (order.CreatorId != CurrentUserId)
+            if (order.Status != OrderStatusCodes.Accepted)
             {
-                ErrorMessage = "You don't have access to this order.";
-                return RedirectToAction("Index", "Order");
-            }
-
-            if (order.Status != OrderStatusCodes.AwaitingPayment)
-            {
-                ErrorMessage = "You cannot Pay until the Order is ready."; 
+                ErrorMessage = "You cannot Pay until the Order is Accepted."; 
                 return RedirectToAction("Index", "Order");
             }
 
@@ -172,10 +162,7 @@ namespace AnlabMvc.Controllers
             if (response.Decision == ReplyCodes.Accept)
             {
                 order.ApprovedPayment = payment;
-                if (order.Status == OrderStatusCodes.AwaitingPayment)
-                {
-                    order.Status = OrderStatusCodes.Paid;
-                }
+                order.Paid = true;
                 
 
                 try
