@@ -14,7 +14,7 @@
         <th>Updated</th>
         <th>Project</th>
         <th>Status</th>
-        
+        <th>Paid</th>
     </tr>
     </thead>
     <tbody>
@@ -40,6 +40,13 @@
             <td>@order.Updated</td>
             <td>@order.Project</td>
             <td>@order.Status</td>
+            <td style="text-align: center">
+                @if (order.Paid)
+                {
+                    <i class="fa fa-check" aria-hidden="true"></i>
+
+                }
+            </td>
         </tr>
     }
     </tbody>
