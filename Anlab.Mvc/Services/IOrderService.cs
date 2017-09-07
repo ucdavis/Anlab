@@ -58,26 +58,7 @@ namespace AnlabMvc.Services
         /// <returns></returns>
         private IList<TestItemModel> PopulateSelectedTestsItemModel(IEnumerable<string> selectedTestIds, IList<TestItemModel> allTests)
         {
-            var items = _context.TestItems.Where(a => selectedTestIds.Contains(a.Id)).AsNoTracking().ToList();
-
-            return GetJoinedFromSaved(allTests, items);
-        }
-        private List<TestItemModel> GetJoinedFromSaved(IList<TestItemModel> prices, List<TestItem> items)
-        {
-            return (from i in items
-                    join p in prices on i.Id equals p.Id
-                    select new TestItemModel
-                    {
-                        Analysis = i.Analysis,
-                        Category = i.Category,
-                        ExternalCost = Math.Ceiling(p.ExternalCost),
-                        Group = i.Group,
-                        Id = i.Id,
-                        InternalCost = Math.Ceiling(p.InternalCost),
-                        ExternalSetupCost = Math.Ceiling(p.ExternalSetupCost),
-                        InternalSetupCost = Math.Ceiling(p.InternalSetupCost),
-                        Notes = i.NotesEncoded,
-                    }).ToList();
+            return allTests.Where(a => selectedTestIds.Contains(a.Id)).ToList();
         }
 
         private List<TestItemModel> GetJoined(IList<TestItemPrices> prices, List<TestItem> items)
