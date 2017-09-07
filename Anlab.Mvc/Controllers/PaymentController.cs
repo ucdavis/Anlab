@@ -76,33 +76,25 @@ namespace AnlabMvc.Controllers
             {
                 return NotFound();
             }
-
-            var model = new OrderReviewModel();
-            model.Order = order;
-            model.OrderDetails = order.GetOrderDetails();
-            model.TestItems = _context.TestItems
-                .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
+            
+            var model = new PayAnotherWayModel();
+            model.OrderReviewModel = new OrderReviewModel
+            {
+                Order = order,
+                OrderDetails = order.GetOrderDetails(),
+                TestItems = _context.TestItems.Where(a => order.GetOrderDetails().SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList()
+            };
+            
+            var emailBody = string.Format("I would like to pay for my order {0} with a method other than a Credit Card. The order was created on {1} and is for a total of {2} USD.", order.RequestNum, order.Created, order.GetOrderDetails().GrandTotal);
+            
+            model.MailToDetails =
+                string.Format("{0}?subject=Requesting to pay for samples by another method. Order: {1} &body={2}",
+                    _appSettings.AccountsPayableEmail, order.RequestNum, emailBody);
+            
 
             return View(model);
         }
 
-        [HttpPost]
-        public ActionResult PayAnotherWay(Guid id, string otherPaymentDetails)
-        {
-            var order = _context.Orders.Include(i => i.Creator).SingleOrDefault(a => a.ShareIdentifier == id);
-
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            order.OtherPaymentDetails = otherPaymentDetails;
-            _context.SaveChanges();
-
-            Message = "Order Updated.";
-
-            return RedirectToAction("Index", "Home");
-        }
 
         [HttpGet]
         [Authorize(Roles = RoleCodes.Accounts)]

@@ -155,10 +155,6 @@ namespace Test.TestsDatabase
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)16)]"
             }));
             expectedFields.Add(new NameAndType("MailMessages", "System.Collections.Generic.ICollection`1[Anlab.Core.Domain.MailMessage]", new List<string>()));
-            expectedFields.Add(new NameAndType("OtherPaymentDetails", "System.String", new List<string>
-            {
-                "[System.ComponentModel.DataAnnotations.DataTypeAttribute((System.ComponentModel.DataAnnotations.DataType)9)]"
-            }));
             expectedFields.Add(new NameAndType("Paid", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Project", "System.String", new List<string>
             {

@@ -51,9 +51,6 @@ namespace Anlab.Core.Domain
         public PaymentEvent ApprovedPayment { get; set; }
 
         public bool Paid { get; set; } = false;
-
-        [DataType(DataType.MultilineText)]
-        public string OtherPaymentDetails { get; set; }
         
         [DataType(DataType.MultilineText)]
         public string AdminPayDetails { get; set; }
