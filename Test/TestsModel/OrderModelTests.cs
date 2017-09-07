@@ -8,7 +8,7 @@ namespace Test.TestsModel
     [Trait("Category", "ModelTests")]
     public class OrderModelTests
     {
-        [Fact]
+        [Fact (Skip = "This is just an example and is covered in the database test")]
         public void TestFieldsHaveExpectedAttributes()
         {
             #region Arrange
