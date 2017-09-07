@@ -114,6 +114,10 @@ namespace AnlabMvc.Controllers
             {
                 return NotFound();
             }
+            if (order.Status != OrderStatusCodes.Accepted)
+            {
+                Message = "Warning!!! This order's final price has not been Accepted.";
+            }
 
             var model = new OrderReviewModel();
             model.Order = order;
