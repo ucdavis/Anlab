@@ -72,14 +72,7 @@ namespace Anlab.Core.Domain
 
         public IList<TestItemModel> GetTestDetails()
         {
-            try
-            {
-                return JsonConvert.DeserializeObject<IList<TestItemModel>>(SavedTestDetails);
-            }
-            catch (JsonSerializationException)
-            {
-                throw new JsonSerializationException();
-            }
+            return JsonConvert.DeserializeObject<IList<TestItemModel>>(SavedTestDetails);
         }
 
         public void SaveTestDetails(IList<TestItemModel> tests)

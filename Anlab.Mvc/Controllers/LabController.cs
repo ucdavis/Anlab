@@ -282,8 +282,6 @@ namespace AnlabMvc.Controllers
 
             order.SaveDetails(orderDetails);
 
-            order.SavedTestDetails = String.Empty;
-
             await _orderMessageService.EnqueueCompletedMessage(order);
 
             await _dbContext.SaveChangesAsync();
