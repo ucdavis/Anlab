@@ -35,6 +35,7 @@ namespace Anlab.Core.Domain
         public string AdditionalEmails { get; set; }
         
         public string JsonDetails { get; set; }
+        public string SavedTestDetails { get; set; }
 
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }
@@ -67,6 +68,16 @@ namespace Anlab.Core.Domain
         public void SaveDetails(OrderDetails details)
         {
             JsonDetails = JsonConvert.SerializeObject(details);
+        }
+
+        public IList<TestItemModel> GetTestDetails()
+        {
+            return JsonConvert.DeserializeObject<IList<TestItemModel>>(SavedTestDetails);
+        }
+
+        public void SaveTestDetails(IList<TestItemModel> tests)
+        {
+            SavedTestDetails = JsonConvert.SerializeObject(tests);
         }
 
     }

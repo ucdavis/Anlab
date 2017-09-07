@@ -90,12 +90,16 @@ namespace AnlabMvc.Controllers
                 ErrorMessage = "You cannot edit an order marked as received";
                 return RedirectToAction("Orders");
             }
-            var joined = await _orderService.PopulateTestItemModel(true);
+
+            var joined = order.GetTestDetails();
+            var proc = joined.Single(i => i.Id == "PROC");
 
             var model = new OrderEditModel
             {
                 TestItems = joined.ToArray(),
-                Order = order
+                Order = order,
+                InternalProcessingFee = Math.Ceiling(proc.InternalCost),
+                ExternalProcessingFee = Math.Ceiling(proc.ExternalCost)
             };
 
             return View(model);
@@ -135,7 +139,7 @@ namespace AnlabMvc.Controllers
                     return Json(new {success = false, message = "You may only edit a Confirmed order."});
                 }
 
-                await _orderService.PopulateOrder(model, orderToUpdate);
+                 _orderService.PopulateOrder(model, orderToUpdate);
 
                 idForRedirection = model.OrderId.Value;
                 await _dbContext.SaveChangesAsync();

@@ -122,7 +122,10 @@ namespace AnlabMvc.Services
                 counter++;
                 var tip = new TestItemPrices();
                 tip.Id = testItem.Id;
-                tip.Cost = counter;
+                if (tip.Id == "PROC")
+                    tip.Cost = 30;
+                else
+                    tip.Cost = counter;
                 tip.SetupCost = 30;
                 tip.Multiplier = 1;
                 tip.Name = testItem.Analysis;
