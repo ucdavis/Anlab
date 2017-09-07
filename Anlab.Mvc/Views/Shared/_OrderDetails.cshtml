@@ -82,6 +82,14 @@
     </div>
 }
 
+@if (!String.IsNullOrWhiteSpace(Model.Order.OtherPaymentDetails))
+{
+    <div class="form-group">
+        <strong>Other Payment Details</strong>
+        <span>@Model.Order.OtherPaymentDetails</span>
+    </div>
+}
+
 <table id="table">
     <thead>
     <tr>

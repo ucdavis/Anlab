@@ -1,0 +1,41 @@
+@model AnlabMvc.Models.Order.OrderReviewModel
+
+@{
+    ViewData["Title"] = "Update Payment Method";
+}
+<h2>Details</h2>
+
+
+@Html.Partial("_OrderDetails")
+
+<form asp-controller="Payment" asp-action="PayAnotherWay" asp-route-id="@Model.Order.ShareIdentifier" method="post">
+    <div class="form-group">
+        <label asp-for="Order.OtherPaymentDetails" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <textarea name="otherPaymentDetails" class="form-control" rows="3"> </textarea>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true">Update</i></button>
+</form>
+
+
+@section AdditionalStyles
+{
+    @{await Html.RenderPartialAsync("_DataTableStylePartial"); }
+}
+
+@section Scripts
+{
+    @{await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+
+    <script type="text/javascript">
+        $(function() {
+            $("#table").dataTable();
+        });
+    </script>   
+
+    @{await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
+}
+
+
+

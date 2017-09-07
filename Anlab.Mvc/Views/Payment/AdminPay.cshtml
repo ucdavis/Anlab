@@ -1,0 +1,60 @@
+@using Humanizer
+@model AnlabMvc.Models.Order.OrderReviewModel
+
+@{
+    ViewData["Title"] = "Admin Pay";
+}
+
+@Html.Partial("_OrderDetails")
+
+<form method="post" asp-controller="Payment" enctype="multipart/form-data" asp-action="AdminPay" asp-route-id="@Model.Order.Id">
+
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label asp-for="@Model.Order.AdminPayDetails" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <textarea asp-for="Order.AdminPayDetails" class="form-control" name="AdminComments"></textarea>
+                <span asp-validation-for="@Model.Order.AdminPayDetails" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Order.Paid" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="@Model.Order.Paid" name="MarkAsPaid" class="form-control">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+                <span asp-validation-for="@Model.Order.Paid" class="text-danger"></span>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true"> Update</i></button>
+    </div>
+</form>
+@section AdditionalStyles
+{
+    @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+}
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+    <script type="text/javascript">
+        $(function() {
+            $("#table").dataTable();
+        });
+    </script>
+    <script type="text/javascript">
+        $('#GrandTotal').on('keyup', function () {
+            var prevTotal = $('#prevTotal').val();
+            var grandTotal = $(this).val();
+            if (grandTotal)
+                var adjustAmt = parseFloat(grandTotal) - parseFloat(prevTotal);
+            else
+                var adjustAmt = 0;
+            $('#adjustAmt').html(adjustAmt);
+        });
+    </script>
+
+    @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
+}
+

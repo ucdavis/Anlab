@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using AnlabMvc.Models.Configuration;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
+using Anlab.Core.Models;
 using AnlabMvc.Models.CyberSource;
 using AnlabMvc.Models.Order;
+using AnlabMvc.Models.Roles;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -63,6 +65,82 @@ namespace AnlabMvc.Controllers
                 .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
 
             return View(model);
+        }
+
+        [HttpGet]
+        public ActionResult PayAnotherWay(Guid id)
+        {
+            var order = _context.Orders.Include(i => i.Creator).SingleOrDefault(a => a.ShareIdentifier == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+            model.TestItems = _context.TestItems
+                .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult PayAnotherWay(Guid id, string otherPaymentDetails)
+        {
+            var order = _context.Orders.Include(i => i.Creator).SingleOrDefault(a => a.ShareIdentifier == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            order.OtherPaymentDetails = otherPaymentDetails;
+            _context.SaveChanges();
+
+            Message = "Order Updated.";
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        [Authorize(Roles = RoleCodes.Accounts)]
+        public ActionResult AdminPay(int id)
+        {
+            var order = _context.Orders.Include(i => i.Creator).SingleOrDefault(a => a.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+            model.TestItems = _context.TestItems
+                .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult AdminPay(int id, AdminPayModel model)
+        {
+            var order = _context.Orders.Include(i => i.Creator).SingleOrDefault(a => a.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            order.AdminPayDetails = model.AdminComments;
+            order.Paid = model.MarkAsPaid;
+            _context.SaveChanges();
+
+            Message = "Order Updated.";
+
+            return RedirectToAction("Index", "Home");
         }
 
 
