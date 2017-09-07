@@ -37,12 +37,14 @@ namespace AnlabMvc.Controllers
         {
             var adminRole = await _roleManager.FindByNameAsync(RoleCodes.Admin);
             var userRole = await _roleManager.FindByNameAsync(RoleCodes.User);
+            var accountsRole = await _roleManager.FindByNameAsync(RoleCodes.Accounts);
 
             var usersRoles = _dbContext.Users.Select(u => new UserRolesModel
             {
                 User = u,
                 IsAdmin = u.Roles.Any(a => a.RoleId == adminRole.Id),
-                IsUser = u.Roles.Any(a => a.RoleId == userRole.Id)
+                IsUser = u.Roles.Any(a => a.RoleId == userRole.Id),
+                IsAccounts = u.Roles.Any(a => a.RoleId == accountsRole.Id)
             }).ToList();
 
             return View(usersRoles);
