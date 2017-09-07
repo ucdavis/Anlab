@@ -260,7 +260,7 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("UpdateFromCompletedTests");
             }
 
-            order.Status = OrderStatusCodes.Complete;
+            order.Status = OrderStatusCodes.Finalized;
 
             var result = await _orderService.OverwiteOrderWithTestsCompleted(order); //TODO: Just testing
             if (result.WasError)
@@ -282,7 +282,7 @@ namespace AnlabMvc.Controllers
 
             order.SaveDetails(orderDetails);
 
-            await _orderMessageService.EnqueueCompletedMessage(order);
+            await _orderMessageService.EnqueueFinalizedMessage(order);
 
             await _dbContext.SaveChangesAsync();
 
