@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Anlab.Core.Data;
+using Anlab.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using AnlabMvc.Models.Order;
 using AnlabMvc.Services;
