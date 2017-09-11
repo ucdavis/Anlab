@@ -67,8 +67,8 @@
                     }
                 }
             </td>
-            <td>@DateTimeExtensions.ToPacificTime(order.Created).ToString("g")</td>
-            <td>@DateTimeExtensions.ToPacificTime(order.Updated).ToString("g")</td>
+            <td>@order.Created.ToPacificTime().ToString("g")</td>
+            <td>@order.Updated.ToPacificTime().ToString("g")</td>
             <td>@order.Project</td>
             <td>@order.Status</td>
             <td style="text-align: center">
