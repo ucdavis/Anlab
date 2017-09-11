@@ -12,7 +12,6 @@ interface ISummaryProps {
     canSubmit: boolean;
     isCreate: boolean;
     hideError: boolean;
-    isFromLab: boolean;
     status: string;
     processingFee: number;
 }
@@ -59,12 +58,6 @@ export class Summary extends React.Component<ISummaryProps, any> {
         }
         let saveText = this.props.isCreate ? "Place Order" : "Update Order";
         let infoText = this.props.isCreate ? "Go ahead and place your order" : "Go ahead and update your order";        
-        if (this.props.isFromLab) {
-            if (this.props.status === "Confirmed") {
-                saveText = "Update Order";
-                infoText = "Update Order. Make any changes before receiving.";
-            }
-        }
         const errorText = "Please correct any errors and complete any required fields before you " + saveText.toLowerCase();
         return (
             <div>
