@@ -61,7 +61,7 @@
     <span>@(String.Format("{0:C}", Model.OrderDetails.Total))</span>
 </div>
 
-@if (Model.OrderDetails.AdjustmentAmount > 0)
+@if (Model.OrderDetails.AdjustmentAmount != 0)
 {
     <div class="form-group">
         <strong>Adjustment Amount</strong>
