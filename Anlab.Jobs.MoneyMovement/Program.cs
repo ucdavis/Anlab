@@ -24,8 +24,8 @@ namespace Anlab.Jobs.MoneyMovement
             var dbContext = provider.GetService<ApplicationDbContext>();
 
 
-
-            var orders = dbContext.Orders.Where(a => a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
+            //Approved payment will only have a value when a CC payment is used.
+            var orders = dbContext.Orders.Where(a => a.ApprovedPayment != null && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
             
             Console.WriteLine("Hello World!");
         }
