@@ -22,10 +22,10 @@
             <th>
                 @Html.DisplayNameFor(model => model.Category) <select name="category" id="category">
                     <option value="All">All</option>
-                    <option value="Soil">Soil</option>
-                    <option value="Plant">Plant</option>
-                    <option value="Water">Water</option>
-                    <option value="Other">Other</option>
+                @foreach (var category in TestCategories.All)
+                {
+                    <option value="@category">@category</option>
+                }
                 </select>
 
             </th>

@@ -9,5 +9,7 @@
         public const string Finalized       = "Finalized";        //Results and semi final prices uploaded from anlab
         public const string Accepted        = "Accepted";         //User/Client has accepted the final results and payment amount. No more changes will be done by anlab for tests/prices Ok to move money/pay by CC, etc.        
         public const string Complete        = "Complete";         //Money has moved
+
+        public static readonly string[] All = { Created, Confirmed, Received, Finalized, Accepted, Complete };
     }
 }

@@ -17,11 +17,13 @@
             <td>
                 <select name="status" id="status">
                     <option value="All">Show All</option>
-                    <option value="Confirmed">Confirmed</option>
-                    <option value="Received">Received</option>
-                    <option value="Finalized">Finalized</option>
-                    <option value="Accepted">Accepted</option>
-                    <option value="Complete">Complete</option>
+                    @foreach (var status in OrderStatusCodes.All)
+                    {
+                        if (status != "Created")
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    }
                 </select>
             </td>
         </tr>
