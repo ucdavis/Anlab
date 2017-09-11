@@ -13,7 +13,7 @@ namespace Anlab.Jobs.MoneyMovement
         {
             IServiceCollection services = new ServiceCollection();
             services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlite("Data Source=anlab.db")
+                    options.UseSqlite("Data Source=C:\\GitProjects\\Anlab\\Anlab.Mvc\\bin\\Debug\\netcoreapp1.1\\anlab.db")
                 // options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
 
@@ -27,7 +27,7 @@ namespace Anlab.Jobs.MoneyMovement
             //Approved payment will only have a value when a CC payment is used.
             var orders = dbContext.Orders.Where(a => a.ApprovedPayment != null && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
             
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Hello World!" + orders.Count);
         }
     }
 }
