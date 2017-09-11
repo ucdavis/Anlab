@@ -22,12 +22,10 @@
             <td>
                 <select name="status" id="status">
                     <option value="All">Show All</option>
-                    <option value="@OrderStatusCodes.Created">@OrderStatusCodes.Created</option>
-                    <option value="@OrderStatusCodes.Confirmed">@OrderStatusCodes.Confirmed</option>
-                    <option value="@OrderStatusCodes.Received">@OrderStatusCodes.Received</option>
-                    <option value="@OrderStatusCodes.Finalized">@OrderStatusCodes.Finalized</option>
-                    <option value="@OrderStatusCodes.Accepted">@OrderStatusCodes.Accepted</option>
-                    <option value="@OrderStatusCodes.Complete">@OrderStatusCodes.Complete</option>
+                 @foreach(var status in OrderStatusCodes.All)
+                 {
+                     <option value="@status">@status</option>
+                 }
                 </select>
             </td>
         </tr>
