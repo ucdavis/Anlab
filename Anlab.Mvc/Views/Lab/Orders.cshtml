@@ -65,8 +65,8 @@
             </td>
             <td>@order.Creator.Email</td>
             <td>@order.ClientId</td>
-            <td>@order.Created</td>
-            <td>@order.Updated</td>
+            <td>@order.Created.ToPacificTime().ToString("g")</td>
+            <td>@order.Updated.ToPacificTime().ToString("g")</td>
             <td>@order.Project</td>
             <td>@order.Status</td>
             <td style="text-align: center">
