@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
@@ -27,6 +28,8 @@ namespace AnlabMvc
 {
     public class Startup
     {
+        private IDirectorySearchService _directorySearchService;
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -79,6 +82,37 @@ namespace AnlabMvc
 
                         return Task.FromResult(0);
                     };
+                    options.Events.OnTokenValidated = async context =>
+                    {
+                        var identity = context.Principal.Identity as ClaimsIdentity;
+
+                        if (identity == null)
+                        {
+                            return;
+                        }
+
+                        // email comes across in both name claim and upn
+                        var email = identity.FindFirst(ClaimTypes.Upn).Value;
+
+                        // look up user info and add as claims
+                        var user = await _directorySearchService.GetByEmail(email);
+
+                        if (user != null)
+                        {
+                            // Should we bother replacing via directory service?
+                            identity.AddClaim(new Claim(ClaimTypes.Email, user.Mail));
+                            identity.AddClaim(new Claim(ClaimTypes.GivenName, user.GivenName));
+                            identity.AddClaim(new Claim(ClaimTypes.Surname, user.Surname));
+
+                            // Cas already adds a name param but it's a duplicate of nameIdentifier, so let's replace with something useful
+                            identity.RemoveClaim(identity.FindFirst(ClaimTypes.Name));
+                            identity.AddClaim(new Claim(ClaimTypes.Name, user.DisplayName));
+
+                            //replace with kerberos
+                            identity.RemoveClaim(identity.FindFirst(ClaimTypes.NameIdentifier));
+                            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Kerberos));
+                        }
+                    };
                     options.ClientId = "c631afcb-0795-4546-844d-9fe7759ae620";
                     options.Authority = "https://login.microsoftonline.com/ucdavis365.onmicrosoft.com";
                     options.SignedOutRedirectUri = "https://localhost:44349/";
@@ -95,6 +129,7 @@ namespace AnlabMvc
                 // options.Filters.Add(new RequireHttpsAttribute());
             });
 
+            // app services
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
 
             // Add application services.
@@ -115,6 +150,7 @@ namespace AnlabMvc
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            _directorySearchService = app.ApplicationServices.GetService<IDirectorySearchService>();
             app.ConfigureStackifyLogging(Configuration);
 
             Log.Logger = new LoggerConfiguration().WriteTo.Stackify().CreateLogger();
@@ -200,3 +236,4 @@ namespace AnlabMvc
         }
     }
 }
+
