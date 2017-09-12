@@ -22,17 +22,20 @@ namespace AnlabMvc.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IEmailSender _emailSender;
+        private readonly IDirectorySearchService _directorySearchService;
         private readonly ILogger _logger;
 
         public AccountController(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             IEmailSender emailSender,
+            IDirectorySearchService directorySearchService,
             ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _directorySearchService = directorySearchService;
             _logger = logger;
         }
 
@@ -278,6 +281,7 @@ namespace AnlabMvc.Controllers
 
             // Sign in the user with this external login provider if the user already has a login.
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+
             if (result.Succeeded)
             {
                 _logger.LogInformation("User logged in with {Name} provider.", info.LoginProvider);
@@ -292,55 +296,76 @@ namespace AnlabMvc.Controllers
                 // If the user does not have an account, then ask the user to create an account.
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["LoginProvider"] = info.LoginProvider;
-                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                var firstName = info.Principal.FindFirstValue(ClaimTypes.GivenName);
-                var lastName = info.Principal.FindFirstValue(ClaimTypes.Surname);
-                var name = info.Principal.FindFirstValue(ClaimTypes.Name);
+
+                // user placeholder, to be filled by provider
+                User user = null;
 
                 if (info.LoginProvider.Equals("UCDavis", StringComparison.OrdinalIgnoreCase))
                 {
-                    email = info.Principal.FindFirstValue(ClaimTypes.Name);
-                    name = info.Principal.FindFirstValue("name");
+                    // email comes across in both name claim and upn
+                    var email = info.Principal.FindFirstValue(ClaimTypes.Upn);
+                    
+                    var ucdUser = await _directorySearchService.GetByEmail(email);
+
+                    if (ucdUser != null)
+                    {
+                        user = new User
+                        {
+                            Email = ucdUser.Mail,
+                            UserName = ucdUser.Kerberos,
+                            FirstName = ucdUser.GivenName,
+                            LastName = ucdUser.Surname,
+                            Name = ucdUser.DisplayName
+                        };
+
+                        // TODO: see if we need to modify claims like this
+                        var identity = (ClaimsIdentity)info.Principal.Identity;
+
+                        // name from Azure comes back w/ email, so replace w/ display name
+                        identity.RemoveClaim(identity.FindFirst(ClaimTypes.NameIdentifier));
+                        identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, ucdUser.Kerberos));
+
+                        // name from Azure comes back w/ email, so replace w/ display name
+                        identity.RemoveClaim(identity.FindFirst(ClaimTypes.Name));
+                        identity.AddClaim(new Claim(ClaimTypes.Name, user.Name));
+                    }
+                }
+                else // google login
+                {
+                    user = new User
+                    {
+                        Email = info.Principal.FindFirstValue(ClaimTypes.Email),
+                        UserName = info.Principal.FindFirstValue(ClaimTypes.Email),
+                        FirstName = info.Principal.FindFirstValue(ClaimTypes.GivenName),
+                        LastName = info.Principal.FindFirstValue(ClaimTypes.Surname),
+                        Name = info.Principal.FindFirstValue(ClaimTypes.Name)
+                    };
+
+                    if (string.IsNullOrWhiteSpace(user.Name))
+                    {
+                        user.Name = user.Email;
+                    }
                 }
 
-                return View("ExternalLogin", new ExternalLoginViewModel { Email = email, FirstName = firstName, LastName = lastName, Name = name });
-            }
-        }
+                return new JsonResult(new { user, info });
 
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginViewModel model, string returnUrl = null)
-        {
-            if (ModelState.IsValid)
-            {
-                // Get the information about the user from the external login provider
-                var info = await _signInManager.GetExternalLoginInfoAsync();
-                if (info == null)
+                var createResult = await _userManager.CreateAsync(user);
+                if (createResult.Succeeded)
                 {
-                    throw new ApplicationException("Error loading external login information during confirmation.");
-                }
-                var user = new User { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, Name = model.Name};
-                if (string.IsNullOrWhiteSpace(user.Name))
-                {
-                    user.Name = user.Email;
-                }
-                var result = await _userManager.CreateAsync(user);
-                if (result.Succeeded)
-                {
-                    result = await _userManager.AddLoginAsync(user, info);
-                    if (result.Succeeded)
+                    createResult = await _userManager.AddLoginAsync(user, info);
+                    if (createResult.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
                         return RedirectToLocal(returnUrl);
                     }
                 }
-                AddErrors(result);
-            }
+                
+                // TODO: add in error message explaining why login failed
+                ErrorMessage = "There was a problem logging you in";
 
-            ViewData["ReturnUrl"] = returnUrl;
-            return View(nameof(ExternalLogin), model);
+                throw new Exception(createResult.Errors.First().Description);
+            }
         }
 
         [HttpGet]

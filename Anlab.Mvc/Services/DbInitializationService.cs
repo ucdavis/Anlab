@@ -131,7 +131,7 @@ namespace AnlabMvc.Services
             // create a new sample order
 
             CreateOrders(jasonUser);
-            //CreateOrders(scottUser);
+            CreateOrders(scottUser);
             CreateOrders(calUser);
             CreateOrders(lauraUser);
 
