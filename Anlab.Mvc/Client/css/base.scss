@@ -32,7 +32,12 @@ body {
     align-items: center;
     height: 14px;
 }
-
+.logo_wrapper {
+  padding:10px;
+  img {
+    width:42%;
+  }
+}
 footer {
   .footer_contents {
     @include boundary;
