@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Models;
 using Microsoft.EntityFrameworkCore;
@@ -46,14 +48,24 @@ namespace Anlab.Jobs.MoneyMovement
 
 
             //Approved payment will only have a value when a CC payment is used.
-            var orders = dbContext.Orders.Where(a => a.ApprovedPayment != null && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
+            var orders = dbContext.Orders.Include(i => i.ApprovedPayment).Where(a => a.ApprovedPayment != null && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
+            var test = dbContext.Orders.Include(i => i.ApprovedPayment).First(a => a.ApprovedPayment != null);
+            var testId = test.ApprovedPayment.Transaction_Id;
 
             var xxx = Configuration.GetSection("MoneyMovement:SlothApiKey").Value;
             var yyy = Configuration.GetSection("MoneyMovement:SlothApiUrl").Value;
 
-            Console.WriteLine("MoneyMovement:");
-            Console.Write(xxx);
-            Console.Write(yyy);
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(yyy);
+                client.DefaultRequestHeaders.Add("X-Auth-Token", xxx);
+                var response = Task.Run(() => client.GetAsync(testId)).Result;
+                var content = response.Content;
+            }
+
+            //Console.WriteLine("MoneyMovement:");
+            //Console.Write(xxx);
+            //Console.Write(yyy);
             
 
 
