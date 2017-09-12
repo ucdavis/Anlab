@@ -60,9 +60,6 @@ table.table {
     color:$tertiary-font;
     margin-bottom:0px;
   }
-  &:hover {
-    background-color:#F2F2F2;
-  }
 }
 .anlab_form_samplebtn {
   svg {
@@ -97,11 +94,13 @@ table.table {
     color:#fff;
   }
 }
+.form_wrap {
+  margin-bottom:48px;
+}
 .form_header {
   font-size:2rem;
   color:$primary-color;
   font-weight:600;
-  margin-bottom:24px;
 }
 .tooltip .tooltip-inner *{
     color: white;
