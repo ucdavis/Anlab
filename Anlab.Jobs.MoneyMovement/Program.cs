@@ -43,7 +43,7 @@ namespace Anlab.Jobs.MoneyMovement
             Provider = services.BuildServiceProvider();
 
 
-            var result = Task.Run(() => ProcessOrders()).Result;
+            var result = Task.Run(() => ProcessOrders()).Result; //Wasn't able to debug this unless it returned a result...
 
 
 
