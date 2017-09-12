@@ -82,7 +82,7 @@ namespace Anlab.Jobs.MoneyMovement
                         if (response.IsSuccessStatusCode)
                         {
                             //TODO: If response is 200, extract out KFS, write to ApprovePayment Field, update order status to complete  
-                            var xxx = await response.GetContentOrNullAsync<IEnumerable<string>>();
+                            var xxx = await response.GetContentOrNullAsync<IEnumerable<string>>(); //TODO Create a model to hold info
                         }
 
                     }
@@ -123,19 +123,6 @@ namespace Anlab.Jobs.MoneyMovement
             //    throw;
             //}
             return true;
-        }
-
-        public static async Task<T> GetContentOrNullAsync<T>(this HttpResponseMessage response)
-        {
-            // return null on 404
-            if (response.StatusCode == HttpStatusCode.NotFound)
-                return default(T);
-
-            // check for success
-            if (response.IsSuccessStatusCode)
-                return await response.Content.ReadAsAsync<T>();
-
-            throw new Exception();
         }
 
 
