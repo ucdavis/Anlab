@@ -347,7 +347,7 @@ namespace AnlabMvc.Controllers
                     }
                 }
 
-                return new JsonResult(new { user, info });
+                //return new JsonResult(new { user, info });
 
                 var createResult = await _userManager.CreateAsync(user);
                 if (createResult.Succeeded)
