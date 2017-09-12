@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Anlab.Jobs.MoneyMovement": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
