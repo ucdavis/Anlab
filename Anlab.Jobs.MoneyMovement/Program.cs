@@ -14,6 +14,7 @@ namespace Anlab.Jobs.MoneyMovement
     class Program
     {
         public static IConfigurationRoot Configuration { get; set; }
+        public static IServiceProvider Provider { get; set; }
 
         static void Main(string[] args)
         {
@@ -39,37 +40,74 @@ namespace Anlab.Jobs.MoneyMovement
                     options.UseSqlite("Data Source=..\\..\\..\\..\\Anlab.Mvc\\bin\\Debug\\netcoreapp1.1\\anlab.db")
                 // options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
+            Provider = services.BuildServiceProvider();
+
+
+            var result = Task.Run(() => ProcessOrders()).Result;
 
 
 
-            var provider = services.BuildServiceProvider();
+            Console.WriteLine("Done");
+        }
 
-            var dbContext = provider.GetService<ApplicationDbContext>();
+        public static async Task<bool> ProcessOrders()
+        {
+            var dbContext = Provider.GetService<ApplicationDbContext>();
+            var token = Configuration.GetSection("MoneyMovement:SlothApiKey").Value;
+            var url = Configuration.GetSection("MoneyMovement:SlothApiUrl").Value;
 
-
-            //Approved payment will only have a value when a CC payment is used.
-            var orders = dbContext.Orders.Include(i => i.ApprovedPayment).Where(a => a.ApprovedPayment != null && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
-            var test = dbContext.Orders.Include(i => i.ApprovedPayment).First(a => a.ApprovedPayment != null);
-            var testId = test.ApprovedPayment.Transaction_Id;
-
-            var xxx = Configuration.GetSection("MoneyMovement:SlothApiKey").Value;
-            var yyy = Configuration.GetSection("MoneyMovement:SlothApiUrl").Value;
 
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(yyy);
-                client.DefaultRequestHeaders.Add("X-Auth-Token", xxx);
-                var response = Task.Run(() => client.GetAsync(testId)).Result;
-                var content = response.Content;
+                var orders = dbContext.Orders.Include(i => i.ApprovedPayment).Where(a =>
+                    a.ApprovedPayment != null && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
+                client.BaseAddress = new Uri(url);
+                client.DefaultRequestHeaders.Add("X-Auth-Token", token);
+
+                if (orders?.Count > 0)
+                {
+                    foreach (var order in orders)
+                    {
+                        var response = await client.GetAsync(order.ApprovedPayment.Transaction_Id);
+                        //TODO: If response is 200, extract out KFS, write to ApprovePayment Field, update order status to complete
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                }
+
             }
 
-            //Console.WriteLine("MoneyMovement:");
-            //Console.Write(xxx);
-            //Console.Write(yyy);
-            
+            return true;
 
 
-            Console.WriteLine("Hello World!" + orders.Count);
+
+            //try
+            //{
+            //    var dbContext = Provider.GetService<ApplicationDbContext>();
+
+            //    //Approved payment will only have a value when a CC payment is used.
+            //    var orders = dbContext.Orders.Include(i => i.ApprovedPayment).Where(a =>
+            //        a.ApprovedPayment != null && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
+            //    var test = dbContext.Orders.Include(i => i.ApprovedPayment).First(a => a.ApprovedPayment != null);
+            //    var testId = test.ApprovedPayment.Transaction_Id;
+
+            //    var xxx = Configuration.GetSection("MoneyMovement:SlothApiKey").Value;
+            //    var yyy = Configuration.GetSection("MoneyMovement:SlothApiUrl").Value;
+
+            //    using (var client = new HttpClient())
+            //    {
+            //        client.BaseAddress = new Uri(yyy);
+            //        client.DefaultRequestHeaders.Add("X-Auth-Token", xxx);
+            //        var response = await client.GetAsync(testId);
+            //        //var content = response.Content;
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    Console.WriteLine(e);
+            //    throw;
+            //}
+            return true;
         }
     }
 }
