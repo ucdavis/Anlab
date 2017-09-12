@@ -56,6 +56,10 @@
                 {
                     <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier">Results</a>
                 }
+                else if(order.Status == OrderStatusCodes.Confirmed)
+                {
+                    <a asp-action="Confirmed" asp-route-id="@order.Id">Details</a>
+                }
                 else
                 {
                     <a asp-action="Details" asp-route-id="@order.Id"><i class="fa fa-eye"> Details</i></a>
