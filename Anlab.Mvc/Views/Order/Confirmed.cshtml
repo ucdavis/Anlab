@@ -60,7 +60,7 @@
         <tbody>
             @foreach (var test in @Model.OrderDetails.SelectedTests)
             {
-                var temp = Model.TestItems.Where(a => a.Id == test.Id).FirstOrDefault();
+                var temp = Model.Order.GetTestDetails().Where(a => a.Id == test.Id).FirstOrDefault();
                 if (Model.HideLabDetails && !temp.Public)
                 {
                     continue;
