@@ -303,11 +303,6 @@ namespace AnlabMvc.Controllers
                     name = info.Principal.FindFirstValue("name");
                 }
 
-                //return Json(new
-                //{
-                //    claims = info.Principal.Claims.Select(x => new { x.Type, x.Value})
-                //});
-
                 return View("ExternalLogin", new ExternalLoginViewModel { Email = email, FirstName = firstName, LastName = lastName, Name = name });
             }
         }

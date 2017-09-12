@@ -175,49 +175,7 @@ namespace AnlabMvc
             app.UseStaticFiles();
 
             app.UseAuthentication();
-
-            // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
-            //var casOptions = new CasOptions
-            //{
-            //    CasServerUrlBase = "https://cas.ucdavis.edu/cas/",
-            //    Events = new CasEvents
-            //    {
-            //        OnCreatingTicket = async ctx =>
-            //        {
-            //            var identity = ctx.Principal.Identity as ClaimsIdentity;
-
-            //            if (identity == null)
-            //            {
-            //                return;
-            //            }
-
-            //            var kerb = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            //            // look up user info and add as claims
-            //            var user = await app.ApplicationServices.GetService<IDirectorySearchService>().GetByKerb(kerb);
-
-            //            if (user != null)
-            //            {
-            //                identity.AddClaim(new Claim(ClaimTypes.Email, user.Mail));
-            //                identity.AddClaim(new Claim(ClaimTypes.GivenName, user.GivenName));
-            //                identity.AddClaim(new Claim(ClaimTypes.Surname, user.Surname));
-
-            //                // Cas already adds a name param but it's a duplicate of nameIdentifier, so let's replace with something useful
-            //                identity.RemoveClaim(identity.FindFirst(ClaimTypes.Name));
-            //                identity.AddClaim(new Claim(ClaimTypes.Name, user.DisplayName));
-
-            //            }
-            //        }
-            //    }
-            //};
-            //app.UseCasAuthentication(casOptions);
-
-            //app.UseGoogleAuthentication(new GoogleOptions()
-            //{
-            //    ClientId = Configuration["Authentication:Google:ClientId"],
-            //    ClientSecret = Configuration["Authentication:Google:ClientSecret"]
-            //});
-
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
