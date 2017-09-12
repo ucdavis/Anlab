@@ -62,7 +62,7 @@ namespace AnlabMvc.Services
                 new Claim(ClaimTypes.NameIdentifier, "postit"),
                 new Claim(ClaimTypes.Name, "Scott Kirkland")
             }));
-            var loginInfo = new ExternalLoginInfo(userPrincipal, "UCDavis", "l7kj8J21RN8ZBZbP_LyOj-weGA10rxp9irsiDkQ1CRE", null);
+            var loginInfo = new ExternalLoginInfo(userPrincipal, "UCDavis", "postit", null);
 
             await _userManager.CreateAsync(scottUser);
             await _userManager.AddLoginAsync(scottUser, loginInfo);
