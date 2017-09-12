@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
@@ -69,7 +71,20 @@ namespace Anlab.Jobs.MoneyMovement
                     foreach (var order in orders)
                     {
                         var response = await client.GetAsync(order.ApprovedPayment.Transaction_Id);
-                        //TODO: If response is 200, extract out KFS, write to ApprovePayment Field, update order status to complete
+                        if (response.StatusCode == HttpStatusCode.NotFound)
+                        {
+                            continue;
+                        }
+                        if (response.StatusCode == HttpStatusCode.NoContent)
+                        {
+                            continue;
+                        }
+                        if (response.IsSuccessStatusCode)
+                        {
+                            //TODO: If response is 200, extract out KFS, write to ApprovePayment Field, update order status to complete  
+                            var xxx = await response.GetContentOrNullAsync<IEnumerable<string>>();
+                        }
+
                     }
 
                     await dbContext.SaveChangesAsync();
@@ -109,5 +124,20 @@ namespace Anlab.Jobs.MoneyMovement
             //}
             return true;
         }
+
+        public static async Task<T> GetContentOrNullAsync<T>(this HttpResponseMessage response)
+        {
+            // return null on 404
+            if (response.StatusCode == HttpStatusCode.NotFound)
+                return default(T);
+
+            // check for success
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsAsync<T>();
+
+            throw new Exception();
+        }
+
+
     }
 }
