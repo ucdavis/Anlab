@@ -36,7 +36,7 @@ namespace Anlab.Jobs.MoneyMovement
 
             IServiceCollection services = new ServiceCollection();
             services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlite("Data Source=C:\\GitProjects\\Anlab\\Anlab.Mvc\\bin\\Debug\\netcoreapp1.1\\anlab.db")
+                    options.UseSqlite("Data Source=..\\..\\..\\..\\Anlab.Mvc\\bin\\Debug\\netcoreapp1.1\\anlab.db")
                 // options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
 
