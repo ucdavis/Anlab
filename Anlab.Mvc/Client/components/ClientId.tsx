@@ -5,7 +5,6 @@ import Input from 'react-toolbox/lib/input';
 interface IClientIdProps {
     clientId: string;
     handleChange: Function;
-    isFromLab: boolean;
 }
 
 interface IClientIdInputState {
@@ -23,29 +22,17 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
             error: null
         };
     }
-    validate = (v: string) => {
-        let error = null;
-        if (this.props.isFromLab && (!v || v.trim() === "")) {
-            error = "The client id is required";
-        }
-
-        this.setState({ error } as IClientIdInputState);
-    }
-
 
     onChange = (v: string) => {
         this.setState({ ...this.state, internalValue: v });
-        this.validate(v);
     }
 
     onBlur = () => {
-        let internalValue = this.state.internalValue;
-        this.validate(internalValue);
-        this.props.handleChange('clientId', internalValue);
+        this.props.handleChange('clientId', this.state.internalValue);
     }
     render() {
         return (
-            <Input type='text' onBlur={this.onBlur} required={this.props.isFromLab} error={this.state.error} value={this.state.internalValue} onChange={this.onChange} label='Client Id' />
+            <Input type='text' onBlur={this.onBlur} error={this.state.error} value={this.state.internalValue} onChange={this.onChange} label='Client Id' />
     );
 }
 }

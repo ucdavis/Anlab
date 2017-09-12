@@ -10,6 +10,28 @@
     <a asp-action="Create" class="btn btn-default">Create Order</a>    
 </p>
 
+<table border="0" cellspacing="5" cellpadding="5" align="left">
+    <tbody>
+        <tr>
+            <td><label>Minimum Date:</label></td>
+            <td><label>Maximum Date:</label></td>
+            <td><label>Status:</label></td>
+        </tr>
+        <tr>
+            <td><input name="min" id="min" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
+            <td><input name="max" id="max" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
+            <td>
+                <select name="status" id="status">
+                    <option value="All">Show All</option>
+                 @foreach(var status in OrderStatusCodes.All)
+                 {
+                     <option value="@status">@status</option>
+                 }
+                </select>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 <table id="table">
     <thead>
@@ -44,8 +66,8 @@
                     }
                 }
             </td>
-            <td>@order.Created</td>
-            <td>@order.Updated</td>
+            <td>@order.Created.ToPacificTime().ToString("g")</td>
+            <td>@order.Updated.ToPacificTime().ToString("g")</td>
             <td>@order.Project</td>
             <td>@order.Status</td>
             <td style="text-align: center">
@@ -63,27 +85,68 @@
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" />
+
+    <style>
+        #max, #min, #status {
+            margin: 0 5px 5px 0;
+            height: 30px;
+        }
+    </style>
+
 }
 
 @section Scripts
 {
     @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
 
     <script type="text/javascript">
-        $(function() {
-            $("#table").dataTable({
-                "sorting": [[1, "desc"]],
-                "columnDefs": [
-                    {
-                        "type": "date", "targets" : [1,2]
-                    },
-                    {
-                        "targets": [0],
-                        "orderable": false                        
-                    },
+         $(function () {
+             var table = $("#table").DataTable({
+                 "sorting": [[1, "desc"]],
+                 "columnDefs": [
+                     {
+                         "type": "date", "targets": [1, 2]
+                     },
+                     {
+                         "targets": [0],
+                         "orderable": false
+                     }
+                 ],
+                 "stateSave": true,
+                 "stateDuration": 60 * 10,
+             });
 
-                ]
-            });
-        });
+
+             $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+             $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+
+             //Event listener to the two range filtering inputs to redraw on input
+             $('#min, #max, #status').change(function () {
+                 table.draw();
+             });
+         });
+
+         $.fn.dataTable.ext.search.push(
+             function (settings, data, dataIndex) {
+                 var min = $('#min').datepicker("getDate");
+                 var max = $('#max').datepicker("getDate");
+                 var startDate = new Date(data[1]);
+                 startDate.setHours(0, 0, 0, 0);
+
+                 var status = data[4];
+                 var statusFilter = $('#status').val();
+
+                 if (statusFilter == "All" || status == statusFilter) {
+                     if (min == null && max == null) { return true; }
+                     if (min == null && startDate <= max) { return true; }
+                     if (max == null && startDate >= min) { return true; }
+                     if (startDate <= max && startDate >= min) { return true; }
+                 }
+                 return false;
+             }
+         );
+
     </script>
 }
