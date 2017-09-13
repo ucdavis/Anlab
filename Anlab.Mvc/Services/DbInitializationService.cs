@@ -80,7 +80,7 @@ namespace AnlabMvc.Services
                 new Claim(ClaimTypes.NameIdentifier, "jsylvest"),
                 new Claim(ClaimTypes.Name, "Jason Sylvestre")
             }));
-            var jasonLoginInfo = new ExternalLoginInfo(jasonUserPrincipal, "CAS", "jsylvest", null);
+            var jasonLoginInfo = new ExternalLoginInfo(jasonUserPrincipal, "UCDavis", "jsylvest", null);
             
             await _userManager.CreateAsync(jasonUser);
             await _userManager.AddLoginAsync(jasonUser, jasonLoginInfo);
@@ -99,7 +99,7 @@ namespace AnlabMvc.Services
                 new Claim(ClaimTypes.NameIdentifier, "holstege"),
                 new Claim(ClaimTypes.Name, "Laura Holstege")
             }));
-            var lauraLoginInfo = new ExternalLoginInfo(lauraUserPrincipal, "CAS", "holstege", null);
+            var lauraLoginInfo = new ExternalLoginInfo(lauraUserPrincipal, "UCDavis", "holstege", null);
 
             await _userManager.CreateAsync(lauraUser);
             await _userManager.AddLoginAsync(lauraUser, lauraLoginInfo);
@@ -119,7 +119,7 @@ namespace AnlabMvc.Services
                 new Claim(ClaimTypes.NameIdentifier, "cydoval"),
                 new Claim(ClaimTypes.Name, "Calvin Doval")
             }));
-            var calLoginInfo = new ExternalLoginInfo(calUserPrincipal, "CAS", "cydoval", null);
+            var calLoginInfo = new ExternalLoginInfo(calUserPrincipal, "UCDavis", "cydoval", null);
 
             await _userManager.CreateAsync(calUser);
             await _userManager.AddLoginAsync(calUser, calLoginInfo);
