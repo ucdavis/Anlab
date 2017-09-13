@@ -123,8 +123,11 @@ namespace AnlabMvc.Services
                 counter++;
                 var tip = new TestItemPrices();
                 tip.Id = testItem.Id;
-                tip.Cost = counter;
-                tip.SetupCost = counter % 2 == 0 ? 25 : 30;
+                if (tip.Id == "PROC")
+                    tip.Cost = 30;
+                else
+                    tip.Cost = counter;
+                tip.SetupCost = 30;
                 tip.Multiplier = 1;
                 tip.Name = testItem.Analysis;
                 testItems.Add(tip);
@@ -143,6 +146,20 @@ namespace AnlabMvc.Services
             {
                 return null;
             }
+            if (code == "PROC" || code == "SETUP")
+            {
+                var tip1 = new TestItemPrices
+                {
+                    Id = temp.Id,
+                    Cost = 30,
+                    SetupCost = 0,
+                    Multiplier = 1,
+                    Name = temp.Analysis
+                };
+
+                return tip1;
+            }
+
             var tip = new TestItemPrices
             {
                 Id = temp.Id,
@@ -155,9 +172,15 @@ namespace AnlabMvc.Services
             return tip;
         }
 
-        public Task<IList<string>> GetTestCodesCompletedForOrder(string RequestNum)
+        public async Task<IList<string>> GetTestCodesCompletedForOrder(string RequestNum)
         {
-            throw new NotImplementedException();
+            IList<string> codes = new List<string>(5);
+            codes.Add("-SNA-PMF");
+            codes.Add("-PCL-P-IC");
+            codes.Add("X-NA");
+            codes.Add("X-MG");
+            codes.Add("SP-FOR");
+            return await Task.FromResult(codes);
         }
     }
 }
