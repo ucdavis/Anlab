@@ -84,16 +84,15 @@ namespace Anlab.Jobs.MoneyMovement
                         }
                         if (response.IsSuccessStatusCode)
                         { 
-                            var slothResponse = await response.GetContentOrNullAsync<Sloth>();
-                            slothResponse.JsonDetails = await response.Content.ReadAsStringAsync(); //TODO: Decide if we really need this.
+                            var slothResponse = await response.GetContentOrNullAsync<SlothResponseModel>();
                             updatedCount++;
-                            order.Sloth = slothResponse;
+                            order.KfsTrackingNumber = slothResponse.KfsTrackingNumber;
                             order.Status = OrderStatusCodes.Complete;
                         }
 
                     }
 
-                    await dbContext.SaveChangesAsync();
+                    //await dbContext.SaveChangesAsync();
                     Console.WriteLine($"Updated {updatedCount} orders");
                 }
 

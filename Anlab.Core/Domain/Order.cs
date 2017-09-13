@@ -51,7 +51,7 @@ namespace Anlab.Core.Domain
 
         public PaymentEvent ApprovedPayment { get; set; }
         
-        public Sloth Sloth { get; set; }
+        public string KfsTrackingNumber { get; set; }
 
         public bool Paid { get; set; } = false;
 
