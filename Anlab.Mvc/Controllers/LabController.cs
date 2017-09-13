@@ -143,13 +143,15 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
 
-            var result = await _orderService.OverwiteOrderWithTestsCompleted(order); //TODO: Just testing
+            var result = await _orderService.OverwiteOrderFromDb(order); //TODO: Just testing
             if (result.WasError)
             {
                 ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
                 return RedirectToAction("Orders");
             }
+            order.ClientId = result.ClientId;
             var orderDetails = order.GetOrderDetails();
+            orderDetails.Quantity = result.Quantity;
             orderDetails.SelectedTests = result.SelectedTests;
             orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total);
 
@@ -186,7 +188,7 @@ namespace AnlabMvc.Controllers
 
             order.Status = OrderStatusCodes.Finalized;
 
-            var result = await _orderService.OverwiteOrderWithTestsCompleted(order); //TODO: Just testing
+            var result = await _orderService.OverwiteOrderFromDb(order); //TODO: Just testing
             if (result.WasError)
             {
                 ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
@@ -196,8 +198,10 @@ namespace AnlabMvc.Controllers
             //File Upload
             order.ResultsFileIdentifier = await _fileStorageService.UploadFile(model.UploadFile);
 
+            order.ClientId = result.ClientId;
             var orderDetails = order.GetOrderDetails();
 
+            orderDetails.Quantity = result.Quantity;
             orderDetails.SelectedTests = result.SelectedTests;
             orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total);
 
