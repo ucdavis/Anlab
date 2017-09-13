@@ -11,6 +11,7 @@ using Anlab.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace Anlab.Jobs.MoneyMovement
 {
@@ -47,7 +48,10 @@ namespace Anlab.Jobs.MoneyMovement
 
             Console.WriteLine("About to start");
             var result = Task.Run(() => ProcessOrders()).Result; //Wasn't able to debug this unless it returned a result...
-
+            if (!result)
+            {
+                Console.WriteLine("No Orders to process");
+            }
 
 
             Console.WriteLine("Done");
@@ -56,78 +60,48 @@ namespace Anlab.Jobs.MoneyMovement
         public static async Task<bool> ProcessOrders()
         {
             var dbContext = Provider.GetService<ApplicationDbContext>();
-            var token = Configuration.GetSection("MoneyMovement:SlothApiKey").Value;
-            var url = Configuration.GetSection("MoneyMovement:SlothApiUrl").Value;
-
+            var token = Configuration.GetSection("Financial:SlothApiKey").Value;
+            var url = Configuration.GetSection("Financial:SlothApiUrl").Value;
+            var orders = dbContext.Orders.Include(i => i.ApprovedPayment).Where(a =>
+                a.ApprovedPayment != null && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
+            if (orders.Count == 0)
+            {
+                return false;
+            }
 
             using (var client = new HttpClient())
             {
-                var orders = dbContext.Orders.Include(i => i.ApprovedPayment).Where(a =>
-                    a.ApprovedPayment != null && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
                 client.BaseAddress = new Uri(url);
                 client.DefaultRequestHeaders.Add("X-Auth-Token", token);
 
-                if (orders?.Count > 0)
+                Console.WriteLine($"Processing {orders.Count} orders");
+                var updatedCount = 0;
+                foreach (var order in orders)
                 {
-                    Console.WriteLine($"Processing {orders.Count} orders");
-                    var updatedCount = 0;
-                    foreach (var order in orders)
+                    var response = await client.GetAsync(order.ApprovedPayment.Transaction_Id);
+                    if (response.StatusCode == HttpStatusCode.NotFound)
                     {
-                        var response = await client.GetAsync(order.ApprovedPayment.Transaction_Id);
-                        if (response.StatusCode == HttpStatusCode.NotFound)
-                        {
-                            continue;
-                        }
-                        if (response.StatusCode == HttpStatusCode.NoContent)
-                        {
-                            continue;
-                        }
-                        if (response.IsSuccessStatusCode)
-                        { 
-                            var slothResponse = await response.GetContentOrNullAsync<SlothResponseModel>();
-                            updatedCount++;
-                            order.KfsTrackingNumber = slothResponse.KfsTrackingNumber;
-                            order.Status = OrderStatusCodes.Complete;
-                        }
-
+                        continue;
                     }
+                    if (response.StatusCode == HttpStatusCode.NoContent)
+                    {
+                        continue;
+                    }
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var slothResponse = JsonConvert.DeserializeObject<SlothResponseModel>(content);
 
-                    //await dbContext.SaveChangesAsync();
-                    Console.WriteLine($"Updated {updatedCount} orders");
+                        updatedCount++;
+                        order.KfsTrackingNumber = slothResponse.KfsTrackingNumber;
+                        order.Status = OrderStatusCodes.Complete;
+                    }
                 }
 
+                await dbContext.SaveChangesAsync();
+                Console.WriteLine($"Updated {updatedCount} orders");
             }
 
-            return true;
-
-
-
-            //try
-            //{
-            //    var dbContext = Provider.GetService<ApplicationDbContext>();
-
-            //    //Approved payment will only have a value when a CC payment is used.
-            //    var orders = dbContext.Orders.Include(i => i.ApprovedPayment).Where(a =>
-            //        a.ApprovedPayment != null && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
-            //    var test = dbContext.Orders.Include(i => i.ApprovedPayment).First(a => a.ApprovedPayment != null);
-            //    var testId = test.ApprovedPayment.Transaction_Id;
-
-            //    var xxx = Configuration.GetSection("MoneyMovement:SlothApiKey").Value;
-            //    var yyy = Configuration.GetSection("MoneyMovement:SlothApiUrl").Value;
-
-            //    using (var client = new HttpClient())
-            //    {
-            //        client.BaseAddress = new Uri(yyy);
-            //        client.DefaultRequestHeaders.Add("X-Auth-Token", xxx);
-            //        var response = await client.GetAsync(testId);
-            //        //var content = response.Content;
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    Console.WriteLine(e);
-            //    throw;
-            //}
             return true;
         }
 
