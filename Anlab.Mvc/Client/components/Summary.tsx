@@ -12,8 +12,8 @@ interface ISummaryProps {
     canSubmit: boolean;
     isCreate: boolean;
     hideError: boolean;
-    isFromLab: boolean;
     status: string;
+    processingFee: number;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
@@ -27,7 +27,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
             return prev + perTest + (this.props.payment.clientType === 'uc' ? item.internalSetupCost : item.externalSetupCost);
         }, 0);
 
-        return total;
+        return total + this.props.processingFee;
     }
 
 
@@ -58,12 +58,6 @@ export class Summary extends React.Component<ISummaryProps, any> {
         }
         let saveText = this.props.isCreate ? "Place Order" : "Update Order";
         let infoText = this.props.isCreate ? "Go ahead and place your order" : "Go ahead and update your order";        
-        if (this.props.isFromLab) {
-            if (this.props.status === "Confirmed") {
-                saveText = "Receive Order";
-                infoText = "Receive Order. Make any changes needed first.";
-            }
-        }
         const errorText = "Please correct any errors and complete any required fields before you " + saveText.toLowerCase();
         return (
             <div>
@@ -71,16 +65,21 @@ export class Summary extends React.Component<ISummaryProps, any> {
                     <thead>
                         <tr>
                             <th>Analysis</th>
-                            <th>Fee</th>
-                            <th>Price</th>
+                            <th>Fee <i className="analysisTooltip fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" title="Price per sample" data-container="table"></i></th>
+                            <th>Price <i className="analysisTooltip fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" title="Fee*Quantity" data-container="table"></i></th>
                             <th>Setup</th>
-                            <th>Total</th>
+                            <th>Total <i className="analysisTooltip fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" title="Price+Setup" data-container="table"></i></th>
                         </tr>
                     </thead>
                     <tbody>
                         {this._renderTests()}
                     </tbody>
                     <tfoot>
+                        <tr>
+                            <th>Processing Fee</th>
+                            <td colSpan={3}></td>
+                            <td><NumberFormat value={this.props.processingFee} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+                        </tr>
                         <tr>
                             <td colSpan={4}></td>
                             <td><NumberFormat value={this.totalCost()} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>

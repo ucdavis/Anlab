@@ -18,5 +18,6 @@ namespace Anlab.Core.Models
         public string Analysis { get; set; }
         public string Description { get; set; }
         public string Notes { get; set; }
+        public bool Public { get; set; }
     }
 }

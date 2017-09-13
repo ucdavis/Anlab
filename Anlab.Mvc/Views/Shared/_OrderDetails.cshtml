@@ -46,11 +46,22 @@
 </div>
 
 <div class="form-group">
+    <strong>Processing Fee</strong>
+    @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
+    {
+        <span>@(String.Format("{0:C}", Model.OrderDetails.InternalProcessingFee))</span>
+    }
+    else
+    {
+        <span>@(String.Format("{0:C}", Model.OrderDetails.ExternalProcessingFee))</span>
+    }</div>
+
+<div class="form-group">
     <strong>Total Amount</strong>
     <span>@(String.Format("{0:C}", Model.OrderDetails.Total))</span>
 </div>
 
-@if (Model.OrderDetails.AdjustmentAmount > 0)
+@if (Model.OrderDetails.AdjustmentAmount != 0)
 {
     <div class="form-group">
         <strong>Adjustment Amount</strong>
@@ -79,29 +90,28 @@
         <th>Fee (* Qty @Model.OrderDetails.Quantity)</th>
         <th>SetupCost</th>
         <th>Sample Total</th>
-        <th>Notes</th>
     </tr>
     </thead>
     <tbody>
     @foreach (var test in @Model.OrderDetails.SelectedTests)
     {
-        var temp = Model.TestItems.Where(a => a.Id == test.Id).FirstOrDefault();
+        var temp = Model.Order.GetTestDetails().Where(a => a.Id == test.Id).FirstOrDefault();
         if (Model.HideLabDetails && !temp.Public)
         {
             continue;
         }
         <tr>
-            <td>@test.Analysis</td>
+            <td>
+                @test.Analysis
+                @if (temp != null && !String.IsNullOrEmpty(temp.Notes))
+                {
+                    <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@temp.Notes')" title="@temp.Notes" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
+                }   
+            </td>
             <td>@test.Id</td>
             <td>@test.SubTotal.ToString("C")</td>
             <td>@test.SetupCost.ToString("C")</td>
             <td>@test.Total.ToString("C")</td>
-            <td>
-                @if (temp != null && !String.IsNullOrEmpty(temp.Notes))
-                {
-                    <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@temp.NotesEncoded')" title="@temp.NotesEncoded" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
-                }    
-            </td>
         </tr>
     }
     </tbody>

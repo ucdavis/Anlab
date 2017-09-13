@@ -12,7 +12,7 @@ namespace Anlab.Core.Domain
         [Key]
         [StringLength(128)]
         [Display(Name = "Code")]
-        [RegularExpression(@"([A-Z0-9a-z\-])+", ErrorMessage = "Codes can only contain alphanumerics and dashes.")]
+        [RegularExpression(@"([A-Z0-9a-z\-#])+", ErrorMessage = "Codes can only contain alphanumerics, #, and dashes.")]
         public string Id { get; set; }
 
         [Required]
@@ -31,7 +31,6 @@ namespace Anlab.Core.Domain
         }
 
         [Required]
-        [StringLength(8)]
         public string Group { get; set; }
 
         public bool Public { get; set; }
@@ -57,5 +56,7 @@ namespace Anlab.Core.Domain
         public static string Plant = "Plant";
         public static string Water = "Water";
         public static string Other = "Other";
+
+        public static readonly string[] All = { Soil, Plant, Water, Other };
     }
 }

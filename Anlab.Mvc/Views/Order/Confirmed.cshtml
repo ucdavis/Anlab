@@ -1,0 +1,183 @@
+﻿@using Humanizer
+@model AnlabMvc.Models.Order.OrderReviewModel
+
+@{
+    ViewData["Title"] = "Order Confirmed";
+}
+
+<div id="print">
+    <p>Thank you for placing a work request order with the UC Davis Analytical Laboratory.
+    Below is a summary of the tests you requested and an estimate of your charges.
+    Please [something something about how to send in samples]</p>
+
+    <p>You will be billed when the work has been completed.</p>
+
+    @if (Model.Order.ClientId != null)
+    {
+        <div class="form-group">
+            <strong>Client Id</strong>
+            <span>@Model.Order.ClientId</span>
+        </div>
+    }
+
+    <div class="form-group">
+        <strong>Project</strong>
+        <span>@Model.Order.Project</span>
+    </div>
+    <div class="form-group">
+        <strong># of Samples</strong>
+        <span>@Model.OrderDetails.Quantity</span>
+    </div>
+
+    <div class="form-group">
+        <strong>Payment Method</strong>
+        @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
+        {
+            <span>UC Account: @Model.OrderDetails.Payment.Account</span>
+        }
+        else
+        {
+            <span>Credit Card</span>
+        }
+
+    </div>
+
+    <p>
+        The following estimate of charges is based on routine testing.  Should non-routine testing be required you will be contacted to discuss any additional costs. 
+    </p>
+
+    <table id="t">
+        <thead>
+            <tr>
+                <th>Per Test</th>
+                <th>Quantity</th>
+                <th>SubTotal</th>
+                <th>Setup Cost</th>
+                <th>Test Total</th>
+                <th>Analysis</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var test in @Model.OrderDetails.SelectedTests)
+            {
+                var temp = Model.Order.GetTestDetails().Where(a => a.Id == test.Id).FirstOrDefault();
+                if (Model.HideLabDetails && !temp.Public)
+                {
+                    continue;
+                }
+                <tr>
+                    <td>@test.Cost.ToString("C")</td>
+                    <td>x @Model.OrderDetails.Quantity</td>
+                    <td>@test.SubTotal.ToString("C")</td>
+                    <td>@test.SetupCost.ToString("C")</td>
+                    <td>@test.Total.ToString("C")</td>
+                    <td>@test.Analysis</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <span>@(String.Format("{0:C}", Model.OrderDetails.InternalProcessingFee))</span>
+                    }
+                    else
+                    {
+                        <span>@(String.Format("{0:C}", Model.OrderDetails.ExternalProcessingFee))</span>
+                    }
+                </td>
+                <td>Processing Fee</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <th>@(String.Format("{0:C}", Model.OrderDetails.GrandTotal))</th>
+                <th>Total</th>
+            </tr>
+        </tfoot>
+    </table>
+
+    <p>
+        If you have any questions or need information about analytical procedures, please contact Dirk Holstege at (530) 752-0148 or at dmholstege@ucdavis.edu.
+        <br />
+        For specific questions about sending or preparing samples, you may call me or contact Gary Chan, Receiving Facility Manager (530) 752-0266.
+        <br />
+        For laboratory report copies or accounting, office personnel can be reached at (530) 752-0147 or by email at anlab@ucdavis.edu. 
+    </p>
+
+    <p>
+        For your convenience, information on the Lab is also available on our <a href="http://anlab.ucdavis.edu">web site</a> and I have provided links to several useful pages and documents.  We look forward to serving you.
+    </p>
+
+    <p class="links">
+        <a href="http://anlab.ucdavis.edu/feedback">Feedback Form</a><br />
+        <a href="http://anlab.ucdavis.edu/fee-info">Fee Information/Fee Schedule</a><br />
+        <a href="http://anlab.ucdavis.edu/sampling">General Sampling Guidelines and Sample Preparation Recommendations</a><br />
+        <a href="http://anlab.ucdavis.edu/docs/rush-policy.pdf">Rush Request Policy</a><br />
+        <a href="http://anlab.ucdavis.edu/docs/an-lab-qual-statement.pdf">QA/QC Program</a> <br />
+    </p>
+</div>
+
+<div id="noprint">
+    <a asp-action="Index" class="btn btn-default">Back to Orders</a>
+</div>
+
+
+@section AdditionalStyles
+{
+    <style media="print">
+        #noprint {
+            display: none;
+        }
+
+        th {
+            padding: 5px;
+        }
+        td {
+            padding: 5px;
+        }
+
+        #links a:after{
+            content: " (" attr(href) ")";
+        }
+
+        .footer_contents, .navbar, .head_bleed, footer{
+            display: none;
+        }
+
+        .pagetitle_banner {
+            margin-bottom: 5px !important;
+        }
+
+        body {
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+            padding-top: 0 !important;
+        }
+        * {
+            line-height: 1.3em !important;
+        }
+
+    </style>
+    <style media="screen">
+        table {
+            width: 100%;
+        }
+        th {
+            padding: 5px;
+        }
+        td {
+            padding: 5px;
+        }
+        #print {
+            width: 50%;
+        }
+    </style>
+}

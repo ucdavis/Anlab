@@ -8,6 +8,7 @@ import { Summary } from './Summary';
 import { AdditionalInfo } from './AdditionalInfo';
 import { Project } from "./Project";
 import { AdditionalEmails } from "./AdditionalEmails";
+import { ClientId } from "./ClientId";
 
 declare var window: any;
 declare var $: any;
@@ -26,8 +27,10 @@ interface IOrderState {
     additionalEmails: Array<string>;
     isErrorActive: boolean;
     errorMessage: string;
-    isFromLab: boolean;
     status: string;
+    clientId: string;
+    internalProcessingFee: number;
+    externalProcessingFee: number;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -48,8 +51,10 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             additionalEmails: [],
             isErrorActive: false,
             errorMessage: '',
-            isFromLab: false,
             status: '',
+            clientId: '',
+            internalProcessingFee: window.App.orderData.internalProcessingFee,
+            externalProcessingFee: window.App.orderData.externalProcessingFee
         };
 
         if (window.App.defaultAccount) {            
@@ -57,10 +62,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.payment.clientType = 'uc';
         } else {
             initialState.payment.clientType = 'other';
-        }
-        if (window.App.IsFromLab === true) {
-            initialState.isFromLab = true;
-            initialState.status = window.App.Status;
         }
 
         if (window.App.orderData.order) {
@@ -76,6 +77,9 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.isValid = true;
             initialState.payment.clientType = orderInfo.Payment.ClientType;
             initialState.payment.account = orderInfo.Payment.Account;
+            initialState.clientId = orderInfo.ClientId;
+            initialState.internalProcessingFee = window.App.orderData.internalProcessingFee;
+            initialState.externalProcessingFee = window.App.orderData.externalProcessingFee;
 
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
@@ -152,10 +156,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         }
         let postUrl = '/Order/Save';
         let returnUrl = '/Order/Confirmation/';
-        if (this.state.isFromLab) {
-            postUrl = '/Lab/Save';
-            returnUrl = '/Lab/Confirmation/';
-        }
         this.setState({ ...this.state, isSubmitting: true });
         const selectedTests = this.getTests().selected;
         const order = {
@@ -167,6 +167,9 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             payment: this.state.payment,
             sampleType: this.state.sampleType,
             selectedTests,
+            clientId: this.state.clientId,
+            internalProcessingFee: this.state.internalProcessingFee,
+            externalProcessingFee: this.state.externalProcessingFee
         }
         const that = this;
         var antiforgery = $("input[name='__RequestVerificationToken']").val();
@@ -186,9 +189,11 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     }
 
     render() {
-        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, isFromLab, status} = this.state;
+        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, status, clientId, internalProcessingFee, externalProcessingFee } = this.state;
 
-        const { filtered, selected} = this.getTests();
+        const { filtered, selected } = this.getTests();
+
+        const processingFee = this.state.payment.clientType === 'uc' ? this.state.internalProcessingFee : this.state.externalProcessingFee; 
 
         return (
             <div className="row">
@@ -205,6 +210,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     </div>
                     <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail}/>
                     <Project project={project} handleChange={this.handleChange} />
+                    <ClientId clientId={clientId} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
                     <div style={{ height: 600 }}></div>
@@ -219,8 +225,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                             quantity={quantity}
                             payment={payment}
                             onSubmit={this.onSubmit}
-                            isFromLab={isFromLab}
-                            status={status} />
+                            status={status}
+                            processingFee={processingFee} />
                     </div>
                 </div>
 

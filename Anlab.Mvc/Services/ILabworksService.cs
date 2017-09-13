@@ -39,7 +39,6 @@ namespace AnlabMvc.Services
         /// <returns></returns>
         public async Task<IList<TestItemPrices>> GetPrices()
         {
-            //TODO: Get the Setup cost if available. Otherwise hard code it
             var codes = _context.TestItems.AsNoTracking().Select(a => a.Id).Distinct().ToArray();
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {

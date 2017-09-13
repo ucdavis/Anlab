@@ -10,6 +10,7 @@ using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace AnlabMvc.Controllers
 {
@@ -19,14 +20,18 @@ namespace AnlabMvc.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IOrderService _orderService;
         private readonly IOrderMessageService _orderMessageService;
+        private readonly ILabworksService _labworksService;
+        private readonly AppSettings _appSettings;
 
+        private const string processingCode = "PROC"; 
 
-        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService)
+        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ILabworksService labworksService, IOptions<AppSettings> appSettings)
         {
             _context = context;
             _orderService = orderService;
             _orderMessageService = orderMessageService;
-
+            _labworksService = labworksService;
+            _appSettings = appSettings.Value;
         }
 
         public async Task<IActionResult> Index()
@@ -39,8 +44,13 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> Create()
         {
             var joined = await  _orderService.PopulateTestItemModel();
+            var proc = await _labworksService.GetPrice(processingCode);
 
-            var model = new OrderEditModel { TestItems = joined.ToArray() };
+            var model = new OrderEditModel {
+                TestItems = joined.ToArray(),
+                InternalProcessingFee = Math.Ceiling(proc.Cost),
+                ExternalProcessingFee = Math.Ceiling(proc.Cost * _appSettings.NonUcRate)
+            };
 
             var user = _context.Users.Single(a => a.Id == CurrentUserId);
             model.DefaultAccount = user.Account;
@@ -55,7 +65,7 @@ namespace AnlabMvc.Controllers
             var order = await _context.Orders.SingleOrDefaultAsync(o=>o.Id == id);
 
             if (order == null){
-                return NotFound(id);
+                return NotFound();
             }
             if (order.CreatorId != CurrentUserId)
             {
@@ -69,11 +79,14 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index");
             }
 
-            var joined = await _orderService.PopulateTestItemModel();
+            var joined = order.GetTestDetails();
+            var proc = joined.Single(i => i.Id == "PROC");
 
             var model = new OrderEditModel {
                 TestItems = joined.ToArray(),
-                Order = order
+                Order = order,
+                InternalProcessingFee = Math.Ceiling(proc.InternalCost),
+                ExternalProcessingFee = Math.Ceiling(proc.ExternalCost)
             };
 
             return View(model); 
@@ -112,7 +125,7 @@ namespace AnlabMvc.Controllers
                     return Json(new { success = false, message = "This has been confirmed and may not be updated." });
                 }
 
-                await _orderService.PopulateOrder(model, orderToUpdate);
+                _orderService.PopulateOrder(model, orderToUpdate);
 
                 idForRedirection = model.OrderId.Value;
                 await _context.SaveChangesAsync();
@@ -125,7 +138,10 @@ namespace AnlabMvc.Controllers
                     Status = OrderStatusCodes.Created,
                     ShareIdentifier = Guid.NewGuid(),
                 };
-                await _orderService.PopulateOrder(model, order);
+                var allTests = await _orderService.PopulateTestItemModel(true);
+                order.SaveTestDetails(allTests);
+
+                 _orderService.PopulateOrder(model, order);
 
                 _context.Add(order);
                 await _context.SaveChangesAsync();
@@ -143,13 +159,13 @@ namespace AnlabMvc.Controllers
 
             if (order == null)
             {
-                return NotFound(id);
+                return NotFound();
             }
 
             if (order.CreatorId != CurrentUserId)
             {
                 ErrorMessage = "You don't have access to this order.";
-                return NotFound(id);
+                return NotFound();
             }
 
             if (order.Status == OrderStatusCodes.Created)
@@ -160,8 +176,6 @@ namespace AnlabMvc.Controllers
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
-            model.TestItems = _context.TestItems
-                .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
 
             return View(model);
         }
@@ -172,21 +186,19 @@ namespace AnlabMvc.Controllers
 
             if (order == null)
             {
-                return NotFound(id);
+                return NotFound();
             }
 
             if (order.CreatorId != CurrentUserId)
             {
                 ErrorMessage = "You don't have access to this order.";
-                return NotFound(id);
+                return NotFound();
             }
 
 
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
-            model.TestItems = _context.TestItems
-                .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
             
             return View(model);
         }
@@ -198,13 +210,13 @@ namespace AnlabMvc.Controllers
 
             if (order == null)
             {
-                return NotFound(id);
+                return NotFound();
             }
 
             if (order.CreatorId != CurrentUserId)
             {
                 ErrorMessage = "You don't have access to this order.";
-                return NotFound(id);
+                return NotFound();
             }
 
             if (order.Status != OrderStatusCodes.Created)
@@ -219,9 +231,30 @@ namespace AnlabMvc.Controllers
 
             await _context.SaveChangesAsync();
 
-            Message = "Order confirmed";
-            return RedirectToAction("Index");
+            return RedirectToAction("Confirmed", new { id = id });
 
+        }
+
+        public async Task<IActionResult> Confirmed(int id)
+        {
+            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if (order.CreatorId != CurrentUserId)
+            {
+                ErrorMessage = "You don't have access to this order.";
+                return NotFound();
+            }
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+
+            return View(model);
         }
 
         [HttpPost]
@@ -231,13 +264,13 @@ namespace AnlabMvc.Controllers
 
             if (order == null)
             {
-                return NotFound(id);
+                return NotFound();
             }
 
             if (order.CreatorId != CurrentUserId)
             {
                 ErrorMessage = "You don't have access to this order.";
-                return NotFound(id);
+                return NotFound();
             }
 
             if (order.Status != OrderStatusCodes.Created)

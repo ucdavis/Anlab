@@ -34,7 +34,8 @@ namespace Test.TestsModel
             {
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)16)]"
             }));
-            expectedFields.Add(new NameAndType("MailMessages", "System.Collections.Generic.ICollection`1[Anlab.Core.Domain.MailMessage]", new List<string>()));            
+            expectedFields.Add(new NameAndType("MailMessages", "System.Collections.Generic.ICollection`1[Anlab.Core.Domain.MailMessage]", new List<string>()));
+            expectedFields.Add(new NameAndType("Paid", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Project", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
@@ -43,10 +44,12 @@ namespace Test.TestsModel
             }));
             expectedFields.Add(new NameAndType("RequestNum", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("ResultsFileIdentifier", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("SavedTestDetails", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("ShareIdentifier", "System.Guid", new List<string>()));
             expectedFields.Add(new NameAndType("Status", "System.String", new List<string>()));            
-            expectedFields.Add(new NameAndType("Updated", "System.DateTime", new List<string>())); 
+            expectedFields.Add(new NameAndType("Updated", "System.DateTime", new List<string>()));
             
+
             #endregion Arrange
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(Order));

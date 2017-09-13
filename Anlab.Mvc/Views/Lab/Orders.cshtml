@@ -12,14 +12,18 @@
             <td><label>Status:</label></td>
         </tr>
         <tr>
-            <td><input name="min" id="min" type="text"></td>
-            <td><input name="max" id="max" type="text"></td>
+            <td><input name="min" id="min" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
+            <td><input name="max" id="max" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
             <td>
                 <select name="status" id="status">
                     <option value="All">Show All</option>
-                    <option value="Confirmed">Confirmed</option>
-                    <option value="Received">Received</option>
-                    <option value="Complete">Complete</option>
+                    @foreach (var status in OrderStatusCodes.All)
+                    {
+                        if (status != "Created")
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    }
                 </select>
             </td>
         </tr>
@@ -30,13 +34,13 @@
     <thead>
     <tr>
         <th></th>
-        <th>Id</th>
         <th>User</th>
         <th>ClientId</th>
         <th>Created</th>
         <th>Updated</th>
         <th>Project</th>
         <th>Status</th> 
+        <th>Paid</th>
     </tr>
     </thead>
     <tbody>
@@ -45,28 +49,33 @@
     {
         <tr>
             <td>
+                <a asp-action="Details" asp-route-id="@order.Id"><i class="fa fa-eye"> Details</i></a>
                 @if (order.Status == OrderStatusCodes.Confirmed)
                 {
-                    <a asp-action="Details" asp-route-id="@order.Id">Details</a>
-                    <a asp-action="Edit" asp-route-id="@order.Id">Edit</a>
+                    <a asp-action="Confirmation" asp-route-id="@order.Id"><i class="fa fa-check"> Receive</i></a>
                 }
                 @if (order.Status == OrderStatusCodes.Received)
-                {
-                    <a asp-action="Details" asp-route-id="@order.Id">Details</a>
-                    <a asp-action="UpdateFromCompletedTests" asp-route-id="@order.Id">Complete</a>
+                {                 
+                    <a asp-action="UpdateFromCompletedTests" asp-route-id="@order.Id"><i class="fa fa-upload" style="color: red"> Finalize</i></a>
                 }
                 @if (order.Status == OrderStatusCodes.Complete)
                 {
-                    <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier">Results</a>
+                    <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier"><i class="fa fa-download"> Results</i></a>
                 }
             </td>
-            <td>@order.Id</td>
             <td>@order.Creator.Email</td>
-            <td>@order.Creator.ClientId</td>
-            <td>@order.Created</td>
-            <td>@order.Updated</td>
+            <td>@order.ClientId</td>
+            <td>@order.Created.ToPacificTime().ToString("g")</td>
+            <td>@order.Updated.ToPacificTime().ToString("g")</td>
             <td>@order.Project</td>
             <td>@order.Status</td>
+            <td style="text-align: center">
+                @if (order.Paid)
+                {
+                    <i class="fa fa-check" aria-hidden="true"></i>
+
+                }
+            </td>
         </tr>
     }
     </tbody>
@@ -75,7 +84,7 @@
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
-    <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" />
 
     <style>
         #max, #min, #status {
@@ -89,21 +98,23 @@
 {
     @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
 
-    <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
 
     <script type="text/javascript">
         $(function() {
             var table = $("#table").DataTable({
-                "sorting": [[2, "desc"]],
+                "sorting": [[1, "desc"]],
                 "columnDefs": [
                     {
-                        "type": "date", "targets" : [4,5]
+                        "type": "date", "targets" : [3,4]
                     },
                     {
                         "targets": [0],
                         "orderable": false
                     }
-                ]
+                ],
+                "stateSave": true,
+                "stateDuration": 60 * 10,
             });
 
 
@@ -120,10 +131,10 @@
             function (settings, data, dataIndex) {
                 var min = $('#min').datepicker("getDate");
                 var max = $('#max').datepicker("getDate");
-                var startDate = new Date(data[4]);
+                var startDate = new Date(data[3]);
                 startDate.setHours(0, 0, 0, 0);
 
-                var status = data[7];
+                var status = data[6];
                 var statusFilter = $('#status').val();
 
                 if (statusFilter == "All" || status == statusFilter) {

@@ -52,6 +52,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="wwwroot\Images\Error.png" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Anlab.Core\Anlab.Core.csproj" />
   </ItemGroup>
   <ItemGroup>

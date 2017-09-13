@@ -14,7 +14,7 @@ namespace AnlabMvc.Services
 {
     public interface IOrderService
     {
-        Task PopulateOrder(OrderSaveModel model, Order orderToUpdate);
+        void PopulateOrder(OrderSaveModel model, Order orderToUpdate);
         Task SendOrderToAnlab(Order order);
 
         Task<List<TestItemModel>> PopulateTestItemModel(bool showAll = false);
@@ -56,12 +56,9 @@ namespace AnlabMvc.Services
         /// </summary>
         /// <param name="selectedTestIds"></param>
         /// <returns></returns>
-        private async Task<IList<TestItemModel>> PopulateSelectedTestsItemModel(IEnumerable<string> selectedTestIds)
+        private IList<TestItemModel> PopulateSelectedTestsItemModel(IEnumerable<string> selectedTestIds, IList<TestItemModel> allTests)
         {
-            var prices = await _labworksService.GetPrices();
-            var items = _context.TestItems.Where(a => selectedTestIds.Contains(a.Id)).AsNoTracking().ToList();
-
-            return GetJoined(prices, items);
+            return allTests.Where(a => selectedTestIds.Contains(a.Id)).ToList();
         }
 
         private List<TestItemModel> GetJoined(IList<TestItemPrices> prices, List<TestItem> items)
@@ -79,6 +76,7 @@ namespace AnlabMvc.Services
                     ExternalSetupCost = Math.Ceiling(p.SetupPrice * _appSettings.NonUcRate),
                     InternalSetupCost = Math.Ceiling(p.SetupPrice),
                     Notes = i.NotesEncoded,
+                    Public = i.Public
                 }).ToList();
         }
 
@@ -87,11 +85,13 @@ namespace AnlabMvc.Services
         /// </summary>
         /// <param name="orderDetails"></param>
         /// <returns></returns>
-        private async Task<TestDetails[]> CalculateTestDetails(OrderDetails orderDetails)
+        private TestDetails[] CalculateTestDetails(Order order)
         {
+            var orderDetails = order.GetOrderDetails();
+            var allTests = order.GetTestDetails();
             // TODO: Do we really want to match on ID, or Code, or some combination?
             var selectedTestIds = orderDetails.SelectedTests.Select(t => t.Id);
-            var tests = await PopulateSelectedTestsItemModel(selectedTestIds);
+            var tests = PopulateSelectedTestsItemModel(selectedTestIds, allTests);
 
             var calcualtedTests = new List<TestDetails>();
 
@@ -119,8 +119,10 @@ namespace AnlabMvc.Services
             }
             var testCodes = await _labworksService.GetTestCodesCompletedForOrder(orderToUpdate.RequestNum);
 
+            var allTests = orderToUpdate.GetTestDetails();
+
             var testIds = _context.TestItems.Where(a => testCodes.Contains(a.Id)).Select(s => s.Id).ToArray(); 
-            var tests = await PopulateSelectedTestsItemModel(testIds);
+            var tests = PopulateSelectedTestsItemModel(testIds, allTests);
 
             if (testCodes.Count != testIds.Length)
             {
@@ -167,16 +169,18 @@ namespace AnlabMvc.Services
             });
         }
 
-        public async Task PopulateOrder(OrderSaveModel model, Order orderToUpdate)
+        public void PopulateOrder(OrderSaveModel model, Order orderToUpdate)
         {
             orderToUpdate.Project = model.Project;
+            orderToUpdate.ClientId = model.ClientId;
+
             orderToUpdate.JsonDetails = JsonConvert.SerializeObject(model);
             var orderDetails = orderToUpdate.GetOrderDetails();
 
-            var tests = await CalculateTestDetails(orderDetails);
+            var tests = CalculateTestDetails(orderToUpdate);
 
             orderDetails.SelectedTests = tests.ToArray();
-            orderDetails.Total = orderDetails.SelectedTests.Sum(x=>x.Total);
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
 
             orderToUpdate.SaveDetails(orderDetails);
 
