@@ -71,6 +71,8 @@ namespace Anlab.Core.Data
 
         public virtual DbSet<PaymentEvent> PaymentEvents { get; set; }
 
+        public virtual DbSet<Sloth> Sloth { get; set; }
+
         public virtual DbSet<MailMessage> MailMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

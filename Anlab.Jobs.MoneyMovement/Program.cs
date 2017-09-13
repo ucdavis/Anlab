@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
+using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -44,7 +45,7 @@ namespace Anlab.Jobs.MoneyMovement
             );
             Provider = services.BuildServiceProvider();
 
-
+            Console.WriteLine("About to start");
             var result = Task.Run(() => ProcessOrders()).Result; //Wasn't able to debug this unless it returned a result...
 
 
@@ -68,6 +69,8 @@ namespace Anlab.Jobs.MoneyMovement
 
                 if (orders?.Count > 0)
                 {
+                    Console.WriteLine($"Processing {orders.Count} orders");
+                    var updatedCount = 0;
                     foreach (var order in orders)
                     {
                         var response = await client.GetAsync(order.ApprovedPayment.Transaction_Id);
@@ -82,12 +85,15 @@ namespace Anlab.Jobs.MoneyMovement
                         if (response.IsSuccessStatusCode)
                         {
                             //TODO: If response is 200, extract out KFS, write to ApprovePayment Field, update order status to complete  
-                            var xxx = await response.GetContentOrNullAsync<IEnumerable<string>>(); //TODO Create a model to hold info
+                            var xxx = await response.GetContentOrNullAsync<Sloth>(); //TODO Create a model to hold info
+                            xxx.JsonDetails = await response.GetContentOrNullAsync<string>();
+                            updatedCount++;
                         }
 
                     }
 
                     await dbContext.SaveChangesAsync();
+                    Console.WriteLine($"Updated {updatedCount} orders");
                 }
 
             }
