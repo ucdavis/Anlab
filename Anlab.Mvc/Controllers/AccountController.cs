@@ -252,6 +252,13 @@ namespace AnlabMvc.Controllers
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
+        public async Task<IActionResult> LogoutDirect()
+        {
+            await _signInManager.SignOutAsync();
+            _logger.LogInformation("User logged out.");
+            return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
+
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
