@@ -36,7 +36,7 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> Index()
         {
             // TODO: find better way than super select
-            var usersInRoles = _dbContext.Users.Select(u => new UserRolesModel { User = u });
+            var usersInRoles = _dbContext.Users.Select(u => new UserRolesModel { User = u }).ToList();
 
             foreach (var userRole in usersInRoles)
             {
