@@ -50,6 +50,8 @@ namespace Anlab.Core.Domain
         public ICollection<MailMessage> MailMessages { get; set; }
 
         public PaymentEvent ApprovedPayment { get; set; }
+        
+        public Sloth Sloth { get; set; }
 
         public bool Paid { get; set; } = false;
 

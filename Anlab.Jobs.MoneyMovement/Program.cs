@@ -83,11 +83,12 @@ namespace Anlab.Jobs.MoneyMovement
                             continue;
                         }
                         if (response.IsSuccessStatusCode)
-                        {
-                            //TODO: If response is 200, extract out KFS, write to ApprovePayment Field, update order status to complete  
-                            var xxx = await response.GetContentOrNullAsync<Sloth>(); //TODO Create a model to hold info
-                            xxx.JsonDetails = await response.GetContentOrNullAsync<string>();
+                        { 
+                            var slothResponse = await response.GetContentOrNullAsync<Sloth>();
+                            slothResponse.JsonDetails = await response.Content.ReadAsStringAsync(); //TODO: Decide if we really need this.
                             updatedCount++;
+                            order.Sloth = slothResponse;
+                            order.Status = OrderStatusCodes.Complete;
                         }
 
                     }
