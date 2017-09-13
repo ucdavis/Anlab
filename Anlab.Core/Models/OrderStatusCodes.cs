@@ -1,4 +1,4 @@
-﻿namespace AnlabMvc.Models.Order
+﻿namespace Anlab.Core.Models
 {
     public static class OrderStatusCodes
     {
