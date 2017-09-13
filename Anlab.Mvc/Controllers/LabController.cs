@@ -120,6 +120,21 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Confirmation");
             }
 
+            var result = await _orderService.OverwiteOrderFromDb(order); //TODO: Just testing
+            if (result.WasError)
+            {
+                ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
+                return RedirectToAction("Orders");
+            }
+            order.ClientId = result.ClientId;
+            var orderDetails = order.GetOrderDetails();
+
+            orderDetails.Quantity = result.Quantity;
+            orderDetails.SelectedTests = result.SelectedTests;
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total);
+
+            order.SaveDetails(orderDetails);
+
             order.Status = OrderStatusCodes.Received;
             order.RequestNum = requestNum;
 
@@ -149,6 +164,7 @@ namespace AnlabMvc.Controllers
                 ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
                 return RedirectToAction("Orders");
             }
+
             order.ClientId = result.ClientId;
             var orderDetails = order.GetOrderDetails();
             orderDetails.Quantity = result.Quantity;
