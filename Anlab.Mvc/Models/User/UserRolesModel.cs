@@ -11,5 +11,6 @@ namespace AnlabMvc.Models.User
         public Anlab.Core.Domain.User User { get; set; }
         public bool IsAdmin { get; set; }
         public bool IsUser { get; set; }
+        public bool IsAccounts { get; set; }
     }
 }

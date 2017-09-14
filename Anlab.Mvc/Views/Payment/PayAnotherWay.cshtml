@@ -1,0 +1,32 @@
+@model AnlabMvc.Models.Order.PayAnotherWayModel
+
+@{
+    ViewData["Title"] = "Update Payment Method";
+}
+<h2>Details</h2>
+
+
+@Html.Partial("_OrderDetails", @Model.OrderReviewModel)
+
+<a href="mailto: @Model.MailToDetails" class="btn btn-default">Click here to create an email</a>
+
+@section AdditionalStyles
+{
+    @{await Html.RenderPartialAsync("_DataTableStylePartial"); }
+}
+
+@section Scripts
+{
+    @{await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+
+    <script type="text/javascript">
+        $(function() {
+            $("#table").dataTable();
+        });
+    </script>   
+
+    @{await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
+}
+
+
+

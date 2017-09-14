@@ -130,6 +130,10 @@ namespace Test.TestsDatabase
             #region Arrange
             var expectedFields = new List<NameAndType>();
             expectedFields.Add(new NameAndType("AdditionalEmails", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("AdminPayDetails", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DataTypeAttribute((System.ComponentModel.DataAnnotations.DataType)9)]"
+            }));
             expectedFields.Add(new NameAndType("ApprovedPayment", "Anlab.Core.Domain.PaymentEvent", new List<string>()));
             expectedFields.Add(new NameAndType("ClientId", "System.String", new List<string>
             {
@@ -163,8 +167,6 @@ namespace Test.TestsDatabase
             expectedFields.Add(new NameAndType("ShareIdentifier", "System.Guid", new List<string>()));
             expectedFields.Add(new NameAndType("Status", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Updated", "System.DateTime", new List<string>()));
-            
-
             #endregion Arrange
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(Order));

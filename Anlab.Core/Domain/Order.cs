@@ -54,6 +54,9 @@ namespace Anlab.Core.Domain
         public string KfsTrackingNumber { get; set; }
 
         public bool Paid { get; set; } = false;
+        
+        [DataType(DataType.MultilineText)]
+        public string AdminPayDetails { get; set; }
 
         public OrderDetails GetOrderDetails()
         {

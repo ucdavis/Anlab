@@ -8,6 +8,7 @@ using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using AnlabMvc.Models.CyberSource;
 using AnlabMvc.Models.Order;
+using AnlabMvc.Models.Roles;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -62,6 +63,75 @@ namespace AnlabMvc.Controllers
             model.OrderDetails = order.GetOrderDetails();
 
             return View(model);
+        }
+
+        [HttpGet]
+        public ActionResult PayAnotherWay(Guid id)
+        {
+            var order = _context.Orders.Include(i => i.Creator).SingleOrDefault(a => a.ShareIdentifier == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+            
+            var model = new PayAnotherWayModel();
+            model.OrderReviewModel = new OrderReviewModel
+            {
+                Order = order,
+                OrderDetails = order.GetOrderDetails()
+            };
+            
+            var emailBody = string.Format("I would like to pay for my order {0} with a method other than a Credit Card. The order was created on {1} and is for a total of {2} USD.", order.RequestNum, order.Created, order.GetOrderDetails().GrandTotal);
+            
+            model.MailToDetails =
+                string.Format("{0}?subject=Requesting to pay for samples by another method. Order: {1} &body={2}",
+                    _appSettings.AccountsPayableEmail, order.RequestNum, emailBody);
+            
+
+            return View(model);
+        }
+
+
+        [HttpGet]
+        [Authorize(Roles = RoleCodes.Accounts)]
+        public ActionResult AdminPay(int id)
+        {
+            var order = _context.Orders.Include(i => i.Creator).SingleOrDefault(a => a.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+            if (order.Status != OrderStatusCodes.Accepted)
+            {
+                Message = "Warning!!! This order's final price has not been Accepted.";
+            }
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult AdminPay(int id, AdminPayModel model)
+        {
+            var order = _context.Orders.Include(i => i.Creator).SingleOrDefault(a => a.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            order.AdminPayDetails = model.AdminComments;
+            order.Paid = model.MarkAsPaid;
+            _context.SaveChanges();
+
+            Message = "Order Updated.";
+
+            return RedirectToAction("Index", "Home");
         }
 
 

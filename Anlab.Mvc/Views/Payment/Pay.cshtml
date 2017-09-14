@@ -17,6 +17,7 @@
     }
     <input type="hidden" name="signature" value="@ViewBag.Signature" />
     <button type="submit" class="btn btn-primary"><i class="fa fa-credit-card" aria-hidden="true"> @(String.Format("{0:C}", Model.OrderDetails.GrandTotal)) Pay Now</i></button>
+    <a asp-action="PayAnotherWay" asp-route-id="@Model.Order.ShareIdentifier" class="btn btn-info">Pay Another Way</a>
 </form>
 
 @*<div>
