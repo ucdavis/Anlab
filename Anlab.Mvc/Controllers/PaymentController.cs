@@ -79,8 +79,7 @@ namespace AnlabMvc.Controllers
             model.OrderReviewModel = new OrderReviewModel
             {
                 Order = order,
-                OrderDetails = order.GetOrderDetails(),
-                TestItems = _context.TestItems.Where(a => order.GetOrderDetails().SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList()
+                OrderDetails = order.GetOrderDetails()
             };
             
             var emailBody = string.Format("I would like to pay for my order {0} with a method other than a Credit Card. The order was created on {1} and is for a total of {2} USD.", order.RequestNum, order.Created, order.GetOrderDetails().GrandTotal);
@@ -112,8 +111,6 @@ namespace AnlabMvc.Controllers
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
-            model.TestItems = _context.TestItems
-                .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
 
             return View(model);
         }
