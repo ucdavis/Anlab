@@ -19,7 +19,7 @@ namespace AnlabMvc.Services
 
         Task<List<TestItemModel>> PopulateTestItemModel(bool showAll = false);
 
-        Task<OverwriteOrderResult> OverwiteOrderWithTestsCompleted(Order orderToUpdate);
+        Task<OverwriteOrderResult> OverwiteOrderFromDb(Order orderToUpdate);
     }
 
     public class OrderService : IOrderService
@@ -110,30 +110,33 @@ namespace AnlabMvc.Services
         /// </summary>
         /// <param name="orderToUpdate"></param>
         /// <returns></returns>
-        public async Task<OverwriteOrderResult> OverwiteOrderWithTestsCompleted(Order orderToUpdate)
+        public async Task<OverwriteOrderResult> OverwiteOrderFromDb(Order orderToUpdate)
         {
             var rtValue = new OverwriteOrderResult();
             if (string.IsNullOrWhiteSpace(orderToUpdate.RequestNum))
             {
                 throw new Exception("RequestNum not populated"); //TODO: Something better
             }
-            var testCodes = await _labworksService.GetTestCodesCompletedForOrder(orderToUpdate.RequestNum);
+
+            var orderFromDb = await _labworksService.GetRequestDetails(orderToUpdate.RequestNum);
 
             var allTests = orderToUpdate.GetTestDetails();
 
-            var testIds = _context.TestItems.Where(a => testCodes.Contains(a.Id)).Select(s => s.Id).ToArray(); 
+            var testIds = allTests.Where(a => orderFromDb.TestCodes.Contains(a.Id)).Select(s => s.Id).ToArray();
             var tests = PopulateSelectedTestsItemModel(testIds, allTests);
 
-            if (testCodes.Count != testIds.Length)
+            if (orderFromDb.TestCodes.Count != testIds.Length)
             {
                 //Oh No!!! tests were returned that we don't know about
-                var foundCodes = _context.TestItems.Where(a => testIds.Contains(a.Id)).Select(s => s.Id).Distinct().ToList();
-                rtValue.MissingCodes = testCodes.Except(foundCodes).ToList();
+                var foundCodes = allTests.Where(a => testIds.Contains(a.Id)).Select(s => s.Id).Distinct().ToList();
+                rtValue.MissingCodes = orderFromDb.TestCodes.Except(foundCodes).ToList();
                 
                 return rtValue;
             }
 
             var orderDetails = orderToUpdate.GetOrderDetails();
+            orderDetails.Quantity = orderFromDb.Quantity;
+
             var calcualtedTests = new List<TestDetails>();
             foreach (var test in tests)
             {
@@ -141,6 +144,8 @@ namespace AnlabMvc.Services
             }
 
             rtValue.SelectedTests = calcualtedTests;
+            rtValue.ClientId = orderFromDb.ClientId;
+            rtValue.Quantity = orderFromDb.Quantity;
 
             return rtValue;
         }
