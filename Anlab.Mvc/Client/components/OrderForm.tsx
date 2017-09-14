@@ -215,7 +215,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
 
                 </div>
-                <div className="col-10 shadowed" data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+                <div className="stickyfoot shadowed" data-spy="affix" data-offset-top="200" data-offset-bottom="0">
                   <div className="ordersum">
                     <div><h3>Order Total: $99</h3>
                     <a role="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
