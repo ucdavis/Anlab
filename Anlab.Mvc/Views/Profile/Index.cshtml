@@ -3,10 +3,13 @@
 @{
     ViewBag.Title = "Your profile";
 }
+<div class="row">
+  <div class="col whiteblock">
 
-<h2>Your profile, @Model.Email</h2>
+    @Html.Partial("_UserDetails")
 
-@Html.Partial("_UserDetails")
+    <a asp-action="Edit" class="btn btn-primary">Edit your profile</a>
 
-<a asp-action="Edit" class="btn btn-primary">Edit your profile</a>
 
+  </div>
+</div>
