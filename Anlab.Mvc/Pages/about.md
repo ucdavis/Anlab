@@ -13,7 +13,7 @@ title: "About Us"
 </div>
 
 <div class="row">
-  <div class="col-8 whiteblock">
+  <div class="col-9 whiteblock">
     <!-- <h3>@ViewData["Message"]</h3> -->
     <p class="lead">
         The UC Davis Analytical Laboratory is a core support facility of the UC Davis College of Agriculture and Environmental Sciences.
