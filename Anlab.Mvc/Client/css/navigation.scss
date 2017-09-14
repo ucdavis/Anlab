@@ -1,18 +1,33 @@
-.navbar.navbar-anlab {
-  margin-bottom: 0px;
-  padding:5px;
-  background-color:#fff;
-  .navbar-brand {
-    padding-left:0px;
+.profile_nav {
+  list-style: none;
+  li {
+    display:inline;
   }
 }
-nav.navbar-anlab {
-  ul.navbar-nav {
-    li {
-      font-weight:600;
-      a {
-        color:$primary-font;
-      }
+ul.navbar-nav {
+  li {
+    font-weight:600;
+    a {
+      color:#fff;
+      font-family: $sans-bold;
     }
   }
+}
+
+.navbar-toggle .icon-bar {
+  background-color:rgba(255,255,255,.88);
+}
+.navbar-toggle {
+  float:none;
+}
+
+.nav > li > a:hover, .nav > li > a:focus {
+  background-color:rgba(255,255,255,.12);
+}
+.nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
+  border:none;
+  background-color: rgba(255,255,255,.12);
+}
+.dropdown-menu > li > a {
+  color:$primary-font !important;
 }

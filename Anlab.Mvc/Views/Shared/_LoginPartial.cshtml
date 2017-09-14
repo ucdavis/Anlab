@@ -8,21 +8,17 @@
 @if (User.Identity.IsAuthenticated)
 {
     var user = await UserManager.GetUserAsync(User);
+    <form class="flexer" asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
+  <p><a asp-area="" asp-controller="Profile" asp-action="Index" title="Manage">Hello @user.Name!</a></p>
 
-    <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="navbar-right">
-        <ul class="nav navbar-nav navbar-right">
-            <li>
-                <a asp-area="" asp-controller="Profile" asp-action="Index" title="Manage">Hello @user.Name!</a>
-            </li>
-            <li>
-                <button type="submit" class="btn btn-navbar">Log out</button>
-            </li>
-        </ul>
-    </form>        
+
+                <button type="submit" class="btn-hollow">Log out</button>
+
+    </form>
 }
 else
 {
-    <ul class="nav navbar-nav navbar-right">
-        <li><a asp-area="" asp-controller="Account" asp-action="Login">Log in</a></li>
-    </ul>
+
+        <p><a asp-area="" asp-controller="Account" asp-action="Login">Log in</a></p>
+
 }

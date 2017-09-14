@@ -9,6 +9,7 @@ using AnlabMvc.Models.Roles;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Text.Encodings.Web;
+using Anlab.Core.Models;
 using AnlabMvc.Models.Order;
 
 namespace AnlabMvc.Services
