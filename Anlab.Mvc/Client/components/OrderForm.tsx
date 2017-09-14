@@ -199,8 +199,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         return (
             <div className="row">
                 <div className="col-10 whiteblock">
-
-
                     <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
 
                     <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
@@ -217,31 +215,19 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
                 </div>
                 <div className="stickyfoot shadowed" data-spy="affix" data-offset-top="200" data-offset-bottom="0">
-                  <div className="ordersum">
-                    <div><h3>Order Total: $99</h3>
-                    <a role="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                      Order Details
-                    </a></div>
 
-                    <Button className="btn btn-order" disabled={this.state.isValid && !this.state.isSubmitting} onClick={this.onSubmit} > Place Order</Button>
-                  </div>
-
-                <div className="collapse" id="collapseExample">
-                  <div className="well">
-                    <Summary
-                        isCreate={this.state.orderId === null}
-                        canSubmit={this.state.isValid && !this.state.isSubmitting}
-                        hideError={this.state.isValid || this.state.isSubmitting}
-                        testItems={selected}
-                        quantity={quantity}
-                        payment={payment}
-                        onSubmit={this.onSubmit}
-                        status={status}
-                        processingFee={processingFee} />
-                  </div>
+                <Summary
+                    isCreate={this.state.orderId === null}
+                    canSubmit={this.state.isValid && !this.state.isSubmitting}
+                    hideError={this.state.isValid || this.state.isSubmitting}
+                    testItems={selected}
+                    quantity={quantity}
+                    payment={payment}
+                    onSubmit={this.onSubmit}
+                    status={status}
+                    processingFee={processingFee} />
                 </div>
 
-                </div>
                 <Dialog
                     actions={this.dialogActions}
                     active={this.state.isErrorActive}
