@@ -242,3 +242,6 @@ _Pvt_Extensions
 # FAKE - F# Make
 .fake/
 Anlab.Mvc/anlab.db
+
+# rider
+.idea/
