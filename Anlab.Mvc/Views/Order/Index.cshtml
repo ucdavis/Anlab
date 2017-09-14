@@ -1,3 +1,4 @@
+@using Anlab.Core.Models
 @using AnlabMvc.Models.Order
 @model IList<Order>
 
@@ -55,6 +56,10 @@
                 else if(order.Status == OrderStatusCodes.Complete)
                 {
                     <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier">Results</a>
+                }
+                else if(order.Status == OrderStatusCodes.Confirmed)
+                {
+                    <a asp-action="Confirmed" asp-route-id="@order.Id">Details</a>
                 }
                 else
                 {

@@ -176,8 +176,6 @@ namespace AnlabMvc.Controllers
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
-            model.TestItems = _context.TestItems
-                .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
 
             return View(model);
         }
@@ -201,8 +199,6 @@ namespace AnlabMvc.Controllers
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
-            model.TestItems = _context.TestItems
-                .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
             
             return View(model);
         }
@@ -235,9 +231,30 @@ namespace AnlabMvc.Controllers
 
             await _context.SaveChangesAsync();
 
-            Message = "Order confirmed";
-            return RedirectToAction("Index");
+            return RedirectToAction("Confirmed", new { id = id });
 
+        }
+
+        public async Task<IActionResult> Confirmed(int id)
+        {
+            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if (order.CreatorId != CurrentUserId)
+            {
+                ErrorMessage = "You don't have access to this order.";
+                return NotFound();
+            }
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+
+            return View(model);
         }
 
         [HttpPost]
