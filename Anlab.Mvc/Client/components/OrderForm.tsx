@@ -27,7 +27,6 @@ interface IOrderState {
     additionalEmails: Array<string>;
     isErrorActive: boolean;
     errorMessage: string;
-    isFromLab: boolean;
     status: string;
     clientId: string;
     internalProcessingFee: number;
@@ -52,7 +51,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             additionalEmails: [],
             isErrorActive: false,
             errorMessage: '',
-            isFromLab: false,
             status: '',
             clientId: '',
             internalProcessingFee: window.App.orderData.internalProcessingFee,
@@ -64,10 +62,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.payment.clientType = 'uc';
         } else {
             initialState.payment.clientType = 'other';
-        }
-        if (window.App.IsFromLab === true) {
-            initialState.isFromLab = true;
-            initialState.status = window.App.Status;
         }
 
         if (window.App.orderData.order) {
@@ -162,10 +156,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         }
         let postUrl = '/Order/Save';
         let returnUrl = '/Order/Confirmation/';
-        if (this.state.isFromLab) {
-            postUrl = '/Lab/Save';
-            returnUrl = '/Lab/Confirmation/';
-        }
         this.setState({ ...this.state, isSubmitting: true });
         const selectedTests = this.getTests().selected;
         const order = {
@@ -199,7 +189,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     }
 
     render() {
-        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, isFromLab, status, clientId, internalProcessingFee, externalProcessingFee } = this.state;
+        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, status, clientId, internalProcessingFee, externalProcessingFee } = this.state;
 
         const { filtered, selected } = this.getTests();
 
@@ -220,7 +210,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     </div>
                     <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail}/>
                     <Project project={project} handleChange={this.handleChange} />
-                    <ClientId clientId={clientId} isFromLab={isFromLab} handleChange={this.handleChange} />
+                    <ClientId clientId={clientId} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
                     <div style={{ height: 600 }}></div>
@@ -235,7 +225,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                             quantity={quantity}
                             payment={payment}
                             onSubmit={this.onSubmit}
-                            isFromLab={isFromLab}
                             status={status}
                             processingFee={processingFee} />
                     </div>

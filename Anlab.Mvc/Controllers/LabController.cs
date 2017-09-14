@@ -70,33 +70,7 @@ namespace AnlabMvc.Controllers
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
-            model.TestItems = _dbContext.TestItems
-                .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
             model.HideLabDetails = false;
-
-            return View(model);
-        }
-
-        public async Task<IActionResult> Edit(int id)
-        {
-            var order = await _dbContext.Orders.SingleOrDefaultAsync(o => o.Id == id);
-
-            if (order == null)
-            {
-                return NotFound();
-            }           
-            if(order.Status == OrderStatusCodes.Received)
-            {
-                ErrorMessage = "You cannot edit an order marked as received";
-                return RedirectToAction("Orders");
-            }
-            var joined = await _orderService.PopulateTestItemModel(true);
-
-            var model = new OrderEditModel
-            {
-                TestItems = joined.ToArray(),
-                Order = order
-            };
 
             return View(model);
         }
@@ -105,48 +79,6 @@ namespace AnlabMvc.Controllers
         {
             var orders = _dbContext.Orders.Where(a => a.CreatorId == id && a.Status != OrderStatusCodes.Created).ToArray();
             return View(orders);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Save(OrderSaveModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                var errors = new List<string>();
-                foreach (var result in ModelState.Values)
-                {
-                    foreach (var errs in result.Errors)
-                    {
-                        errors.Add(errs.ErrorMessage);
-                    }
-                }
-
-                //TODO: A better way to return errors. Or maybe not, they shouldn't really ever happen.
-                return Json(new { success = false, message = "There were problems with your order. Unable to save. Errors: " + string.Join("--", errors) });
-            }
-
-            var idForRedirection = 0;
-
-            if (model.OrderId.HasValue)
-            {
-                var orderToUpdate = await _dbContext.Orders.SingleAsync(a => a.Id == model.OrderId.Value);
-                if (orderToUpdate.Status != OrderStatusCodes.Confirmed)
-                {
-                    return Json(new {success = false, message = "You may only edit a Confirmed order."});
-                }
-
-                await _orderService.PopulateOrder(model, orderToUpdate);
-
-                idForRedirection = model.OrderId.Value;
-                await _dbContext.SaveChangesAsync();
-            }
-            else
-            {
-                return Json(new { success = false, message = "Order Id not found." });
-            }
-
-
-            return Json(new { success = true, id = idForRedirection });
         }
 
         public async Task<IActionResult> Confirmation(int id)
@@ -161,8 +93,6 @@ namespace AnlabMvc.Controllers
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
-            model.TestItems = _dbContext.TestItems
-                .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
             model.HideLabDetails = false;
 
             return View(model);
@@ -228,8 +158,6 @@ namespace AnlabMvc.Controllers
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
-            model.TestItems = _dbContext.TestItems
-                .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
             model.HideLabDetails = false;
 
             return View(model);
@@ -256,7 +184,7 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("UpdateFromCompletedTests");
             }
 
-            order.Status = OrderStatusCodes.Complete;
+            order.Status = OrderStatusCodes.Finalized;
 
             var result = await _orderService.OverwiteOrderWithTestsCompleted(order); //TODO: Just testing
             if (result.WasError)
@@ -278,7 +206,7 @@ namespace AnlabMvc.Controllers
 
             order.SaveDetails(orderDetails);
 
-            await _orderMessageService.EnqueueCompletedMessage(order);
+            await _orderMessageService.EnqueueFinalizedMessage(order);
 
             await _dbContext.SaveChangesAsync();
 

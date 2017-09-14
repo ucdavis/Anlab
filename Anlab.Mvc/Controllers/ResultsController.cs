@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Anlab.Core.Data;
+using Anlab.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using AnlabMvc.Models.Order;
 using AnlabMvc.Services;
@@ -39,8 +40,6 @@ namespace AnlabMvc.Controllers
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
-            model.TestItems = _context.TestItems
-                        .Where(a => model.OrderDetails.SelectedTests.Select(s => s.Id).Contains(a.Id)).ToList();
 
             return View(model);
         }
