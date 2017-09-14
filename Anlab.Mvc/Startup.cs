@@ -82,37 +82,6 @@ namespace AnlabMvc
 
                         return Task.FromResult(0);
                     };
-                    options.Events.OnTokenValidated = async context =>
-                    {
-                        var identity = context.Principal.Identity as ClaimsIdentity;
-
-                        if (identity == null)
-                        {
-                            return;
-                        }
-
-                        // email comes across in both name claim and upn
-                        var email = identity.FindFirst(ClaimTypes.Upn).Value;
-
-                        // look up user info and add as claims
-                        var user = await _directorySearchService.GetByEmail(email);
-
-                        if (user != null)
-                        {
-                            // Should we bother replacing via directory service?
-                            identity.AddClaim(new Claim(ClaimTypes.Email, user.Mail));
-                            identity.AddClaim(new Claim(ClaimTypes.GivenName, user.GivenName));
-                            identity.AddClaim(new Claim(ClaimTypes.Surname, user.Surname));
-
-                            // Cas already adds a name param but it's a duplicate of nameIdentifier, so let's replace with something useful
-                            identity.RemoveClaim(identity.FindFirst(ClaimTypes.Name));
-                            identity.AddClaim(new Claim(ClaimTypes.Name, user.DisplayName));
-
-                            //replace with kerberos
-                            identity.RemoveClaim(identity.FindFirst(ClaimTypes.NameIdentifier));
-                            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Kerberos));
-                        }
-                    };
                     options.ClientId = "c631afcb-0795-4546-844d-9fe7759ae620";
                     options.Authority = "https://login.microsoftonline.com/ucdavis365.onmicrosoft.com";
                     options.SignedOutRedirectUri = "https://localhost:44349/";
@@ -178,7 +147,7 @@ namespace AnlabMvc
             app.UseStaticFiles();
 
             app.UseAuthentication();
-            
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -189,10 +158,9 @@ namespace AnlabMvc
                     name: "pages",
                     template: "pages/{id}",
                     defaults: new { controller = "Pages", action = "ViewPage" });
-                
-                //No fallback                
+
+                //No fallback
             });
         }
     }
 }
-
