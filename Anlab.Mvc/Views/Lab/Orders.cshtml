@@ -4,6 +4,8 @@
     ViewData["Title"] = "Orders";
 }
 
+<div class="row">
+  <div class="col whiteblock">
 <table border="0" cellspacing="5" cellpadding="5" align="left">
     <tbody>
         <tr>
@@ -39,7 +41,7 @@
         <th>Created</th>
         <th>Updated</th>
         <th>Project</th>
-        <th>Status</th> 
+        <th>Status</th>
         <th>Paid</th>
     </tr>
     </thead>
@@ -55,7 +57,7 @@
                     <a asp-action="Confirmation" asp-route-id="@order.Id"><i class="fa fa-check"> Receive</i></a>
                 }
                 @if (order.Status == OrderStatusCodes.Received)
-                {                 
+                {
                     <a asp-action="UpdateFromCompletedTests" asp-route-id="@order.Id"><i class="fa fa-upload" style="color: red"> Finalize</i></a>
                 }
                 @if (order.Status == OrderStatusCodes.Complete)
@@ -80,6 +82,8 @@
     }
     </tbody>
 </table>
+</div>
+</div>
 
 @section AdditionalStyles
 {

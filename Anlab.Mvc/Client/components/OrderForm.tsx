@@ -57,7 +57,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             externalProcessingFee: window.App.orderData.externalProcessingFee
         };
 
-        if (window.App.defaultAccount) {            
+        if (window.App.defaultAccount) {
             initialState.payment.account = window.App.defaultAccount;
             initialState.payment.clientType = 'uc';
         } else {
@@ -150,7 +150,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             selected: filtered.filter(item => !!selectedTests[item.id])
         };
     }
-    onSubmit = () => {        
+    onSubmit = () => {
         if (this.state.isSubmitting) {
             return;
         }
@@ -193,11 +193,11 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
         const { filtered, selected } = this.getTests();
 
-        const processingFee = this.state.payment.clientType === 'uc' ? this.state.internalProcessingFee : this.state.externalProcessingFee; 
+        const processingFee = this.state.payment.clientType === 'uc' ? this.state.internalProcessingFee : this.state.externalProcessingFee;
 
         return (
             <div className="row">
-                <div className="col-8 whiteblock">
+                <div className="col-10 whiteblock">
 
 
                     <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
@@ -213,21 +213,36 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <ClientId clientId={clientId} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
-                    <div style={{ height: 600 }}></div>
+
                 </div>
-                <div className="col-lg-4">
-                    <div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
-                        <Summary
-                            isCreate={this.state.orderId === null}
-                            canSubmit={this.state.isValid && !this.state.isSubmitting}
-                            hideError={this.state.isValid || this.state.isSubmitting}
-                            testItems={selected}
-                            quantity={quantity}
-                            payment={payment}
-                            onSubmit={this.onSubmit}
-                            status={status}
-                            processingFee={processingFee} />
-                    </div>
+<a className="btn btn-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+  Link with href
+</a>
+<a className="btn btn-primary" role="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+  Button with data-target
+</a>
+<div className="collapse" id="collapseExample">
+  <div className="well">
+    <Summary
+        isCreate={this.state.orderId === null}
+        canSubmit={this.state.isValid && !this.state.isSubmitting}
+        hideError={this.state.isValid || this.state.isSubmitting}
+        testItems={selected}
+        quantity={quantity}
+        payment={payment}
+        onSubmit={this.onSubmit}
+        status={status}
+        processingFee={processingFee} />
+  </div>
+</div>
+                <div className="whiteblock col-10" data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+                        <div className="stickysummary">
+                          <h3>Order Total: $99</h3>
+                          <p><a href="/">View details</a></p>
+                          <a href="" className="btn btn-order">Place Order</a>
+                        </div>
+
+
                 </div>
 
                 <Dialog

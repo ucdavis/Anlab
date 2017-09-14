@@ -1,29 +1,29 @@
-// 
-// @font-face {
-//     font-family: 'proxima-nova';
-//     src: url('../media/fonts/proximanova-regular-webfont.woff') format('woff');
-//     font-weight: normal;
-//     font-style: normal;
-// }
-// @font-face {
-//     font-family: 'proxima-nova-i';
-//     src: url('../media/fonts/proximanova-regularit-webfont.woff') format('woff');
-//     font-weight: normal;
-//     font-style: normal;
-// }
-// @font-face {
-//     font-family: 'proxima-nova-b';
-//     src: url('../media/fonts/proximanova-bold-webfont.woff') format('woff');
-//     font-weight: normal;
-//     font-style: normal;
-// }
-//
+
+@font-face {
+    font-family: 'proxima-nova-r';
+    src: url('../media/fonts/proximanova-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'proxima-nova-i';
+    src: url('../media/fonts/proximanova-regularit-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'proxima-nova-b';
+    src: url('../media/fonts/proximanova-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 
 // fonts
-$sans-serif: "proxima-nova",
+$sans-serif: "proxima-nova-r",
 arial,
 sans-serif; // light 300, reg 400, medium 500, semibold 600
-$serif:"proxima-nova",
+$serif:"proxima-nova-r",
 Georgia,
 serif; // light 300, book 400, regular 500
 // pretty colors
