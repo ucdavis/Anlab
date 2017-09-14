@@ -215,36 +215,31 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
 
                 </div>
-<a className="btn btn-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-  Link with href
-</a>
-<a className="btn btn-primary" role="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-  Button with data-target
-</a>
-<div className="collapse" id="collapseExample">
-  <div className="well">
-    <Summary
-        isCreate={this.state.orderId === null}
-        canSubmit={this.state.isValid && !this.state.isSubmitting}
-        hideError={this.state.isValid || this.state.isSubmitting}
-        testItems={selected}
-        quantity={quantity}
-        payment={payment}
-        onSubmit={this.onSubmit}
-        status={status}
-        processingFee={processingFee} />
-  </div>
-</div>
-                <div className="whiteblock col-10" data-spy="affix" data-offset-top="60" data-offset-bottom="200">
-                        <div className="stickysummary">
-                          <h3>Order Total: $99</h3>
-                          <p><a href="/">View details</a></p>
-                          <a href="" className="btn btn-order">Place Order</a>
-                        </div>
+                <div className="col-10 shadowed" data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+                  <div className="ordersum">
+                    <div><h3>Order Total: $99</h3>
+                    <a role="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                      Order Details
+                    </a></div>
 
+                    <a href="" className="btn btn-order">Place Order</a>
+                  </div>
 
+                <div className="collapse" id="collapseExample">
+                  <div className="well">
+                    <Summary
+                        isCreate={this.state.orderId === null}
+                        canSubmit={this.state.isValid && !this.state.isSubmitting}
+                        hideError={this.state.isValid || this.state.isSubmitting}
+                        testItems={selected}
+                        quantity={quantity}
+                        payment={payment}
+                        onSubmit={this.onSubmit}
+                        status={status}
+                        processingFee={processingFee} />
+                  </div>
                 </div>
-
+                </div>
                 <Dialog
                     actions={this.dialogActions}
                     active={this.state.isErrorActive}

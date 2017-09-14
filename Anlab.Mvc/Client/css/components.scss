@@ -46,6 +46,7 @@
   text-decoration: none;
   transition: all 0.15s ease;
   border: none;
+  font-family: $sans-bold;
 
   &:hover {
     color: #fff !important;
@@ -86,18 +87,10 @@
   &.btn-green {
     background-color: $sunny-grass;
   }
-
-  &.btn-newsletter {
-    background-color: $sunny-grass;
-  }
-
-  &.btn-register {
-    background-color: $primary-color;
-    width: 100%;
-    font-size: 1.6rem;
-    text-transform: uppercase;
-    letter-spacing: 0.75px;
-    font-weight: 800;
+  &.btn-order {
+    background-color:#fff;
+    box-shadow:none;
+    color:$primary-color !important;
   }
 }
 .btn-hollow {
@@ -226,3 +219,4 @@
 .margin-bottom-zero {
   margin-bottom: 0 !important;
 }
+.shadowed {box-shadow: 0 4px 6px rgba(50,50,93,.11), 0 1px 3px rgba(0,0,0,.08);}
