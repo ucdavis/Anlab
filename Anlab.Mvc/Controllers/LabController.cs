@@ -157,7 +157,7 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
 
-            var result = await _orderService.OverwiteOrderFromDb(order); //TODO: Just testing
+            var result = await _orderService.OverwiteOrderFromDb(order);
             if (result.WasError)
             {
                 ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
@@ -203,7 +203,7 @@ namespace AnlabMvc.Controllers
 
             order.Status = OrderStatusCodes.Finalized;
 
-            var result = await _orderService.OverwiteOrderFromDb(order); //TODO: Just testing
+            var result = await _orderService.OverwiteOrderFromDb(order);
             if (result.WasError)
             {
                 ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
