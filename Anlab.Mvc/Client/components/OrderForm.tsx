@@ -9,6 +9,7 @@ import { AdditionalInfo } from './AdditionalInfo';
 import { Project } from "./Project";
 import { AdditionalEmails } from "./AdditionalEmails";
 import { ClientId } from "./ClientId";
+import { Button } from "react-toolbox/lib/button";
 
 declare var window: any;
 declare var $: any;
@@ -222,7 +223,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                       Order Details
                     </a></div>
 
-                    <a href="" className="btn btn-order">Place Order</a>
+                    <Button className="btn btn-order" disabled={this.state.isValid && !this.state.isSubmitting} onClick={this.onSubmit} > Place Order</Button>
                   </div>
 
                 <div className="collapse" id="collapseExample">
@@ -239,6 +240,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                         processingFee={processingFee} />
                   </div>
                 </div>
+
                 </div>
                 <Dialog
                     actions={this.dialogActions}
