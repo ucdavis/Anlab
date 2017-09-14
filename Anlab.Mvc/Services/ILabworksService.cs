@@ -190,7 +190,7 @@ namespace AnlabMvc.Services
         public async Task<OrderUpdateFromDbModel> GetRequestDetails(string RequestNum)
         {
             string clientId = "XYZ";
-            int quanitity = 5;
+            int quantity = 5;
 
             IList<string> codes = new List<string>(5);
             codes.Add("-SNA-PMF");
@@ -202,7 +202,7 @@ namespace AnlabMvc.Services
             var order = new OrderUpdateFromDbModel
             {
                 ClientId = clientId,
-                Quantity = quanitity,
+                Quantity = quantity,
                 TestCodes = codes
             };
 

@@ -119,7 +119,7 @@ namespace AnlabMvc.Controllers
                 ErrorMessage = "A request number is required";
                 return RedirectToAction("Confirmation");
             }
-
+            order.RequestNum = requestNum;
             var result = await _orderService.OverwiteOrderFromDb(order); //TODO: Just testing
             if (result.WasError)
             {
@@ -136,7 +136,6 @@ namespace AnlabMvc.Controllers
             order.SaveDetails(orderDetails);
 
             order.Status = OrderStatusCodes.Received;
-            order.RequestNum = requestNum;
 
             await _orderService.SendOrderToAnlab(order);
 

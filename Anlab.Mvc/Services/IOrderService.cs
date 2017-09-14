@@ -122,13 +122,13 @@ namespace AnlabMvc.Services
 
             var allTests = orderToUpdate.GetTestDetails();
 
-            var testIds = _context.TestItems.Where(a => orderFromDb.TestCodes.Contains(a.Id)).Select(s => s.Id).ToArray(); 
+            var testIds = allTests.Where(a => orderFromDb.TestCodes.Contains(a.Id)).Select(s => s.Id).ToArray();
             var tests = PopulateSelectedTestsItemModel(testIds, allTests);
 
             if (orderFromDb.TestCodes.Count != testIds.Length)
             {
                 //Oh No!!! tests were returned that we don't know about
-                var foundCodes = _context.TestItems.Where(a => testIds.Contains(a.Id)).Select(s => s.Id).Distinct().ToList();
+                var foundCodes = allTests.Where(a => testIds.Contains(a.Id)).Select(s => s.Id).Distinct().ToList();
                 rtValue.MissingCodes = orderFromDb.TestCodes.Except(foundCodes).ToList();
                 
                 return rtValue;
