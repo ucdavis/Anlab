@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
@@ -7,9 +8,11 @@ using Anlab.Core.Services;
 using AnlabMvc.Models.Configuration;
 using AnlabMvc.Services;
 using AspNetCore.Security.CAS;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -25,6 +28,8 @@ namespace AnlabMvc
 {
     public class Startup
     {
+        private IDirectorySearchService _directorySearchService;
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -66,17 +71,38 @@ namespace AnlabMvc
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            //services.ConfigureApplicationCookie(options => options.LoginPath = "/Account/LogIn");
+
+            services.AddAuthentication()
+                .AddOpenIdConnect("UCDavis", options =>
+                {
+                    options.Events.OnRedirectToIdentityProvider = context =>
+                    {
+                        context.ProtocolMessage.SetParameter("domain_hint", "ucdavis.edu");
+
+                        return Task.FromResult(0);
+                    };
+                    options.ClientId = "c631afcb-0795-4546-844d-9fe7759ae620";
+                    options.Authority = "https://login.microsoftonline.com/ucdavis365.onmicrosoft.com";
+                    options.SignedOutRedirectUri = "https://localhost:44349/";
+                })
+                .AddGoogle(options =>
+                {
+                    options.ClientId = Configuration["Authentication:Google:ClientId"];
+                    options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                });
+
             // TODO: require HTTPS in production.  In development it is only needed for federated auth
             services.AddMvc(options =>
             {
                 // options.Filters.Add(new RequireHttpsAttribute());
             });
 
+            // app services
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
             services.AddTransient<IDirectorySearchService, DirectorySearchService>();
             services.AddTransient<IDbInitializationService, DbInitializationService>();
             services.AddTransient<IOrderService, OrderService>();
@@ -93,6 +119,7 @@ namespace AnlabMvc
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            _directorySearchService = app.ApplicationServices.GetService<IDirectorySearchService>();
             app.ConfigureStackifyLogging(Configuration);
 
             Log.Logger = new LoggerConfiguration().WriteTo.Stackify().CreateLogger();
@@ -119,49 +146,7 @@ namespace AnlabMvc
 
             app.UseStaticFiles();
 
-            app.UseIdentity();
-
-            // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
-            var casOptions = new CasOptions
-            {
-                CasServerUrlBase = "https://cas.ucdavis.edu/cas/",
-                Events = new CasEvents
-                {
-                    OnCreatingTicket = async ctx =>
-                    {
-                        var identity = ctx.Principal.Identity as ClaimsIdentity;
-
-                        if (identity == null)
-                        {
-                            return;
-                        }
-
-                        var kerb = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-                        // look up user info and add as claims
-                        var user = await app.ApplicationServices.GetService<IDirectorySearchService>().GetByKerb(kerb);
-
-                        if (user != null)
-                        {
-                            identity.AddClaim(new Claim(ClaimTypes.Email, user.Mail));
-                            identity.AddClaim(new Claim(ClaimTypes.GivenName, user.GivenName));
-                            identity.AddClaim(new Claim(ClaimTypes.Surname, user.Surname));
-
-                            // Cas already adds a name param but it's a duplicate of nameIdentifier, so let's replace with something useful
-                            identity.RemoveClaim(identity.FindFirst(ClaimTypes.Name));
-                            identity.AddClaim(new Claim(ClaimTypes.Name, user.DisplayName));
-
-                        }
-                    }
-                }
-            };
-            app.UseCasAuthentication(casOptions);
-
-            app.UseGoogleAuthentication(new GoogleOptions()
-            {
-                ClientId = Configuration["Authentication:Google:ClientId"],
-                ClientSecret = Configuration["Authentication:Google:ClientSecret"]
-            });
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
@@ -173,8 +158,8 @@ namespace AnlabMvc
                     name: "pages",
                     template: "pages/{id}",
                     defaults: new { controller = "Pages", action = "ViewPage" });
-                
-                //No fallback                
+
+                //No fallback
             });
         }
     }

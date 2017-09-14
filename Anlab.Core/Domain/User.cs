@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Anlab.Core.Domain
 {
@@ -31,6 +31,11 @@ namespace Anlab.Core.Domain
         public string Account { get; set; }
 
         public ICollection<MailMessage> MailMessages { get; set; }
+
+        ///// <summary>
+        ///// Navigation property for the roles this user belongs to.
+        ///// </summary>
+        //public virtual ICollection<IdentityUserRole<int>> Roles { get; } = new List<IdentityUserRole<int>>();
 
         public string GetFirstName()
         {

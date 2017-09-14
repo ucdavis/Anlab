@@ -12,6 +12,7 @@ namespace AnlabMvc.Services
     public interface IDirectorySearchService
     {
         Task<GraphUser> GetByKerb(string kerb);
+        Task<GraphUser> GetByEmail(string email);
     }
 
     public class DirectorySearchService : IDirectorySearchService
@@ -27,6 +28,11 @@ namespace AnlabMvc.Services
         public Task<GraphUser> GetByKerb(string kerb)
         {
             return _client.GetUserByKerberos(kerb);
+        }
+
+        public Task<GraphUser> GetByEmail(string email)
+        {
+            return _client.GetUserByEmail(email);
         }
     }
 }

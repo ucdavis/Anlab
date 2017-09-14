@@ -52,7 +52,7 @@ namespace AnlabMvc.Controllers
         {
             await _dbInitializationService.RecreateAndInitialize();
 
-            return RedirectToAction("LogOff", "Account");
+            return RedirectToAction("LogoutDirect", "Account");
         }
 
     }

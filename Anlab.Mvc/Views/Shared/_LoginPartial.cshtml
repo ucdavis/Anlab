@@ -1,9 +1,11 @@
 ﻿@using Anlab.Core.Domain
+@using Microsoft.AspNetCore.Http
 
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
-@if (SignInManager.IsSignedIn(User))
+
+@if (User.Identity.IsAuthenticated)
 {
     var user = await UserManager.GetUserAsync(User);
     <form class="flexer" asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">

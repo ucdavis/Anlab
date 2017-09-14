@@ -35,23 +35,24 @@ namespace AnlabMvc.Controllers
         [Authorize(Roles = RoleCodes.Admin)]
         public async Task<IActionResult> Index()
         {
-            var adminRole = await _roleManager.FindByNameAsync(RoleCodes.Admin);
-            var userRole = await _roleManager.FindByNameAsync(RoleCodes.User);
+            // TODO: find better way than super select
+            var usersInRoles = _dbContext.Users.Select(u => new UserRolesModel { User = u }).ToList();
 
-            var usersRoles = _dbContext.Users.Select(u => new UserRolesModel
+            foreach (var userRole in usersInRoles)
             {
-                User = u,
-                IsAdmin = u.Roles.Any(a => a.RoleId == adminRole.Id),
-                IsUser = u.Roles.Any(a => a.RoleId == userRole.Id)
-            }).ToList();
 
-            return View(usersRoles);
+                userRole.IsAdmin = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.Admin);
+                userRole.IsUser = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.User);
+
+            }
+
+            return View(usersInRoles);
         }
 
         public async Task<IActionResult> ListNonAdminUsers()
         {
-            var adminRole = await _roleManager.FindByNameAsync(RoleCodes.Admin);
-            var users = _dbContext.Users.Where(w => w.Roles.All(x => x.RoleId != adminRole.Id)).ToList();
+            // TODO: handle if there are other non-admin roles
+            var users = await _userManager.GetUsersInRoleAsync(RoleCodes.User);
 
             return View(users);
         }
