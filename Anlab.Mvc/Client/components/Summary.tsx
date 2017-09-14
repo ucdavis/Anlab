@@ -69,7 +69,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
                         </a>
                     </div>
 
-                    <Button className="btn btn-order" disabled={this.props.canSubmit} onClick={this.props.onSubmit} > Place Order</Button>
+                    <Button className="btn btn-order" disabled={!this.props.canSubmit} onClick={this.props.onSubmit} > Place Order</Button>
                 </div>
 
                 <div className="collapse" id="collapseExample">
