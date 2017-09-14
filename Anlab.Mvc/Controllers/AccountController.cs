@@ -286,6 +286,35 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction(nameof(Login));
             }
 
+            // setup claims properly to deal with how azureAD represents things
+            if (info.LoginProvider.Equals("UCDavis", StringComparison.OrdinalIgnoreCase))
+            {
+                // email comes across in both name claim and upn
+                var email = info.Principal.FindFirstValue(ClaimTypes.Upn);
+
+                var ucdUser = await _directorySearchService.GetByEmail(email);
+
+                if (ucdUser != null)
+                {
+                    // TODO: see if we need to modify claims like this
+                    var identity = (ClaimsIdentity)info.Principal.Identity;
+
+                    // Should we bother replacing via directory service?
+                    identity.AddClaim(new Claim(ClaimTypes.Email, ucdUser.Mail));
+                    identity.AddClaim(new Claim(ClaimTypes.GivenName, ucdUser.GivenName));
+                    identity.AddClaim(new Claim(ClaimTypes.Surname, ucdUser.Surname));
+
+                    // name from Azure comes back w/ email, so replace w/ display name
+                    identity.RemoveClaim(identity.FindFirst(ClaimTypes.NameIdentifier));
+                    identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, ucdUser.Kerberos));
+                    info.ProviderKey = ucdUser.Kerberos;
+
+                    // name from Azure comes back w/ email, so replace w/ display name
+                    identity.RemoveClaim(identity.FindFirst(ClaimTypes.Name));
+                    identity.AddClaim(new Claim(ClaimTypes.Name, identity.FindFirst("name").Value));
+                }
+            }
+
             // Sign in the user with this external login provider if the user already has a login.
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
 
@@ -305,56 +334,20 @@ namespace AnlabMvc.Controllers
                 ViewData["LoginProvider"] = info.LoginProvider;
 
                 // user placeholder, to be filled by provider
-                User user = null;
 
-                if (info.LoginProvider.Equals("UCDavis", StringComparison.OrdinalIgnoreCase))
+                var user = new User
                 {
-                    // email comes across in both name claim and upn
-                    var email = info.Principal.FindFirstValue(ClaimTypes.Upn);
-                    
-                    var ucdUser = await _directorySearchService.GetByEmail(email);
+                    Email = info.Principal.FindFirstValue(ClaimTypes.Email),
+                    UserName = info.Principal.FindFirstValue(ClaimTypes.Email),
+                    FirstName = info.Principal.FindFirstValue(ClaimTypes.GivenName),
+                    LastName = info.Principal.FindFirstValue(ClaimTypes.Surname),
+                    Name = info.Principal.FindFirstValue(ClaimTypes.Name)
+                };
 
-                    if (ucdUser != null)
-                    {
-                        user = new User
-                        {
-                            Email = ucdUser.Mail,
-                            UserName = ucdUser.Kerberos,
-                            FirstName = ucdUser.GivenName,
-                            LastName = ucdUser.Surname,
-                            Name = ucdUser.DisplayName
-                        };
-
-                        // TODO: see if we need to modify claims like this
-                        var identity = (ClaimsIdentity)info.Principal.Identity;
-
-                        // name from Azure comes back w/ email, so replace w/ display name
-                        identity.RemoveClaim(identity.FindFirst(ClaimTypes.NameIdentifier));
-                        identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, ucdUser.Kerberos));
-
-                        // name from Azure comes back w/ email, so replace w/ display name
-                        identity.RemoveClaim(identity.FindFirst(ClaimTypes.Name));
-                        identity.AddClaim(new Claim(ClaimTypes.Name, user.Name));
-                    }
-                }
-                else // google login
+                if (string.IsNullOrWhiteSpace(user.Name))
                 {
-                    user = new User
-                    {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email),
-                        UserName = info.Principal.FindFirstValue(ClaimTypes.Email),
-                        FirstName = info.Principal.FindFirstValue(ClaimTypes.GivenName),
-                        LastName = info.Principal.FindFirstValue(ClaimTypes.Surname),
-                        Name = info.Principal.FindFirstValue(ClaimTypes.Name)
-                    };
-
-                    if (string.IsNullOrWhiteSpace(user.Name))
-                    {
-                        user.Name = user.Email;
-                    }
+                    user.Name = user.Email;
                 }
-
-                //return new JsonResult(new { user, info });
 
                 var createResult = await _userManager.CreateAsync(user);
                 if (createResult.Succeeded)
