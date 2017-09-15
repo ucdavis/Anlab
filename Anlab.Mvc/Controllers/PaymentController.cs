@@ -90,12 +90,8 @@ namespace AnlabMvc.Controllers
                 ErrorMessage = "Order for payment not found. Please contact technical support.";
                 return NotFound(response.Req_Reference_Number);
             }
-            if (order.CreatorId != CurrentUserId)
-            {
-                ErrorMessage = "You don't have access to this order.";
-                return NotFound(response.Req_Reference_Number);
-            }
-
+            //Note, don't check who has access as anyone may pay.
+            
             var responseValid = CheckResponse(response);
             if (!responseValid.IsValid)
             {
