@@ -14,6 +14,7 @@ interface ISummaryProps {
     hideError: boolean;
     status: string;
     processingFee: number;
+    project: string;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
@@ -65,7 +66,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
         {
             if (this.props.quantity < 1)
                 errorLink = <a href="#quantity">Fix Errors<i className="fa fa-exclamation" style={errorIconStyle} ></i></a>
-            else
+            else if(!this.props.project)
                 errorLink = <a href="#project">Fix Errors<i className="fa fa-exclamation" style={errorIconStyle} ></i></a>
         }
         let saveText = this.props.isCreate ? "Place Order" : "Update Order";
