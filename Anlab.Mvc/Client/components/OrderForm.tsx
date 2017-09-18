@@ -216,7 +216,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
 
                 </div>
-                <div className="stickyfoot shadowed" data-spy="affix" data-offset-top="200" data-offset-bottom="0">
+                <div className="stickyfoot shadowed" data-spy="affix" data-offset-bottom="0">
 
                 <Summary
                     isCreate={this.state.orderId === null}
