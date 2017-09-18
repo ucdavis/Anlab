@@ -203,12 +203,14 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
                     <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
 
-                    <div className="form_wrap">
+                    <div className="form_wrap" id="quantity">
                         <label className="form_header">How many samples will you require?</label>
                         <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
                     </div>
                     <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail}/>
-                    <Project project={project} handleChange={this.handleChange} />
+                    <div id="project">
+                        <Project project={project} handleChange={this.handleChange} />
+                    </div>
                     <ClientId clientId={clientId} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
