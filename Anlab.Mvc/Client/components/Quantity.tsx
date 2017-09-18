@@ -17,6 +17,7 @@ export class Quantity extends React.Component<IQuantityProps, any> {
                 integer
                 min={1}
                 max={100}
+                required={true}
             />
         );
     }

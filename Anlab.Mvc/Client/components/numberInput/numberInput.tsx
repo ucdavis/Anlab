@@ -9,6 +9,7 @@ interface INumberInputProps {
     min?: number;
     max?: number;
     integer?: boolean;
+    required?: boolean;
 }
 
 interface INumberInputState {
@@ -95,6 +96,7 @@ export class NumberInput extends React.Component<INumberInputProps, INumberInput
                 value={this.state.internalValue}
                 onChange={this.onChange}
                 onBlur={this.onBlur}
+                required={this.props.required}
             />
         );
     }
