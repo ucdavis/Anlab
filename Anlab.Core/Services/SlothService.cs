@@ -1,0 +1,82 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Anlab.Core.Domain;
+using Anlab.Core.Models;
+using Anlab.Jobs.MoneyMovement;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+
+namespace Anlab.Core.Services
+{
+    public interface ISlothService
+    {
+        Task<SlothResponseModel> MoveMoney(IOptions<FinancialSettings> appSettings, Order order);
+
+        void Test(IOptions<FinancialSettings> appSettings);
+        //TODO: Move the CreditCard one here.
+    }
+
+    public class SlothService : ISlothService
+    {
+
+        public void Test(IOptions<FinancialSettings> appSettings)
+        {
+            var xxx = appSettings.Value.ObjectCode;
+        }
+        
+        //TODO: Add validation?
+        public async Task<SlothResponseModel> MoveMoney(IOptions<FinancialSettings> appSettings, Order order)
+        {
+            var config = appSettings.Value;
+            var orderDetails = order.GetOrderDetails();
+            var token = config.SlothApiKey;
+            var url = config.SlothApiUrl;
+            var creditAccount = new AccountModel(config.AnlabAccount);
+            var debitAccount = new AccountModel(orderDetails.Payment.Account);
+
+            var objectCode = config.ObjectCode;
+
+            var model = new TransactionViewModel();
+            model.MerchantTrackingNumber = order.Id.ToString();
+            model.ProcessorTrackingNumber = order.Id.ToString(); //TODO: Remove once optional
+            model.Transfers.Add(new TransferViewModel { Account = debitAccount.Account , Amount = orderDetails.GrandTotal, Chart = debitAccount.Chart, SubAccount = debitAccount.SubAccount, Description = $"{order.Project} - {order.RequestNum}", Direction = "Debit", ObjectCode = objectCode });
+            model.Transfers.Add(new TransferViewModel { Account = creditAccount.Account, Amount = orderDetails.GrandTotal, Chart = creditAccount.Chart, SubAccount = creditAccount.SubAccount, Description = $"{order.Project} - {order.RequestNum}", Direction = "Credit", ObjectCode = objectCode });
+            //TODO: Is the Object code on the Credit line too?
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(url);
+                client.DefaultRequestHeaders.Add("X-Auth-Token", token);
+
+                var response = await client.PostAsync("Transactions", new StringContent(JsonConvert.SerializeObject(model), System.Text.Encoding.UTF8, "application/json"));
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    //Console.WriteLine("No tFound");
+                }
+                if (response.StatusCode == HttpStatusCode.NoContent)
+                {
+                    //Console.WriteLine("No Content");
+                }
+
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<SlothResponseModel>(content);
+
+                }
+
+                //var content2 = await response.Content.ReadAsStringAsync();
+                //var xxx = JsonConvert.DeserializeObject(content2);
+
+            }
+
+            return null;
+        }
+    }
+}

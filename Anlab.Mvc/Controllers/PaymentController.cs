@@ -6,13 +6,16 @@ using AnlabMvc.Models.Configuration;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
+using Anlab.Core.Services;
 using AnlabMvc.Models.CyberSource;
 using AnlabMvc.Models.Order;
+using AnlabMvc.Models.Roles;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Serilog;
 using Newtonsoft.Json;
@@ -24,16 +27,31 @@ namespace AnlabMvc.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IOrderMessageService _orderMessageService;
         private readonly IDataSigningService _dataSigningService;
+        private readonly ISlothService _slothService;
+        private readonly IOptions<FinancialSettings> _financialSettings;
         private readonly AppSettings _appSettings;
         private readonly CyberSourceSettings _cyberSourceSettings;
 
-        public PaymentController(ApplicationDbContext context, IOrderMessageService orderMessageService, IDataSigningService dataSigningService, IOptions<CyberSourceSettings> cyberSourceSettings, IOptions<AppSettings> appSettings)
+        public PaymentController(ApplicationDbContext context, IOrderMessageService orderMessageService, IDataSigningService dataSigningService, IOptions<CyberSourceSettings> cyberSourceSettings, IOptions<AppSettings> appSettings, ISlothService slothService, IOptions<FinancialSettings> financialSettings)
         {
             _context = context;
             _orderMessageService = orderMessageService;
             _dataSigningService = dataSigningService;
+            _slothService = slothService;
+            _financialSettings = financialSettings;
             _appSettings = appSettings.Value;
             _cyberSourceSettings = cyberSourceSettings.Value;
+        }
+
+        [Authorize(Roles = RoleCodes.Admin)]
+        public async Task<IActionResult> Test(int id)
+        {
+            var order = _context.Orders.SingleOrDefault(a => a.Id == id);
+
+             var xxx = await _slothService.MoveMoney(_financialSettings, order);
+
+            return null;
+
         }
 
         public ActionResult Pay(Guid id)
