@@ -101,6 +101,19 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Confirmation(int id, bool confirm, string requestNum)
         {
+            if (String.IsNullOrWhiteSpace(requestNum))
+            {
+                ErrorMessage = "A request number is required";
+                return RedirectToAction("Confirmation");
+            }
+
+            var checkReqNum = await _dbContext.Orders.AnyAsync(i => i.RequestNum == requestNum);
+            if(checkReqNum)
+            {
+                ErrorMessage = "That request number is already in use";
+                return RedirectToAction("Confirmation");
+            }
+
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
@@ -114,11 +127,7 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Orders");
             }
 
-            if(String.IsNullOrWhiteSpace(requestNum))
-            {
-                ErrorMessage = "A request number is required";
-                return RedirectToAction("Confirmation");
-            }
+
             order.RequestNum = requestNum;
             var result = await _orderService.OverwiteOrderFromDb(order); //TODO: Just testing
             if (result.WasError)
