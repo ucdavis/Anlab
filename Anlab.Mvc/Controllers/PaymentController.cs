@@ -164,9 +164,14 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
 
-            if (order.Status != OrderStatusCodes.Accepted)
+            if (order.Status != OrderStatusCodes.Finalized)
             {
-                ErrorMessage = "You cannot Pay until the Order is Accepted."; 
+                ErrorMessage = "You cannot Pay until the Order is Finalized."; 
+                return RedirectToAction("Index", "Order");
+            }
+            if (order.Paid)
+            {
+                Message = "Order has already been paid.";
                 return RedirectToAction("Index", "Order");
             }
 
