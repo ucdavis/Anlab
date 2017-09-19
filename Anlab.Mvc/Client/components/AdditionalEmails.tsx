@@ -1,6 +1,7 @@
 ﻿import * as React from 'react';
 import Input from 'react-toolbox/lib/input';
 import { Button, IconButton } from 'react-toolbox/lib/button';
+import Chip from 'react-toolbox/lib/chip';
 
 interface IAdditionalEmailsProps {
     addedEmails: Array<string>;
@@ -52,12 +53,18 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
 
         const emails = this.props.addedEmails.map(item => {
             return (
-                <div key={item}>{item} <Button label="Delete" primary onClick={() => this.onDelete(item)}/></div>
+                <Chip key={item} deletable onDeleteClick={() => this.onDelete(item)} > { item }</Chip>
             );
         });
 
 
         return emails;
+    }
+
+    handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            this.onClick();
+        }
     }
 
     _renderAddButton = () => {
@@ -73,8 +80,10 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
         return (
             <div className="form_wrap">
                 <label className="form_header">Should anyone else be notified for this test?</label>
-                {this._renderEmails()}
-                <Input type='text' value={this.state.email} label='Email To Add' maxLength={50} onChange={this.onEmailChanged}/>
+                <div>
+                    {this._renderEmails()}
+                </div>
+                <Input type='text' value={this.state.email} label='Email To Add' maxLength={50} onChange={this.onEmailChanged} onKeyPress={this.handleKeyPress} />
                 {this._renderAddButton()}
             </div>
         );
