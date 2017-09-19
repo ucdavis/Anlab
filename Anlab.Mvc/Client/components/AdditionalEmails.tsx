@@ -12,7 +12,9 @@ interface IAdditionalEmailsProps {
 
 interface IAdditionalEmailsState {
     email: string;
-    toggle: false;
+    toggle: boolean;
+    error: boolean;
+    errorText: string;
 }
 
 
@@ -22,7 +24,9 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
         super(props);
         this.state = {
             email: "",
-            toggle: false
+            toggle: false,
+            error: false,
+            errorText: ""
         };
     }
 
@@ -37,13 +41,13 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
         if (re.test((emailtoAdd))) {
             if (this.props.addedEmails.indexOf(emailtoAdd) === -1 && emailtoAdd !== this.props.defaultEmail) {
                 this.props.onEmailAdded(emailtoAdd);
+                this.setState({ ...this.state, email: "", error: false, errorText: "", toggle: false});
             } else {
-                alert("Email already added");
+                this.setState({ ...this.state, error: true, errorText: "Email already added" });
             }
         } else {
-            alert("Invalid email");
+            this.setState({ ...this.state, error: true, errorText: "Invalid email" });
         }
-        this.setState({ ...this.state, email: "" });
     }
 
     onDelete = (email2Delete: any) => {
@@ -72,27 +76,26 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
     }
 
     handleBlur = () => {
-        if (this.state.email != "")
+        if (this.state.email != "") {
             this.onClick();
-        this._toggleAddEmail();
+        }
+        else
+            this._toggleAddEmail();
     }
 
     _toggleAddEmail = () => {
         this.setState(prevState => ({
-            email: "", toggle: !prevState.toggle
+            email: "", error: false, errorText: "", toggle: !prevState.toggle
         }));
+        
     }
 
     render() {
-        let inputStyle = {
-            lineHeight: '15px',
-            fontSize: '13px',
-            borderWidth: '0',
-            backgroundColor: '#eeeeee'
-        }
-        let addIconStyle = {
-            cursor: 'pointer',
-            paddingLeft: '4px'
+        let inputStyle = {};
+        if (this.state.error) {
+            inputStyle = {
+                color: '#de3226'
+            }
         }
         return (
             <div className="form_wrap">
@@ -103,11 +106,11 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
                     {!this.state.toggle && <Chip onClick={this._toggleAddEmail} > <i className="fa fa-plus" aria-hidden="true"></i></Chip>}
                     {this.state.toggle &&
                         <Chip>
-                        <input value={this.state.email} style={inputStyle} onChange={this.onEmailChanged} onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} autoFocus={true} />
-                        <i className="fa fa-plus-circle" aria-hidden="true" onClick={this.onClick} style={addIconStyle} ></i>
+                        <input className="emailInput" value={this.state.email} style={inputStyle} onChange={this.onEmailChanged} onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} autoFocus={true} />
+                        <i className="fa fa-plus-circle" aria-hidden="true" onClick={this.onClick} ></i>
                         </Chip>}
                 </div>
-
+                <span className="emailError">{this.state.error && this.state.errorText}</span>
             </div>
         );
     }
