@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Anlab.Core.Data;
+﻿using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using Anlab.Jobs.MoneyMovement;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Anlab.Core.Services
 {
     public interface ISlothService
     {
         Task<SlothResponseModel> MoveMoney(Order order);
-        Task<bool> ProcessCreditCards(IConfigurationRoot config);
+        Task<bool> ProcessCreditCards(FinancialSettings financialSettings);
 
         //TODO: Move the CreditCard one here.
     }
@@ -85,10 +82,8 @@ namespace Anlab.Core.Services
             return null;
         }
 
-        public async Task<bool> ProcessCreditCards(IConfigurationRoot config) //Have to pass here, can't get DI working for the job
+        public async Task<bool> ProcessCreditCards(FinancialSettings financialSettings) //Have to pass here, can't get DI working for the job
         {
-            var token = config.GetSection("Financial:SlothApiKey").Value;
-            var url = config.GetSection("Financial:SlothApiUrl").Value;
             var orders = _dbContext.Orders.Include(i => i.ApprovedPayment).Where(a =>
                 a.ApprovedPayment != null && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
             if (orders.Count == 0)
@@ -98,8 +93,8 @@ namespace Anlab.Core.Services
 
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri($"{url}Transactions/processor/");
-                client.DefaultRequestHeaders.Add("X-Auth-Token", token);
+                client.BaseAddress = new Uri($"{financialSettings.SlothApiUrl}Transactions/processor/");
+                client.DefaultRequestHeaders.Add("X-Auth-Token", financialSettings.SlothApiKey);
 
                 Console.WriteLine($"Processing {orders.Count} orders");
                 var updatedCount = 0;

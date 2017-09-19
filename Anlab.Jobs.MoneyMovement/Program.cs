@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Anlab.Core.Models;
+using Microsoft.Extensions.Options;
 
 namespace Anlab.Jobs.MoneyMovement
 {
@@ -40,13 +42,19 @@ namespace Anlab.Jobs.MoneyMovement
                     options.UseSqlite("Data Source=..\\Anlab.Mvc\\anlab.db")
                 // options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
-            services.AddTransient<ISlothService, SlothService>();
+            services.AddTransient<ISlothService, SlothService>();           
             Provider = services.BuildServiceProvider();
             
             SlothService = Provider.GetService<ISlothService>();           
 
             Console.WriteLine("About to start Credit Cards");
-            var result = Task.Run(() => SlothService.ProcessCreditCards(Configuration)).Result; //Wasn't able to debug this unless it returned a result...
+            var financialSettings = new FinancialSettings
+            {
+                SlothApiKey = Configuration.GetSection("Financial:SlothApiKey").Value,
+                SlothApiUrl = Configuration.GetSection("Financial:SlothApiUrl").Value
+            };
+            
+            var result = Task.Run(() => SlothService.ProcessCreditCards(financialSettings)).Result; //Wasn't able to debug this unless it returned a result...
             if (!result)
             {
                 Console.WriteLine("No CC Orders to process");
