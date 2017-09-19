@@ -7,6 +7,7 @@ interface IAdditionalEmailsProps {
     addedEmails: Array<string>;
     onEmailAdded: Function;
     onDeleteEmail: Function;
+    defaultEmail: string;
 }
 
 interface IAdditionalEmailsState {
@@ -30,16 +31,16 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
         const emailtoAdd = this.state.email.toLowerCase();
         
         const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (re.test((emailtoAdd))) {            
-            if (this.props.addedEmails.indexOf(emailtoAdd) === -1) {
+        if (re.test((emailtoAdd))) {
+            if (this.props.addedEmails.indexOf(emailtoAdd) === -1 && emailtoAdd !== this.props.defaultEmail) {
                 this.props.onEmailAdded(emailtoAdd);
             } else {
                 alert("Email already added");
             }
-            this.setState({ ...this.state, email: "" });
         } else {
             alert("Invalid email");
         }
+        this.setState({ ...this.state, email: "" });
     }
 
     onDelete = (email2Delete: any) => {
@@ -74,7 +75,7 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
 
     _renderAddButton = () => {
         if (this.state.email.length > 0) {
-            return (<Button label='Add Email' flat primary onClick={this.onClick} />);
+            return (<Button flat primary onClick={this.onClick}><i className="fa fa-plus-circle" aria-hidden="true"></i>Add Email</Button>);
         } else {
             return null;
         }
@@ -86,6 +87,7 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
             <div className="form_wrap">
                 <label className="form_header">Should anyone else be notified for this test?</label>
                 <div>
+                    <Chip>{this.props.defaultEmail}</Chip>
                     {this._renderEmails()}
                 </div>
                 <Input type='text' value={this.state.email} label='Email To Add' maxLength={50} onChange={this.onEmailChanged} onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} />
