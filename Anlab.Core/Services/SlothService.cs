@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using Anlab.Jobs.MoneyMovement;
@@ -15,18 +16,27 @@ namespace Anlab.Core.Services
 {
     public interface ISlothService
     {
-        Task<SlothResponseModel> MoveMoney(IOptions<FinancialSettings> appSettings, Order order);
+        Task<SlothResponseModel> MoveMoney(Order order);
 
         //TODO: Move the CreditCard one here.
     }
 
     public class SlothService : ISlothService
     {
-        
-        //TODO: Add validation?
-        public async Task<SlothResponseModel> MoveMoney(IOptions<FinancialSettings> appSettings, Order order)
+        private readonly ApplicationDbContext _dbContext;
+        private readonly FinancialSettings _appSettings;
+
+        public SlothService(ApplicationDbContext dbContext, IOptions<FinancialSettings> appSettings)
         {
-            var config = appSettings.Value;
+            _dbContext = dbContext;
+            _appSettings = appSettings.Value;
+        }
+
+        //TODO: Add validation?
+        public async Task<SlothResponseModel> MoveMoney(Order order)
+        {
+            //var config = appSettings.Value;
+            var config = _appSettings;
             var orderDetails = order.GetOrderDetails();
             var token = config.SlothApiKey;
             var url = config.SlothApiUrl;
@@ -57,6 +67,7 @@ namespace Anlab.Core.Services
                     //Console.WriteLine("No Content");
                 }
 
+                //TODO: Capture errors?
 
                 if (response.IsSuccessStatusCode)
                 {

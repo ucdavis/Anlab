@@ -28,17 +28,15 @@ namespace AnlabMvc.Controllers
         private readonly IOrderMessageService _orderMessageService;
         private readonly IDataSigningService _dataSigningService;
         private readonly ISlothService _slothService;
-        private readonly IOptions<FinancialSettings> _financialSettings;
         private readonly AppSettings _appSettings;
         private readonly CyberSourceSettings _cyberSourceSettings;
 
-        public PaymentController(ApplicationDbContext context, IOrderMessageService orderMessageService, IDataSigningService dataSigningService, IOptions<CyberSourceSettings> cyberSourceSettings, IOptions<AppSettings> appSettings, ISlothService slothService, IOptions<FinancialSettings> financialSettings)
+        public PaymentController(ApplicationDbContext context, IOrderMessageService orderMessageService, IDataSigningService dataSigningService, IOptions<CyberSourceSettings> cyberSourceSettings, IOptions<AppSettings> appSettings, ISlothService slothService)
         {
             _context = context;
             _orderMessageService = orderMessageService;
             _dataSigningService = dataSigningService;
             _slothService = slothService;
-            _financialSettings = financialSettings;
             _appSettings = appSettings.Value;
             _cyberSourceSettings = cyberSourceSettings.Value;
         }
@@ -48,7 +46,7 @@ namespace AnlabMvc.Controllers
         {
             var order = _context.Orders.SingleOrDefault(a => a.Id == id);
 
-             var xxx = await _slothService.MoveMoney(_financialSettings, order);
+             var xxx = await _slothService.MoveMoney(order);
 
             return null;
 
