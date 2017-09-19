@@ -12,6 +12,7 @@ interface IAdditionalEmailsProps {
 
 interface IAdditionalEmailsState {
     email: string;
+    toggle: false;
 }
 
 
@@ -20,12 +21,14 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
     constructor(props) {
         super(props);
         this.state = {
-            email: ""
+            email: "",
+            toggle: false
         };
     }
 
-    onEmailChanged = (email: string) => {
-        this.setState({ ...this.state, email });
+    onEmailChanged = (e) => {
+        var newEmail = e.target.value;
+        this.setState({ ...this.state, email: newEmail });
     }
     onClick = () => {
         const emailtoAdd = this.state.email.toLowerCase();
@@ -71,27 +74,40 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
     handleBlur = () => {
         if (this.state.email != "")
             this.onClick();
+        this._toggleAddEmail();
     }
 
-    _renderAddButton = () => {
-        if (this.state.email.length > 0) {
-            return (<Button flat primary onClick={this.onClick}><i className="fa fa-plus-circle" aria-hidden="true"></i>Add Email</Button>);
-        } else {
-            return null;
-        }
-        
+    _toggleAddEmail = () => {
+        this.setState(prevState => ({
+            email: "", toggle: !prevState.toggle
+        }));
     }
 
     render() {
+        let inputStyle = {
+            lineHeight: '15px',
+            fontSize: '13px',
+            borderWidth: '0',
+            backgroundColor: '#eeeeee'
+        }
+        let addIconStyle = {
+            cursor: 'pointer',
+            paddingLeft: '4px'
+        }
         return (
             <div className="form_wrap">
-                <label className="form_header">Should anyone else be notified for this test?</label>
+                <label className="form_header">Who should be notified for this test?</label>
                 <div>
                     <Chip>{this.props.defaultEmail}</Chip>
                     {this._renderEmails()}
+                    {!this.state.toggle && <Chip onClick={this._toggleAddEmail} > <i className="fa fa-plus" aria-hidden="true"></i></Chip>}
+                    {this.state.toggle &&
+                        <Chip>
+                        <input value={this.state.email} style={inputStyle} onChange={this.onEmailChanged} onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} autoFocus={true} />
+                        <i className="fa fa-plus-circle" aria-hidden="true" onClick={this.onClick} style={addIconStyle} ></i>
+                        </Chip>}
                 </div>
-                <Input type='text' value={this.state.email} label='Email To Add' maxLength={50} onChange={this.onEmailChanged} onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} />
-                {this._renderAddButton()}
+
             </div>
         );
     }
