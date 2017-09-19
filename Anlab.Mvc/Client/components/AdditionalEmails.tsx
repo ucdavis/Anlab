@@ -106,11 +106,11 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
                 <div>
                     <Chip>{this.props.defaultEmail}</Chip>
                     {this._renderEmails()}
-                    {!this.state.toggle && <Chip onClick={this._toggleAddEmail} > <i className="fa fa-plus" aria-hidden="true"></i></Chip>}
+                    {!this.state.toggle && <Chip onClick={this._toggleAddEmail} > <i className="emailAddIconStyle fa fa-plus" aria-hidden="true"></i></Chip>}
                     {this.state.toggle &&
                         <Chip>
                         <input className="emailInput" value={this.state.email} style={inputStyle} onChange={this.onEmailChanged} onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} autoFocus={true} />
-                        <i className="fa fa-plus-circle" aria-hidden="true" onClick={this.onClick} ></i>
+                        <i className="emailIconStyle fa fa-plus-circle" aria-hidden="true" onClick={this.onClick} ></i>
                         </Chip>}
                 </div>
                 <span className="emailError">{this.state.error && this.state.errorText}</span>
