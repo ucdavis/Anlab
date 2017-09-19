@@ -56,6 +56,9 @@ namespace Anlab.Core.Domain
 
         public bool Paid { get; set; } = false;
 
+        public bool IsInternalClient { get; set; } = false;
+        public bool IsUcDavisAccount { get; set; } = false;
+
         public OrderDetails GetOrderDetails()
         {
             try

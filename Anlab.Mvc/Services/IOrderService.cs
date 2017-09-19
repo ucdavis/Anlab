@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
+using Anlab.Jobs.MoneyMovement;
 using AnlabMvc.Models.Order;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -190,6 +191,16 @@ namespace AnlabMvc.Services
             orderToUpdate.SaveDetails(orderDetails);
 
             orderToUpdate.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails);
+            orderToUpdate.IsInternalClient = orderDetails.Payment.IsInternalClient;
+            orderToUpdate.IsUcDavisAccount = false;
+            if (orderToUpdate.IsInternalClient)
+            {
+                var account = new AccountModel(orderDetails.Payment.Account);
+                if (account.Chart == "3" || account.Chart == "L")
+                {
+                    orderToUpdate.IsUcDavisAccount = true;
+                }
+            }
         }
 
         public async Task SendOrderToAnlab(Order order)
