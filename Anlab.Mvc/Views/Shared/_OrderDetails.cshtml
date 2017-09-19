@@ -1,124 +1,141 @@
+@using Anlab.Core.Models
 @using Humanizer
 @model AnlabMvc.Models.Order.OrderReviewModel
 
 <div class="row">
-  <div class="col whiteblock">
+    <div class="col whiteblock">
 
 
-<div class="form-group">
-    <strong>Created By</strong>
-    <span>@Model.Order.Creator.Name</span>
-</div>
-<div class="form-group">
-    <strong>Project</strong>
-    <span>@Model.Order.Project</span>
-</div>
-<div class="form-group">
-    <strong>Request Num</strong>
-    <span>@Model.Order.RequestNum</span>
-</div>
-<div class="form-group">
-    <strong>Additional Emails</strong>
-    <span><a href="mailto:@Model.Order.AdditionalEmails">@Model.Order.AdditionalEmails</a></span>
-</div>
-<div class="form-group">
-    <strong>Quantity</strong>
-    <span>@Model.OrderDetails.Quantity</span>
-</div>
+        <div class="form-group">
+            <strong>Created By</strong>
+            <span>@Model.Order.Creator.Name</span>
+        </div>
+        <div class="form-group">
+            <strong>Project</strong>
+            <span>@Model.Order.Project</span>
+        </div>
+        <div class="form-group">
+            <strong>Request Num</strong>
+            <span>@Model.Order.RequestNum</span>
+        </div>
+        <div class="form-group">
+            <strong>Additional Emails</strong>
+            <span><a href="mailto:@Model.Order.AdditionalEmails">@Model.Order.AdditionalEmails</a></span>
+        </div>
+        <div class="form-group">
+            <strong>Quantity</strong>
+            <span>@Model.OrderDetails.Quantity</span>
+        </div>
 
-<div class="form-group">
-    <strong>Additional Info</strong>
-    <pre>@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</pre>
-</div>
+        <div class="form-group">
+            <strong>Additional Info</strong>
+            <pre>@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</pre>
+        </div>
 
-<div class="form-group">
-    <strong>Sample Type</strong>
-    <span>@Model.OrderDetails.SampleType</span>
-</div>
+        <div class="form-group">
+            <strong>Sample Type</strong>
+            <span>@Model.OrderDetails.SampleType</span>
+        </div>
 
-<div class="form-group">
-    <strong>Payment Method</strong>
-    @if(string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
-    {
-        <span>UC Account: @Model.OrderDetails.Payment.Account</span>
-    }
-    else
-    {
-        <span>Credit Card</span>
-    }
+        <div class="form-group">
+            <strong>Payment Method</strong>
+            @if(string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
+            {
+                <span>UC Account: @Model.OrderDetails.Payment.Account</span>
+            }
+            else
+            {
+                <span>Credit Card</span>
+            }
 
-</div>
+        </div>
 
-<div class="form-group">
-    <strong>Processing Fee</strong>
-    @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
-    {
-        <span>@(String.Format("{0:C}", Model.OrderDetails.InternalProcessingFee))</span>
-    }
-    else
-    {
-        <span>@(String.Format("{0:C}", Model.OrderDetails.ExternalProcessingFee))</span>
-    }</div>
+        <div class="form-group">
+            <strong>Processing Fee</strong>
+            @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
+            {
+                <span>@(String.Format("{0:C}", Model.OrderDetails.InternalProcessingFee))</span>
+            }
+            else
+            {
+                <span>@(String.Format("{0:C}", Model.OrderDetails.ExternalProcessingFee))</span>
+            }</div>
 
-<div class="form-group">
-    <strong>Total Amount</strong>
-    <span>@(String.Format("{0:C}", Model.OrderDetails.Total))</span>
-</div>
+        <div class="form-group">
+            <strong>Total Amount</strong>
+            <span>@(String.Format("{0:C}", Model.OrderDetails.Total))</span>
+        </div>
 
-@if (Model.OrderDetails.AdjustmentAmount != 0)
-{
-    <div class="form-group">
-        <strong>Adjustment Amount</strong>
-        <span>@(String.Format("{0:C}", Model.OrderDetails.AdjustmentAmount))</span>
-    </div>
-
-    <div class="form-group">
-        <strong>Grand Total</strong>
-        <span>@(String.Format("{0:C}", Model.OrderDetails.GrandTotal))</span>
-    </div>
-}
-
-@if (!String.IsNullOrWhiteSpace(Model.OrderDetails.LabComments))
-{
-    <div class="form-group">
-        <strong>Lab Comments</strong>
-        <span>@Model.OrderDetails.LabComments</span>
-    </div>
-}
-
-<table id="table">
-    <thead>
-    <tr>
-        <th>Analysis</th>
-        <th>Code</th>
-        <th>Fee (* Qty @Model.OrderDetails.Quantity)</th>
-        <th>SetupCost</th>
-        <th>Sample Total</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var test in @Model.OrderDetails.SelectedTests)
-    {
-        var temp = Model.Order.GetTestDetails().Where(a => a.Id == test.Id).FirstOrDefault();
-        if (Model.HideLabDetails && !temp.Public)
+        @if (Model.OrderDetails.AdjustmentAmount != 0)
         {
-            continue;
+            <div class="form-group">
+                <strong>Adjustment Amount</strong>
+                <span>@(String.Format("{0:C}", Model.OrderDetails.AdjustmentAmount))</span>
+            </div>
+
+            <div class="form-group">
+                <strong>Grand Total</strong>
+                <span>@(String.Format("{0:C}", Model.OrderDetails.GrandTotal))</span>
+            </div>
         }
-        <tr>
-            <td>
-                @test.Analysis
-                @if (temp != null && !String.IsNullOrEmpty(temp.Notes))
+
+        @if (!String.IsNullOrWhiteSpace(Model.OrderDetails.LabComments))
+        {
+            <div class="form-group">
+                <strong>Lab Comments</strong>
+                <span>@Model.OrderDetails.LabComments</span>
+            </div>
+        }
+
+        <table id="table">
+            <thead>
+            <tr>
+                <th>Analysis</th>
+                <th>Code</th>
+                <th>Fee (* Qty @Model.OrderDetails.Quantity)</th>
+                <th>SetupCost</th>
+                <th>Sample Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var test in @Model.OrderDetails.SelectedTests)
+            {
+                var temp = Model.Order.GetTestDetails().Where(a => a.Id == test.Id).FirstOrDefault();
+                if (Model.HideLabDetails && !temp.Public)
                 {
-                    <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@temp.Notes')" title="@temp.Notes" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
-                }   
-            </td>
-            <td>@test.Id</td>
-            <td>@test.SubTotal.ToString("C")</td>
-            <td>@test.SetupCost.ToString("C")</td>
-            <td>@test.Total.ToString("C")</td>
-        </tr>
+                    continue;
+                }
+                <tr>
+                    <td>
+                        @test.Analysis
+                        @if (temp != null && !String.IsNullOrEmpty(temp.Notes))
+                        {
+                            <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@temp.Notes')" title="@temp.Notes" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
+                        }   
+                    </td>
+                    <td>@test.Id</td>
+                    <td>@test.SubTotal.ToString("C")</td>
+                    <td>@test.SetupCost.ToString("C")</td>
+                    <td>@test.Total.ToString("C")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@if (ViewBag.Public != null && ViewBag.Public)
+{
+    if (Model.Order.Status == OrderStatusCodes.Finalized && !Model.Order.Paid)
+    {
+        if (Model.Order.IsUcDavisAccount)
+        {
+            <a asp-controller="Payment" asp-action="PayInternal" asp-route-id="@Model.Order.ShareIdentifier" class="btn btn-group-lg"><i class="fa fa-money"> Pay</i> </a>
+        }
+        if (!Model.Order.IsInternalClient)
+        {
+            <a asp-controller="Payment" asp-action="Pay" asp-route-id="@Model.Order.ShareIdentifier" class="btn btn-group-lg"><i class="fa fa-credit-card-alt"> Pay</i> </a>
+        }
+
     }
-    </tbody>
-</table>
-</div>
-</div>
+}
