@@ -204,17 +204,20 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
 
                     <div className="form_wrap">
-                        <label className="form_header">How many samples will you require?</label>
+                        <label className="form_header" id="quantity">How many samples will you require?</label>
                         <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
                     </div>
                     <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail}/>
-                    <Project project={project} handleChange={this.handleChange} />
+                    <div className="form_wrap">
+                        <label className="form_header" id="project">What do you want to name this order?</label>
+                        <Project project={project} handleChange={this.handleChange} />
+                    </div>
                     <ClientId clientId={clientId} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
 
                 </div>
-                <div className="stickyfoot shadowed" data-spy="affix" data-offset-top="200" data-offset-bottom="0">
+                <div className="stickyfoot shadowed" data-spy="affix" data-offset-bottom="0">
 
                 <Summary
                     isCreate={this.state.orderId === null}
@@ -225,7 +228,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     payment={payment}
                     onSubmit={this.onSubmit}
                     status={status}
-                    processingFee={processingFee} />
+                    processingFee={processingFee}
+                    project={this.state.project} />
                 </div>
 
                 <Dialog

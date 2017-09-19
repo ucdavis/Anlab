@@ -14,6 +14,7 @@ interface ISummaryProps {
     hideError: boolean;
     status: string;
     processingFee: number;
+    project: string;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
@@ -56,6 +57,18 @@ export class Summary extends React.Component<ISummaryProps, any> {
         if (this.props.testItems.length === 0) {
             return null;
         }
+        let errorIconStyle = {
+            color: 'red',
+            padding: '0 10px'
+        }
+        let errorLink = null;
+        if (!this.props.hideError)
+        {
+            if (this.props.quantity < 1)
+                errorLink = <a href="#quantity">Fix Errors<i className="fa fa-exclamation" style={errorIconStyle} ></i></a>
+            else if(!this.props.project)
+                errorLink = <a href="#project">Fix Errors<i className="fa fa-exclamation" style={errorIconStyle} ></i></a>
+        }
         let saveText = this.props.isCreate ? "Place Order" : "Update Order";
         let infoText = this.props.isCreate ? "Go ahead and place your order" : "Go ahead and update your order";        
         const errorText = "Please correct any errors and complete any required fields before you " + saveText.toLowerCase();
@@ -68,8 +81,10 @@ export class Summary extends React.Component<ISummaryProps, any> {
                             Order Details
                         </a>
                     </div>
-
-                    <Button className="btn btn-order" disabled={!this.props.canSubmit} onClick={this.props.onSubmit} > Place Order</Button>
+                    <div>
+                        {errorLink}
+                        <Button className="btn btn-order" disabled={!this.props.canSubmit} onClick={this.props.onSubmit} > Place Order</Button>
+                    </div>
                 </div>
 
                 <div className="collapse" id="collapseExample">
