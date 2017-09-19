@@ -67,8 +67,12 @@
                     if (order.Status == OrderStatusCodes.Accepted && !order.Paid)
                     {
                         <a asp-controller="Payment" asp-action="Pay" asp-route-id="@order.ShareIdentifier"><i class="fa fa-credit-card-alt"> Pay</i> </a>
-                    }
                 }
+                if (order.Status == OrderStatusCodes.Finalized && !order.Paid && order.IsUcDavisAccount)
+                {
+                    <a asp-controller="Payment" asp-action="PayInternal" asp-route-id="@order.ShareIdentifier"><i class="fa fa-money"> Pay</i> </a>
+                }
+            }
             </td>
             <td>@order.Created.ToPacificTime().ToString("g")</td>
             <td>@order.Updated.ToPacificTime().ToString("g")</td>

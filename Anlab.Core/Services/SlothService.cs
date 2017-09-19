@@ -79,13 +79,13 @@ namespace Anlab.Core.Services
 
             }
 
-            return null;
+            return new SlothResponseModel { Success = false };
         }
 
         public async Task<bool> ProcessCreditCards(FinancialSettings financialSettings) //Have to pass here, can't get DI working for the job
         {
             var orders = _dbContext.Orders.Include(i => i.ApprovedPayment).Where(a =>
-                a.ApprovedPayment != null && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
+                !a.IsInternalClient && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
             if (orders.Count == 0)
             {
                 return false;

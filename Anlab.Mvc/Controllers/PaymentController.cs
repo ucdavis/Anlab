@@ -7,6 +7,7 @@ using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using Anlab.Core.Services;
+using Anlab.Jobs.MoneyMovement;
 using AnlabMvc.Models.CyberSource;
 using AnlabMvc.Models.Order;
 using AnlabMvc.Models.Roles;
@@ -41,16 +42,118 @@ namespace AnlabMvc.Controllers
             _cyberSourceSettings = cyberSourceSettings.Value;
         }
 
-        [Authorize(Roles = RoleCodes.Admin)]
-        public async Task<IActionResult> Test(int id)
+        public ActionResult PayInternal(Guid id)
         {
-            var order = _context.Orders.SingleOrDefault(a => a.Id == id);
+            var order = _context.Orders.Include(i => i.Creator).SingleOrDefault(a => a.ShareIdentifier == id);
 
-             var xxx = await _slothService.MoveMoney(order);
+            if (order == null)
+            {
+                return NotFound();
+            }
+            if (order.Status != OrderStatusCodes.Finalized)
+            {
+                ErrorMessage = "You can only pay once the order has been Finalized.";
+                return RedirectToAction("Index", "Order");
+            }
+            if (order.Paid)
+            {
+                ErrorMessage = "This order has already been paid.";
+                return RedirectToAction("Index", "Order");
+            }
 
-            return null;
+            if (!order.IsInternalClient)
+            {
+                ErrorMessage = "This order is set for Credit Card Payment.";
+                return RedirectToAction("Index", "Order");
+            }
+
+            if (!order.IsUcDavisAccount)
+            {
+                ErrorMessage = "The chart of this account indicates it isn't a UC Davis account. Unable to pay this way.";
+                return RedirectToAction("Index", "Order");
+            }
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> PayInternal(Guid id, string overrideAccount)
+        {
+            var order = _context.Orders.Include(i => i.Creator).SingleOrDefault(a => a.ShareIdentifier == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+            if (order.Status != OrderStatusCodes.Finalized)
+            {
+                ErrorMessage = "You can only pay once the order has been Finalized.";
+                return RedirectToAction("Index", "Order");
+            }
+            if (order.Paid)
+            {
+                ErrorMessage = "This order has already been paid.";
+                return RedirectToAction("Index", "Order");
+            }
+
+            if (!order.IsInternalClient)
+            {
+                ErrorMessage = "This order is set for Credit Card Payment.";
+                return RedirectToAction("Index", "Order");
+            }
+            
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+
+            if (!string.IsNullOrWhiteSpace(overrideAccount))
+            {
+                var account = new AccountModel(overrideAccount); //TODO: Move validation on account.
+                if (account.Chart != "3" && account.Chart != "L")
+                {
+                    ErrorMessage =
+                        "The chart of this new account indicates it isn't a UC Davis account. Unable to pay this way.";
+                    return View(model);
+                }
+
+                var orderDetails = order.GetOrderDetails();
+                orderDetails.Payment.Account = overrideAccount;
+                order.IsUcDavisAccount = true;
+                order.SaveDetails(orderDetails);
+            }
+            else
+            {
+                if (!order.IsUcDavisAccount)
+                {
+                    ErrorMessage =
+                        "The chart of this account indicates it isn't a UC Davis account. Unable to pay this way.";
+                    return RedirectToAction("Index", "Order");
+                }
+            }
+
+            var slothResult = await _slothService.MoveMoney(order);
+            if (slothResult.Success)
+            {
+                order.KfsTrackingNumber = slothResult.KfsTrackingNumber;
+                order.SlothTransactionId = slothResult.Id.ToString();
+                order.Paid = true;
+                await _context.SaveChangesAsync();
+                Message = "Payment accepted.";
+                return RedirectToAction("Index", "Order");
+            }
+            else
+            {
+                ErrorMessage = "There was a problem processing this account.";
+                return View(model);
+            }
+
 
         }
+
 
         public ActionResult Pay(Guid id)
         {
