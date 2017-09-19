@@ -35,15 +35,13 @@ namespace Anlab.Core.Services
         //TODO: Add validation?
         public async Task<SlothResponseModel> MoveMoney(Order order)
         {
-            //var config = appSettings.Value;
-            var config = _appSettings;
             var orderDetails = order.GetOrderDetails();
-            var token = config.SlothApiKey;
-            var url = config.SlothApiUrl;
-            var creditAccount = new AccountModel(config.AnlabAccount);
+            var token = _appSettings.SlothApiKey;
+            var url = _appSettings.SlothApiUrl;
+            var creditAccount = new AccountModel(_appSettings.AnlabAccount);
             var debitAccount = new AccountModel(orderDetails.Payment.Account);
 
-            var objectCode = config.ObjectCode;
+            var objectCode = _appSettings.ObjectCode;
 
             var model = new TransactionViewModel();
             model.MerchantTrackingNumber = order.Id.ToString();
