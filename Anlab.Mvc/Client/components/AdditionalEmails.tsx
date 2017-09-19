@@ -67,6 +67,11 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
         }
     }
 
+    handleBlur = () => {
+        if (this.state.email != "")
+            this.onClick();
+    }
+
     _renderAddButton = () => {
         if (this.state.email.length > 0) {
             return (<Button label='Add Email' flat primary onClick={this.onClick} />);
@@ -83,7 +88,7 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
                 <div>
                     {this._renderEmails()}
                 </div>
-                <Input type='text' value={this.state.email} label='Email To Add' maxLength={50} onChange={this.onEmailChanged} onKeyPress={this.handleKeyPress} />
+                <Input type='text' value={this.state.email} label='Email To Add' maxLength={50} onChange={this.onEmailChanged} onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} />
                 {this._renderAddButton()}
             </div>
         );
