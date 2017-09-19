@@ -9,6 +9,7 @@ import { AdditionalInfo } from './AdditionalInfo';
 import { Project } from "./Project";
 import { AdditionalEmails } from "./AdditionalEmails";
 import { ClientId } from "./ClientId";
+import { Button } from "react-toolbox/lib/button";
 
 declare var window: any;
 declare var $: any;
@@ -198,48 +199,39 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         return (
             <div className="row">
                 <div className="col-10 whiteblock">
-
-
                     <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
 
                     <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
 
                     <div className="form_wrap">
-                        <label className="form_header">How many samples will you require?</label>
+                        <label className="form_header" id="quantity">How many samples will you require?</label>
                         <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
                     </div>
                     <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail}/>
-                    <Project project={project} handleChange={this.handleChange} />
+                    <div className="form_wrap">
+                        <label className="form_header" id="project">What do you want to name this order?</label>
+                        <Project project={project} handleChange={this.handleChange} />
+                    </div>
                     <ClientId clientId={clientId} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
 
                 </div>
-                <div className="stickyfoot shadowed" data-spy="affix" data-offset-top="200" data-offset-bottom="0">
-                  <div className="ordersum">
-                    <div><h3>Order Total: $99</h3>
-                    <a role="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                      Order Details
-                    </a></div>
+                <div className="stickyfoot shadowed" data-spy="affix" data-offset-bottom="0">
 
-                    <a href="" className="btn btn-order">Place Order</a>
-                  </div>
+                <Summary
+                    isCreate={this.state.orderId === null}
+                    canSubmit={this.state.isValid && !this.state.isSubmitting}
+                    hideError={this.state.isValid || this.state.isSubmitting}
+                    testItems={selected}
+                    quantity={quantity}
+                    payment={payment}
+                    onSubmit={this.onSubmit}
+                    status={status}
+                    processingFee={processingFee}
+                    project={this.state.project} />
+                </div>
 
-                <div className="collapse" id="collapseExample">
-                  <div className="well">
-                    <Summary
-                        isCreate={this.state.orderId === null}
-                        canSubmit={this.state.isValid && !this.state.isSubmitting}
-                        hideError={this.state.isValid || this.state.isSubmitting}
-                        testItems={selected}
-                        quantity={quantity}
-                        payment={payment}
-                        onSubmit={this.onSubmit}
-                        status={status}
-                        processingFee={processingFee} />
-                  </div>
-                </div>
-                </div>
                 <Dialog
                     actions={this.dialogActions}
                     active={this.state.isErrorActive}

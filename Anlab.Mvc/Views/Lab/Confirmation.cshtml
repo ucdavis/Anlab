@@ -5,6 +5,7 @@
     ViewData["Title"] = "Confirmation";
 }
 
+<h3>This info is outdated and will be updated from the request number</h3>
 @Html.Partial("_OrderDetails")
 
 <form asp-controller="Lab" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post">

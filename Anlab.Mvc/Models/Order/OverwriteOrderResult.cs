@@ -15,6 +15,9 @@ namespace AnlabMvc.Models.Order
         }
         public IList<TestDetails> SelectedTests { get; set; }
         public IList<String> MissingCodes { get; set; }
+        
+        public string ClientId { get; set; }
+        public int Quantity { get; set; }
 
         public bool WasError => MissingCodes.Count > 0;
     }

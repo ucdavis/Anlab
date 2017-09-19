@@ -11,7 +11,7 @@ using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-
+using AnlabMvc.Models.Order;
 
 namespace AnlabMvc.Services
 {
@@ -20,6 +20,7 @@ namespace AnlabMvc.Services
         Task<IList<TestItemPrices>> GetPrices();
         Task<TestItemPrices> GetPrice(string code);
         Task<IList<string>> GetTestCodesCompletedForOrder(string RequestNum);
+        Task<OrderUpdateFromDbModel> GetRequestDetails(string RequestNum);
     }
 
     public class LabworksService : ILabworksService
@@ -94,6 +95,10 @@ namespace AnlabMvc.Services
                 return codes as IList<string>;
             }
 
+        }
+        public async Task<OrderUpdateFromDbModel> GetRequestDetails(string RequestNum)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -180,6 +185,28 @@ namespace AnlabMvc.Services
             codes.Add("X-MG");
             codes.Add("SP-FOR");
             return await Task.FromResult(codes);
+        }
+
+        public async Task<OrderUpdateFromDbModel> GetRequestDetails(string RequestNum)
+        {
+            string clientId = "XYZ";
+            int quantity = 5;
+
+            IList<string> codes = new List<string>(5);
+            codes.Add("-SNA-PMF");
+            codes.Add("-PCL-P-IC");
+            codes.Add("X-NA");
+            codes.Add("X-MG");
+            codes.Add("SP-FOR");
+
+            var order = new OrderUpdateFromDbModel
+            {
+                ClientId = clientId,
+                Quantity = quantity,
+                TestCodes = codes
+            };
+
+            return await Task.FromResult(order);
         }
     }
 }

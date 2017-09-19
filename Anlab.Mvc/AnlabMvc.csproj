@@ -9,6 +9,10 @@
     <Description>Order and results management system for AnLab@UCDavis</Description>
     <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AspNetCore.Security.CAS" Version="1.0.0" />
     <PackageReference Include="AzureActiveDirectorySearcher" Version="1.0.0" />
