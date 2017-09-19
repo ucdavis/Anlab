@@ -41,7 +41,7 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
         if (re.test((emailtoAdd))) {
             if (this.props.addedEmails.indexOf(emailtoAdd) === -1 && emailtoAdd !== this.props.defaultEmail) {
                 this.props.onEmailAdded(emailtoAdd);
-                this.setState({ ...this.state, email: "", error: false, errorText: ""});
+                this.setState({ ...this.state, email: "", error: false, errorText: "", toggle: false});
             } else {
                 this.setState({ ...this.state, error: true, errorText: "Email already added" });
             }
