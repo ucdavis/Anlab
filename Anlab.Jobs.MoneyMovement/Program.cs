@@ -46,7 +46,6 @@ namespace Anlab.Jobs.MoneyMovement
             SlothService = Provider.GetService<ISlothService>();           
 
             Console.WriteLine("About to start Credit Cards");
-            //var result = Task.Run(() => ProcessCreditCardOrders()).Result; //Wasn't able to debug this unless it returned a result...
             var result = Task.Run(() => SlothService.ProcessCreditCards(Configuration)).Result; //Wasn't able to debug this unless it returned a result...
             if (!result)
             {
