@@ -17,8 +17,6 @@ namespace Anlab.Core.Services
     {
         Task<SlothResponseModel> MoveMoney(Order order);
         Task<bool> ProcessCreditCards(FinancialSettings financialSettings);
-
-        //TODO: Move the CreditCard one here.
     }
 
     public class SlothService : ISlothService
