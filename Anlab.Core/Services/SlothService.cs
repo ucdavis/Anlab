@@ -17,17 +17,11 @@ namespace Anlab.Core.Services
     {
         Task<SlothResponseModel> MoveMoney(IOptions<FinancialSettings> appSettings, Order order);
 
-        void Test(IOptions<FinancialSettings> appSettings);
         //TODO: Move the CreditCard one here.
     }
 
     public class SlothService : ISlothService
     {
-
-        public void Test(IOptions<FinancialSettings> appSettings)
-        {
-            var xxx = appSettings.Value.ObjectCode;
-        }
         
         //TODO: Add validation?
         public async Task<SlothResponseModel> MoveMoney(IOptions<FinancialSettings> appSettings, Order order)
