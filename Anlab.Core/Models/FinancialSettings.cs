@@ -8,7 +8,8 @@ namespace Anlab.Core.Models
     {
         public string SlothApiUrl { get; set; }
         public string AnlabAccount { get; set; }
-        public string ObjectCode { get; set; }
+        public string CreditObjectCode { get; set; }
+        public string DebitObjectCode { get; set; }
         public string SlothApiKey { get; set; }
     }
 }
