@@ -16,5 +16,7 @@ namespace AnlabMvc.Models.Order
 
         public decimal InternalProcessingFee { get; set; }
         public decimal ExternalProcessingFee { get; set; }
+
+        public string DefaultEmail { get; set; }
     }
 }

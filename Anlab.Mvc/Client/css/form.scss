@@ -107,3 +107,23 @@ table.table {
     white-space:pre-wrap;
     font-size: 14px;
 }
+.emailInput {
+    line-height: 15px;
+    font-size: 14px;
+    border-width: 0;
+    background-color: #eeeeee;
+    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+}
+.emailIconStyle {
+    cursor: pointer;
+    padding-left: 4px;
+}
+.emailAddIconStyle{
+    cursor: pointer;
+}
+.emailError {
+    color: #de3226;
+    font-size: 12px;
+    line-height: 20px;
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
+}

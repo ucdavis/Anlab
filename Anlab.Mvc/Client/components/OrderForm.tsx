@@ -32,6 +32,7 @@ interface IOrderState {
     clientId: string;
     internalProcessingFee: number;
     externalProcessingFee: number;
+    defaultEmail: string;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -55,7 +56,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             status: '',
             clientId: '',
             internalProcessingFee: window.App.orderData.internalProcessingFee,
-            externalProcessingFee: window.App.orderData.externalProcessingFee
+            externalProcessingFee: window.App.orderData.externalProcessingFee,
+            defaultEmail: window.App.defaultEmail
         };
 
         if (window.App.defaultAccount) {
@@ -81,6 +83,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.clientId = orderInfo.ClientId;
             initialState.internalProcessingFee = window.App.orderData.internalProcessingFee;
             initialState.externalProcessingFee = window.App.orderData.externalProcessingFee;
+            initialState.defaultEmail = window.App.defaultEmail;
 
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
@@ -190,7 +193,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     }
 
     render() {
-        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, status, clientId, internalProcessingFee, externalProcessingFee } = this.state;
+        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, status, clientId, internalProcessingFee, externalProcessingFee, defaultEmail } = this.state;
 
         const { filtered, selected } = this.getTests();
 
@@ -207,7 +210,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                         <label className="form_header" id="quantity">How many samples will you require?</label>
                         <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
                     </div>
-                    <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail}/>
+                    <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail} defaultEmail={this.state.defaultEmail} />
                     <div className="form_wrap">
                         <label className="form_header" id="project">What do you want to name this order?</label>
                         <Project project={project} handleChange={this.handleChange} />
