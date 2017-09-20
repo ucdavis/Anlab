@@ -13,8 +13,7 @@ namespace Anlab.Jobs.MoneyMovement
             Transfers = new List<TransferViewModel>(2);
         }
         public string MerchantTrackingNumber { get; set; }
-        public string ProcessorTrackingNumber { get; set; }
-        
+
         public DateTime TransactionDate { get; set; }
         
         public IList<TransferViewModel> Transfers { get; set; }
