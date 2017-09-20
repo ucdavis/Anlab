@@ -55,9 +55,8 @@ namespace Anlab.Core.Domain
         public string SlothTransactionId { get; set; } //TODO: Change to Guid? ?
 
         public bool Paid { get; set; } = false;
-
-        public bool IsInternalClient { get; set; } = false;
-        public bool IsUcDavisAccount { get; set; } = false;
+        
+        public string PaymentType { get; set; }
 
         public OrderDetails GetOrderDetails()
         {

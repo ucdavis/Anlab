@@ -191,14 +191,17 @@ namespace AnlabMvc.Services
             orderToUpdate.SaveDetails(orderDetails);
 
             orderToUpdate.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails);
-            orderToUpdate.IsInternalClient = orderDetails.Payment.IsInternalClient;
-            orderToUpdate.IsUcDavisAccount = false;
-            if (orderToUpdate.IsInternalClient)
+            orderToUpdate.PaymentType = PaymentTypeCodes.CreditCard;
+            if (orderDetails.Payment.IsInternalClient)
             {
                 var account = new AccountModel(orderDetails.Payment.Account);
                 if (account.Chart == "3" || account.Chart == "L")
                 {
-                    orderToUpdate.IsUcDavisAccount = true;
+                    orderToUpdate.PaymentType = PaymentTypeCodes.UcDavisAccount;
+                }
+                else
+                {
+                    orderToUpdate.PaymentType = PaymentTypeCodes.UcOtherAccount;
                 }
             }
         }

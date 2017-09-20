@@ -61,15 +61,9 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index", "Order");
             }
 
-            if (!order.IsInternalClient)
+            if (order.PaymentType != PaymentTypeCodes.UcDavisAccount)
             {
-                ErrorMessage = "This order is set for Credit Card Payment.";
-                return RedirectToAction("Index", "Order");
-            }
-
-            if (!order.IsUcDavisAccount)
-            {
-                ErrorMessage = "The chart of this account indicates it isn't a UC Davis account. Unable to pay this way.";
+                ErrorMessage = "This order is not set for an internal UC Davis account";
                 return RedirectToAction("Index", "Order");
             }
 
@@ -100,12 +94,12 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index", "Order");
             }
 
-            if (!order.IsInternalClient)
+            if (order.PaymentType != PaymentTypeCodes.UcDavisAccount)
             {
-                ErrorMessage = "This order is set for Credit Card Payment.";
+                ErrorMessage = "This order is not set for an internal UC Davis account";
                 return RedirectToAction("Index", "Order");
             }
-            
+
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
@@ -122,12 +116,12 @@ namespace AnlabMvc.Controllers
 
                 var orderDetails = order.GetOrderDetails();
                 orderDetails.Payment.Account = overrideAccount;
-                order.IsUcDavisAccount = true;
+                order.PaymentType = PaymentTypeCodes.UcDavisAccount;
                 order.SaveDetails(orderDetails);
             }
             else
             {
-                if (!order.IsUcDavisAccount)
+                if (order.PaymentType != PaymentTypeCodes.UcDavisAccount)
                 {
                     ErrorMessage =
                         "The chart of this account indicates it isn't a UC Davis account. Unable to pay this way.";

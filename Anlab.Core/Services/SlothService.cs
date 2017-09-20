@@ -80,7 +80,7 @@ namespace Anlab.Core.Services
         public async Task<bool> ProcessCreditCards(FinancialSettings financialSettings) //Have to pass here, can't get DI working for the job
         {
             var orders = _dbContext.Orders.Include(i => i.ApprovedPayment).Where(a =>
-                !a.IsInternalClient && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
+                a.PaymentType == PaymentTypeCodes.CreditCard && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
             if (orders.Count == 0)
             {
                 return false;

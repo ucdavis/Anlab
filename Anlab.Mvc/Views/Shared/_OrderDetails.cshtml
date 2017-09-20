@@ -128,11 +128,11 @@
 {
     if (Model.Order.Status == OrderStatusCodes.Finalized && !Model.Order.Paid)
     {
-        if (Model.Order.IsUcDavisAccount)
+        if (Model.Order.PaymentType == PaymentTypeCodes.UcDavisAccount)
         {
             <a asp-controller="Payment" asp-action="PayInternal" asp-route-id="@Model.Order.ShareIdentifier" class="btn btn-group-lg"><i class="fa fa-money"> Pay</i> </a>
         }
-        if (!Model.Order.IsInternalClient)
+        if (Model.Order.PaymentType == PaymentTypeCodes.CreditCard)
         {
             <a asp-controller="Payment" asp-action="Pay" asp-route-id="@Model.Order.ShareIdentifier" class="btn btn-group-lg"><i class="fa fa-credit-card-alt"> Pay</i> </a>
         }
