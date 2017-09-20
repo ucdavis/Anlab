@@ -15,8 +15,9 @@ interface ISummaryProps {
     status: string;
     processingFee: number;
     project: string;
-    focusProjectInput: Function;
-    focusQuantityInput: Function;
+    focusInput: Function;
+    quantityRef: any;
+    projectRef: any;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
@@ -61,11 +62,11 @@ export class Summary extends React.Component<ISummaryProps, any> {
         {
             if (this.props.quantity < 1)
             {
-                this.props.focusQuantityInput();
+                this.props.focusInput(this.props.quantityRef);
             }
             else if (!this.props.project)
             {
-                this.props.focusProjectInput();
+                this.props.focusInput(this.props.projectRef);
             }
         }
     }

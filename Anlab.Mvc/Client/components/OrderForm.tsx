@@ -139,12 +139,11 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         }
     }
 
-    focusProjectInput = () => {
-        ReactDOM.findDOMNode(this.projectRef).querySelector('input').focus();
-    }
-
-    focusQuantityInput = () => {
-        ReactDOM.findDOMNode(this.quantityRef).querySelector('input').focus();
+    focusInput = () => {
+        var node = ReactDOM.findDOMNode(this.quantityRef).querySelector('input');
+        node.focus();
+        node.blur();
+        node.focus();
     }
 
     handleChange = (name, value) => {
@@ -246,8 +245,9 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     status={status}
                     processingFee={processingFee}
                     project={this.state.project}
-                    focusProjectInput={this.focusProjectInput}
-                    focusQuantityInput={this.focusQuantityInput} />
+                    focusInput={this.focusInput}
+                    quantityRef={this.quantityRef}
+                    projectRef={this.projectRef} />
                 </div>
 
                 <Dialog
