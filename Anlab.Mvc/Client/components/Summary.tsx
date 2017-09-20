@@ -3,6 +3,7 @@ import { ITestItem } from './TestList';
 import { IPayment } from './PaymentSelection';
 import NumberFormat from 'react-number-format';
 import {Button} from 'react-toolbox/lib/button';
+import { Input } from "react-toolbox/lib/input";
 
 interface ISummaryProps {
     testItems: Array<ITestItem>;
@@ -15,6 +16,8 @@ interface ISummaryProps {
     status: string;
     processingFee: number;
     project: string;
+    focusInput: Function;
+    projectRef: Input;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
@@ -53,6 +56,20 @@ export class Summary extends React.Component<ISummaryProps, any> {
         return tests;
     }
 
+    handleErrors = () => {
+        if (!this.props.hideError)
+        {
+            if (this.props.quantity < 1)
+            {
+
+            }
+            else if (!this.props.project)
+            {
+                this.props.focusInput(this.props.projectRef);
+            }
+        }
+    }
+
     render() {
         if (this.props.testItems.length === 0) {
             return null;
@@ -81,8 +98,8 @@ export class Summary extends React.Component<ISummaryProps, any> {
                             Order Details
                         </a>
                     </div>
-                    <div>
-                        {errorLink}
+                    <div onClick={this.handleErrors}>
+                        Fix Errors<i className="fa fa-exclamation" style={errorIconStyle} ></i>
                         <Button className="btn btn-order" disabled={!this.props.canSubmit} onClick={this.props.onSubmit} >{saveText}</Button>
                     </div>
                 </div>

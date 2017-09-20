@@ -10,6 +10,8 @@ import { Project } from "./Project";
 import { AdditionalEmails } from "./AdditionalEmails";
 import { ClientId } from "./ClientId";
 import { Button } from "react-toolbox/lib/button";
+import * as ReactDOM from "react-dom";
+import { Input } from "react-toolbox/lib/input";
 
 declare var window: any;
 declare var $: any;
@@ -33,6 +35,8 @@ interface IOrderState {
     internalProcessingFee: number;
     externalProcessingFee: number;
     defaultEmail: string;
+
+    projectRef: Input;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -57,7 +61,9 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             clientId: '',
             internalProcessingFee: window.App.orderData.internalProcessingFee,
             externalProcessingFee: window.App.orderData.externalProcessingFee,
-            defaultEmail: window.App.defaultEmail
+            defaultEmail: window.App.defaultEmail,
+
+            projectRef: null
         };
 
         if (window.App.defaultAccount) {
@@ -84,6 +90,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.internalProcessingFee = window.App.orderData.internalProcessingFee;
             initialState.externalProcessingFee = window.App.orderData.externalProcessingFee;
             initialState.defaultEmail = window.App.defaultEmail;
+
+            initialState.project = null;
 
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
@@ -133,6 +141,13 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         }
     }
 
+    focusInput = () => {
+        ReactDOM.findDOMNode(this.state.projectRef).querySelector('input').focus();
+    }
+
+    changeProjectRef = (component: Input) => {
+        this.setState({ ...this.state, projectRef: component });
+    }
 
     handleChange = (name, value) => {
         this.setState({ ...this.state, [name]: value }, this.validate);
@@ -213,7 +228,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail} defaultEmail={this.state.defaultEmail} />
                     <div className="form_wrap">
                         <label className="form_header" id="project">What do you want to name this order?</label>
-                        <Project project={project} handleChange={this.handleChange} />
+                        <Project project={project} handleChange={this.handleChange} changeRef={this.changeProjectRef} />
                     </div>
                     <ClientId clientId={clientId} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
@@ -232,7 +247,9 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     onSubmit={this.onSubmit}
                     status={status}
                     processingFee={processingFee}
-                    project={this.state.project} />
+                    project={this.state.project}
+                    focusInput={this.focusInput}
+                    projectRef={this.state.projectRef} />
                 </div>
 
                 <Dialog
