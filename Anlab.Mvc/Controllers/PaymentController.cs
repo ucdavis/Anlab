@@ -67,9 +67,9 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index", "Order");
             }
 
-            var model = new OrderReviewModel();
-            model.Order = order;
-            model.OrderDetails = order.GetOrderDetails();
+            var model = new OrderPaymentModel();
+            model.OrderReviewModel.Order = order;
+            model.OrderReviewModel.OrderDetails = order.GetOrderDetails();
 
             return View(model);
         }

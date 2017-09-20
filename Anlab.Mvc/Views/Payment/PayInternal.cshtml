@@ -1,4 +1,4 @@
-﻿@model AnlabMvc.Models.Order.OrderReviewModel
+﻿@model AnlabMvc.Models.Order.OrderPaymentModel
 
 @{
     ViewData["Title"] = "Pay with UC Davis Account";
@@ -7,15 +7,15 @@
 <h2>Details</h2>
 
 
-@Html.Partial("_OrderDetails")
+@Html.Partial("_OrderDetails", Model.OrderReviewModel)
 
 
-<form asp-controller="Payment" asp-action="PayInternal" asp-route-id="@Model.Order.ShareIdentifier" method="post">
+<form asp-controller="Payment" asp-action="PayInternal" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier" method="post">
     <div class="form-group">
-        <strong>Override Existing Account:</strong><span> (@Model.OrderDetails.Payment.Account)</span>
+        <strong>Override Existing Account:</strong><span> (@Model.OrderReviewModel.OrderDetails.Payment.Account)</span>
         <span><input type="text" class="form-control" name="overrideAccount" /></span>
     </div>
-    <button type="submit" class="btn btn-primary"><i class="fa fa-money" aria-hidden="true"> @(String.Format("{0:C}", Model.OrderDetails.GrandTotal)) Pay Now</i></button> 
+    <button type="submit" class="btn btn-primary"><i class="fa fa-money" aria-hidden="true"> @(String.Format("{0:C}", Model.OrderReviewModel.OrderDetails.GrandTotal)) Pay Now</i></button> 
 </form>
 
 
