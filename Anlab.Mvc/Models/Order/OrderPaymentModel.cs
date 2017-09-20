@@ -15,7 +15,7 @@ namespace AnlabMvc.Models.Order
         }
         public OrderReviewModel OrderReviewModel { get; set; }
         
-        [RegularExpression(@"([A-Z0-9])-([A-Z0-9]{7})\/?([A-Z0-9]{5})?")]
+        [RegularExpression(@"(\w)-(\w{7})\/?(\w{5})?", ErrorMessage = "The account must be in the format X-XXXXXXX or X-XXXXXXX/XXXXX")]
         public string OverrideAccount { get; set; }
     }
 }
