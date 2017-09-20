@@ -63,7 +63,7 @@ namespace AnlabMvc.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            var order = await _context.Orders.SingleOrDefaultAsync(o=>o.Id == id);
+            var order = await _context.Orders.Include(i=>i.Creator).SingleOrDefaultAsync(o=>o.Id == id);
 
             if (order == null){
                 return NotFound();
@@ -87,7 +87,8 @@ namespace AnlabMvc.Controllers
                 TestItems = joined.ToArray(),
                 Order = order,
                 InternalProcessingFee = Math.Ceiling(proc.InternalCost),
-                ExternalProcessingFee = Math.Ceiling(proc.ExternalCost)
+                ExternalProcessingFee = Math.Ceiling(proc.ExternalCost),
+                DefaultEmail = order.Creator.Email
             };
 
             return View(model); 
