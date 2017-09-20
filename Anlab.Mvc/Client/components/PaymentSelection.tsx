@@ -14,10 +14,19 @@ interface IPaymentProps {
 
 
 export class PaymentSelection extends React.Component<IPaymentProps, any> {
+    constructor(props) {
+        super(props);
+        this.state = {
+            error: ""
+        };
+    }
     _renderUcAccount = () => {
         if (this.props.payment.clientType === 'uc') {
+            if (this.props.payment.account === '') {
+                this.setState({ ...this.state, error: "Account is required" });
+            }
             return (
-                <Input type="text" label="UC Account" value={this.props.payment.account} maxLength={10} onChange={this
+                <Input type="text" label="UC Account" error={this.state.error} value={this.props.payment.account} maxLength={15} onChange={this
                     .handleAccountChange}/>
             );
         }
@@ -28,6 +37,15 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
     }
 
     handleAccountChange = (account: string) => {
+        if (this.props.payment.clientType !== 'uc') {
+            this.setState({ ...this.state, error: "" });
+        }
+        const re = /^(\w)-(\w{7})\/?(\w{5})?$/;
+        if (!re.test((account))) {
+            this.setState({ ...this.state, error: "The account must be in the format X-XXXXXXX or X-XXXXXXX/XXXXX" });
+        } else {
+            this.setState({ ...this.state, error: "" });
+        };
         var updatedPaymentInfo = { ...this.props.payment, account };
         this.props.onPaymentSelected(updatedPaymentInfo);
     }
