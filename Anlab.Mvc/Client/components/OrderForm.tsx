@@ -139,8 +139,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         }
     }
 
-    focusInput = () => {
-        var node = ReactDOM.findDOMNode(this.quantityRef).querySelector('input');
+    focusInput = (component: any) => {
+        var node = ReactDOM.findDOMNode(component).querySelector('input');
         node.focus();
         node.blur();
         node.focus();
