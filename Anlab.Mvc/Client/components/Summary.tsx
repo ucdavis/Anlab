@@ -83,7 +83,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
                     </div>
                     <div>
                         {errorLink}
-                        <Button className="btn btn-order" disabled={!this.props.canSubmit} onClick={this.props.onSubmit} > Place Order</Button>
+                        <Button className="btn btn-order" disabled={!this.props.canSubmit} onClick={this.props.onSubmit} >{saveText}</Button>
                     </div>
                 </div>
 
