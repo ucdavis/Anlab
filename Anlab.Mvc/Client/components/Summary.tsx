@@ -16,11 +16,12 @@ interface ISummaryProps {
     status: string;
     processingFee: number;
     project: string;
-    focusInput: Function;
-    projectRef: Input;
+    focusProjectInput: Function;
+    focusQuantityInput: Function;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
+
     totalCost = () => {
 
         const total = this.props.testItems.reduce((prev, item) => {
@@ -61,11 +62,11 @@ export class Summary extends React.Component<ISummaryProps, any> {
         {
             if (this.props.quantity < 1)
             {
-
+                this.props.focusQuantityInput();
             }
             else if (!this.props.project)
             {
-                this.props.focusInput(this.props.projectRef);
+                this.props.focusProjectInput();
             }
         }
     }
@@ -77,14 +78,6 @@ export class Summary extends React.Component<ISummaryProps, any> {
         let errorIconStyle = {
             color: 'red',
             padding: '0 10px'
-        }
-        let errorLink = null;
-        if (!this.props.hideError)
-        {
-            if (this.props.quantity < 1)
-                errorLink = <a href="#quantity">Fix Errors<i className="fa fa-exclamation" style={errorIconStyle} ></i></a>
-            else if(!this.props.project)
-                errorLink = <a href="#project">Fix Errors<i className="fa fa-exclamation" style={errorIconStyle} ></i></a>
         }
         let saveText = this.props.isCreate ? "Place Order" : "Update Order";
         let infoText = this.props.isCreate ? "Go ahead and place your order" : "Go ahead and update your order";        
@@ -98,8 +91,8 @@ export class Summary extends React.Component<ISummaryProps, any> {
                             Order Details
                         </a>
                     </div>
-                    <div onClick={this.handleErrors}>
-                        Fix Errors<i className="fa fa-exclamation" style={errorIconStyle} ></i>
+                    <div>
+                        <a onClick={this.handleErrors}>Fix Errors<i className="fa fa-exclamation" style={errorIconStyle} ></i></a>
                         <Button className="btn btn-order" disabled={!this.props.canSubmit} onClick={this.props.onSubmit} >{saveText}</Button>
                     </div>
                 </div>

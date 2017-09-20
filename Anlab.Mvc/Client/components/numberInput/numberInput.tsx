@@ -10,6 +10,7 @@ interface INumberInputProps {
     max?: number;
     integer?: boolean;
     required?: boolean;
+    numberRef?: any;
 }
 
 interface INumberInputState {
@@ -89,6 +90,7 @@ export class NumberInput extends React.Component<INumberInputProps, INumberInput
     render() {
         return (
             <Input
+                ref={this.props.numberRef}
                 type='text'
                 label={this.props.label}
                 name={this.props.name}

@@ -1,11 +1,10 @@
 ﻿import * as React from 'react';
 import Input from 'react-toolbox/lib/input';
-import * as ReactDOM from "react-dom";
 
 interface IProjectProps {
     project: string;
     handleChange: Function;
-    changeRef: Function;
+    projectRef: any;
 }
 
 interface IProjectInputState {
@@ -14,9 +13,6 @@ interface IProjectInputState {
 }
 
 export class Project extends React.Component<IProjectProps, IProjectInputState> {
-
-    private projectInput: Input;
-
     constructor(props) {
         super(props);
 
@@ -34,10 +30,6 @@ export class Project extends React.Component<IProjectProps, IProjectInputState> 
         this.setState({ error } as IProjectInputState);
     }
 
-    componentDidMount() {
-        this.props.changeRef(this.projectInput);
-    }
-
     onChange = (v: string) => {
         this.setState({ ...this.state, internalValue: v });
         this.validate(v);
@@ -51,7 +43,7 @@ export class Project extends React.Component<IProjectProps, IProjectInputState> 
     render() {
         return (
             <div>
-                <Input ref={(textInput) => { this.projectInput = textInput }} type='text' onBlur={this.onBlur} error={this.state.error} required={true} maxLength={256} value={this.state.internalValue} onChange={this.onChange} label='Project Id' />
+                <Input ref={this.props.projectRef} type='text' onBlur={this.onBlur} error={this.state.error} required={true} maxLength={256} value={this.state.internalValue} onChange={this.onChange} label='Project Id' />
             </div>
     );
 }
