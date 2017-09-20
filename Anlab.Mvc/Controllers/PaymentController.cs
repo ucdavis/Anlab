@@ -6,13 +6,17 @@ using AnlabMvc.Models.Configuration;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
+using Anlab.Core.Services;
+using Anlab.Jobs.MoneyMovement;
 using AnlabMvc.Models.CyberSource;
 using AnlabMvc.Models.Order;
+using AnlabMvc.Models.Roles;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Serilog;
 using Newtonsoft.Json;
@@ -24,17 +28,126 @@ namespace AnlabMvc.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IOrderMessageService _orderMessageService;
         private readonly IDataSigningService _dataSigningService;
+        private readonly ISlothService _slothService;
         private readonly AppSettings _appSettings;
         private readonly CyberSourceSettings _cyberSourceSettings;
 
-        public PaymentController(ApplicationDbContext context, IOrderMessageService orderMessageService, IDataSigningService dataSigningService, IOptions<CyberSourceSettings> cyberSourceSettings, IOptions<AppSettings> appSettings)
+        public PaymentController(ApplicationDbContext context, IOrderMessageService orderMessageService, IDataSigningService dataSigningService, IOptions<CyberSourceSettings> cyberSourceSettings, IOptions<AppSettings> appSettings, ISlothService slothService)
         {
             _context = context;
             _orderMessageService = orderMessageService;
             _dataSigningService = dataSigningService;
+            _slothService = slothService;
             _appSettings = appSettings.Value;
             _cyberSourceSettings = cyberSourceSettings.Value;
         }
+
+        public ActionResult PayInternal(Guid id)
+        {
+            var order = _context.Orders.Include(i => i.Creator).SingleOrDefault(a => a.ShareIdentifier == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+            if (order.Status != OrderStatusCodes.Finalized)
+            {
+                ErrorMessage = "You can only pay once the order has been Finalized.";
+                return RedirectToAction("Index", "Order");
+            }
+            if (order.Paid)
+            {
+                ErrorMessage = "This order has already been paid.";
+                return RedirectToAction("Index", "Order");
+            }
+
+            if (order.PaymentType != PaymentTypeCodes.UcDavisAccount)
+            {
+                ErrorMessage = "This order is not set for an internal UC Davis account";
+                return RedirectToAction("Index", "Order");
+            }
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> PayInternal(Guid id, string overrideAccount)
+        {
+            var order = _context.Orders.Include(i => i.Creator).SingleOrDefault(a => a.ShareIdentifier == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+            if (order.Status != OrderStatusCodes.Finalized)
+            {
+                ErrorMessage = "You can only pay once the order has been Finalized.";
+                return RedirectToAction("Index", "Order");
+            }
+            if (order.Paid)
+            {
+                ErrorMessage = "This order has already been paid.";
+                return RedirectToAction("Index", "Order");
+            }
+
+            if (order.PaymentType != PaymentTypeCodes.UcDavisAccount)
+            {
+                ErrorMessage = "This order is not set for an internal UC Davis account";
+                return RedirectToAction("Index", "Order");
+            }
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+
+            if (!string.IsNullOrWhiteSpace(overrideAccount))
+            {
+                var account = new AccountModel(overrideAccount); //TODO: Move validation on account.
+                if (account.Chart != "3" && account.Chart != "L")
+                {
+                    ErrorMessage =
+                        "The chart of this new account indicates it isn't a UC Davis account. Unable to pay this way.";
+                    return View(model);
+                }
+
+                var orderDetails = order.GetOrderDetails();
+                orderDetails.Payment.Account = overrideAccount;
+                order.PaymentType = PaymentTypeCodes.UcDavisAccount;
+                order.SaveDetails(orderDetails);
+            }
+            else
+            {
+                if (order.PaymentType != PaymentTypeCodes.UcDavisAccount)
+                {
+                    ErrorMessage =
+                        "The chart of this account indicates it isn't a UC Davis account. Unable to pay this way.";
+                    return RedirectToAction("Index", "Order");
+                }
+            }
+
+            var slothResult = await _slothService.MoveMoney(order);
+            if (slothResult.Success)
+            {
+                order.KfsTrackingNumber = slothResult.KfsTrackingNumber;
+                order.SlothTransactionId = slothResult.Id.ToString();
+                order.Paid = true;
+                await _context.SaveChangesAsync();
+                Message = "Payment accepted.";
+                return RedirectToAction("Index", "Order");
+            }
+            else
+            {
+                ErrorMessage = "There was a problem processing this account.";
+                return View(model);
+            }
+
+
+        }
+
 
         public ActionResult Pay(Guid id)
         {
@@ -45,9 +158,14 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
 
-            if (order.Status != OrderStatusCodes.Accepted)
+            if (order.Status != OrderStatusCodes.Finalized)
             {
-                ErrorMessage = "You cannot Pay until the Order is Accepted."; 
+                ErrorMessage = "You cannot Pay until the Order is Finalized."; 
+                return RedirectToAction("Index", "Order");
+            }
+            if (order.Paid)
+            {
+                Message = "Order has already been paid.";
                 return RedirectToAction("Index", "Order");
             }
 
@@ -90,12 +208,8 @@ namespace AnlabMvc.Controllers
                 ErrorMessage = "Order for payment not found. Please contact technical support.";
                 return NotFound(response.Req_Reference_Number);
             }
-            if (order.CreatorId != CurrentUserId)
-            {
-                ErrorMessage = "You don't have access to this order.";
-                return NotFound(response.Req_Reference_Number);
-            }
-
+            //Note, don't check who has access as anyone may pay.
+            
             var responseValid = CheckResponse(response);
             if (!responseValid.IsValid)
             {

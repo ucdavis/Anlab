@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
+using Anlab.Core.Models;
 using Anlab.Core.Services;
 using AnlabMvc.Models.Configuration;
 using AnlabMvc.Services;
@@ -60,6 +61,7 @@ namespace AnlabMvc
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<ConnectionSettings>(Configuration.GetSection("ConnectionSettings"));
             services.Configure<CyberSourceSettings>(Configuration.GetSection("CyberSourceSettings"));
+            services.Configure<FinancialSettings>(Configuration.GetSection("Financial"));
 
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -108,6 +110,7 @@ namespace AnlabMvc
             services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<ViewRenderService>();
             services.AddTransient<IMailService, MailService>();
+            services.AddTransient<ISlothService, SlothService>();
             services.AddTransient<IOrderMessageService, OrderMessageService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<ILabworksService, FakeLabworksService>(); //TODO: Replace with non fake one.
