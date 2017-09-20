@@ -31,7 +31,7 @@ module.exports = (env) => {
         },
         module: {
             rules: [
-                { test: /\.(js|jsx|ts|tsx)$/, include: /Client/, exclude: /node_modules/, use: 'babel-loader' },
+                { test: /\.(js|jsx|ts)$/, include: /Client/, exclude: /node_modules/, use: 'babel-loader' },
                 { test: /\.tsx?$/, include: /Client/, exclude: /node_modules/, use: 'awesome-typescript-loader?silent=true' },
                 { test: /\.css$/, use: isDevBuild ? ['style-loader', cssLoader, 'postcss-loader'] : ExtractTextPlugin.extract({ use: cssLoader }) },
                 { test: /\.scss$/, use: isDevBuild ? ['style-loader', 'css-loader', 'sass-loader'] : ExtractTextPlugin.extract({ use: ['css-loader', 'sass-loader'] }) },
