@@ -1,6 +1,5 @@
 ﻿import * as React from 'react';
 import { NumberInput } from './numberInput/numberInput';
-import { Input } from "react-toolbox/lib/input";
 
 interface IQuantityProps {
     quantity?: number;
@@ -9,10 +8,6 @@ interface IQuantityProps {
 }
 
 export class Quantity extends React.Component<IQuantityProps, any> {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <NumberInput

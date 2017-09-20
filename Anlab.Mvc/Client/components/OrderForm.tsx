@@ -63,7 +63,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             clientId: '',
             internalProcessingFee: window.App.orderData.internalProcessingFee,
             externalProcessingFee: window.App.orderData.externalProcessingFee,
-            defaultEmail: window.App.defaultEmail,
+            defaultEmail: window.App.defaultEmail
         };
 
         if (window.App.defaultAccount) {

@@ -3,7 +3,6 @@ import { ITestItem } from './TestList';
 import { IPayment } from './PaymentSelection';
 import NumberFormat from 'react-number-format';
 import {Button} from 'react-toolbox/lib/button';
-import { Input } from "react-toolbox/lib/input";
 
 interface ISummaryProps {
     testItems: Array<ITestItem>;
@@ -92,7 +91,8 @@ export class Summary extends React.Component<ISummaryProps, any> {
                         </a>
                     </div>
                     <div>
-                        <a onClick={this.handleErrors}>Fix Errors<i className="fa fa-exclamation" style={errorIconStyle} ></i></a>
+                        {!this.props.hideError &&
+                            <a onClick={this.handleErrors}>Fix Errors<i className="fa fa-exclamation" style={errorIconStyle} ></i></a>}
                         <Button className="btn btn-order" disabled={!this.props.canSubmit} onClick={this.props.onSubmit} >{saveText}</Button>
                     </div>
                 </div>
