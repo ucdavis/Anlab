@@ -42,7 +42,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         const initialState = {
             orderId: null,
             additionalInfo: '',
-            payment: { clientType: 'uc', account: '' },
+            payment: { clientType: 'C', account: '' },
             quantity: null,
             sampleType: 'Soil',
             testItems: window.App.orderData.testItems,
@@ -91,7 +91,15 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.state = { ...initialState };
     }
     validate = () => {
-        const valid = this.state.quantity > 0 && this.state.quantity <= 100 && !!this.state.project.trim();
+        let valid = this.state.quantity > 0 && this.state.quantity <= 100 && !!this.state.project.trim();
+        if (valid) {
+            if (this.state.payment.clientType === 'uc') {
+                const re = /^(\w)-(\w{7})\/?(\w{5})?$/;
+                if (!re.test((this.state.payment.account))) {
+                    valid = false;
+                };
+            }
+        }
         this.setState({ ...this.state, isValid: valid });
     }
     onPaymentSelected = (payment: any) => {
