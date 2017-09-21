@@ -9,6 +9,7 @@ export interface IPayment {
 interface IPaymentProps {
     payment: IPayment;
     onPaymentSelected: Function;
+    accountRef: any;
 }
 
 
@@ -17,7 +18,7 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
     _renderUcAccount = () => {
         if (this.props.payment.clientType === 'uc') {
             return (
-                <Input type="text" label="UC Account" value={this.props.payment.account} maxLength={10} onChange={this
+                <Input ref={this.props.accountRef} required={true} type="text" label="UC Account" value={this.props.payment.account} maxLength={10} onChange={this
                     .handleAccountChange}/>
             );
         }

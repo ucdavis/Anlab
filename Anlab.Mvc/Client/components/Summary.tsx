@@ -18,6 +18,7 @@ interface ISummaryProps {
     focusInput: Function;
     quantityRef: any;
     projectRef: any;
+    accountRef: any;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
@@ -60,7 +61,11 @@ export class Summary extends React.Component<ISummaryProps, any> {
     handleErrors = () => {
         if (!this.props.hideError)
         {
-            if (this.props.quantity < 1)
+            if (this.props.payment.clientType === 'uc' && this.props.payment.account === '')
+            {
+                this.props.focusInput(this.props.accountRef);
+            }
+            else if (this.props.quantity < 1)
             {
                 this.props.focusInput(this.props.quantityRef);
             }
