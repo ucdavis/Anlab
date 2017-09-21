@@ -76,7 +76,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                         </td>
                         <td>{item.analysis}</td>
                         <td>{item.id}</td>
-                        <td><NumberFormat value={priceDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+                        <td><NumberFormat value={priceDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></td>
                         <td style={{ width: '5%' }}>
                             {item.notes ? <i className="analysisTooltip fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-html="true" title={tooltipContent}></i> : ""}
                         </td>
