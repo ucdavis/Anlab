@@ -23,7 +23,8 @@ interface ISummaryProps {
 export class Summary extends React.Component<ISummaryProps, any> {
 
     totalCost = () => {
-
+        if (this.props.quantity < 1)
+            return 0;
         const total = this.props.testItems.reduce((prev, item) => {
             // total for current item
             const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
