@@ -113,11 +113,17 @@ namespace Anlab.Core.Services
                     {
                         var content = await response.Content.ReadAsStringAsync();
                         var slothResponse = JsonConvert.DeserializeObject<SlothResponseModel>(content);
-                        if (slothResponse.Status == "???")
+                        if (slothResponse.Status == "Completed")
                         {
                             updatedCount++;
                             order.Status = OrderStatusCodes.Complete;
-                        }                     
+                        }
+                        if (slothResponse.Status == "Cancelled")
+                        {
+                            order.Paid = false;
+                            Console.WriteLine($"Order {order.Id} was cancelled. Setting back to unpaid");
+                            //TODO: Write to the notes field? Trigger off an email?
+                        }
                         
                     }
                 }
