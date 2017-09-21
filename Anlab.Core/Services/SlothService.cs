@@ -17,6 +17,8 @@ namespace Anlab.Core.Services
     {
         Task<SlothResponseModel> MoveMoney(Order order);
         Task<bool> ProcessCreditCards(FinancialSettings financialSettings);
+
+        Task<bool> MoneyMovedCheck(FinancialSettings financialSettings);
     }
 
     public class SlothService : ISlothService
@@ -29,6 +31,8 @@ namespace Anlab.Core.Services
             _dbContext = dbContext;
             _appSettings = appSettings.Value;
         }
+
+
 
         //TODO: Add validation?
         public async Task<SlothResponseModel> MoveMoney(Order order)
@@ -77,6 +81,53 @@ namespace Anlab.Core.Services
             return new SlothResponseModel { Success = false };
         }
 
+        public async Task<bool> MoneyMovedCheck(FinancialSettings financialSettings)
+        {
+            Console.WriteLine("Beginning UCD money movement check");
+            var orders = _dbContext.Orders.Where(a =>
+                a.PaymentType == PaymentTypeCodes.UcDavisAccount && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
+            if (orders.Count == 0)
+            {
+                Console.WriteLine("No orders to process");
+                return false;
+            }
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri($"{financialSettings.SlothApiUrl}Transactions/");
+                client.DefaultRequestHeaders.Add("X-Auth-Token", financialSettings.SlothApiKey);
+
+                Console.WriteLine($"Processing {orders.Count} orders");
+                var updatedCount = 0;
+                foreach (var order in orders)
+                {
+                    var response = await client.GetAsync(order.SlothTransactionId);
+                    if (response.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        continue;
+                    }
+                    if (response.StatusCode == HttpStatusCode.NoContent)
+                    {
+                        continue;
+                    }
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var slothResponse = JsonConvert.DeserializeObject<SlothResponseModel>(content);
+                        if (slothResponse.Status == "???")
+                        {
+                            updatedCount++;
+                            order.Status = OrderStatusCodes.Complete;
+                        }                     
+                        
+                    }
+                }
+
+                await _dbContext.SaveChangesAsync();
+                Console.WriteLine($"Updated {updatedCount} orders");
+            }
+            return true;
+        }
+
         public async Task<bool> ProcessCreditCards(FinancialSettings financialSettings) //Have to pass here, can't get DI working for the job
         {
             var orders = _dbContext.Orders.Include(i => i.ApprovedPayment).Where(a =>
@@ -122,5 +173,7 @@ namespace Anlab.Core.Services
 
             return true;
         }
+
+
     }
 }
