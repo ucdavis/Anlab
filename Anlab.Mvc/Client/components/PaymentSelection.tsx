@@ -19,35 +19,46 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
         this.state = {
             error: ""
         };
+
+
     }
     _renderUcAccount = () => {
         if (this.props.payment.clientType === 'uc') {
-            if (this.props.payment.account === '') {
-                this.setState({ ...this.state, error: "Account is required" });
-            }
             return (
-                <Input type="text" label="UC Account" error={this.state.error} value={this.props.payment.account} maxLength={15} onChange={this
-                    .handleAccountChange}/>
+                <Input type="text" label="UC Account" error={this.state.error} value={this.props.payment.account} maxLength={15} onChange={this.handleAccountChange}/>
             );
         }
     }
     handleChange = (clientType: string) => {
+        if (clientType === 'uc') {
+            this.validateAccount(this.props.payment.account, clientType);
+        }
         var updatedPaymentInfo = { ...this.props.payment, clientType };
         this.props.onPaymentSelected(updatedPaymentInfo);
     }
 
     handleAccountChange = (account: string) => {
-        if (this.props.payment.clientType !== 'uc') {
-            this.setState({ ...this.state, error: "" });
-        }
-        const re = /^(\w)-(\w{7})\/?(\w{5})?$/;
-        if (!re.test((account))) {
-            this.setState({ ...this.state, error: "The account must be in the format X-XXXXXXX or X-XXXXXXX/XXXXX" });
-        } else {
-            this.setState({ ...this.state, error: "" });
-        };
+        this.validateAccount(account, this.props.payment.clientType);
         var updatedPaymentInfo = { ...this.props.payment, account };
         this.props.onPaymentSelected(updatedPaymentInfo);
+    }
+
+    validateAccount = (account: string, clientType: string) => {
+        if (clientType !== 'uc') {
+            this.setState({ ...this.state, error: "" });
+        } else {
+            if (account === '' || account == undefined) {
+                this.setState({ ...this.state, error: "Account is required" });
+            } else {
+                const re = /^(\w)-(\w{7})\/?(\w{5})?$/;
+                if (!re.test((account))) {
+                    this.setState(
+                        { ...this.state, error: "The account must be in the format X-XXXXXXX or X-XXXXXXX/XXXXX" });
+                } else {
+                    this.setState({ ...this.state, error: "" });
+                };
+            }
+        }
     }
 
 
