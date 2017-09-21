@@ -11,6 +11,7 @@ import showdown from 'showdown';
 export interface ITestItem {
     id: string;
     analysis: string;
+    analysisMethodNumber: string;
     internalCost: number;
     externalCost: number;
     internalSetupCost: number;
@@ -75,7 +76,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                             <Checkbox checked={selected} onChange={e => this.onSelection(item, e)} />
                         </td>
                         <td>{item.analysis}</td>
-                        <td>{item.id}</td>
+                        <td>{item.analysisMethodNumber}</td>
                         <td><NumberFormat value={priceDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
                         <td style={{ width: '5%' }}>
                             {item.notes ? <i className="analysisTooltip fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-html="true" title={tooltipContent}></i> : ""}
@@ -101,7 +102,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                         <tr>
                             <th>Select</th>
                             <th>Analysis</th>
-                            <th>Code</th>
+                            <th>Method Number</th>
                             <th>Price</th>
                             <th>Notes</th>
                         </tr>
