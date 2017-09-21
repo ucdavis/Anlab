@@ -14,6 +14,7 @@ namespace Anlab.Core.Models
         public decimal SetupCost { get; set; } 
         public string Name { get; set; }
         public int Multiplier { get; set; }
+        public string AnalysisMethodNumber { get; set; }
 
         public decimal SetupPrice => Math.Ceiling(SetupCost * Multiplier);
     }

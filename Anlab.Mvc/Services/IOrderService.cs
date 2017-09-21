@@ -69,6 +69,7 @@ namespace AnlabMvc.Services
                 select new TestItemModel
                 {
                     Analysis = i.Analysis,
+                    AnalysisMethodNumber = i.AnalysisMethodNumber,
                     Category = i.Category,
                     ExternalCost = Math.Ceiling(p.Cost * _appSettings.NonUcRate),
                     Group = i.Group,
