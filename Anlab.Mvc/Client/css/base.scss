@@ -56,8 +56,6 @@ header {
 footer {
   .footer_contents {
     @include boundary;
-      border-top:1px solid $borders;
-      padding-top:16px;
   }
     position: absolute;
     bottom: 0;
