@@ -1,6 +1,6 @@
 ﻿---
 
-title: "Rush Request Policy"
+title: "Contact"
 
 ---
 <div class="row">

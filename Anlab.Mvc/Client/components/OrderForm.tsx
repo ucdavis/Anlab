@@ -197,8 +197,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         const processingFee = this.state.payment.clientType === 'uc' ? this.state.internalProcessingFee : this.state.externalProcessingFee;
 
         return (
-            <div className="row">
-                <div className="col-10 whiteblock">
+            <div className="flexrow">
+                <div className="flexcol whiteblock">
                     <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
 
                     <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />

@@ -85,3 +85,13 @@
         flex: 0 0 83.3333333334%;
         max-width: 83.3333333334%;
       }
+
+      .flexrow {
+        display:flex;
+        justify-content: space-between;
+        flex-wrap:wrap;
+      }
+      .flexcol {
+        flex:1 1 0;
+        align-items: center;
+      }
