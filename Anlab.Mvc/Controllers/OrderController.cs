@@ -80,14 +80,14 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index");
             }
 
-            var joined = order.GetTestDetails();
-            var proc = joined.Single(i => i.Id == "PROC");
+            var joined = await _orderService.PopulateTestItemModel();
+            var proc = await _labworksService.GetPrice(processingCode);
 
             var model = new OrderEditModel {
                 TestItems = joined.ToArray(),
                 Order = order,
-                InternalProcessingFee = Math.Ceiling(proc.InternalCost),
-                ExternalProcessingFee = Math.Ceiling(proc.ExternalCost),
+                InternalProcessingFee = Math.Ceiling(proc.Cost),
+                ExternalProcessingFee = Math.Ceiling(proc.Cost * _appSettings.NonUcRate),
                 DefaultEmail = order.Creator.Email
             };
 
@@ -127,6 +127,9 @@ namespace AnlabMvc.Controllers
                     return Json(new { success = false, message = "This has been confirmed and may not be updated." });
                 }
 
+                var allTests = await _orderService.PopulateTestItemModel(true);
+                orderToUpdate.SaveTestDetails(allTests);
+
                 _orderService.PopulateOrder(model, orderToUpdate);
 
                 idForRedirection = model.OrderId.Value;
@@ -140,6 +143,7 @@ namespace AnlabMvc.Controllers
                     Status = OrderStatusCodes.Created,
                     ShareIdentifier = Guid.NewGuid(),
                 };
+
                 var allTests = await _orderService.PopulateTestItemModel(true);
                 order.SaveTestDetails(allTests);
 
