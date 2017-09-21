@@ -51,7 +51,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
 
         if (loweredQuery) {
             filteredItems = this.props.items.filter(item => {
-                return item.analysis.toLowerCase().indexOf(loweredQuery) !== -1 || item.id.toLowerCase().indexOf(loweredQuery) !== -1;
+                return item.analysis.toLowerCase().indexOf(loweredQuery) !== -1 || item.id.toLowerCase().indexOf(loweredQuery) !== -1 || item.analysisMethodNumber.toLowerCase().indexOf(loweredQuery) !== -1;
             });
         }
 
