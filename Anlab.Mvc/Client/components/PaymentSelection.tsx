@@ -9,7 +9,7 @@ export interface IPayment {
 interface IPaymentProps {
     payment: IPayment;
     onPaymentSelected: Function;
-    accountRef: any;
+    accountRef?: any;
 }
 
 
