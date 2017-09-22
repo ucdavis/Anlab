@@ -52,7 +52,8 @@ namespace AnlabMvc.Controllers
                     Updated = c.Updated,
                     Project = c.Project,
                     Status = c.Status,
-                    ShareIdentifier = c.ShareIdentifier
+                    ShareIdentifier = c.ShareIdentifier,
+                    Paid = c.Paid
                 })
                 .Take(_maxShownOrders)
                 .ToList();
