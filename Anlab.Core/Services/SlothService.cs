@@ -16,9 +16,9 @@ namespace Anlab.Core.Services
     public interface ISlothService
     {
         Task<SlothResponseModel> MoveMoney(Order order);
-        Task<bool> ProcessCreditCards(FinancialSettings financialSettings);
+        Task ProcessCreditCards(FinancialSettings financialSettings);
 
-        Task<bool> MoneyHasMoved(FinancialSettings financialSettings);
+        Task MoneyHasMoved(FinancialSettings financialSettings);
     }
 
     public class SlothService : ISlothService
@@ -81,15 +81,15 @@ namespace Anlab.Core.Services
             return new SlothResponseModel { Success = false };
         }
 
-        public async Task<bool> MoneyHasMoved(FinancialSettings financialSettings)
+        public async Task MoneyHasMoved(FinancialSettings financialSettings)
         {
-            Console.WriteLine("Beginning UCD money movement check");
+            Console.WriteLine("Beginning UCD money has moved");
             var orders = _dbContext.Orders.Where(a =>
                 a.PaymentType == PaymentTypeCodes.UcDavisAccount && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
             if (orders.Count == 0)
             {
-                Console.WriteLine("No orders to process");
-                return false;
+                Console.WriteLine("No UC Davis accounts orders to process");
+                return ;
             }
             using (var client = new HttpClient())
             {
@@ -133,16 +133,18 @@ namespace Anlab.Core.Services
                 await _dbContext.SaveChangesAsync();
                 Console.WriteLine($"Updated {updatedCount} orders. Rolled back {roledBackCount} orders.");
             }
-            return true;
+            return;
         }
 
-        public async Task<bool> ProcessCreditCards(FinancialSettings financialSettings) //Have to pass here, can't get DI working for the job
+        public async Task ProcessCreditCards(FinancialSettings financialSettings) //Have to pass here, can't get DI working for the job
         {
+            Console.WriteLine("Staring Credit Card process");
             var orders = _dbContext.Orders.Include(i => i.ApprovedPayment).Where(a =>
                 a.PaymentType == PaymentTypeCodes.CreditCard && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
             if (orders.Count == 0)
             {
-                return false;
+                Console.WriteLine("No Credit Card orders to process.");
+                return;
             }
 
             using (var client = new HttpClient())
@@ -150,7 +152,7 @@ namespace Anlab.Core.Services
                 client.BaseAddress = new Uri($"{financialSettings.SlothApiUrl}Transactions/processor/");
                 client.DefaultRequestHeaders.Add("X-Auth-Token", financialSettings.SlothApiKey);
 
-                Console.WriteLine($"Processing {orders.Count} orders");
+                Console.WriteLine($"Processing Credit Card {orders.Count} orders");
                 var updatedCount = 0;
                 foreach (var order in orders)
                 {
@@ -178,10 +180,8 @@ namespace Anlab.Core.Services
                 await _dbContext.SaveChangesAsync();
                 Console.WriteLine($"Updated {updatedCount} orders");
             }
-
-            return true;
+            Console.WriteLine("Done Credit Card process");
         }
-
 
     }
 }
