@@ -61,7 +61,7 @@ namespace Anlab.Jobs.MoneyMovement
             }
             Console.WriteLine("Done Credit Cards");
 
-            result = Task.Run(() => SlothService.MoneyMovedCheck(financialSettings)).Result;
+            result = Task.Run(() => SlothService.MoneyHasMoved(financialSettings)).Result;
             if (!result)
             {
                 Console.WriteLine("No UCD Accounts were completed");

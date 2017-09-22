@@ -18,7 +18,7 @@ namespace Anlab.Core.Services
         Task<SlothResponseModel> MoveMoney(Order order);
         Task<bool> ProcessCreditCards(FinancialSettings financialSettings);
 
-        Task<bool> MoneyMovedCheck(FinancialSettings financialSettings);
+        Task<bool> MoneyHasMoved(FinancialSettings financialSettings);
     }
 
     public class SlothService : ISlothService
@@ -81,7 +81,7 @@ namespace Anlab.Core.Services
             return new SlothResponseModel { Success = false };
         }
 
-        public async Task<bool> MoneyMovedCheck(FinancialSettings financialSettings)
+        public async Task<bool> MoneyHasMoved(FinancialSettings financialSettings)
         {
             Console.WriteLine("Beginning UCD money movement check");
             var orders = _dbContext.Orders.Where(a =>
@@ -98,6 +98,7 @@ namespace Anlab.Core.Services
 
                 Console.WriteLine($"Processing {orders.Count} orders");
                 var updatedCount = 0;
+                var roledBackCount = 0;
                 foreach (var order in orders)
                 {
                     var response = await client.GetAsync(order.SlothTransactionId);
@@ -122,6 +123,7 @@ namespace Anlab.Core.Services
                         {
                             order.Paid = false;
                             Console.WriteLine($"Order {order.Id} was cancelled. Setting back to unpaid");
+                            roledBackCount++;
                             //TODO: Write to the notes field? Trigger off an email?
                         }
                         
@@ -129,7 +131,7 @@ namespace Anlab.Core.Services
                 }
 
                 await _dbContext.SaveChangesAsync();
-                Console.WriteLine($"Updated {updatedCount} orders");
+                Console.WriteLine($"Updated {updatedCount} orders. Rolled back {roledBackCount} orders.");
             }
             return true;
         }
