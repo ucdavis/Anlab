@@ -48,7 +48,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         const initialState = {
             orderId: null,
             additionalInfo: '',
-            payment: { clientType: 'C', account: '' },
+            payment: { clientType: 'uc', account: '' },
             quantity: null,
             sampleType: 'Soil',
             testItems: window.App.orderData.testItems,
