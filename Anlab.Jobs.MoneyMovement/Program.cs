@@ -47,22 +47,18 @@ namespace Anlab.Jobs.MoneyMovement
             
             SlothService = Provider.GetService<ISlothService>();           
 
-            Console.WriteLine("About to start Credit Cards");
+            Console.WriteLine("Job Starting");
             var financialSettings = new FinancialSettings
             {
                 SlothApiKey = Configuration.GetSection("Financial:SlothApiKey").Value,
                 SlothApiUrl = Configuration.GetSection("Financial:SlothApiUrl").Value
             };
             
-            var result = Task.Run(() => SlothService.ProcessCreditCards(financialSettings)).Result; //Wasn't able to debug this unless it returned a result...
-            if (!result)
-            {
-                Console.WriteLine("No CC Orders to process");
-            }
-            Console.WriteLine("Done Credit Cards");
 
-           
-            Console.WriteLine("Done");
+            SlothService.ProcessCreditCards(financialSettings).GetAwaiter().GetResult();
+            SlothService.MoneyHasMoved(financialSettings).GetAwaiter().GetResult();
+
+            Console.WriteLine("Job Done");
         }
     }
 }
