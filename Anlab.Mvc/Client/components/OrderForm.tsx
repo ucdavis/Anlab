@@ -10,6 +10,8 @@ import { Project } from "./Project";
 import { AdditionalEmails } from "./AdditionalEmails";
 import { ClientId } from "./ClientId";
 import { Button } from "react-toolbox/lib/button";
+import * as ReactDOM from "react-dom";
+import { Input } from "react-toolbox/lib/input";
 
 declare var window: any;
 declare var $: any;
@@ -32,9 +34,14 @@ interface IOrderState {
     clientId: string;
     internalProcessingFee: number;
     externalProcessingFee: number;
+    defaultEmail: string;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
+
+    private quantityRef: any;
+    private projectRef: any;
+
     constructor(props) {
         super(props);
 
@@ -55,7 +62,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             status: '',
             clientId: '',
             internalProcessingFee: window.App.orderData.internalProcessingFee,
-            externalProcessingFee: window.App.orderData.externalProcessingFee
+            externalProcessingFee: window.App.orderData.externalProcessingFee,
+            defaultEmail: window.App.defaultEmail
         };
 
         if (window.App.defaultAccount) {
@@ -81,6 +89,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.clientId = orderInfo.ClientId;
             initialState.internalProcessingFee = window.App.orderData.internalProcessingFee;
             initialState.externalProcessingFee = window.App.orderData.externalProcessingFee;
+            initialState.defaultEmail = window.App.defaultEmail;
 
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
@@ -88,7 +97,15 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.state = { ...initialState };
     }
     validate = () => {
-        const valid = this.state.quantity > 0 && this.state.quantity <= 100 && !!this.state.project.trim();
+        let valid = this.state.quantity > 0 && this.state.quantity <= 100 && !!this.state.project.trim();
+        if (valid) {
+            if (this.state.payment.clientType === 'uc') {
+                const re = /^(\w)-(\w{7})\/?(\w{5})?$/;
+                if (!re.test((this.state.payment.account))) {
+                    valid = false;
+                };
+            }
+        }
         this.setState({ ...this.state, isValid: valid });
     }
     onPaymentSelected = (payment: any) => {
@@ -130,6 +147,12 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         }
     }
 
+    focusInput = (component: any) => {
+        var node = ReactDOM.findDOMNode(component).querySelector('input');
+        node.focus();
+        node.blur();
+        node.focus();
+    }
 
     handleChange = (name, value) => {
         this.setState({ ...this.state, [name]: value }, this.validate);
@@ -190,7 +213,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     }
 
     render() {
-        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, status, clientId, internalProcessingFee, externalProcessingFee } = this.state;
+        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, status, clientId, internalProcessingFee, externalProcessingFee, defaultEmail } = this.state;
 
         const { filtered, selected } = this.getTests();
 
@@ -204,13 +227,13 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
 
                     <div className="form_wrap">
-                        <label className="form_header" id="quantity">How many samples will you require?</label>
-                        <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} />
+                        <label className="form_header">How many samples will you require?</label>
+                        <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} quantityRef={(numberRef) => { this.quantityRef = numberRef }} />
                     </div>
-                    <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail}/>
+                    <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail} defaultEmail={this.state.defaultEmail} />
                     <div className="form_wrap">
-                        <label className="form_header" id="project">What do you want to name this order?</label>
-                        <Project project={project} handleChange={this.handleChange} />
+                        <label className="form_header">What do you want to name this order?</label>
+                        <Project project={project} handleChange={this.handleChange} projectRef={(inputRef) => { this.projectRef = inputRef }} />
                     </div>
                     <ClientId clientId={clientId} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
@@ -229,7 +252,10 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     onSubmit={this.onSubmit}
                     status={status}
                     processingFee={processingFee}
-                    project={this.state.project} />
+                    project={this.state.project}
+                    focusInput={this.focusInput}
+                    quantityRef={this.quantityRef}
+                    projectRef={this.projectRef} />
                 </div>
 
                 <Dialog

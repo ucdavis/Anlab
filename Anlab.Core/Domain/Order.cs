@@ -52,8 +52,11 @@ namespace Anlab.Core.Domain
         public PaymentEvent ApprovedPayment { get; set; }
         
         public string KfsTrackingNumber { get; set; }
+        public string SlothTransactionId { get; set; } //TODO: Change to Guid? ?
 
         public bool Paid { get; set; } = false;
+        
+        public string PaymentType { get; set; }
 
         public OrderDetails GetOrderDetails()
         {

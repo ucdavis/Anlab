@@ -64,9 +64,13 @@
                     else
                     {
                         <a asp-action="Details" asp-route-id="@order.Id"><i class="fa fa-eye"> Details</i></a>
-                        if (order.Status == OrderStatusCodes.Accepted && !order.Paid)
+                    if (order.Status == OrderStatusCodes.Finalized && !order.Paid && order.PaymentType == PaymentTypeCodes.CreditCard)
                         {
                             <a asp-controller="Payment" asp-action="Pay" asp-route-id="@order.ShareIdentifier"><i class="fa fa-credit-card-alt"> Pay</i> </a>
+                    }
+                    if (order.Status == OrderStatusCodes.Finalized && !order.Paid && order.PaymentType == PaymentTypeCodes.UcDavisAccount)
+                    {
+                        <a asp-controller="Payment" asp-action="PayInternal" asp-route-id="@order.ShareIdentifier"><i class="fa fa-money"> Pay</i> </a>
                         }
                     }
                 </td>
