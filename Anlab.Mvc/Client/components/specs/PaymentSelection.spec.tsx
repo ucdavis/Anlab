@@ -30,8 +30,8 @@ describe('<PaymentSelection/>', () => {
             it('should have a label', () => {
                 expect(input.prop('label')).toEqual('UC Account');
             });
-            it('should have a maxLength of 10', () => {
-                expect(input.prop('maxLength')).toEqual(10);
+            it('should have a maxLength of 15', () => {
+                expect(input.prop('maxLength')).toEqual(15);
             });
             it('should have set a value', () => {
                 expect(input.prop('value')).toEqual('123');

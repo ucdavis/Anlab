@@ -67,9 +67,9 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index", "Order");
             }
 
-            var model = new OrderReviewModel();
-            model.Order = order;
-            model.OrderDetails = order.GetOrderDetails();
+            var model = new OrderPaymentModel();
+            model.OrderReviewModel.Order = order;
+            model.OrderReviewModel.OrderDetails = order.GetOrderDetails();
 
             return View(model);
         }
@@ -100,13 +100,14 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index", "Order");
             }
 
-            var model = new OrderReviewModel();
-            model.Order = order;
-            model.OrderDetails = order.GetOrderDetails();
+            var model = new OrderPaymentModel();
+            model.OrderReviewModel.Order = order;
+            model.OrderReviewModel.OrderDetails = order.GetOrderDetails();
+            model.OverrideAccount = overrideAccount;
 
             if (!string.IsNullOrWhiteSpace(overrideAccount))
             {
-                var account = new AccountModel(overrideAccount); //TODO: Move validation on account.
+                var account = new AccountModel(overrideAccount.ToUpper()); 
                 if (account.Chart != "3" && account.Chart != "L")
                 {
                     ErrorMessage =
@@ -115,7 +116,7 @@ namespace AnlabMvc.Controllers
                 }
 
                 var orderDetails = order.GetOrderDetails();
-                orderDetails.Payment.Account = overrideAccount;
+                orderDetails.Payment.Account = overrideAccount.ToUpper();
                 order.PaymentType = PaymentTypeCodes.UcDavisAccount;
                 order.SaveDetails(orderDetails);
             }
