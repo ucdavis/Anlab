@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Anlab.Core.Domain;
+using Anlab.Core.Services;
 
 namespace AnlabMvc.Controllers
 {
@@ -25,15 +26,17 @@ namespace AnlabMvc.Controllers
         private readonly IOrderService _orderService;
         private readonly IOrderMessageService _orderMessageService;
         private readonly IFileStorageService _fileStorageService;
+        private readonly ISlothService _slothService;
 
         private const int _maxShownOrders = 1000;
 
-        public LabController(ApplicationDbContext dbContext, IOrderService orderService, IOrderMessageService orderMessageService, IFileStorageService fileStorageService)
+        public LabController(ApplicationDbContext dbContext, IOrderService orderService, IOrderMessageService orderMessageService, IFileStorageService fileStorageService, ISlothService slothService)
         {
             _dbContext = dbContext;
             _orderService = orderService;
             _orderMessageService = orderMessageService;
             _fileStorageService = fileStorageService;
+            _slothService = slothService;
         }
 
         public IActionResult Orders()
@@ -235,10 +238,27 @@ namespace AnlabMvc.Controllers
             order.SaveDetails(orderDetails);
 
             await _orderMessageService.EnqueueFinalizedMessage(order);
+            var extraMessage = string.Empty;
+            if (order.PaymentType == PaymentTypeCodes.UcDavisAccount)
+            {
+                var slothResult = await _slothService.MoveMoney(order);
+                if (slothResult.Success)
+                {
+                    order.KfsTrackingNumber = slothResult.KfsTrackingNumber;
+                    order.SlothTransactionId = slothResult.Id.ToString();
+                    order.Paid = true;
+                    extraMessage = " and UC Davis account marked as paid";
+                }
+                else
+                {
+                    ErrorMessage = "There was a problem processing the payment for this account.";
+                    return RedirectToAction("UpdateFromCompletedTests");
+                }
+            }
 
             await _dbContext.SaveChangesAsync();
 
-            Message = "Order marked as Complete";
+            Message = $"Order marked as Finalized{extraMessage}";
             return RedirectToAction("Orders");
 
         }
