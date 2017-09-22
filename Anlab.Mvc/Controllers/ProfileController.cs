@@ -43,7 +43,7 @@ namespace AnlabMvc.Controllers
                 userToUpdate.LastName = user.LastName;
                 userToUpdate.Name = user.Name;
                 userToUpdate.Phone = user.Phone;
-                userToUpdate.Account = user.Account.ToUpper();
+                userToUpdate.Account = user.Account?.ToUpper();
 
                 _context.Update(userToUpdate);
                 await _context.SaveChangesAsync();

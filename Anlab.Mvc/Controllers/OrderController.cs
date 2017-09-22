@@ -53,7 +53,7 @@ namespace AnlabMvc.Controllers
             };
 
             var user = _context.Users.Single(a => a.Id == CurrentUserId);
-            model.DefaultAccount = user.Account.ToUpper();
+            model.DefaultAccount = user.Account?.ToUpper();
             model.DefaultEmail = user.Email;
 
             return View(model);
