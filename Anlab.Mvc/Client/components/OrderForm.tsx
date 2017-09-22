@@ -41,6 +41,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
     private quantityRef: any;
     private projectRef: any;
+    private accountRef: any;
 
     constructor(props) {
         super(props);
@@ -97,7 +98,9 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.state = { ...initialState };
     }
     validate = () => {
-        const valid = this.state.quantity > 0 && this.state.quantity <= 100 && !!this.state.project.trim();
+        let valid = this.state.quantity > 0 && this.state.quantity <= 100 && !!this.state.project.trim();
+        if (this.state.payment.clientType === 'uc' && this.state.payment.account === "")
+            valid = false;
         this.setState({ ...this.state, isValid: valid });
     }
     onPaymentSelected = (payment: any) => {
@@ -214,7 +217,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         return (
             <div className="row">
                 <div className="col-10 whiteblock">
-                    <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
+                    <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} accountRef={(accountRef) => { this.accountRef = accountRef }} />
 
                     <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
 
@@ -247,7 +250,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     project={this.state.project}
                     focusInput={this.focusInput}
                     quantityRef={this.quantityRef}
-                    projectRef={this.projectRef} />
+                    projectRef={this.projectRef}
+                    accountRef={this.accountRef} />
                 </div>
 
                 <Dialog
