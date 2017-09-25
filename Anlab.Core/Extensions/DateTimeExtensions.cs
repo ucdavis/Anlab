@@ -4,7 +4,17 @@ namespace Anlab.Core.Extensions
 {
     public static class DateTimeExtensions
     {
-        public static readonly TimeZoneInfo Pacific = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+        private static TimeZoneInfo GetPacificTimeZone()
+        {
+            try
+            {
+                return TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            }
+            catch (TimeZoneNotFoundException)
+            {
+                return TimeZoneInfo.FindSystemTimeZoneById("America/Los_Angeles");
+            }
+        }
 
         public static DateTime? ToPacificTime(this DateTime? dateTime)
         {
@@ -13,12 +23,12 @@ namespace Anlab.Core.Extensions
 
         public static DateTime ToPacificTime(this DateTime dateTime)
         {
-            return TimeZoneInfo.ConvertTime(dateTime, TimeZoneInfo.Utc, Pacific);
+            return TimeZoneInfo.ConvertTime(dateTime, TimeZoneInfo.Utc, GetPacificTimeZone());
         }
 
         public static DateTime FromPacificTime(this DateTime dateTime)
         {
-            return TimeZoneInfo.ConvertTime(dateTime, Pacific, TimeZoneInfo.Utc);
+            return TimeZoneInfo.ConvertTime(dateTime, GetPacificTimeZone(), TimeZoneInfo.Utc);
         }
 
         /// <summary>
