@@ -127,7 +127,7 @@ namespace AnlabMvc.Controllers
                     return Json(new { success = false, message = "This has been confirmed and may not be updated." });
                 }
 
-                var allTests = await _orderService.PopulateTestItemModel(true);
+                var allTests = await _orderService.PopulateTestItemModel();
                 orderToUpdate.SaveTestDetails(allTests);
 
                 _orderService.PopulateOrder(model, orderToUpdate);
@@ -144,7 +144,7 @@ namespace AnlabMvc.Controllers
                     ShareIdentifier = Guid.NewGuid(),
                 };
 
-                var allTests = await _orderService.PopulateTestItemModel(true);
+                var allTests = await _orderService.PopulateTestItemModel();
                 order.SaveTestDetails(allTests);
 
                  _orderService.PopulateOrder(model, order);
