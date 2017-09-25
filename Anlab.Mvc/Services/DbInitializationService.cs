@@ -517,7 +517,6 @@ namespace AnlabMvc.Services
             {
                 Id = code,
                 Analysis = analysis,
-                AnalysisMethodNumber = "TEST1",
                 Category = category,
                 Group = group,
                 Notes = notes,
