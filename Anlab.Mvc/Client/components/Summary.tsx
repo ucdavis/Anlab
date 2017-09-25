@@ -80,7 +80,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
             color: 'red',
             padding: '0 10px'
         }
-        let saveText = "Save & Review"
+        let saveText = "Save & Review";
         let infoText = "You will be able to review this information before placing your order";       
         const errorText = "Please correct any errors and complete any required fields before you proceed";
         return (
