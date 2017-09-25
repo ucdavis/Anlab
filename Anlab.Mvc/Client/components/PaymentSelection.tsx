@@ -1,5 +1,6 @@
 ﻿import * as React from 'react';
 import Input from 'react-toolbox/lib/input';
+import 'isomorphic-fetch';
 
 export interface IPayment {
     clientType: string;
@@ -17,7 +18,8 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
     constructor(props) {
         super(props);
         this.state = {
-            error: ""
+            error: "",
+            accountName: null
         };
 
 
@@ -25,10 +27,24 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
     _renderUcAccount = () => {
         if (this.props.payment.clientType === 'uc') {
             return (
-                <Input type="text" label="UC Account" error={this.state.error} value={this.props.payment.account} maxLength={15} onChange={this.handleAccountChange}/>
+                <div>
+                    <Input type="text" label="UC Account" error={this.state.error} value={this.props.payment.account} maxLength={15} onChange={this.handleAccountChange} onBlur={this.lookupAccount} />
+                    {this.state.accountName}
+                </div>
             );
         }
     }
+
+    lookupAccount = (account: string) => {
+        if (this.state.error === "")
+        {
+            console.log("fetching...");
+            fetch(`/financial/${this.props.payment.account}`, { credentials: 'same-origin' })
+                .then(response => response.json())
+                .then(accountName => this.setState({ accountName }));
+        }
+    }
+
     handleChange = (clientType: string) => {
         if (clientType === 'uc') {
             this.validateAccount(this.props.payment.account, clientType);
