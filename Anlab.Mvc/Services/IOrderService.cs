@@ -21,6 +21,8 @@ namespace AnlabMvc.Services
         Task<List<TestItemModel>> PopulateTestItemModel(bool showAll = false);
 
         Task<OverwriteOrderResult> OverwiteOrderFromDb(Order orderToUpdate);
+
+        TestDetails[] CalculateTestDetails(Order order);
     }
 
     public class OrderService : IOrderService
@@ -86,7 +88,7 @@ namespace AnlabMvc.Services
         /// </summary>
         /// <param name="orderDetails"></param>
         /// <returns></returns>
-        private TestDetails[] CalculateTestDetails(Order order)
+        public TestDetails[] CalculateTestDetails(Order order)
         {
             var orderDetails = order.GetOrderDetails();
             var allTests = order.GetTestDetails();

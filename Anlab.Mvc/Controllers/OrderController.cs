@@ -201,10 +201,20 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
 
+            var allTests = await _orderService.PopulateTestItemModel(true);
+            order.SaveTestDetails(allTests);
+
+            var tests = _orderService.CalculateTestDetails(order);
+
+            var orderDetails = order.GetOrderDetails();
+            orderDetails.SelectedTests = tests.ToArray();
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
+
+            order.SaveDetails(orderDetails);
 
             var model = new OrderReviewModel();
             model.Order = order;
-            model.OrderDetails = order.GetOrderDetails();
+            model.OrderDetails = orderDetails;
             
             return View(model);
         }
@@ -231,8 +241,19 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index");
             }
 
-            order.Status = OrderStatusCodes.Confirmed;
+            var allTests = await _orderService.PopulateTestItemModel(true);
+            order.SaveTestDetails(allTests);
 
+            var tests = _orderService.CalculateTestDetails(order);
+
+            var orderDetails = order.GetOrderDetails();
+            orderDetails.SelectedTests = tests.ToArray();
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
+
+            order.SaveDetails(orderDetails);
+
+            order.Status = OrderStatusCodes.Confirmed;
+            
             await _orderMessageService.EnqueueCreatedMessage(order);
 
             await _context.SaveChangesAsync();
