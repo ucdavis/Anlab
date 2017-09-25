@@ -38,10 +38,13 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
     lookupAccount = (account: string) => {
         if (this.state.error === "")
         {
-            console.log("fetching...");
             fetch(`/financial/${this.props.payment.account}`, { credentials: 'same-origin' })
                 .then(response => response.json())
                 .then(accountName => this.setState({ accountName }));
+        }
+        else
+        {
+            this.setState({ accountName: null });
         }
     }
 
