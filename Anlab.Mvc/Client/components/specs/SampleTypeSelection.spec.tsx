@@ -201,61 +201,6 @@ describe('<SampleTypeSelection/>', () => {
             expect(onSampleSelected).toHaveBeenCalled();
             expect(onSampleSelected).toHaveBeenCalledWith('Water');
         });
-    });
-    describe('Other selector', () => {
-        it('should have common classNames 1', () => {
-            const target = mount(<SampleTypeSelection sampleType="xxx" onSampleSelected={null} />);
-            const expectedTag = target.find('div').at(1).childAt(3);
-            expect(expectedTag.hasClass('anlab_form_style')).toEqual(true);
-            expect(expectedTag.hasClass('anlab_form_samplebtn')).toEqual(true);
-            expect(expectedTag.hasClass('flexcol')).toEqual(true);
-        });
-        it('should have common classNames 2', () => {
-            const target = mount(<SampleTypeSelection sampleType="Other" onSampleSelected={null} />);
-            const expectedTag = target.find('div').at(1).childAt(3);
-            expect(expectedTag.hasClass('anlab_form_style')).toEqual(true);
-            expect(expectedTag.hasClass('anlab_form_samplebtn')).toEqual(true);
-            expect(expectedTag.hasClass('flexcol')).toEqual(true);
-        });
-        it('should have not have selected classNames when not soil', () => {
-            const target = mount(<SampleTypeSelection sampleType="xxx" onSampleSelected={null} />);
-            const expectedTag = target.find('div').at(1).childAt(3);
-            expect(expectedTag.hasClass('active-bg')).toEqual(false);
-            expect(expectedTag.hasClass('active-border')).toEqual(false);
-            expect(expectedTag.hasClass('active-svg')).toEqual(false);
-            expect(expectedTag.hasClass('active-text')).toEqual(false);
-        });
-        it('should have have selected classNames when soil', () => {
-            const target = mount(<SampleTypeSelection sampleType="Other" onSampleSelected={null} />);
-            const expectedTag = target.find('div').at(1).childAt(3);
-            expect(expectedTag.hasClass('active-bg')).toEqual(true);
-            expect(expectedTag.hasClass('active-border')).toEqual(true);
-            expect(expectedTag.hasClass('active-svg')).toEqual(true);
-            expect(expectedTag.hasClass('active-text')).toEqual(true);
-        });
-        it('should have soil svg', () => {
-            const target = mount(<SampleTypeSelection sampleType="Other" onSampleSelected={null} />);
-            const expectedTag = target.find('div').at(1).childAt(3).find('SVG');
-            //console.log(target.find('div').at(1).childAt(0).debug());
-            expect(expectedTag.length).toEqual(1);
-            expect(expectedTag.find('title').at(0).text()).toEqual('compost');
-        });
-        it('should have h3', () => {
-            const target = mount(<SampleTypeSelection sampleType="Other" onSampleSelected={null} />);
-            const expectedTag = target.find('div').at(1).childAt(3).find('h3');
-            //console.log(target.find('div').at(1).childAt(0).debug());
-            expect(expectedTag.length).toEqual(1);
-            expect(expectedTag.text()).toEqual('Compost - Manure');
-        });
 
-        it('should call on click with soil parameter', () => {
-            const onSampleSelected = jasmine.createSpy('onSampleSelected');
-            const target = mount(<SampleTypeSelection sampleType="Other" onSampleSelected={onSampleSelected} />);
-            const expectedTag = target.find('div').at(1).childAt(3);
-            expectedTag.simulate('click');
-
-            expect(onSampleSelected).toHaveBeenCalled();
-            expect(onSampleSelected).toHaveBeenCalledWith('Other');
-        });
     });
 });

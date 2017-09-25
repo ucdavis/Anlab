@@ -23,7 +23,8 @@ interface ISummaryProps {
 export class Summary extends React.Component<ISummaryProps, any> {
 
     totalCost = () => {
-
+        if (this.props.quantity < 1)
+            return 0;
         const total = this.props.testItems.reduce((prev, item) => {
             // total for current item
             const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
@@ -46,10 +47,10 @@ export class Summary extends React.Component<ISummaryProps, any> {
             return (
                 <tr key={item.id}>
                     <td>{item.analysis}</td>
-                    <td><NumberFormat value={price} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-                    <td><NumberFormat value={perTest} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-                    <td><NumberFormat value={setupCost} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
-                    <td><NumberFormat value={rowTotalDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+                    <td><NumberFormat value={price} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></td>
+                    <td><NumberFormat value={perTest} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></td>
+                    <td><NumberFormat value={setupCost} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></td>
+                    <td><NumberFormat value={rowTotalDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></td>
                 </tr>
             );
         });
@@ -86,7 +87,7 @@ export class Summary extends React.Component<ISummaryProps, any> {
             <div>
                 <div className="ordersum">
                     <div>
-                        <h3>Order Total:<NumberFormat value={this.totalCost()} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></h3>
+                        <h3>Order Total:<NumberFormat value={this.totalCost()} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></h3>
                         <a role="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                             Order Details
                         </a>
@@ -118,11 +119,11 @@ export class Summary extends React.Component<ISummaryProps, any> {
                                     <tr>
                                         <th>Processing Fee</th>
                                         <td colSpan={3}></td>
-                                        <td><NumberFormat value={this.props.processingFee} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+                                        <td><NumberFormat value={this.props.processingFee} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></td>
                                     </tr>
                                     <tr>
                                         <td colSpan={4}></td>
-                                        <td><NumberFormat value={this.totalCost()} displayType={'text'} thousandSeparator={true} decimalPrecision={true} prefix={'$'} /></td>
+                                        <td><NumberFormat value={this.totalCost()} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></td>
                                     </tr>
                                 </tfoot>
                             </table>
