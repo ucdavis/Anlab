@@ -166,7 +166,7 @@ namespace Test.TestsController
             savedResult.FirstName.ShouldBe("FirstName7");
             savedResult.LastName.ShouldBe("LastName7");
             savedResult.Name.ShouldBe("FirstName7 LastName7");
-            savedResult.Account.ShouldBe("Account7");
+            savedResult.Account.ShouldBe("ACCOUNT7");
             savedResult.Phone.ShouldBe("Phone7");
             //Unchanged Values
 

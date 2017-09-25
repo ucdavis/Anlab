@@ -21,10 +21,10 @@
     <label asp-for="Category" class="col-md-2 control-label"></label>
     <div class="col-md-10">
         <select asp-for="Categories" class="form-control" multiple="multiple">
-            <option value="Soil">Soil</option>
-            <option value="Plant">Plant</option>
-            <option value="Water">Water</option>
-            <option value="Other">Other</option>
+                @foreach (var category in TestCategories.All)
+                {
+                    <option value="@category">@category</option>
+                }
         </select>
         <span asp-validation-for="Category" class="text-danger"></span>
     </div>

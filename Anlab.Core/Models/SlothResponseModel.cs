@@ -7,6 +7,7 @@ namespace Anlab.Jobs.MoneyMovement
     {
         public Guid Id { get; set; }
         public string KfsTrackingNumber { get; set; }
+        public string Status { get; set; }
 
         public bool Success { get; set; } = true;
     }

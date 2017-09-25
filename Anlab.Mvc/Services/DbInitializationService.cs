@@ -235,7 +235,7 @@ namespace AnlabMvc.Services
 
         private void LoadTestItems()
         {
-            CreateTestItem("PROC", "Processing Fee", TestCategories.Other, "Special", null, false);
+            CreateTestItem("PROC", "Processing Fee", string.Format("{0}|{1}", TestCategories.Soil, TestCategories.Plant), "Special", null, false);
 
             //Meh
             //CreateTestItem("()", "Just to get it to pass", TestCategories.Soil, "Special", null, false); //We now filter this out in the query
@@ -253,7 +253,7 @@ namespace AnlabMvc.Services
             CreateTestItem("M", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
 
             //Soil
-            CreateTestItem("GRIND", "Grind", string.Format("{0}|{1}|{2}", TestCategories.Soil, TestCategories.Plant,TestCategories.Other ), "Special");
+            CreateTestItem("GRIND", "Grind", string.Format("{0}|{1}", TestCategories.Soil, TestCategories.Plant ), "Special");
             CreateTestItem("SP-FOR", "Imported Soil", TestCategories.Soil, "Special");
 
             CreateTestItem("#SALIN", "Soil Salinity Group 1 [SP, pH, EC, Ca, Mg, Na, Cl, B, HCO3, CO3]", TestCategories.Soil, "DISCOUNTED GROUPS:");
@@ -397,7 +397,7 @@ namespace AnlabMvc.Services
             CreateTestItem("SO4-PM", "SO4-S", TestCategories.Plant, "EXTRACTABLES:");
 
             CreateTestItem("DM", "DM", TestCategories.Plant, "FEED TESTS:");
-            CreateTestItem("DM55", "Partial DM (dried at 55OC)", string.Format("{0}|{1}",TestCategories.Plant, TestCategories.Other), "FEED TESTS:");
+            CreateTestItem("DM55", "Partial DM (dried at 55OC)", TestCategories.Plant, "FEED TESTS:");
             CreateTestItem("#PROT", "Protein", TestCategories.Plant, "FEED TESTS:");
             CreateTestItem("ADFRF", "ADF", TestCategories.Plant, "FEED TESTS:");
             CreateTestItem("#ADFAF", "ADF (ash free)", TestCategories.Plant, "FEED TESTS:");

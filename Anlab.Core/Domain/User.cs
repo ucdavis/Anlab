@@ -27,7 +27,8 @@ namespace Anlab.Core.Domain
         [Phone]
         public string Phone { get; set; }
 
-        [StringLength(16)]
+        [StringLength(15)]
+        [RegularExpression(@"(\w)-(\w{7})\/?(\w{5})?", ErrorMessage = "The account must be in the format X-XXXXXXX or X-XXXXXXX/XXXXX")]
         public string Account { get; set; }
 
         public ICollection<MailMessage> MailMessages { get; set; }

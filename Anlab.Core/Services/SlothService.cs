@@ -16,7 +16,9 @@ namespace Anlab.Core.Services
     public interface ISlothService
     {
         Task<SlothResponseModel> MoveMoney(Order order);
-        Task<bool> ProcessCreditCards(FinancialSettings financialSettings);
+        Task ProcessCreditCards(FinancialSettings financialSettings);
+
+        Task MoneyHasMoved(FinancialSettings financialSettings);
     }
 
     public class SlothService : ISlothService
@@ -30,6 +32,8 @@ namespace Anlab.Core.Services
             _appSettings = appSettings.Value;
         }
 
+
+
         //TODO: Add validation?
         public async Task<SlothResponseModel> MoveMoney(Order order)
         {
@@ -41,7 +45,6 @@ namespace Anlab.Core.Services
 
             var model = new TransactionViewModel();
             model.MerchantTrackingNumber = order.Id.ToString();
-            model.ProcessorTrackingNumber = order.Id.ToString(); //TODO: Remove once optional
             model.Transfers.Add(new TransferViewModel { Account = debitAccount.Account , Amount = orderDetails.GrandTotal, Chart = debitAccount.Chart, SubAccount = debitAccount.SubAccount, Description = $"{order.Project} - {order.RequestNum}", Direction = "Debit", ObjectCode = _appSettings.DebitObjectCode });
             model.Transfers.Add(new TransferViewModel { Account = creditAccount.Account, Amount = orderDetails.GrandTotal, Chart = creditAccount.Chart, SubAccount = creditAccount.SubAccount, Description = $"{order.Project} - {order.RequestNum}", Direction = "Credit", ObjectCode = _appSettings.CreditObjectCode });
 
@@ -77,13 +80,70 @@ namespace Anlab.Core.Services
             return new SlothResponseModel { Success = false };
         }
 
-        public async Task<bool> ProcessCreditCards(FinancialSettings financialSettings) //Have to pass here, can't get DI working for the job
+        public async Task MoneyHasMoved(FinancialSettings financialSettings)
         {
+            Console.WriteLine("Beginning UCD money has moved");
+            var orders = _dbContext.Orders.Where(a =>
+                a.PaymentType == PaymentTypeCodes.UcDavisAccount && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
+            if (orders.Count == 0)
+            {
+                Console.WriteLine("No UC Davis accounts orders to process");
+                return ;
+            }
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri($"{financialSettings.SlothApiUrl}Transactions/");
+                client.DefaultRequestHeaders.Add("X-Auth-Token", financialSettings.SlothApiKey);
+
+                Console.WriteLine($"Processing {orders.Count} orders");
+                var updatedCount = 0;
+                var roledBackCount = 0;
+                foreach (var order in orders)
+                {
+                    var response = await client.GetAsync(order.SlothTransactionId);
+                    if (response.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        continue;
+                    }
+                    if (response.StatusCode == HttpStatusCode.NoContent)
+                    {
+                        continue;
+                    }
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var slothResponse = JsonConvert.DeserializeObject<SlothResponseModel>(content);
+                        if (slothResponse.Status == "Completed")
+                        {
+                            updatedCount++;
+                            order.Status = OrderStatusCodes.Complete;
+                        }
+                        if (slothResponse.Status == "Cancelled")
+                        {
+                            order.Paid = false;
+                            Console.WriteLine($"Order {order.Id} was cancelled. Setting back to unpaid");
+                            roledBackCount++;
+                            //TODO: Write to the notes field? Trigger off an email?
+                        }
+                        
+                    }
+                }
+
+                await _dbContext.SaveChangesAsync();
+                Console.WriteLine($"Updated {updatedCount} orders. Rolled back {roledBackCount} orders.");
+            }
+            return;
+        }
+
+        public async Task ProcessCreditCards(FinancialSettings financialSettings) //Have to pass here, can't get DI working for the job
+        {
+            Console.WriteLine("Staring Credit Card process");
             var orders = _dbContext.Orders.Include(i => i.ApprovedPayment).Where(a =>
                 a.PaymentType == PaymentTypeCodes.CreditCard && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
             if (orders.Count == 0)
             {
-                return false;
+                Console.WriteLine("No Credit Card orders to process.");
+                return;
             }
 
             using (var client = new HttpClient())
@@ -91,7 +151,7 @@ namespace Anlab.Core.Services
                 client.BaseAddress = new Uri($"{financialSettings.SlothApiUrl}Transactions/processor/");
                 client.DefaultRequestHeaders.Add("X-Auth-Token", financialSettings.SlothApiKey);
 
-                Console.WriteLine($"Processing {orders.Count} orders");
+                Console.WriteLine($"Processing Credit Card {orders.Count} orders");
                 var updatedCount = 0;
                 foreach (var order in orders)
                 {
@@ -119,8 +179,8 @@ namespace Anlab.Core.Services
                 await _dbContext.SaveChangesAsync();
                 Console.WriteLine($"Updated {updatedCount} orders");
             }
-
-            return true;
+            Console.WriteLine("Done Credit Card process");
         }
+
     }
 }
