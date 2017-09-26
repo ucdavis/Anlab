@@ -1,5 +1,6 @@
 ﻿import * as React from 'react';
 import Input from 'react-toolbox/lib/input';
+import 'isomorphic-fetch';
 
 export interface IPayment {
     clientType: string;
@@ -17,7 +18,8 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
     constructor(props) {
         super(props);
         this.state = {
-            error: ""
+            error: "",
+            accountName: null
         };
 
 
@@ -25,10 +27,43 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
     _renderUcAccount = () => {
         if (this.props.payment.clientType === 'uc') {
             return (
-                <Input type="text" label="UC Account" error={this.state.error} value={this.props.payment.account} maxLength={15} onChange={this.handleAccountChange}/>
+                <div>
+                    <Input type="text" label="UC Account" error={this.state.error} value={this.props.payment.account} maxLength={15} onChange={this.handleAccountChange} onBlur={this.lookupAccount} />
+                    {this.state.accountName}
+                </div>
             );
         }
     }
+
+    checkChart = (chart: string) => {
+        if (chart === "L" || chart === "l" || chart === "3")
+            return true;
+        else
+            return false;
+    }
+
+    lookupAccount = () => {
+        if (!this.state.error && this.props.payment.account !== null && this.checkChart(this.props.payment.account.charAt(0)))
+        {
+            fetch(`/financial/info?account=${this.props.payment.account}`, { credentials: 'same-origin' })
+                .then(response => {
+                    if (!response.ok) {
+                        throw Error();
+                    }
+                    return response;
+                })
+                .then(response => response.json())
+                .then(accountName => this.setState({ accountName }))
+                .catch(error => {
+                    this.setState({ accountName: null, error: "The account you entered could not be found" });
+                });
+        }
+        else
+        {
+            this.setState({ accountName: null });
+        }
+    }
+
     handleChange = (clientType: string) => {
         if (clientType === 'uc') {
             this.validateAccount(this.props.payment.account, clientType);

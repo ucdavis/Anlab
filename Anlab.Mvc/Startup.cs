@@ -117,6 +117,7 @@ namespace AnlabMvc
             //services.AddTransient<ILabworksService, LabworksService>();
             services.AddTransient<IFileStorageService, FileStorageService>();
             services.AddSingleton<IDataSigningService, DataSigningService>();
+            services.AddTransient<IFinancialService, FinancialService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
