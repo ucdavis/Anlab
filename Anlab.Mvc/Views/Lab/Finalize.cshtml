@@ -73,7 +73,7 @@
             }
             var expectedFileName = '@Model.Order.RequestNum'.toUpperCase();
             if (fileName.indexOf(expectedFileName) === -1) {
-                error = "File name did not contain request number: " + "@Model.Order.RequestNum";
+                error = "File name did not include request number: " + "@Model.Order.RequestNum";
             }
             upload[0].setCustomValidity(error);
             
