@@ -36,14 +36,14 @@
 <table id="table">
     <thead>
     <tr>
-        <th></th>
-        <th>User</th>
+        <th>Work Req #</th>
+        <th>Status</th>
         <th>ClientId</th>
+        <th>User</th>
         <th>Created</th>
         <th>Updated</th>
-        <th>Project</th>
-        <th>Status</th>
         <th>Paid</th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -52,7 +52,37 @@
     {
         <tr>
             <td>
-                <a asp-action="Details" asp-route-id="@order.Id"><i class="fa fa-eye"> Details</i></a>
+                @if (order.Status == OrderStatusCodes.Confirmed)
+                {
+                    <a asp-action="Confirmation" asp-route-id="@order.Id">N/A</a>
+                }
+                else if (order.Status == OrderStatusCodes.Complete)
+                {
+                    <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier">@order.RequestNum</a>
+                }
+                else if (order.Status == OrderStatusCodes.Received)
+                {
+                    <a asp-action="Finalize" asp-route-id="@order.Id">@order.RequestNum</a>
+                }
+                else
+                {
+                    <a asp-action="Details" asp-route-id="@order.Id">@order.RequestNum</a>
+
+                }
+            </td>
+            <td>@order.Status</td>
+            <td>@order.ClientId</td>
+            <td>@order.Creator.Email</td>
+            <td>@order.Created.ToPacificTime().ToString("g")</td>
+            <td>@order.Updated.ToPacificTime().ToString("g")</td>
+            <td style="text-align: center">
+                @if (order.Paid)
+                {
+                    <i class="fa fa-check" aria-hidden="true"></i>
+
+                }
+            </td>
+            <td>
                 @if (order.Status == OrderStatusCodes.Confirmed)
                 {
                     <a asp-action="Confirmation" asp-route-id="@order.Id"><i class="fa fa-check"> Receive</i></a>
@@ -61,23 +91,7 @@
                 {
                     <a asp-action="Finalize" asp-route-id="@order.Id"><i class="fa fa-upload" style="color: red"> Finalize</i></a>
                 }
-                @if (order.Status == OrderStatusCodes.Complete)
-                {
-                    <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier"><i class="fa fa-download"> Results</i></a>
-                }
-            </td>
-            <td>@order.Creator.Email</td>
-            <td>@order.ClientId</td>
-            <td>@order.Created.ToPacificTime().ToString("g")</td>
-            <td>@order.Updated.ToPacificTime().ToString("g")</td>
-            <td>@order.Project</td>
-            <td>@order.Status</td>
-            <td style="text-align: center">
-                @if (order.Paid)
-                {
-                    <i class="fa fa-check" aria-hidden="true"></i>
 
-                }
             </td>
         </tr>
     }
