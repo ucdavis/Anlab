@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Anlab.Jobs.MoneyMovement;
+using System.Net;
 
 namespace AnlabMvc.Controllers
 {
@@ -19,11 +20,17 @@ namespace AnlabMvc.Controllers
             _financialService = financialService;
         }
 
-        [HttpGet("financial/{account}")]
+        [HttpGet("financial/info")]
         public async Task<string> GetAccountInfo(string account)
         {
             var accountModel = new AccountModel(account);
-            var result = await _financialService.GetAccountInfo(accountModel.Chart, accountModel.Account);
+            string result; 
+            if(!String.IsNullOrWhiteSpace(accountModel.SubAccount))
+            {
+                result = await _financialService.GetSubAccountInfo(accountModel.Chart, accountModel.Account, accountModel.SubAccount);
+            }
+            else
+                result = await _financialService.GetAccountInfo(accountModel.Chart, accountModel.Account);
             return result;
         }
     }

@@ -45,7 +45,7 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
     lookupAccount = () => {
         if (!this.state.error && this.props.payment.account !== null && this.checkChart(this.props.payment.account.charAt(0)))
         {
-            fetch(`/financial/${this.props.payment.account}`, { credentials: 'same-origin' })
+            fetch(`/financial/info?account=${this.props.payment.account}`, { credentials: 'same-origin' })
                 .then(response => {
                     if (!response.ok) {
                         throw Error();
