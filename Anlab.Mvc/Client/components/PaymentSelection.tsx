@@ -35,12 +35,22 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
         }
     }
 
-    lookupAccount = (account: string) => {
-        if (this.state.error === "")
+    lookupAccount = () => {
+        if (!this.state.error && this.props.payment.account !== null &&
+            (this.props.payment.account.charAt(0) === "L" || this.props.payment.account.charAt(0) === "l" || this.props.payment.account.charAt(0) === "3"))
         {
             fetch(`/financial/${this.props.payment.account}`, { credentials: 'same-origin' })
+                .then(response => {
+                    if (!response.ok) {
+                        throw Error();
+                    }
+                    return response;
+                })
                 .then(response => response.json())
-                .then(accountName => this.setState({ accountName }));
+                .then(accountName => this.setState({ accountName }))
+                .catch(error => {
+                    this.setState({ accountName: null, error: "The account you entered could not be found" });
+                });
         }
         else
         {
