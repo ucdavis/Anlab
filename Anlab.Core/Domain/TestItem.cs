@@ -19,9 +19,6 @@ namespace Anlab.Core.Domain
         [StringLength(512)]
         public string Analysis { get; set; }       
 
-        [Display(Name = "SOP")]
-        public string AnalysisMethodNumber { get; set; }
-
         [Required]
         [StringLength(64)]
         public string Category { get; set; }
