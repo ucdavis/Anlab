@@ -122,14 +122,10 @@
     <script type="text/javascript">
         $(function() {
             var table = $("#table").DataTable({
-                "sorting": [[1, "desc"]],
+                "sorting": [[7, "desc"]],
                 "columnDefs": [
                     {
-                        "type": "date", "targets" : [3,4]
-                    },
-                    {
-                        "targets": [0],
-                        "orderable": false
+                        "type": "date", "targets" : [4,5]
                     }
                 ],
                 "stateSave": true,
@@ -150,10 +146,10 @@
             function (settings, data, dataIndex) {
                 var min = $('#min').datepicker("getDate");
                 var max = $('#max').datepicker("getDate");
-                var startDate = new Date(data[3]);
+                var startDate = new Date(data[4]);
                 startDate.setHours(0, 0, 0, 0);
 
-                var status = data[6];
+                var status = data[1];
                 var statusFilter = $('#status').val();
 
                 if (statusFilter == "All" || status == statusFilter) {
