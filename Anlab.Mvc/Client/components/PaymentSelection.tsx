@@ -35,9 +35,15 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
         }
     }
 
+    checkChart = (chart: string) => {
+        if (chart === "L" || chart === "l" || chart === "3")
+            return true;
+        else
+            return false;
+    }
+
     lookupAccount = () => {
-        if (!this.state.error && this.props.payment.account !== null &&
-            (this.props.payment.account.charAt(0) === "L" || this.props.payment.account.charAt(0) === "l" || this.props.payment.account.charAt(0) === "3"))
+        if (!this.state.error && this.props.payment.account !== null && this.checkChart(this.props.payment.account.charAt(0)))
         {
             fetch(`/financial/${this.props.payment.account}`, { credentials: 'same-origin' })
                 .then(response => {
