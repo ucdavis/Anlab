@@ -4,9 +4,6 @@
     ViewBag.Title = "Your profile";
 }
 
-<h2>Your profile, @Model.Email</h2>
+    @Html.Partial("_UserDetails")
 
-@Html.Partial("_UserDetails")
-
-<a asp-action="Edit" class="btn btn-primary">Edit your profile</a>
-
+    <a asp-action="Edit" class="btn btn-primary">Edit your profile</a>

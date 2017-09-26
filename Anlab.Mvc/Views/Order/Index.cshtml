@@ -6,85 +6,87 @@
     ViewData["Title"] = "Orders";
 }
 
-<p>
-    <a asp-action="Create" class="btn btn-default">Create Order</a>    
-</p>
+    <p>
+        <a asp-action="Create" class="btn btn-default">Create Order</a>
+    </p>
 
-<table border="0" cellspacing="5" cellpadding="5" align="left">
-    <tbody>
-        <tr>
-            <td><label>Minimum Date:</label></td>
-            <td><label>Maximum Date:</label></td>
-            <td><label>Status:</label></td>
-        </tr>
-        <tr>
-            <td><input name="min" id="min" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
-            <td><input name="max" id="max" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
-            <td>
-                <select name="status" id="status">
-                    <option value="All">Show All</option>
-                 @foreach(var status in OrderStatusCodes.All)
-                 {
-                     <option value="@status">@status</option>
-                 }
-                </select>
-            </td>
-        </tr>
-    </tbody>
-</table>
+    <table border="0" cellspacing="5" cellpadding="5" align="left">
+        <tbody>
+            <tr>
+                <td><label>Minimum Date:</label></td>
+                <td><label>Maximum Date:</label></td>
+                <td><label>Status:</label></td>
+            </tr>
+            <tr>
+                <td><input name="min" id="min" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
+                <td><input name="max" id="max" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
+                <td>
+                    <select name="status" id="status">
+                        <option value="All">Show All</option>
+                     @foreach(var status in OrderStatusCodes.All)
+                     {
+                         <option value="@status">@status</option>
+                     }
+                    </select>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
-<table id="table">
-    <thead>
-    <tr>
-        <th></th>
-        <th>Created</th>
-        <th>Updated</th>
-        <th>Project</th>
-        <th>Status</th>
-        <th>Paid</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var order in Model)
-    {
+    <table id="table">
+        <thead>
         <tr>
-            <td>@if (order.Status == OrderStatusCodes.Created)
-                {
-                    <a asp-action="Confirmation" asp-route-id="@order.Id"><i class="fa fa-check"> Confirm</i></a>
-                    <a asp-action="Edit" asp-route-id="@order.Id"><i class="fa fa-edit"> Edit</i></a>
-                }
-                else if(order.Status == OrderStatusCodes.Complete)
-                {
-                    <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier">Results</a>
-                }
-                else if(order.Status == OrderStatusCodes.Confirmed)
-                {
-                    <a asp-action="Confirmed" asp-route-id="@order.Id">Details</a>
-                }
-                else
-                {
-                    <a asp-action="Details" asp-route-id="@order.Id"><i class="fa fa-eye"> Details</i></a>
-                    if (order.Status == OrderStatusCodes.Finalized && !order.Paid && order.PaymentType == PaymentTypeCodes.CreditCard)
+            <th></th>
+            <th>Created</th>
+            <th>Updated</th>
+            <th>Project</th>
+            <th>Status</th>
+            <th>Paid</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@if (order.Status == OrderStatusCodes.Created)
                     {
-                        <a asp-controller="Payment" asp-action="Pay" asp-route-id="@order.ShareIdentifier"><i class="fa fa-credit-card-alt"> Pay</i> </a>
+                        <a asp-action="Confirmation" asp-route-id="@order.Id"><i class="fa fa-check"> Confirm</i></a>
+                        <a asp-action="Edit" asp-route-id="@order.Id"><i class="fa fa-edit"> Edit</i></a>
                     }
-                }
-            </td>
-            <td>@order.Created.ToPacificTime().ToString("g")</td>
-            <td>@order.Updated.ToPacificTime().ToString("g")</td>
-            <td>@order.Project</td>
-            <td>@order.Status</td>
-            <td style="text-align: center">
-                @if (order.Paid)
-                {
-                    <i class="fa fa-check" aria-hidden="true"></i>
+                    else if(order.Status == OrderStatusCodes.Complete)
+                    {
+                        <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier">Results</a>
+                    }
+                    else if(order.Status == OrderStatusCodes.Confirmed)
+                    {
+                        <a asp-action="Confirmed" asp-route-id="@order.Id">Details</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Details" asp-route-id="@order.Id"><i class="fa fa-eye"> Details</i></a>
+                    if (order.Status == OrderStatusCodes.Finalized && !order.Paid && order.PaymentType == PaymentTypeCodes.CreditCard)
+                        {
+                            <a asp-controller="Payment" asp-action="Pay" asp-route-id="@order.ShareIdentifier"><i class="fa fa-credit-card-alt"> Pay</i> </a>
+                    }
+                    }
+                </td>
+                <td>@order.Created.ToPacificTime().ToString("g")</td>
+                <td>@order.Updated.ToPacificTime().ToString("g")</td>
+                <td>@order.Project</td>
+                <td>@order.Status</td>
+                <td style="text-align: center">
+                    @if (order.Paid)
+                    {
+                        <i class="fa fa-check" aria-hidden="true"></i>
 
-                }
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+
 
 @section AdditionalStyles
 {

@@ -2,7 +2,6 @@
 @using Humanizer
 @model AnlabMvc.Models.Order.OrderReviewModel
 
-<div class="row">
     <div class="col whiteblock">
 
 
@@ -111,7 +110,7 @@
                         @if (temp != null && !String.IsNullOrEmpty(temp.Notes))
                         {
                             <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@temp.Notes')" title="@temp.Notes" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
-                        }   
+                }
                     </td>
                     <td>@test.Id</td>
                     <td>@test.SubTotal.ToString("C")</td>
@@ -122,7 +121,6 @@
             </tbody>
         </table>
     </div>
-</div>
 
 @if (ViewBag.Public != null && ViewBag.Public)
 {

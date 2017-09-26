@@ -28,10 +28,10 @@ describe('<SampleTypeSelection/>', () => {
         expect(expectedTag.text()).toEqual('What type of samples?');
     });
 
-    it('should have an inner div with a className of row', () => {
+    it('should have an inner div with a className of flexrow', () => {
         const target = mount(<SampleTypeSelection sampleType="soil" onSampleSelected={null} />);
         const expectedTag = target.find('div').at(1);
-        expect(expectedTag.hasClass('row')).toEqual(true);
+        expect(expectedTag.hasClass('flexrow')).toEqual(true);
     });
 
     describe('Soil selector', () => {
@@ -40,16 +40,14 @@ describe('<SampleTypeSelection/>', () => {
             const expectedTag = target.find('div').at(1).childAt(0);
             expect(expectedTag.hasClass('anlab_form_style')).toEqual(true);
             expect(expectedTag.hasClass('anlab_form_samplebtn')).toEqual(true);
-            expect(expectedTag.hasClass('col')).toEqual(true);
-            expect(expectedTag.hasClass('t-center')).toEqual(true);
+            expect(expectedTag.hasClass('flexcol')).toEqual(true);
         });
         it('should have common classNames 2', () => {
             const target = mount(<SampleTypeSelection sampleType="Soil" onSampleSelected={null} />);
             const expectedTag = target.find('div').at(1).childAt(0);
             expect(expectedTag.hasClass('anlab_form_style')).toEqual(true);
             expect(expectedTag.hasClass('anlab_form_samplebtn')).toEqual(true);
-            expect(expectedTag.hasClass('col')).toEqual(true);
-            expect(expectedTag.hasClass('t-center')).toEqual(true);
+            expect(expectedTag.hasClass('flexcol')).toEqual(true);
         });
         it('should have not have selected classNames when not soil', () => {
             const target = mount(<SampleTypeSelection sampleType="xxx" onSampleSelected={null} />);
@@ -98,16 +96,14 @@ describe('<SampleTypeSelection/>', () => {
             const expectedTag = target.find('div').at(1).childAt(1);
             expect(expectedTag.hasClass('anlab_form_style')).toEqual(true);
             expect(expectedTag.hasClass('anlab_form_samplebtn')).toEqual(true);
-            expect(expectedTag.hasClass('col')).toEqual(true);
-            expect(expectedTag.hasClass('t-center')).toEqual(true);
+            expect(expectedTag.hasClass('flexcol')).toEqual(true);
         });
         it('should have common classNames 2', () => {
             const target = mount(<SampleTypeSelection sampleType="Plant" onSampleSelected={null} />);
             const expectedTag = target.find('div').at(1).childAt(1);
             expect(expectedTag.hasClass('anlab_form_style')).toEqual(true);
             expect(expectedTag.hasClass('anlab_form_samplebtn')).toEqual(true);
-            expect(expectedTag.hasClass('col')).toEqual(true);
-            expect(expectedTag.hasClass('t-center')).toEqual(true);
+            expect(expectedTag.hasClass('flexcol')).toEqual(true);
         });
         it('should have not have selected classNames when not soil', () => {
             const target = mount(<SampleTypeSelection sampleType="xxx" onSampleSelected={null} />);
@@ -156,16 +152,14 @@ describe('<SampleTypeSelection/>', () => {
             const expectedTag = target.find('div').at(1).childAt(2);
             expect(expectedTag.hasClass('anlab_form_style')).toEqual(true);
             expect(expectedTag.hasClass('anlab_form_samplebtn')).toEqual(true);
-            expect(expectedTag.hasClass('col')).toEqual(true);
-            expect(expectedTag.hasClass('t-center')).toEqual(true);
+            expect(expectedTag.hasClass('flexcol')).toEqual(true);
         });
         it('should have common classNames 2', () => {
             const target = mount(<SampleTypeSelection sampleType="Water" onSampleSelected={null} />);
             const expectedTag = target.find('div').at(1).childAt(2);
             expect(expectedTag.hasClass('anlab_form_style')).toEqual(true);
             expect(expectedTag.hasClass('anlab_form_samplebtn')).toEqual(true);
-            expect(expectedTag.hasClass('col')).toEqual(true);
-            expect(expectedTag.hasClass('t-center')).toEqual(true);
+            expect(expectedTag.hasClass('flexcol')).toEqual(true);
         });
         it('should have not have selected classNames when not soil', () => {
             const target = mount(<SampleTypeSelection sampleType="xxx" onSampleSelected={null} />);

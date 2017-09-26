@@ -3,18 +3,7 @@
 title: "About Us"
 
 ---
-
-
-<div class="row">
-  <div class="col whiteblock">About the UC Davis Analytical Lab</div>
-  <div class="col whiteblock">About the UC Davis Analytical Lab</div>
-  <div class="col whiteblock">About the UC Davis Analytical Lab</div>
-  <div class="col whiteblock">About the UC Davis Analytical Lab</div>
-</div>
-
-<div class="row">
-  <div class="col-9 whiteblock">
-    <!-- <h3>@ViewData["Message"]</h3> -->
+<div>
     <p class="lead">
         The UC Davis Analytical Laboratory is a core support facility of the UC Davis College of Agriculture and Environmental Sciences.
     </p>
@@ -45,5 +34,4 @@ title: "About Us"
         <li>Main Laboratory Area - Room 213, Hoagland Hall</li>
         <li>Sample Receiving Area - Hoagland Annex, 530-752-0266</li>
     </ul>
-  </div>
-</div>
+    </div>
