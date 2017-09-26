@@ -62,21 +62,20 @@
         });
 
         $('#UploadFile').on('change', function () {
-
-            var fullFileName = $('#UploadFile').val().replace(/^.*[\\\/]/, '').toUpperCase();
+            var upload = $("#UploadFile");           
+            var fullFileName = upload.val().replace(/^.*[\\\/]/, '').toUpperCase();
             var fileName = fullFileName.replace(/\.[^/.]+$/, "");
             var extension = fullFileName.split('.').pop();
-            var element = $("#UploadFile")[0];
+            
             var error = "";
             if (extension !== 'XLS' && extension !== 'XLSX') {
                 error = "Only XLS and XLSX files can be uploaded";
             }
             var expectedFileName = '@Model.Order.RequestNum'.toUpperCase();
-            if (expectedFileName !== fileName) {
-                error = "File was not named " + "@Model.Order.RequestNum";
+            if (fileName.indexOf(expectedFileName) === -1) {
+                error = "File name did not contain request number: " + "@Model.Order.RequestNum";
             }
-            
-            element.setCustomValidity(error);
+            upload[0].setCustomValidity(error);
             
         });
     </script>
