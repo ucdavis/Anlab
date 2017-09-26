@@ -58,7 +58,7 @@
                 }
                 @if (order.Status == OrderStatusCodes.Received)
                 {
-                    <a asp-action="UpdateFromCompletedTests" asp-route-id="@order.Id"><i class="fa fa-upload" style="color: red"> Finalize</i></a>
+                    <a asp-action="Finalize" asp-route-id="@order.Id"><i class="fa fa-upload" style="color: red"> Finalize</i></a>
                 }
                 @if (order.Status == OrderStatusCodes.Complete)
                 {

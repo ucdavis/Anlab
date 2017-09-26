@@ -24,7 +24,7 @@ export class Project extends React.Component<IProjectProps, IProjectInputState> 
     validate = (v: string) => {
         let error = null;
         if (v.trim() === "") {
-            error = "The project id is required";
+            error = "The project Title is required";
         }
 
         this.setState({ error } as IProjectInputState);
@@ -43,7 +43,7 @@ export class Project extends React.Component<IProjectProps, IProjectInputState> 
     render() {
         return (
             <div>
-                <Input ref={this.props.projectRef} type='text' onBlur={this.onBlur} error={this.state.error} required={true} maxLength={256} value={this.state.internalValue} onChange={this.onChange} label='Project Id' />
+                <Input ref={this.props.projectRef} type='text' onBlur={this.onBlur} error={this.state.error} required={true} maxLength={256} value={this.state.internalValue} onChange={this.onChange} label='Project Title' />
             </div>
     );
 }

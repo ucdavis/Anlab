@@ -161,7 +161,7 @@ namespace AnlabMvc.Controllers
 
         }
 
-        public async Task<IActionResult> UpdateFromCompletedTests(int id)
+        public async Task<IActionResult> Finalize(int id)
         {
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
@@ -193,7 +193,7 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateFromCompletedTests(int id, UpdateFromCompletedTestsModel model)
+        public async Task<IActionResult> Finalize(int id, UpdateFromCompletedTestsModel model)
         {
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
@@ -211,7 +211,7 @@ namespace AnlabMvc.Controllers
             if (model.UploadFile == null || model.UploadFile.Length <= 0)
             {
                 ErrorMessage = "You need to upload the results at this time.";
-                return RedirectToAction("UpdateFromCompletedTests");
+                return RedirectToAction("Finalize");
             }
 
             order.Status = OrderStatusCodes.Finalized;
@@ -253,7 +253,7 @@ namespace AnlabMvc.Controllers
                 else
                 {
                     ErrorMessage = "There was a problem processing the payment for this account.";
-                    return RedirectToAction("UpdateFromCompletedTests");
+                    return RedirectToAction("Finalize");
                 }
             }
 
