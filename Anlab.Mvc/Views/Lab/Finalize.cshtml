@@ -7,13 +7,13 @@
 
 @Html.Partial("_OrderDetails")
 
-<form method="post" asp-controller="Lab" enctype="multipart/form-data" asp-action="UpdateFromCompletedTests" asp-route-id="@Model.Order.Id">
+<form method="post" asp-controller="Lab" enctype="multipart/form-data" asp-action="Finalize" asp-route-id="@Model.Order.Id">
     
     <div class="form-group">
         <span>Upload Results</span>
         @if (string.IsNullOrWhiteSpace(Model.Order.ResultsFileIdentifier))
         {
-            <input type="file" class="form-control" name="UploadFile" required/>
+            <input id="UploadFile" type="file" class="form-control" name="UploadFile" required/>
         }
         else
         {
@@ -59,6 +59,25 @@
                 var adjustAmt = 0;
             $('#adjustmentAmount').val(adjustAmt);
             $('#adjustAmt').html(adjustAmt);
+        });
+
+        $('#UploadFile').on('change', function () {
+
+            var fullFileName = $('#UploadFile').val().replace(/^.*[\\\/]/, '').toUpperCase();
+            var fileName = fullFileName.replace(/\.[^/.]+$/, "");
+            var extension = fullFileName.split('.').pop();
+            var element = $("#UploadFile")[0];
+            var error = "";
+            if (extension !== 'XLS' && extension !== 'XLSX') {
+                error = "Only XLS and XLSX files can be uploaded";
+            }
+            var expectedFileName = '@Model.Order.RequestNum'.toUpperCase();
+            if (expectedFileName !== fileName) {
+                error = "File was not named " + "@Model.Order.RequestNum";
+            }
+            
+            element.setCustomValidity(error);
+            
         });
     </script>
                                                                   
