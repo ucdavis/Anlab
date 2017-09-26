@@ -6,8 +6,8 @@ import { Summary } from '../Summary';
 describe('<Summary />', () => {
     describe('Internal functions', () => {
         const testItems: Array<ITestItem> = [
-            { analysis: '1ABC', id: '1C-ABC', internalCost: 2.02, externalCost: 3.03, internalSetupCost: 5, externalSetupCost: 7,category: 'Cat1', categories: ['Cat1'] , notes: ''},
-            { analysis: '2ABC', id: '2C-ABC', internalCost: 1.01, externalCost: 4.03, internalSetupCost: 6, externalSetupCost: 7, category: 'Cat2', categories: ['Cat2'], notes: '' }
+            { analysis: '1ABC', analysisMethodNumber: '1B-ABC', id: '1C-ABC', internalCost: 2.02, externalCost: 3.03, internalSetupCost: 5, externalSetupCost: 7,category: 'Cat1', categories: ['Cat1'] , notes: ''},
+            { analysis: '2ABC', analysisMethodNumber: '2B-ABC', id: '2C-ABC', internalCost: 1.01, externalCost: 4.03, internalSetupCost: 6, externalSetupCost: 7, category: 'Cat2', categories: ['Cat2'], notes: '' }
         ];
 
         describe('totalCost internal function', () => {
@@ -95,8 +95,8 @@ describe('<Summary />', () => {
         });
         it('should render something if tests are selected', () => {
             const testItems: Array<ITestItem> = [
-                { analysis: '1ABC', id: '1C-ABC', internalCost: 2.02, externalCost: 3.03, internalSetupCost: 5, externalSetupCost: 7, category: 'Cat1', categories: ['Cat1'], notes: '' },
-                { analysis: '2ABC', id: '2C-ABC', internalCost: 1.01, externalCost: 4.03, internalSetupCost: 6, externalSetupCost: 7, category: 'Cat2', categories: ['Cat2'], notes: '' }
+                { analysis: '1ABC', analysisMethodNumber: '1B-ABC', id: '1C-ABC', internalCost: 2.02, externalCost: 3.03, internalSetupCost: 5, externalSetupCost: 7, category: 'Cat1', categories: ['Cat1'], notes: '' },
+                { analysis: '2ABC', analysisMethodNumber: '2B-ABC', id: '2C-ABC', internalCost: 1.01, externalCost: 4.03, internalSetupCost: 6, externalSetupCost: 7, category: 'Cat2', categories: ['Cat2'], notes: '' }
             ]
             const payment = { clientType: 'other', account: '' };
             const target = mount(<Summary quantity={1} payment={payment} status="Test" canSubmit={false} hideError={true} isCreate={true} onSubmit={null} testItems={testItems} processingFee={null} project={null} focusInput={null} quantityRef={null} projectRef={null} />);

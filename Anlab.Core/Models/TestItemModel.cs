@@ -16,6 +16,7 @@ namespace Anlab.Core.Models
         public string[] Categories => Category.Split('|');
         public string Group { get; set; }
         public string Analysis { get; set; }
+        public string AnalysisMethodNumber { get; set; }
         public string Description { get; set; }
         public string Notes { get; set; }
         public bool Public { get; set; }

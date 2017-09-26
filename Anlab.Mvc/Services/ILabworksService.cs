@@ -40,6 +40,7 @@ namespace AnlabMvc.Services
         /// <returns></returns>
         public async Task<IList<TestItemPrices>> GetPrices()
         {
+            //TODO: add query to also pull SOP/AnalysisMethodNumber
             var codes = _context.TestItems.AsNoTracking().Select(a => a.Id).Distinct().ToArray();
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {
@@ -134,6 +135,7 @@ namespace AnlabMvc.Services
                 tip.SetupCost = 30;
                 tip.Multiplier = 1;
                 tip.Name = testItem.Analysis;
+                tip.AnalysisMethodNumber = "SOP";
                 testItems.Add(tip);
             }
 
