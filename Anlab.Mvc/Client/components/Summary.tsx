@@ -80,9 +80,9 @@ export class Summary extends React.Component<ISummaryProps, any> {
             color: 'red',
             padding: '0 10px'
         }
-        let saveText = this.props.isCreate ? "Place Order" : "Update Order";
-        let infoText = this.props.isCreate ? "Go ahead and place your order" : "Go ahead and update your order";        
-        const errorText = "Please correct any errors and complete any required fields before you " + saveText.toLowerCase();
+        let saveText = "Save & Review";
+        let infoText = "You will be able to review this information before placing your order";       
+        const errorText = "Please correct any errors and complete any required fields before you proceed";
         return (
             <div>
                 <div className="ordersum">

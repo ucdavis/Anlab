@@ -21,6 +21,8 @@ namespace AnlabMvc.Services
         Task<List<TestItemModel>> PopulateTestItemModel(bool showAll = false);
 
         Task<OverwriteOrderResult> OverwiteOrderFromDb(Order orderToUpdate);
+
+        Task UpdateTestsAndPrices(Order orderToUpdate);
     }
 
     public class OrderService : IOrderService
@@ -104,6 +106,20 @@ namespace AnlabMvc.Services
             }
 
             return calcualtedTests.ToArray();
+        }
+
+        public async Task UpdateTestsAndPrices(Order orderToUpdate)
+        {
+            var allTests = await PopulateTestItemModel(true);
+            orderToUpdate.SaveTestDetails(allTests);
+
+            var tests = CalculateTestDetails(orderToUpdate);
+
+            var orderDetails = orderToUpdate.GetOrderDetails();
+            orderDetails.SelectedTests = tests.ToArray();
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
+
+            orderToUpdate.SaveDetails(orderDetails);
         }
 
         /// <summary>
