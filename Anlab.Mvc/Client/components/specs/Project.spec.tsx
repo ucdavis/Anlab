@@ -53,7 +53,7 @@ describe('<Project />', () => {
         internal.onChange('');
 
         expect(internal.state.error).not.toBeNull();
-        expect(internal.state.error).toBe("The project id is required");
+        expect(internal.state.error).toBe("The project Title is required");
     });
 
     it('should set error spaces string value', () => {
@@ -63,6 +63,6 @@ describe('<Project />', () => {
         internal.onChange('   ');
 
         expect(internal.state.error).not.toBeNull();
-        expect(internal.state.error).toBe("The project id is required");
+        expect(internal.state.error).toBe("The project Title is required");
     });
 });
