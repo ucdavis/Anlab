@@ -5,6 +5,19 @@
 @{
     ViewData["Title"] = "Orders";
 }
+    @if (Model.Any(o => o.Status == OrderStatusCodes.Created))
+    {
+        <div class="alert alert-warning" role="alert">
+            You have orders that have not been confirmed.
+        </div>
+    }
+
+    @if (Model.Any(o => o.Status == OrderStatusCodes.Finalized && !o.Paid))
+    {
+        <div class="alert alert-danger" role="alert">
+            You have orders that have not been paid.
+        </div>
+    }
 
     <p>
         <a asp-action="Create" class="btn btn-default">Create Order</a>
@@ -33,7 +46,7 @@
         </tbody>
     </table>
 
-    <table id="table">
+    <table id="table" class="table">
         <thead>
         <tr>
             <th>Project</th>
@@ -112,6 +125,17 @@
                  ],
                  "stateSave": true,
                  "stateDuration": 60 * 10,
+                 "createdRow": function (row, data, index) {
+                     if (data[1] == "Created") {
+                         $(row).addClass('warning');
+
+                     }
+                     if (data[1] == "Finalized" && !data[2])
+                     {
+                         $(row).addClass('danger');
+                     }
+
+                 }
              });
 
 
