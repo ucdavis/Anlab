@@ -3,15 +3,33 @@
 
 @{
     ViewData["Title"] = "Results";
+    var showCreditCardPay = (bool)ViewBag.ShowCCPay;
+    Dictionary<string, string> paymentDict = null;
+    if (showCreditCardPay)
+    {
+        paymentDict = (Dictionary<string, string>)ViewBag.PaymentDictionary;
+    }
 }
 
 <div>
     <p>
-    <a asp-action="Download" asp-route-id="@Model.Order.ShareIdentifier">
-        <i class="fa fa-download" aria-hidden="true"></i> Download Results
+        <a asp-action="Download" asp-route-id="@Model.Order.ShareIdentifier">
+            <i class="fa fa-download" aria-hidden="true"></i> Download Results
         </a>
     </p>
 </div>
+@if (showCreditCardPay)
+{
+    <form action="@ViewBag.CyberSourceUrl" method="post" autocomplete="off">
+        @foreach (var pair in paymentDict)
+        {
+            <input type="hidden" name="@pair.Key" value="@pair.Value"/>
+        }
+        <input type="hidden" name="signature" value="@ViewBag.Signature"/>
+        <button type="submit" class="btn btn-primary"><i class="fa fa-credit-card" aria-hidden="true"> @(String.Format("{0:C}", Model.OrderDetails.GrandTotal)) Pay Now</i></button>
+    </form>
+}
+    
 
 @Html.Partial("_OrderDetails")
 
