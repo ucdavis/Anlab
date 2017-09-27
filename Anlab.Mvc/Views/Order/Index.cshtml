@@ -50,6 +50,7 @@
         <thead>
         <tr>
             <th>Project</th>
+            <th>Work Req #</th>
             <th>Status</th>
             <th>Paid</th>
             <th>Created</th>
@@ -77,6 +78,7 @@
                         <a asp-action="Details" asp-route-id="@order.Id">@order.Project</a>
                     }
                 </td>
+                <td>@order.RequestNum</td>
                 <td>@order.Status</td>
                 <td style="text-align: center">
                     @if (order.Paid)
@@ -117,20 +119,20 @@
     <script type="text/javascript">
          $(function () {
              var table = $("#table").DataTable({
-                 "sorting": [[4, "desc"]],
+                 "sorting": [[5, "desc"]],
                  "columnDefs": [
                      {
-                         "type": "date", "targets": [3, 4]
+                         "type": "date", "targets": [4, 5]
                      }
                  ],
                  "stateSave": true,
                  "stateDuration": 60 * 10,
                  "createdRow": function (row, data, index) {
-                     if (data[1] == "Created") {
+                     if (data[2] == "Created") {
                          $(row).addClass('warning');
 
                      }
-                     if (data[1] == "Finalized" && !data[2])
+                     if (data[2] == "Finalized" && !data[3])
                      {
                          $(row).addClass('danger');
                      }
@@ -152,7 +154,7 @@
              function (settings, data, dataIndex) {
                  var min = $('#min').datepicker("getDate");
                  var max = $('#max').datepicker("getDate");
-                 var startDate = new Date(data[4]);
+                 var startDate = new Date(data[5]);
                  startDate.setHours(0, 0, 0, 0);
 
                  var status = data[1];
