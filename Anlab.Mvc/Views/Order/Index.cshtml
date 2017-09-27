@@ -37,10 +37,10 @@
         <thead>
         <tr>
             <th>Project</th>
-            <th>Created</th>
-            <th>Updated</th>
             <th>Status</th>
             <th>Paid</th>
+            <th>Created</th>
+            <th>Updated</th>
         </tr>
         </thead>
         <tbody>
@@ -51,7 +51,7 @@
                     {
                         <a asp-action="Confirmation" asp-route-id="@order.Id">@order.Project</a>
                     }
-                    else if(order.Status == OrderStatusCodes.Complete)
+                    else if(order.Status == OrderStatusCodes.Complete || order.Status == OrderStatusCodes.Finalized)
                     {
                         <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier">@order.Project</a>
                     }
@@ -62,14 +62,8 @@
                     else
                     {
                         <a asp-action="Details" asp-route-id="@order.Id">@order.Project</a>
-                    if (order.Status == OrderStatusCodes.Finalized && !order.Paid && order.PaymentType == PaymentTypeCodes.CreditCard)
-                        {
-                            <a asp-controller="Payment" asp-action="Pay" asp-route-id="@order.ShareIdentifier"><i class="fa fa-credit-card-alt"> Pay</i> </a>
-                    }
                     }
                 </td>
-                <td>@order.Created.ToPacificTime().ToString("g")</td>
-                <td>@order.Updated.ToPacificTime().ToString("g")</td>
                 <td>@order.Status</td>
                 <td style="text-align: center">
                     @if (order.Paid)
@@ -78,6 +72,9 @@
 
                     }
                 </td>
+                <td>@order.Created.ToPacificTime().ToString("g")</td>
+                <td>@order.Updated.ToPacificTime().ToString("g")</td>
+
             </tr>
         }
         </tbody>
@@ -107,14 +104,10 @@
     <script type="text/javascript">
          $(function () {
              var table = $("#table").DataTable({
-                 "sorting": [[1, "desc"]],
+                 "sorting": [[4, "desc"]],
                  "columnDefs": [
                      {
-                         "type": "date", "targets": [1, 2]
-                     },
-                     {
-                         "targets": [0],
-                         "orderable": false
+                         "type": "date", "targets": [3, 4]
                      }
                  ],
                  "stateSave": true,
@@ -135,10 +128,10 @@
              function (settings, data, dataIndex) {
                  var min = $('#min').datepicker("getDate");
                  var max = $('#max').datepicker("getDate");
-                 var startDate = new Date(data[1]);
+                 var startDate = new Date(data[4]);
                  startDate.setHours(0, 0, 0, 0);
 
-                 var status = data[4];
+                 var status = data[1];
                  var statusFilter = $('#status').val();
 
                  if (statusFilter == "All" || status == statusFilter) {
