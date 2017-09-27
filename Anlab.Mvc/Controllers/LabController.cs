@@ -50,7 +50,7 @@ namespace AnlabMvc.Controllers
                     Creator = new User { Email = c.Creator.Email },
                     Created = c.Created,
                     Updated = c.Updated,
-                    Project = c.Project,
+                    RequestNum = c.RequestNum,
                     Status = c.Status,
                     ShareIdentifier = c.ShareIdentifier,
                     Paid = c.Paid
