@@ -44,20 +44,20 @@ namespace AnlabMvc.Controllers
             {
                 return NotFound();
             }
+            
+            var model = new OrderResultsModel();
+            
+            model.OrderReviewModel.Order = order;
+            model.OrderReviewModel.OrderDetails = order.GetOrderDetails();
 
-            var model = new OrderReviewModel();
-            model.Order = order;
-            model.OrderDetails = order.GetOrderDetails();
-
-            ViewBag.ShowCCPay = false;
             if (order.PaymentType == PaymentTypeCodes.CreditCard && !order.Paid)
             {
-                ViewBag.ShowCCPay = true;
+                model.ShowCreditCardPayment = true;
                 Dictionary<string, string> dictionary = SetDictionaryValues(order, order.Creator);
 
                 ViewBag.Signature = _dataSigningService.Sign(dictionary);
-                ViewBag.PaymentDictionary = dictionary;
-                ViewBag.CyberSourceUrl = _appSettings.CyberSourceUrl;
+                model.PaymentDictionary = dictionary;
+                model.CyberSourceUrl = _appSettings.CyberSourceUrl;
             }
 
             return View(model);
