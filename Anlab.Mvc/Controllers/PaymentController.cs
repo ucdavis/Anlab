@@ -23,50 +23,14 @@ namespace AnlabMvc.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IOrderMessageService _orderMessageService;
         private readonly IDataSigningService _dataSigningService;
-        private readonly AppSettings _appSettings;
         private readonly CyberSourceSettings _cyberSourceSettings;
 
-        public PaymentController(ApplicationDbContext context, IOrderMessageService orderMessageService, IDataSigningService dataSigningService, IOptions<CyberSourceSettings> cyberSourceSettings, IOptions<AppSettings> appSettings)
+        public PaymentController(ApplicationDbContext context, IOrderMessageService orderMessageService, IDataSigningService dataSigningService, IOptions<CyberSourceSettings> cyberSourceSettings)
         {
             _context = context;
             _orderMessageService = orderMessageService;
             _dataSigningService = dataSigningService;
-            _appSettings = appSettings.Value;
             _cyberSourceSettings = cyberSourceSettings.Value;
-        }
-
-
-        public ActionResult Pay(Guid id)
-        {
-            var order = _context.Orders.Include(i => i.Creator).SingleOrDefault(a => a.ShareIdentifier == id);
-
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            if (order.Status != OrderStatusCodes.Finalized)
-            {
-                ErrorMessage = "You cannot Pay until the Order is Finalized."; 
-                return RedirectToAction("Index", "Order");
-            }
-            if (order.Paid)
-            {
-                Message = "Order has already been paid.";
-                return RedirectToAction("Index", "Order");
-            }
-
-            Dictionary<string, string> dictionary = SetDictionaryValues(order, order.Creator);
-
-            ViewBag.Signature = _dataSigningService.Sign(dictionary);
-            ViewBag.PaymentDictionary = dictionary;
-            ViewBag.CyberSourceUrl = _appSettings.CyberSourceUrl;
-
-            var model = new OrderReviewModel();
-            model.Order = order;
-            model.OrderDetails = order.GetOrderDetails();
-
-            return View(model);
         }
 
 
@@ -101,7 +65,7 @@ namespace AnlabMvc.Controllers
             if (!responseValid.IsValid)
             {
                 ErrorMessage = ErrorMessage = string.Format("Errors detected: {0}", string.Join(",", responseValid.Errors));
-                return RedirectToAction("Pay", new {id = order.Id});
+                return RedirectToAction("Index","Home");
             }
 
             //Should be good,   
