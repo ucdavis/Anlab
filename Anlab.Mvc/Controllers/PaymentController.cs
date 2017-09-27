@@ -62,8 +62,8 @@ namespace AnlabMvc.Controllers
             var responseValid = CheckResponse(response);
             if (!responseValid.IsValid)
             {
-                ErrorMessage = ErrorMessage = string.Format("Errors detected: {0}", string.Join(",", responseValid.Errors));
-                return RedirectToAction("Index","Home");
+                ErrorMessage = string.Format("Errors detected: {0}", string.Join(",", responseValid.Errors));
+                return RedirectToAction("PaymentError");
             }
 
             //Should be good,   
@@ -74,6 +74,12 @@ namespace AnlabMvc.Controllers
             //ViewBag.PaymentDictionary = dictionary; //Debugging. Remove when not needed
 
             return View(response);
+        }
+
+        [IgnoreAntiforgeryToken]
+        public ActionResult PaymentError()
+        {
+            return View();
         }
 
         [HttpPost]
