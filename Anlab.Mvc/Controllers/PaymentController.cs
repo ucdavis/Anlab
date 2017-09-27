@@ -23,14 +23,12 @@ namespace AnlabMvc.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IOrderMessageService _orderMessageService;
         private readonly IDataSigningService _dataSigningService;
-        private readonly CyberSourceSettings _cyberSourceSettings;
 
-        public PaymentController(ApplicationDbContext context, IOrderMessageService orderMessageService, IDataSigningService dataSigningService, IOptions<CyberSourceSettings> cyberSourceSettings)
+        public PaymentController(ApplicationDbContext context, IOrderMessageService orderMessageService, IDataSigningService dataSigningService)
         {
             _context = context;
             _orderMessageService = orderMessageService;
             _dataSigningService = dataSigningService;
-            _cyberSourceSettings = cyberSourceSettings.Value;
         }
 
 
@@ -250,32 +248,5 @@ namespace AnlabMvc.Controllers
             public IList<string> Errors { get; set; } = new List<string>();
         }
 
-        private Dictionary<string, string> SetDictionaryValues(Anlab.Core.Domain.Order order, Anlab.Core.Domain.User user)
-        {
-            var dictionary = new Dictionary<string, string>();
-            dictionary.Add("transaction_type", "sale");
-            dictionary.Add("reference_number", order.Id.ToString());
-            dictionary.Add("amount", order.GetOrderDetails().GrandTotal.ToString("F2"));
-            dictionary.Add("currency", "USD");
-            dictionary.Add("access_key", _cyberSourceSettings.AccessKey);
-            dictionary.Add("profile_id", _cyberSourceSettings.ProfileId);
-            dictionary.Add("transaction_uuid", Guid.NewGuid().ToString());
-            dictionary.Add("signed_date_time", DateTime.UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"));
-            dictionary.Add("unsigned_field_names", string.Empty);
-            dictionary.Add("locale", "en");
-            dictionary.Add("bill_to_email", user.Email);
-
-
-            dictionary.Add("bill_to_forename", user.GetFirstName());
-            dictionary.Add("bill_to_surname", user.GetLastName());
-
-            dictionary.Add("bill_to_address_country", "US");
-            dictionary.Add("bill_to_address_state", "CA");
-
-
-            var fieldNames = string.Join(",", dictionary.Keys);
-            dictionary.Add("signed_field_names", "signed_field_names," + fieldNames);
-            return dictionary;
-        }
     }
 }
