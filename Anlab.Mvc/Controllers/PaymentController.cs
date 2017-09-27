@@ -106,6 +106,8 @@ namespace AnlabMvc.Controllers
 
             //Should be good,   
             Message = "Payment Processed. Thank You.";
+            
+            ViewBag.ShareId = order.ShareIdentifier;
 
             //ViewBag.PaymentDictionary = dictionary; //Debugging. Remove when not needed
 
