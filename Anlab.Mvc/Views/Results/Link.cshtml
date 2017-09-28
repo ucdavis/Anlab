@@ -5,16 +5,16 @@
     ViewData["Title"] = "Results";
 }
 
-<div>
+<div class="col">
     <p>
-    <a asp-action="Download" asp-route-id="@Model.Order.ShareIdentifier">
+    <a class="btn btn-default" asp-action="Download" asp-route-id="@Model.Order.ShareIdentifier">
         <i class="fa fa-download" aria-hidden="true"></i> Download Results
         </a>
     </p>
-</div>
+
 
 @Html.Partial("_OrderDetails")
-
+</div>
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
