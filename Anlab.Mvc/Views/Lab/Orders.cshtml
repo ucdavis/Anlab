@@ -33,7 +33,7 @@
     </tbody>
 </table>
 
-<table id="table">
+<table id="table" class="table">
     <thead>
     <tr>
         <th>Work Req #</th>
@@ -56,7 +56,7 @@
                 {
                     <a asp-action="Confirmation" asp-route-id="@order.Id">N/A</a>
                 }
-                else if (order.Status == OrderStatusCodes.Complete)
+                else if (order.Status == OrderStatusCodes.Complete || order.Status == OrderStatusCodes.Finalized)
                 {
                     <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier">@order.RequestNum</a>
                 }
