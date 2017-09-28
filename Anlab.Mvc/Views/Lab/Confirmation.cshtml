@@ -11,8 +11,16 @@
 <form asp-controller="Lab" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post">
     @Html.Hidden("confirm", true)
     <div class="form-group">
-        <strong>Request Number:</strong>
+        <span>Request Number:</span>
         <span><input type="text" class="form-control" name="requestNum" required /></span>
+        <span>Add Lab Comments</span>
+        <textarea class="form-control" name="LabComments"></textarea>
+        <span>Adjust Final Total:</span>
+        <input type="hidden" class="form-control" id="prevTotal" value="@Model.OrderDetails.Total" />
+        <input type="text" class="form-control" id="GrandTotal" value="@Model.OrderDetails.Total" autocomplete="off" />
+        <div>Current Total: $@Model.OrderDetails.Total</div>
+        <div>Adjustment Amount: $<span id="adjustAmt">@Model.OrderDetails.AdjustmentAmount</span></div>
+        <input type="hidden" class="form-control" id="adjustmentAmount" name="AdjustmentAmount" value="0" />
     </div>
     <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true">Confirm Received</i></button>    
 </form>
@@ -29,6 +37,19 @@
     <script type="text/javascript">
         $(function() {
             $("#table").dataTable();
+        });
+    </script>
+
+    <script type="text/javascript">
+        $('#GrandTotal').on('keyup', function () {
+            var prevTotal = $('#prevTotal').val();
+            var grandTotal = $(this).val();
+            if (grandTotal)
+                var adjustAmt = parseFloat(grandTotal) - parseFloat(prevTotal);
+            else
+                var adjustAmt = 0;
+            $('#adjustmentAmount').val(adjustAmt);
+            $('#adjustAmt').html(adjustAmt);
         });
     </script>
 
