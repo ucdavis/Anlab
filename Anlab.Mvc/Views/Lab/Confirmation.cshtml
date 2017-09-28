@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Confirmation";
 }
-
+<div class="col">
 <h3>This info is outdated and will be updated from the request number</h3>
 @Html.Partial("_OrderDetails")
 
@@ -14,9 +14,9 @@
         <strong>Request Number:</strong>
         <span><input type="text" class="form-control" name="requestNum" required /></span>
     </div>
-    <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true">Confirm Received</i></button>    
+    <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true">Confirm Received</i></button>
 </form>
-
+</div>
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
@@ -35,4 +35,3 @@
     @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
 
 }
-                                                                  

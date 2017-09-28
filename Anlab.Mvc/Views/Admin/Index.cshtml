@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Admin Index";
 }
-
+<div class="col">
 <table id="table">
     <thead>
         <tr>
@@ -21,31 +21,31 @@
             <td>
                 @if (user.IsUser)
                 {
-                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="User" asp-route-add="false" asp-antiforgery="true">                        
+                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="User" asp-route-add="false" asp-antiforgery="true">
                         <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i> User</button>
                     </form>
-                    
+
                 }
                 else
                 {
-                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="User" asp-route-add="true" asp-antiforgery="true">                        
+                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="User" asp-route-add="true" asp-antiforgery="true">
                         <button class="btn btn-default" type="submit"><i class="fa fa-plus"></i> User</button>
-                    </form>                    
+                    </form>
                 }
                 @if (user.IsAdmin)
                 {
-                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="Admin" asp-route-add="false" asp-antiforgery="true">                        
+                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="Admin" asp-route-add="false" asp-antiforgery="true">
                         <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i> Admin</button>
-                    </form>                    
+                    </form>
                 }
                 else
                 {
-                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="Admin" asp-route-add="true" asp-antiforgery="true">                        
+                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="Admin" asp-route-add="true" asp-antiforgery="true">
                         <button class="btn btn-default" type="submit"><i class="fa fa-plus"></i> Admin</button>
-                    </form>                       
+                    </form>
                 }
 
-                
+
             </td>
             <td>@user.User.Name</td>
             <td>@user.User.Email</td>
@@ -55,6 +55,7 @@
     }
     </tbody>
 </table>
+</div>
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
