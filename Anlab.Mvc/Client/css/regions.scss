@@ -15,6 +15,10 @@
         margin-bottom: 8px;
     }
 }
+.using-affix {
+  bottom:inherit !important;
+  top:50px;
+}
 .affix {
   bottom:4px;
   transition: all 0.15s ease;

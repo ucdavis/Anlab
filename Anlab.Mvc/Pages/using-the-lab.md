@@ -3,7 +3,7 @@
 title: "Using the Lab"
 
 ---
-
+<div class="col-8">
   <p class="lead">The UC Davis Analytical Laboratory conducts chemical analyses on plant, feed, soil, water and waste water in support of the activities of University of California academics. The Lab also accepts samples, on a limited basis, from other educational
       institutions, government agencies, and research-based businesses. </p>
   <h3><a name="one"></a>Establishing a Client User Account:</h3>
@@ -48,13 +48,17 @@ title: "Using the Lab"
   <h3><a name="six"></a>Sample Disposition:</h3>
   <p>You can indicate your preference for sample disposition on the Work Request Form (discard, save for pick up, return). Samples are discarded 30 days after the final report is issued, unless you requested the samples be returned to you on the Work Request Form. If you elected to pick up the samples, we request that you retrieve your samples promptly but not later than the 30 day holding period since the Lab has limited storage space.</p>
 </div>
-<div class="col-4 whiteblock">
-<h3>On this page:</h3>
-<ul>
-    <li><strong><a href="#one">Establishing a Client User Account</a></strong></li>
-    <li><strong><a href="#two">Requesting Analytical Tests / Submitting Samples</a></strong></li>
-    <li><strong><a href="#three">Processing the Samples</a></strong></li>
-    <li><strong><a href="#four">Analyzing the Samples</a></strong></li>
-    <li><strong><a href="#five">Reporting the Results</a></strong></li>
-    <li><strong><a href="#six">Sample Disposition</a></strong></li>
-</ul>
+<div class="col-4">
+  <div class="using-affix" data-spy="affix" data-offset-top="500">
+    <h3>On this page:</h3>
+    <ul>
+        <li><strong><a href="#one">Establishing a Client User Account</a></strong></li>
+        <li><strong><a href="#two">Requesting Analytical Tests / Submitting Samples</a></strong></li>
+        <li><strong><a href="#three">Processing the Samples</a></strong></li>
+        <li><strong><a href="#four">Analyzing the Samples</a></strong></li>
+        <li><strong><a href="#five">Reporting the Results</a></strong></li>
+        <li><strong><a href="#six">Sample Disposition</a></strong></li>
+    </ul>
+  </div>
+
+</div>
