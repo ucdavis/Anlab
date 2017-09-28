@@ -112,7 +112,7 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("AddRequestNumber");
             }
 
-            var checkReqNum = await _dbContext.Orders.AnyAsync(i => i.RequestNum == requestNum);
+            var checkReqNum = await _dbContext.Orders.AnyAsync(i => i.Id != id && i.RequestNum == requestNum);
             if (checkReqNum)
             {
                 ErrorMessage = "That request number is already in use";
