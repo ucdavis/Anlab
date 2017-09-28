@@ -103,15 +103,15 @@ namespace AnlabMvc.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Confirmation(int id, bool confirm, string requestNum)
+        public async Task<IActionResult> Confirmation(int id, LabReceiveModel model)
         {
-            if (String.IsNullOrWhiteSpace(requestNum))
+            if (String.IsNullOrWhiteSpace(model.RequestNum))
             {
                 ErrorMessage = "A request number is required";
                 return RedirectToAction("Confirmation");
             }
 
-            var checkReqNum = await _dbContext.Orders.AnyAsync(i => i.RequestNum == requestNum);
+            var checkReqNum = await _dbContext.Orders.AnyAsync(i => i.RequestNum == model.RequestNum);
             if(checkReqNum)
             {
                 ErrorMessage = "That request number is already in use";
@@ -132,8 +132,8 @@ namespace AnlabMvc.Controllers
             }
 
 
-            order.RequestNum = requestNum;
-            var result = await _orderService.OverwiteOrderFromDb(order); //TODO: Just testing
+            order.RequestNum = model.RequestNum;
+            var result = await _orderService.OverwiteOrderFromDb(order);
             if (result.WasError)
             {
                 ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
@@ -145,6 +145,11 @@ namespace AnlabMvc.Controllers
             orderDetails.Quantity = result.Quantity;
             orderDetails.SelectedTests = result.SelectedTests;
             orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
+
+            orderDetails.LabComments = model.LabComments;
+            orderDetails.AdjustmentAmount = model.AdjustmentAmount;
+
+            order.SaveDetails(orderDetails);
 
             order.SaveDetails(orderDetails);
 
@@ -193,7 +198,7 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> Finalize(int id, UpdateFromCompletedTestsModel model)
+        public async Task<IActionResult> Finalize(int id, LabFinalizeModel model)
         {
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
