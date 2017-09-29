@@ -134,6 +134,7 @@ namespace AnlabMvc.Services
                 tip.SetupCost = 30;
                 tip.Multiplier = 1;
                 tip.Name = testItem.Analysis;
+                tip.Sop = $"{100 + counter}";
                 testItems.Add(tip);
             }
 
