@@ -63,7 +63,7 @@ namespace AnlabMvc.Resources {
         /// <summary>
         ///   Looks up a localized string similar to DECLARE @setup int;
         ///SELECT @setup = APRICE from dbo.ANL_LIST where ACODE = &apos;SETUP&apos;
-        ///SELECT[ANL_LIST].[ACODE] as Id,[APRICE] as Cost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier, @setup as SetupCost , CASNUMB, CAST(SUBSTRING(CASNUMB, 0, 4) as INT) as SOP
+        ///SELECT[ANL_LIST].[ACODE] as Id,[APRICE] as Cost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier, @setup as SetupCost , CAST(SUBSTRING(CASNUMB, 0, 4) as INT) as SOP
         ///FROM [ANL_LIST] INNER JOIN [ANALYTES] ON [ANL_LIST].[ACODE] = [ANALYTES].[ACODE] 
         ///where ANL_LIST.ACODE in @codes.
         /// </summary>
