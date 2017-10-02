@@ -76,7 +76,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                             <Checkbox checked={selected} onChange={e => this.onSelection(item, e)} />
                         </td>
                         <td>{item.analysis}</td>
-                        <td>{item.sop}</td>
+                        <td>{item.sop === "0" ? "---" : item.sop}</td>
                         <td><NumberFormat value={priceDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></td>
                         <td style={{ width: '5%' }}>
                             {item.notes ? <i className="analysisTooltip fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-html="true" title={tooltipContent}></i> : ""}
