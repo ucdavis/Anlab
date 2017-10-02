@@ -115,7 +115,9 @@ namespace AnlabMvc.Controllers
             if(checkReqNum)
             {
                 ErrorMessage = "That request number is already in use";
+#if !DEBUG
                 return RedirectToAction("Confirmation");
+#endif
             }
 
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
@@ -145,7 +147,8 @@ namespace AnlabMvc.Controllers
             orderDetails.Quantity = result.Quantity;
             orderDetails.SelectedTests = result.SelectedTests;
             orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
-
+            orderDetails.Total = orderDetails.Total * result.RushMultiplier;
+            
             order.SaveDetails(orderDetails);
 
             order.Status = OrderStatusCodes.Received;
@@ -182,7 +185,8 @@ namespace AnlabMvc.Controllers
             orderDetails.Quantity = result.Quantity;
             orderDetails.SelectedTests = result.SelectedTests;
             orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
-
+            orderDetails.Total = orderDetails.Total * result.RushMultiplier;
+            
             order.SaveDetails(orderDetails);
 
             var model = new OrderReviewModel();
@@ -232,6 +236,7 @@ namespace AnlabMvc.Controllers
             orderDetails.Quantity = result.Quantity;
             orderDetails.SelectedTests = result.SelectedTests;
             orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
+            orderDetails.Total = orderDetails.Total * result.RushMultiplier;
 
             orderDetails.LabComments = model.LabComments;
             orderDetails.AdjustmentAmount = model.AdjustmentAmount;

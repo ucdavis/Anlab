@@ -18,6 +18,8 @@ namespace AnlabMvc.Models.Order
         
         public string ClientId { get; set; }
         public int Quantity { get; set; }
+        
+        public decimal RushMultiplier { get; set; }
 
         public bool WasError => MissingCodes.Count > 0;
     }

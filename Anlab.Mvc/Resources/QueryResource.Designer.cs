@@ -105,6 +105,18 @@ namespace AnlabMvc.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SELECT DISTINCT([RUSHYNP])
+        ///
+        ///  FROM [Labworks5].[dbo].[SUSERFLDS]
+        ///  where RUSHYNP != &apos;N&apos; and WORK_REQ = @RequestNum.
+        /// </summary>
+        internal static string AnlabRushMultiplierForOrder {
+            get {
+                return ResourceManager.GetString("AnlabRushMultiplierForOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SELECT DISTINCT [ACODE] as Id
         ///FROM            [SAMPLE] INNER JOIN
         ///                         [ANALYSIS] ON [SAMPLE].[SAMPNO] = [ANALYSIS].[SAMPNO]

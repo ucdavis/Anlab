@@ -164,6 +164,7 @@ namespace AnlabMvc.Services
             rtValue.SelectedTests = calcualtedTests;
             rtValue.ClientId = orderFromDb.ClientId;
             rtValue.Quantity = orderFromDb.Quantity;
+            rtValue.RushMultiplier = orderFromDb.RushMultiplier;
 
             return rtValue;
         }

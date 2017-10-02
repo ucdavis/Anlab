@@ -128,6 +128,12 @@ namespace AnlabMvc.Services
                     throw new Exception("Number of samples Id not found");
                 }
                 rtValue.Quantity = Quantity.ElementAtOrDefault(0);
+                
+                var rush = await db.Connection.QueryAsync<decimal>(QueryResource.AnlabRushMultiplierForOrder, new { RequestNum });
+                if (rush != null && rush.Count() == 1)
+                {
+                    rtValue.RushMultiplier = rush.ElementAtOrDefault(0);
+                }
 
                 return rtValue;
             }

@@ -139,6 +139,12 @@ where [ANL_LIST].[ACODE]  = @code </value>
   <data name="AnlabQuantityForOrder" xml:space="preserve">
     <value>select count(loccode) as Quantity from sample where logbatch = @RequestNum</value>
   </data>
+  <data name="AnlabRushMultiplierForOrder" xml:space="preserve">
+    <value>SELECT DISTINCT([RUSHYNP])
+
+  FROM [Labworks5].[dbo].[SUSERFLDS]
+  where RUSHYNP != 'N' and WORK_REQ = @RequestNum</value>
+  </data>
   <data name="AnlabTestsRunForOrder" xml:space="preserve">
     <value>SELECT DISTINCT [ACODE] as Id
 FROM            [SAMPLE] INNER JOIN

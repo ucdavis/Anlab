@@ -10,5 +10,7 @@ namespace AnlabMvc.Models.Order
         public string ClientId { get; set; }
         public int Quantity { get; set; }
         public IList<string> TestCodes { get; set; }
+
+        public decimal RushMultiplier { get; set; } = 1;
     }
 }
