@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AnlabClientIdForOrder" xml:space="preserve">
+    <value>select distinct(loccode) as ClientId from sample where logbatch = @RequestNum</value>
+  </data>
   <data name="AnlabItemPrices" xml:space="preserve">
     <value>DECLARE @setup int;
 SELECT @setup = APRICE from dbo.ANL_LIST where ACODE = 'SETUP'
@@ -128,8 +131,13 @@ where ANL_LIST.ACODE in @codes</value>
   <data name="AnlabPriceForCode" xml:space="preserve">
     <value>DECLARE @setup int;
 SELECT @setup = APRICE from dbo.ANL_LIST where ACODE = 'SETUP'
-SELECT [ACODE] as Id,[APRICE] as Cost,[ANAME] as 'Name',[WORKUNIT] as Multiplier, @setup as SetupCost FROM [ANL_LIST] where ACODE  = @code </value>
+SELECT [ANL_LIST].[ACODE] as Id,[APRICE] as Cost,[ANAME] as 'Name',[WORKUNIT] as Multiplier, @setup as SetupCost , CAST(SUBSTRING(CASNUMB, 0, 4) as INT) as SOP
+FROM [ANL_LIST] INNER JOIN [ANALYTES] ON [ANL_LIST].[ACODE] = [ANALYTES].[ACODE] 
+where [ANL_LIST].[ACODE]  = @code </value>
     <comment>Price for a code.</comment>
+  </data>
+  <data name="AnlabQuantityForOrder" xml:space="preserve">
+    <value>select count(loccode) as Quantity from sample where logbatch = @RequestNum</value>
   </data>
   <data name="AnlabTestsRunForOrder" xml:space="preserve">
     <value>SELECT DISTINCT [ACODE] as Id

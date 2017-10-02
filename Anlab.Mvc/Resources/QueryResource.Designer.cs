@@ -61,6 +61,15 @@ namespace AnlabMvc.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to select distinct(loccode) as ClientId from sample where logbatch = @RequestNum.
+        /// </summary>
+        internal static string AnlabClientIdForOrder {
+            get {
+                return ResourceManager.GetString("AnlabClientIdForOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DECLARE @setup int;
         ///SELECT @setup = APRICE from dbo.ANL_LIST where ACODE = &apos;SETUP&apos;
         ///SELECT[ANL_LIST].[ACODE] as Id,[APRICE] as Cost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier, @setup as SetupCost , CAST(SUBSTRING(CASNUMB, 0, 4) as INT) as SOP
@@ -76,11 +85,22 @@ namespace AnlabMvc.Resources {
         /// <summary>
         ///   Looks up a localized string similar to DECLARE @setup int;
         ///SELECT @setup = APRICE from dbo.ANL_LIST where ACODE = &apos;SETUP&apos;
-        ///SELECT [ACODE] as Id,[APRICE] as Cost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier, @setup as SetupCost FROM [ANL_LIST] where ACODE  = @code .
+        ///SELECT [ANL_LIST].[ACODE] as Id,[APRICE] as Cost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier, @setup as SetupCost , CAST(SUBSTRING(CASNUMB, 0, 4) as INT) as SOP
+        ///FROM [ANL_LIST] INNER JOIN [ANALYTES] ON [ANL_LIST].[ACODE] = [ANALYTES].[ACODE] 
+        ///where [ANL_LIST].[ACODE]  = @code .
         /// </summary>
         internal static string AnlabPriceForCode {
             get {
                 return ResourceManager.GetString("AnlabPriceForCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to select count(loccode) as Quantity from sample where logbatch = @RequestNum.
+        /// </summary>
+        internal static string AnlabQuantityForOrder {
+            get {
+                return ResourceManager.GetString("AnlabQuantityForOrder", resourceCulture);
             }
         }
         
