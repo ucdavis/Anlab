@@ -11,7 +11,7 @@ namespace AnlabMvc.Helpers
         public DbManager(string connectionString)
         {
             Connection = new SqlConnection(connectionString);
-            Connection.OpenAsync().Wait();
+            Connection.Open();
         }
 
         public void Dispose()
