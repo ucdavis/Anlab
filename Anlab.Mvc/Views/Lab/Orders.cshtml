@@ -5,8 +5,7 @@
     ViewData["Title"] = "Orders";
 }
 
-<div class="row">
-  <div class="col whiteblock">
+
 <table border="0" cellspacing="5" cellpadding="5" align="left">
     <tbody>
         <tr>
@@ -54,7 +53,7 @@
             <td>
                 @if (order.Status == OrderStatusCodes.Confirmed)
                 {
-                    <a asp-action="Confirmation" asp-route-id="@order.Id">N/A</a>
+                    <a asp-action="AddRequestNumber" asp-route-id="@order.Id">N/A</a>
                 }
                 else if (order.Status == OrderStatusCodes.Complete || order.Status == OrderStatusCodes.Finalized)
                 {
@@ -85,7 +84,7 @@
             <td>
                 @if (order.Status == OrderStatusCodes.Confirmed)
                 {
-                    <a asp-action="Confirmation" asp-route-id="@order.Id"><i class="fa fa-check"> Receive</i></a>
+                    <a asp-action="AddRequestNumber" asp-route-id="@order.Id"><i class="fa fa-check"> Receive</i></a>
                 }
                 @if (order.Status == OrderStatusCodes.Received)
                 {
@@ -97,8 +96,7 @@
     }
     </tbody>
 </table>
-</div>
-</div>
+
 
 @section AdditionalStyles
 {

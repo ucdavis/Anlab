@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Anlab.Core.Models
 {
-    public class UpdateFromCompletedTestsModel
+    public class LabFinalizeModel
     {
         public bool Confirm { get; set; }
         public IFormFile UploadFile { get; set; }
