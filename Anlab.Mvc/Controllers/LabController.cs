@@ -117,7 +117,7 @@ namespace AnlabMvc.Controllers
             {
                 ErrorMessage = "That request number is already in use";
 #if !DEBUG
-                return RedirectToAction("Confirmation");
+                return RedirectToAction("AddRequestNumber");
 #endif
             }
 
