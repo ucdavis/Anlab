@@ -25,6 +25,7 @@ export interface ITestItem {
 interface ITestListState {
     query: string;
     active: boolean;
+    additionalInfo: string;
 }
 
 export interface ITestListProps {
@@ -37,7 +38,8 @@ export interface ITestListProps {
 export class TestList extends React.Component<ITestListProps, ITestListState> {
     state = {
         query: '',
-        active: false
+        active: false,
+        additionalInfo: ''
     };
 
     onSelection = (test: ITestItem, e) => {
@@ -56,9 +58,12 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
     }
 
     actions = [
-        { label: "Cancel", onClick: this.toggleModal },
         { label: "Save", onClick: this.toggleModal }
     ];
+
+    updateAdditionalInfo = (value: string) => {
+        this.setState({ ...this.state, additionalInfo: value });
+    }
 
     onQueryChange = (value: string) => {
         this.setState({ ...this.state, query: value });
@@ -106,8 +111,8 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                                     actions={this.actions}
                                     active={this.state.active}
                                     title={item.additionalInfoPrompt}
-                                >
-                                <p>Testing stuff</p>
+                            >
+                                <Input type='text' value={this.state.additionalInfo} onChange={this.updateAdditionalInfo} label='Additional Info' />
                                 </Dialog>
                             }
                         </td>
