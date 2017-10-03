@@ -35,6 +35,8 @@ namespace Anlab.Core.Domain
 
         public bool Public { get; set; }
 
+        public string AdditionalInfoPrompt { get; set; }
+
         public string Notes { get; set; }
         public string NotesEncoded
         {

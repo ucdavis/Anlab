@@ -58,7 +58,7 @@ namespace AnlabMvc.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Analysis,Categories,Group,Public,Notes")] TestItem testItem)
+        public async Task<IActionResult> Create([Bind("Id,Analysis,Categories,Group,Public,Notes,AdditonalInfoPrompt")] TestItem testItem)
         {
             ModelState.Clear();
             TryValidateModel(testItem);
@@ -100,7 +100,7 @@ namespace AnlabMvc.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id, Categories, Analysis,Group,Public,Notes")] TestItem testItem)
+        public async Task<IActionResult> Edit(string id, [Bind("Id, Categories, Analysis,Group,Public,Notes,AdditionalInfoPrompt")] TestItem testItem)
         {
             if (id != testItem.Id)
             {
