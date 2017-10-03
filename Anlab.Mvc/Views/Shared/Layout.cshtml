@@ -94,7 +94,11 @@
     <div class="pagetitle_banner">
       <div class="pagetitle_banner_contents">
         <h1>@ViewData["Title"]</h1>
+        <div class="buttonlocation">
+          @RenderSection("ActionButtons", required: false)
+        </div>
       </div>
+
     </div>
 
 <div class="boundary body-content">

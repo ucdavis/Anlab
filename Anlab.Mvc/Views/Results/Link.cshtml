@@ -2,15 +2,19 @@
 @model AnlabMvc.Models.Order.OrderReviewModel
 
 @{
-    ViewData["Title"] = "Results";
+    ViewData["Title"] = "Results for #" + Model.Order.RequestNum;
+}
+@section ActionButtons
+{
+<p>
+<a class="btn btn-default" asp-action="Download" asp-route-id="@Model.Order.ShareIdentifier">
+    <i class="fa fa-download" aria-hidden="true"></i> Download Results
+    </a>
+</p>
 }
 
 <div class="col">
-    <p>
-    <a class="btn btn-default" asp-action="Download" asp-route-id="@Model.Order.ShareIdentifier">
-        <i class="fa fa-download" aria-hidden="true"></i> Download Results
-        </a>
-    </p>
+
 
 
 @Html.Partial("_OrderDetails")
