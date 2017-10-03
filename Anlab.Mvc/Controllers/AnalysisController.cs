@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Anlab.Core.Data;
+using Anlab.Core.Domain;
 using AnlabMvc.Models.Analysis;
 using Markdig;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +17,20 @@ namespace AnlabMvc.Controllers
         {
             _dbContext = dbContext;
         }
+
+        // show the main content for methods of analysis
+        [Route("/methods-of-analysis")]
+        public async Task<IActionResult> Index()
+        {
+            var allMethods = await _dbContext.AnalysisMethods
+                .Select(x => new AnalysisMethod {Id = x.Id, Title = x.Title, Category = x.Category}).ToListAsync();
+
+            return View(allMethods);
+        }
         
         // ex: /analysis/soil/200
         [Route("/analysis/{category}/{id}")]
-        public async Task<IActionResult> Index(int id)
+        public async Task<IActionResult> Details(int id)
         {
             // ignore category since the ID is all we need
             var analysis = await _dbContext.AnalysisMethods.SingleOrDefaultAsync(x => x.Id == id);
