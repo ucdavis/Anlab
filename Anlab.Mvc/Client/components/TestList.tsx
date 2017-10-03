@@ -43,7 +43,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
     onSelection = (test: ITestItem, e) => {
         const selected = e;
 
-        if (test.additionalInfoPrompt)
+        if (selected && test.additionalInfoPrompt)
         {
             this.toggleModal();
         }
