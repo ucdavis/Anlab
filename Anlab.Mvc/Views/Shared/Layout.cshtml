@@ -93,15 +93,17 @@
     </div>
     <div class="pagetitle_banner">
       <div class="pagetitle_banner_contents">
-        <h1>@ViewData["Title"]</h1>
-        <div class="buttonlocation">
-          @RenderSection("ActionButtons", required: false)
+        <div class="title-left"><h1>@ViewData["Title"]</h1></div>
+        <div class="title-right">
+            @RenderSection("ActionButtons", required: false)
         </div>
+
+
       </div>
 
     </div>
 
-<div class="boundary body-content">
+<div class="boundary">
     @if (!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string))
     {
         <div class="alert alert-danger">
