@@ -136,6 +136,9 @@ namespace AnlabMvc.Services
             CreateOrders(calUser);
             CreateOrders(lauraUser);
 
+            // create the sample methods of analysis
+            CreateSop();
+            
             // create sample tests
 
             LoadTestItems();
@@ -146,6 +149,13 @@ namespace AnlabMvc.Services
 
 
             // Seed with orders here, and maybe create users to test with
+        }
+
+        private void CreateSop()
+        {
+            _context.AnalysisMethods.Add(new AnalysisMethod { Id = 505, Title = "Dry Matter Determination for Botanical Materials", Category = "Plant", Content = "lorem ipsum" });
+            _context.AnalysisMethods.Add(new AnalysisMethod { Id = 507, Title = "Partial Dry Matter", Category = "Plant", Content = "lorem ipsum" });
+            _context.AnalysisMethods.Add(new AnalysisMethod { Id = 200, Title = "Saturated Paste and Saturation Percentage", Category = "Soil", Content = "lorem ipsum" });            
         }
 
         private void CreateOrders(User user)
