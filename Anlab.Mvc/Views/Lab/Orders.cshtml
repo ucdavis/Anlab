@@ -54,7 +54,7 @@
             <td>
                 @if (order.Status == OrderStatusCodes.Confirmed)
                 {
-                    <a asp-action="Confirmation" asp-route-id="@order.Id">N/A</a>
+                    <a asp-action="AddRequestNumber" asp-route-id="@order.Id">N/A</a>
                 }
                 else if (order.Status == OrderStatusCodes.Complete || order.Status == OrderStatusCodes.Finalized)
                 {
@@ -85,7 +85,7 @@
             <td>
                 @if (order.Status == OrderStatusCodes.Confirmed)
                 {
-                    <a asp-action="Confirmation" asp-route-id="@order.Id"><i class="fa fa-check"> Receive</i></a>
+                    <a asp-action="AddRequestNumber" asp-route-id="@order.Id"><i class="fa fa-check"> Receive</i></a>
                 }
                 @if (order.Status == OrderStatusCodes.Received)
                 {

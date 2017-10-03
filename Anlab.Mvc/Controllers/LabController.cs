@@ -85,6 +85,77 @@ namespace AnlabMvc.Controllers
             return View(orders);
         }
 
+        public async Task<IActionResult> AddRequestNumber(int id)
+        {
+            var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+            model.HideLabDetails = false;
+
+            return View(model);
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddRequestNumber(int id, bool confirm, string requestNum)
+        {
+            if (String.IsNullOrWhiteSpace(requestNum))
+            {
+                ErrorMessage = "A request number is required";
+                return RedirectToAction("AddRequestNumber");
+            }
+
+            var checkReqNum = await _dbContext.Orders.AnyAsync(i => i.Id != id && i.RequestNum == requestNum);
+            if (checkReqNum)
+            {
+                ErrorMessage = "That request number is already in use";
+                return RedirectToAction("AddRequestNumber");
+            }
+
+            var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if (order.Status != OrderStatusCodes.Confirmed)
+            {
+                ErrorMessage = "You can only receive a confirmed order";
+                return RedirectToAction("Orders");
+            }
+
+
+            order.RequestNum = requestNum;
+            var result = await _orderService.OverwiteOrderFromDb(order);
+            if (result.WasError)
+            {
+                ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
+                return RedirectToAction("Orders");
+            }
+            order.ClientId = result.ClientId;
+            var orderDetails = order.GetOrderDetails();
+
+            orderDetails.Quantity = result.Quantity;
+            orderDetails.SelectedTests = result.SelectedTests;
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
+
+            order.SaveDetails(orderDetails);
+
+            await _dbContext.SaveChangesAsync();
+
+            Message = "Order updated from work request number";
+            return RedirectToAction("Confirmation", new { id = id });
+
+        }
+
         public async Task<IActionResult> Confirmation(int id)
         {
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
@@ -103,20 +174,8 @@ namespace AnlabMvc.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Confirmation(int id, bool confirm, string requestNum)
+        public async Task<IActionResult> Confirmation(int id, LabReceiveModel model)
         {
-            if (String.IsNullOrWhiteSpace(requestNum))
-            {
-                ErrorMessage = "A request number is required";
-                return RedirectToAction("Confirmation");
-            }
-
-            var checkReqNum = await _dbContext.Orders.AnyAsync(i => i.RequestNum == requestNum);
-            if(checkReqNum)
-            {
-                ErrorMessage = "That request number is already in use";
-                return RedirectToAction("Confirmation");
-            }
 
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
@@ -131,20 +190,16 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Orders");
             }
 
-
-            order.RequestNum = requestNum;
-            var result = await _orderService.OverwiteOrderFromDb(order); //TODO: Just testing
-            if (result.WasError)
+            if(String.IsNullOrWhiteSpace(order.RequestNum))
             {
-                ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
-                return RedirectToAction("Orders");
+                ErrorMessage = "You must add a request number first";
+                return RedirectToAction("AddRequestNumber", new { id = id });
             }
-            order.ClientId = result.ClientId;
+
             var orderDetails = order.GetOrderDetails();
 
-            orderDetails.Quantity = result.Quantity;
-            orderDetails.SelectedTests = result.SelectedTests;
-            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
+            orderDetails.LabComments = model.LabComments;
+            orderDetails.AdjustmentAmount = model.AdjustmentAmount;
 
             order.SaveDetails(orderDetails);
 
@@ -193,7 +248,7 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> Finalize(int id, UpdateFromCompletedTestsModel model)
+        public async Task<IActionResult> Finalize(int id, LabFinalizeModel model)
         {
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 

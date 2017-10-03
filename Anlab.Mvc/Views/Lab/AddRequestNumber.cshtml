@@ -1,0 +1,38 @@
+﻿@using Humanizer
+@model AnlabMvc.Models.Order.OrderReviewModel
+
+@{
+    ViewData["Title"] = "Confirmation";
+}
+
+<form asp-controller="Lab" asp-action="AddRequestNumber" asp-route-id="@Model.Order.Id" method="post">
+    @Html.Hidden("confirm", true)
+    <div class="form-group">
+        <span>Request Number:</span>
+        <span><input type="text" class="form-control" name="requestNum" value="@Model.Order.RequestNum" required /></span>
+    </div>
+    <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true">Add Request Number</i></button>
+</form>
+<br />
+
+<h3>This info is outdated and will be updated from the request number</h3>
+@Html.Partial("_OrderDetails")
+
+@section AdditionalStyles
+{
+    @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+}
+
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+
+    <script type="text/javascript">
+        $(function() {
+            $("#table").dataTable();
+        });
+    </script>
+
+    @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
+
+}
