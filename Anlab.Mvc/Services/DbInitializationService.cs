@@ -382,6 +382,12 @@ namespace AnlabMvc.Services
             CreateTestItem("D", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
             CreateTestItem("M", "Just to get it to pass", TestCategories.Soil, "Special", null, false);
 
+            var faker =
+                @"-LZN-S,-PZN_TOT,-BZN_TOT,-SCD_TOT,-SZN_TOT,-LZN_TOT,-PZN-S,-DZN-S,-SZN-S,-LCD_TOT,-DZN_TOT,-BZN-S,-DCD_TOT,-BCD_TOT,-PCD_TOT,G,-DXK,-SXK,-SP-OS,-PXK,-PP-OS,-LXK-X,-BXK,-BP-OS,G-XK-X,-LP-OS,-SXK-X,-LXK,-DXK-X,XK-X,-DP-OS,XK,-BXK-X,-PXK-X,-DN-P,-LFAT,-DTDNRF,-DFAT,-PN-P,-PADFRF,-DADFRF,-LTDNRF,-PTDNRF,-LPROT,-LADFRF,-BPROT,-PFAT,-SN-P,-LASH,-DPROT,-SADFRF,-SASH,TDNRF,-STDNRF,-SFAT,-DASH,-BFAT,-SPROT,PROT,-PPROT,-LN-P,G-FEED2,-PASH,-BN-P".Split(',');
+            foreach (var s in faker)
+            {
+                CreateTestItem(s, s, TestCategories.Soil, "Special", null, false);
+            }
             //Soil
             CreateTestItem("GRIND", "Grind", string.Format("{0}|{1}", TestCategories.Soil, TestCategories.Plant), "Special");
             CreateTestItem("SP-FOR", "Imported Soil", TestCategories.Soil, "Special");
