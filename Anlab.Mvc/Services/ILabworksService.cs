@@ -44,11 +44,6 @@ namespace AnlabMvc.Services
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {
                 var prices = await db.Connection.QueryAsync<TestItemPrices>(QueryResource.AnlabItemPrices, new {codes});
-                var grind = prices.FirstOrDefault(a => a.Id == "GRIND");
-                if (grind != null)
-                {
-                    grind.SetupCost = 0; //Override grind. No setup cost on it.
-                }
 
                 return prices as IList<TestItemPrices>;
             }
@@ -61,7 +56,6 @@ namespace AnlabMvc.Services
         /// <returns></returns>
         public async Task<TestItemPrices> GetPrice(string code)
         {
-            //TODO modify setup cost if GRIND?
             var temp = await _context.TestItems.SingleOrDefaultAsync(a => a.Id == code);
             if (temp == null)
             {
