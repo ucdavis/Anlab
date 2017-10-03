@@ -35,9 +35,15 @@ namespace AnlabMvc.Controllers
             // ignore category since the ID is all we need
             var analysis = await _dbContext.AnalysisMethods.SingleOrDefaultAsync(x => x.Id == id);
 
+            if (analysis == null) return NotFound();
+            
             var content = Markdown.ToHtml(analysis.Content);
             
-            return View(new AnalysisMethodViewModel { AnalysisMethod = analysis, HtmlContent = content });
+            // get everything else in that category
+            var analysesInCategory = await _dbContext.AnalysisMethods.Where(x => x.Category == analysis.Category)
+                .Select(x => new AnalysisMethod {Id = x.Id, Title = x.Title}).ToListAsync();
+            
+            return View(new AnalysisMethodViewModel { AnalysisMethod = analysis, AnalysesInCategory = analysesInCategory, HtmlContent = content });
         }
     }
 }

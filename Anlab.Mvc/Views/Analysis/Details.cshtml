@@ -4,8 +4,18 @@
     ViewBag.Title = @Model.AnalysisMethod.Title;
 }
 
-<h2>@Model.AnalysisMethod.Id</h2>
+<div class="col-md-8">
+    <h2>@Model.AnalysisMethod.Id</h2>
 
-<h5>@Model.AnalysisMethod.Title</h5>
+    <h5>@Model.AnalysisMethod.Title</h5>
 
-@Html.Raw(Model.HtmlContent)
+    @Html.Raw(Model.HtmlContent)    
+</div>
+<div class="col-md-4">
+    <ul>
+        @foreach (var method in Model.AnalysesInCategory)
+        {
+            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@Model.AnalysisMethod.Category" asp-route-id="@method.Id">@method.Title</a></li>
+        }
+    </ul>
+</div>
