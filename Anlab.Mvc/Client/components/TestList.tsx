@@ -7,6 +7,7 @@ import NumberFormat from 'react-number-format';
 import { groupBy } from '../util/arrayHelpers';
 
 import showdown from 'showdown';
+import { Dialog } from "react-toolbox/lib/dialog";
 
 export interface ITestItem {
     id: string;
@@ -18,10 +19,12 @@ export interface ITestItem {
     category: string;
     categories: string[];
     notes: string;
+    additionalInfoPrompt?: string;
 }
 
 interface ITestListState {
     query: string;
+    active: boolean;
 }
 
 export interface ITestListProps {
@@ -32,13 +35,30 @@ export interface ITestListProps {
 };
 
 export class TestList extends React.Component<ITestListProps, ITestListState> {
-    state = { query: '' };
+    state = {
+        query: '',
+        active: false
+    };
 
     onSelection = (test: ITestItem, e) => {
         const selected = e;
 
+        if (test.additionalInfoPrompt)
+        {
+            this.toggleModal();
+        }
+
         this.props.onTestSelectionChanged(test, selected);
     }
+
+    toggleModal = () => {
+        this.setState({ ...this.state, active: !this.state.active });
+    }
+
+    actions = [
+        { label: "Cancel", onClick: this.toggleModal },
+        { label: "Save", onClick: this.toggleModal }
+    ];
 
     onQueryChange = (value: string) => {
         this.setState({ ...this.state, query: value });
@@ -79,6 +99,17 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                         <td><NumberFormat value={priceDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></td>
                         <td style={{ width: '5%' }}>
                             {item.notes ? <i className="analysisTooltip fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-html="true" title={tooltipContent}></i> : ""}
+                        </td>
+                        <td hidden>
+                            {item.additionalInfoPrompt &&
+                                <Dialog
+                                    actions={this.actions}
+                                    active={this.state.active}
+                                    title={item.additionalInfoPrompt}
+                                >
+                                <p>Testing stuff</p>
+                                </Dialog>
+                            }
                         </td>
                     </tr>
                 );
