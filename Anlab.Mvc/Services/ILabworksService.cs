@@ -98,47 +98,44 @@ namespace AnlabMvc.Services
 
         }
         public async Task<OrderUpdateFromDbModel> GetRequestDetails(string RequestNum)
-        {
-            //TODO: Review. 3 calls to the db...
+        {    
             var rtValue = new OrderUpdateFromDbModel();
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {
-                //TODO: maybe we should only return tests with a $ amount
-                IEnumerable<string> codes =
-                    await db.Connection.QueryAsync<string>(QueryResource.AnlabTestsRunForOrder, new { RequestNum });
-                if (codes.Count() <= 0)
+                var sql = $"{QueryResource.AnlabTestsRunForOrder};{QueryResource.AnlabQuantityClientId};{QueryResource.AnlabRushMultiplierForOrder}";
+
+                using (var multi = await db.Connection.QueryMultipleAsync(sql, new {RequestNum}))
                 {
-                    throw new Exception("No codes found");
+                    IEnumerable<string> codes = await multi.ReadAsync<string>();
+                    var QuantityAndClientId = await multi.ReadAsync<OrderUpdateFromDbModel>();
+                    var rush = await multi.ReadAsync<OrderUpdateFromDbModel>();
+
+                    //TODO: maybe we should only return tests with a $ amount
+                    if (codes.Count() <= 0)
+                    {
+                        throw new Exception("No codes found");
+                    }
+                    rtValue.TestCodes = codes as IList<string>;
+                    if (QuantityAndClientId.Count() != 1)
+                    {
+                        throw new Exception("Client Id / Quantity not found");
+                    }
+                    rtValue.ClientId = QuantityAndClientId.ElementAtOrDefault(0).ClientId;
+                    rtValue.Quantity = QuantityAndClientId.ElementAtOrDefault(0).Quantity;
+
+                    if (rush.Count() == 1)
+                    {
+                        rtValue.RushMultiplier = rush.ElementAtOrDefault(0).RushMultiplier;
+                    }
                 }
-                rtValue.TestCodes = codes as IList<string>;
-                var ClientId = await db.Connection.QueryAsync<string>(QueryResource.AnlabClientIdForOrder, new {RequestNum});
-                if (ClientId.Count() != 1)
-                {
-                    throw new Exception("Client Id not found");
-                }
-                rtValue.ClientId = ClientId.ElementAtOrDefault(0);
-                if (string.IsNullOrWhiteSpace(rtValue.ClientId))
-                {
-                    throw new Exception("Client Id empty");
-                }
-                
-                var Quantity = await db.Connection.QueryAsync<int>(QueryResource.AnlabQuantityForOrder, new { RequestNum });
-                if (Quantity.Count() != 1)
-                {
-                    throw new Exception("Number of samples Id not found");
-                }
-                rtValue.Quantity = Quantity.ElementAtOrDefault(0);
-                
-                var rush = await db.Connection.QueryAsync<decimal>(QueryResource.AnlabRushMultiplierForOrder, new { RequestNum });
-                if (rush != null && rush.Count() == 1)
-                {
-                    rtValue.RushMultiplier = rush.ElementAtOrDefault(0);
-                }
+
 
                 return rtValue;
             }
         }
     }
+    
+    
 
     /// <summary>
     /// Only uncomment if you can't access the Labworks db...

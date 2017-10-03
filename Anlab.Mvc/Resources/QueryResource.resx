@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AnlabClientIdForOrder" xml:space="preserve">
-    <value>select distinct(loccode) as ClientId from sample where logbatch = @RequestNum</value>
-  </data>
   <data name="AnlabItemPrices" xml:space="preserve">
     <value>DECLARE @setup int;
 SELECT @setup = APRICE from dbo.ANL_LIST where ACODE = 'SETUP'
@@ -136,14 +133,13 @@ FROM [ANL_LIST] INNER JOIN [ANALYTES] ON [ANL_LIST].[ACODE] = [ANALYTES].[ACODE]
 where [ANL_LIST].[ACODE]  = @code </value>
     <comment>Price for a code.</comment>
   </data>
-  <data name="AnlabQuantityForOrder" xml:space="preserve">
-    <value>select count(loccode) as Quantity from sample where logbatch = @RequestNum</value>
+  <data name="AnlabQuantityClientId" xml:space="preserve">
+    <value>SELECT COUNT(LOCCODE) AS Quantity, LOCCODE as ClientId FROM dbo.SAMPLE
+GROUP BY LOGBATCH, LOCCODE 
+HAVING (LOGBATCH = @RequestNum)</value>
   </data>
   <data name="AnlabRushMultiplierForOrder" xml:space="preserve">
-    <value>SELECT DISTINCT([RUSHYNP])
-
-  FROM [Labworks5].[dbo].[SUSERFLDS]
-  where RUSHYNP != 'N' and WORK_REQ = @RequestNum</value>
+    <value>SELECT DISTINCT([RUSHYNP]) as RushMultiplier FROM [Labworks5].[dbo].[SUSERFLDS] where RUSHYNP != 'N' and WORK_REQ = @RequestNum</value>
   </data>
   <data name="AnlabTestsRunForOrder" xml:space="preserve">
     <value>SELECT DISTINCT [ACODE] as Id

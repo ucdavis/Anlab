@@ -61,15 +61,6 @@ namespace AnlabMvc.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to select distinct(loccode) as ClientId from sample where logbatch = @RequestNum.
-        /// </summary>
-        internal static string AnlabClientIdForOrder {
-            get {
-                return ResourceManager.GetString("AnlabClientIdForOrder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to DECLARE @setup int;
         ///SELECT @setup = APRICE from dbo.ANL_LIST where ACODE = &apos;SETUP&apos;
         ///SELECT[ANL_LIST].[ACODE] as Id,[APRICE] as Cost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier, @setup as SetupCost , CAST(SUBSTRING(CASNUMB, 0, 4) as INT) as SOP
@@ -96,19 +87,18 @@ namespace AnlabMvc.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to select count(loccode) as Quantity from sample where logbatch = @RequestNum.
+        ///   Looks up a localized string similar to SELECT COUNT(LOCCODE) AS Quantity, LOCCODE as ClientId FROM dbo.SAMPLE
+        ///GROUP BY LOGBATCH, LOCCODE 
+        ///HAVING (LOGBATCH = @RequestNum).
         /// </summary>
-        internal static string AnlabQuantityForOrder {
+        internal static string AnlabQuantityClientId {
             get {
-                return ResourceManager.GetString("AnlabQuantityForOrder", resourceCulture);
+                return ResourceManager.GetString("AnlabQuantityClientId", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT DISTINCT([RUSHYNP])
-        ///
-        ///  FROM [Labworks5].[dbo].[SUSERFLDS]
-        ///  where RUSHYNP != &apos;N&apos; and WORK_REQ = @RequestNum.
+        ///   Looks up a localized string similar to SELECT DISTINCT([RUSHYNP]) as RushMultiplier FROM [Labworks5].[dbo].[SUSERFLDS] where RUSHYNP != &apos;N&apos; and WORK_REQ = @RequestNum.
         /// </summary>
         internal static string AnlabRushMultiplierForOrder {
             get {
