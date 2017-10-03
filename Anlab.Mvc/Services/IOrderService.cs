@@ -79,7 +79,8 @@ namespace AnlabMvc.Services
                     ExternalSetupCost = Math.Ceiling(p.SetupPrice * _appSettings.NonUcRate),
                     InternalSetupCost = Math.Ceiling(p.SetupPrice),
                     Notes = i.NotesEncoded,
-                    Public = i.Public
+                    Public = i.Public,
+                    Sop = p.Sop,
                 }).ToList();
         }
 
@@ -163,6 +164,7 @@ namespace AnlabMvc.Services
             rtValue.SelectedTests = calcualtedTests;
             rtValue.ClientId = orderFromDb.ClientId;
             rtValue.Quantity = orderFromDb.Quantity;
+            rtValue.RushMultiplier = orderFromDb.RushMultiplier;
 
             return rtValue;
         }
