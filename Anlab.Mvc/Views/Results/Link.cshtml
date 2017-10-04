@@ -1,23 +1,32 @@
 @using Humanizer
-@model AnlabMvc.Models.Order.OrderReviewModel
+@model AnlabMvc.Models.Order.OrderResultsModel
 
 @{
-    ViewData["Title"] = "Results for #" + Model.Order.RequestNum;
+    ViewData["Title"] = "Results for #" + Model.OrderReviewModel.Order.RequestNum;
 }
 @section ActionButtons
 {
 <p>
-<a class="btn btn-small" asp-action="Download" asp-route-id="@Model.Order.ShareIdentifier">
+<a class="btn btn-small" asp-action="Download" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier">
     <i class="fa fa-download" aria-hidden="true"></i> Download
     </a>
 </p>
 }
-
+@if (Model.ShowCreditCardPayment)
+{
+    <form action="@Model.CyberSourceUrl" method="post" autocomplete="off">
+        @foreach (var pair in Model.PaymentDictionary)
+        {
+            <input type="hidden" name="@pair.Key" value="@pair.Value"/>
+        }
+        <input type="hidden" name="signature" value="@ViewBag.Signature"/>
+        <button type="submit" class="btn btn-primary"><i class="fa fa-credit-card" aria-hidden="true"> @(String.Format("{0:C}", Model.OrderReviewModel.OrderDetails.GrandTotal)) Pay Now</i></button>
+    </form>
+}
+    
 <div class="col">
+@Html.Partial("_OrderDetails", Model.OrderReviewModel)
 
-
-
-@Html.Partial("_OrderDetails")
 </div>
 @section AdditionalStyles
 {

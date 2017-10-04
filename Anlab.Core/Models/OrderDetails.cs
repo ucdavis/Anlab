@@ -20,6 +20,8 @@ namespace Anlab.Core.Models
         public string[] AdditionalEmails { get; set; }
 
         public string Project { get; set; }
+        public string Commodity { get; set; }
+
         [DataType(DataType.MultilineText)]
         public string LabComments { get; set; }
         public decimal AdjustmentAmount { get; set; }

@@ -6,42 +6,56 @@
     ViewData["Title"] = "Orders";
 }
 <div class="col">
+    @if (Model.Any(o => o.Status == OrderStatusCodes.Created))
+    {
+    <div class="alert alert-warning" role="alert">
+        You have orders that have not been confirmed.
+    </div>
+    }
+
+    @if (Model.Any(o => o.Status == OrderStatusCodes.Finalized && !o.Paid))
+    {
+        <div class="alert alert-danger" role="alert">
+            You have orders that have not been paid.
+        </div>
+    }
+
     <p>
         <a asp-action="Create" class="btn btn-default">Create Order</a>
     </p>
 
     <table border="0" cellspacing="5" cellpadding="5" align="left">
         <tbody>
-            <tr>
-                <td><label>Minimum Date:</label></td>
-                <td><label>Maximum Date:</label></td>
-                <td><label>Status:</label></td>
-            </tr>
-            <tr>
-                <td><input name="min" id="min" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
-                <td><input name="max" id="max" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
-                <td>
-                    <select name="status" id="status">
-                        <option value="All">Show All</option>
-                     @foreach(var status in OrderStatusCodes.All)
-                     {
-                         <option value="@status">@status</option>
-                     }
-                    </select>
-                </td>
-            </tr>
+        <tr>
+            <td><label>Minimum Date:</label></td>
+            <td><label>Maximum Date:</label></td>
+            <td><label>Status:</label></td>
+        </tr>
+        <tr>
+            <td><input name="min" id="min" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
+            <td><input name="max" id="max" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
+            <td>
+                <select name="status" id="status">
+                    <option value="All">Show All</option>
+                    @foreach (var status in OrderStatusCodes.All)
+                    {
+                        <option value="@status">@status</option>
+                    }
+                </select>
+            </td>
+        </tr>
         </tbody>
     </table>
 
-    <table id="table">
+    <table id="table" class="table">
         <thead>
         <tr>
-            <th></th>
-            <th>Created</th>
-            <th>Updated</th>
             <th>Project</th>
+            <th>Work Req #</th>
             <th>Status</th>
             <th>Paid</th>
+            <th>Created</th>
+            <th>Updated</th>
         </tr>
         </thead>
         <tbody>
@@ -50,29 +64,22 @@
             <tr>
                 <td>@if (order.Status == OrderStatusCodes.Created)
                     {
-                        <a asp-action="Confirmation" asp-route-id="@order.Id"><i class="fa fa-check"> Confirm</i></a>
-                        <a asp-action="Edit" asp-route-id="@order.Id"><i class="fa fa-edit"> Edit</i></a>
+                        <a asp-action="Confirmation" asp-route-id="@order.Id">@order.Project</a>
                     }
-                    else if(order.Status == OrderStatusCodes.Complete)
+                    else if (order.Status == OrderStatusCodes.Complete || order.Status == OrderStatusCodes.Finalized)
                     {
-                        <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier">Results</a>
+                        <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier">@order.Project</a>
                     }
-                    else if(order.Status == OrderStatusCodes.Confirmed)
+                    else if (order.Status == OrderStatusCodes.Confirmed)
                     {
-                        <a asp-action="Confirmed" asp-route-id="@order.Id">Details</a>
+                        <a asp-action="Confirmed" asp-route-id="@order.Id">@order.Project</a>
                     }
                     else
                     {
-                        <a asp-action="Details" asp-route-id="@order.Id"><i class="fa fa-eye"> Details</i></a>
-                    if (order.Status == OrderStatusCodes.Finalized && !order.Paid && order.PaymentType == PaymentTypeCodes.CreditCard)
-                        {
-                            <a asp-controller="Payment" asp-action="Pay" asp-route-id="@order.ShareIdentifier"><i class="fa fa-credit-card-alt"> Pay</i> </a>
-                    }
+                        <a asp-action="Details" asp-route-id="@order.Id">@order.Project</a>
                     }
                 </td>
-                <td>@order.Created.ToPacificTime().ToString("g")</td>
-                <td>@order.Updated.ToPacificTime().ToString("g")</td>
-                <td>@order.Project</td>
+                <td>@order.RequestNum</td>
                 <td>@order.Status</td>
                 <td style="text-align: center">
                     @if (order.Paid)
@@ -81,6 +88,9 @@
 
                     }
                 </td>
+                <td>@order.Created.ToPacificTime().ToString("g")</td>
+                <td>@order.Updated.ToPacificTime().ToString("g")</td>
+
             </tr>
         }
         </tbody>
@@ -110,18 +120,24 @@
     <script type="text/javascript">
          $(function () {
              var table = $("#table").DataTable({
-                 "sorting": [[1, "desc"]],
+                 "sorting": [[5, "desc"]],
                  "columnDefs": [
                      {
-                         "type": "date", "targets": [1, 2]
-                     },
-                     {
-                         "targets": [0],
-                         "orderable": false
+                         "type": "date", "targets": [4, 5]
                      }
                  ],
                  "stateSave": true,
                  "stateDuration": 60 * 10,
+                 "createdRow": function (row, data, index) {
+                     if (data[2] == "Created")
+                     {
+                         $(row).addClass('warning');
+                     }
+                     if (data[2] == "Finalized" && !data[3])
+                     {
+                         $(row).addClass('danger');
+                     }
+                 }
              });
 
 
@@ -138,10 +154,10 @@
              function (settings, data, dataIndex) {
                  var min = $('#min').datepicker("getDate");
                  var max = $('#max').datepicker("getDate");
-                 var startDate = new Date(data[1]);
+                 var startDate = new Date(data[5]);
                  startDate.setHours(0, 0, 0, 0);
 
-                 var status = data[4];
+                 var status = data[2];
                  var statusFilter = $('#status').val();
 
                  if (statusFilter == "All" || status == statusFilter) {

@@ -9,6 +9,7 @@ import { AdditionalInfo } from './AdditionalInfo';
 import { Project } from "./Project";
 import { AdditionalEmails } from "./AdditionalEmails";
 import { ClientId } from "./ClientId";
+import { Commodity } from "./Commodity";
 import { Button } from "react-toolbox/lib/button";
 import * as ReactDOM from "react-dom";
 import { Input } from "react-toolbox/lib/input";
@@ -20,6 +21,7 @@ interface IOrderState {
     orderId?: number;
     additionalInfo: string;
     project: string;
+    commodity: string;
     payment: IPayment;
     quantity?: number;
     sampleType: string;
@@ -56,6 +58,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             isValid: false,
             isSubmitting: false,
             project: '',
+            commodity: '',
             additionalEmails: [],
             isErrorActive: false,
             errorMessage: '',
@@ -83,6 +86,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.sampleType = orderInfo.SampleType;
             initialState.orderId = window.App.OrderId;
             initialState.project = orderInfo.Project;
+            initialState.commodity = orderInfo.Commodity;
             initialState.isValid = true;
             initialState.payment.clientType = orderInfo.Payment.ClientType;
             initialState.payment.account = orderInfo.Payment.Account;
@@ -188,6 +192,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             additionalInfo: this.state.additionalInfo,
             additionalEmails: this.state.additionalEmails,
             project: this.state.project,
+            commodity: this.state.commodity,
             payment: this.state.payment,
             sampleType: this.state.sampleType,
             selectedTests,
@@ -213,7 +218,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     }
 
     render() {
-        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, additionalEmails, status, clientId, internalProcessingFee, externalProcessingFee, defaultEmail } = this.state;
+        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, commodity, additionalEmails, status, clientId, internalProcessingFee, externalProcessingFee, defaultEmail } = this.state;
 
         const { filtered, selected } = this.getTests();
 
@@ -234,6 +239,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <div className="form_wrap">
                         <label className="form_header">What is the project title for this order?</label>
                         <Project project={project} handleChange={this.handleChange} projectRef={(inputRef) => { this.projectRef = inputRef }} />
+                        <Commodity commodity={commodity} handleChange={this.handleChange} />
                     </div>
                     <ClientId clientId={clientId} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />

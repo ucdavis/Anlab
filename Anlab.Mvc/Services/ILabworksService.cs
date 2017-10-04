@@ -81,6 +81,7 @@ namespace AnlabMvc.Services
         /// </summary>
         /// <param name="RequestNum"></param>
         /// <returns></returns>
+        [Obsolete]
         public async Task<IList<string>> GetTestCodesCompletedForOrder(string RequestNum)
         {
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
@@ -97,10 +98,44 @@ namespace AnlabMvc.Services
 
         }
         public async Task<OrderUpdateFromDbModel> GetRequestDetails(string RequestNum)
-        {
-            throw new NotImplementedException();
+        {    
+            var rtValue = new OrderUpdateFromDbModel();
+            using (var db = new DbManager(_connectionSettings.AnlabConnection))
+            {
+                var sql = $"{QueryResource.AnlabTestsRunForOrder};{QueryResource.AnlabQuantityClientId};{QueryResource.AnlabRushMultiplierForOrder}";
+
+                using (var multi = await db.Connection.QueryMultipleAsync(sql, new {RequestNum}))
+                {
+                    IEnumerable<string> codes = await multi.ReadAsync<string>();
+                    var quantityAndClientId = await multi.ReadAsync<OrderUpdateFromDbModel>();
+                    var rush = await multi.ReadAsync<OrderUpdateFromDbModel>();
+
+                    //TODO: maybe we should only return tests with a $ amount
+                    if (codes.Count() <= 0)
+                    {
+                        throw new Exception("No codes found");
+                    }
+                    rtValue.TestCodes = codes as IList<string>;
+                    if (quantityAndClientId.Count() != 1)
+                    {
+                        throw new Exception("Client Id / Quantity not found");
+                    }
+                    rtValue.ClientId = quantityAndClientId.ElementAtOrDefault(0).ClientId;
+                    rtValue.Quantity = quantityAndClientId.ElementAtOrDefault(0).Quantity;
+
+                    if (rush.Count() == 1)
+                    {
+                        rtValue.RushMultiplier = rush.ElementAtOrDefault(0).RushMultiplier;
+                    }
+                }
+
+
+                return rtValue;
+            }
         }
     }
+    
+    
 
     /// <summary>
     /// Only uncomment if you can't access the Labworks db...
@@ -128,12 +163,13 @@ namespace AnlabMvc.Services
                 var tip = new TestItemPrices();
                 tip.Id = testItem.Id;
                 if (tip.Id == "PROC")
-                    tip.Cost = 30;
+                    tip.InternalCost = 30;
                 else
-                    tip.Cost = counter;
+                    tip.InternalCost = counter;
                 tip.SetupCost = 30;
                 tip.Multiplier = 1;
                 tip.Name = testItem.Analysis;
+                tip.Sop = $"{100 + counter}";
                 testItems.Add(tip);
             }
 
@@ -155,7 +191,7 @@ namespace AnlabMvc.Services
                 var tip1 = new TestItemPrices
                 {
                     Id = temp.Id,
-                    Cost = 30,
+                    InternalCost = 30,
                     SetupCost = 0,
                     Multiplier = 1,
                     Name = temp.Analysis
@@ -167,7 +203,7 @@ namespace AnlabMvc.Services
             var tip = new TestItemPrices
             {
                 Id = temp.Id,
-                Cost = 25,
+                InternalCost = 25,
                 SetupCost = 30,
                 Multiplier = 1,
                 Name = temp.Analysis

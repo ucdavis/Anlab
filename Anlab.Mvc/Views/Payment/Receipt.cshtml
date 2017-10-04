@@ -6,6 +6,8 @@
 
 <h1>Thank you for your payment of <i class="fa fa-usd">@Model.Auth_Amount</i></h1>
 
+<h2>If you still see the Pay button on the results, it make take a minute for the payment to process.</h2>
+<a class="btn btn-default" asp-controller="Results" asp-action="Link" asp-route-id="@ViewBag.ShareId">Back to Results</a>
 
 @*<div>
     <h2>Debugging Info</h2>

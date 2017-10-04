@@ -10,7 +10,6 @@
 
 namespace AnlabMvc.Resources {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -20,7 +19,7 @@ namespace AnlabMvc.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class QueryResource {
@@ -40,7 +39,7 @@ namespace AnlabMvc.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AnlabMvc.Resources.QueryResource", typeof(QueryResource).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AnlabMvc.Resources.QueryResource", typeof(QueryResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -64,7 +63,11 @@ namespace AnlabMvc.Resources {
         /// <summary>
         ///   Looks up a localized string similar to DECLARE @setup int;
         ///SELECT @setup = APRICE from dbo.ANL_LIST where ACODE = &apos;SETUP&apos;
-        ///SELECT [ACODE] as Id,[APRICE] as Cost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier, @setup as SetupCost FROM [ANL_LIST] where ACODE in @codes.
+        ///SELECT[ANL_LIST].[ACODE] as Id,[APRICE] as InternalCost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier, @setup as SetupCost , CAST(SUBSTRING(CASNUMB, 0, 4) as INT) as SOP, 
+        ///CASE WHEN [NONREP] = &apos;0&apos; THEN 0 ELSE 1 END as NONREP , 
+        ///CASE WHEN [NONINV] = &apos;0&apos; THEN 0 ELSE 1 END as NONINV
+        ///FROM [ANL_LIST] INNER JOIN [ANALYTES] ON [ANL_LIST].[ACODE] = [ANALYTES].[ACODE]    
+        ///where ANL_LIST.ACODE in @codes.
         /// </summary>
         internal static string AnlabItemPrices {
             get {
@@ -75,11 +78,34 @@ namespace AnlabMvc.Resources {
         /// <summary>
         ///   Looks up a localized string similar to DECLARE @setup int;
         ///SELECT @setup = APRICE from dbo.ANL_LIST where ACODE = &apos;SETUP&apos;
-        ///SELECT [ACODE] as Id,[APRICE] as Cost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier, @setup as SetupCost FROM [ANL_LIST] where ACODE  = @code .
+        ///SELECT[ANL_LIST].[ACODE] as Id,[APRICE] as InternalCost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier, @setup as SetupCost , CAST(SUBSTRING(CASNUMB, 0, 4) as INT) as SOP, 
+        ///CASE WHEN [NONREP] = &apos;0&apos; THEN 0 ELSE 1 END as NONREP , 
+        ///CASE WHEN [NONINV] = &apos;0&apos; THEN 0 ELSE 1 END as NONINV
+        ///FROM [ANL_LIST] INNER JOIN [ANALYTES] ON [ANL_LIST].[ACODE] = [ANALYTES].[ACODE]  where [ANL_LIST].[ACODE]  = @code .
         /// </summary>
         internal static string AnlabPriceForCode {
             get {
                 return ResourceManager.GetString("AnlabPriceForCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT COUNT(LOCCODE) AS Quantity, LOCCODE as ClientId FROM dbo.SAMPLE
+        ///GROUP BY LOGBATCH, LOCCODE 
+        ///HAVING (LOGBATCH = @RequestNum).
+        /// </summary>
+        internal static string AnlabQuantityClientId {
+            get {
+                return ResourceManager.GetString("AnlabQuantityClientId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT DISTINCT([RUSHYNP]) as RushMultiplier FROM [Labworks5].[dbo].[SUSERFLDS] where RUSHYNP != &apos;N&apos; and WORK_REQ = @RequestNum.
+        /// </summary>
+        internal static string AnlabRushMultiplierForOrder {
+            get {
+                return ResourceManager.GetString("AnlabRushMultiplierForOrder", resourceCulture);
             }
         }
         

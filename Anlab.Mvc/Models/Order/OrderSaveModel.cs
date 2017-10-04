@@ -26,6 +26,8 @@ namespace AnlabMvc.Models.Order
         [Required]
         [StringLength(256)]
         public string Project { get; set; }
+        public string Commodity { get; set; }
+
 
         public Payment Payment { get; set; }
 
