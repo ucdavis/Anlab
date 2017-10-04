@@ -70,13 +70,15 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                 const selected = !!this.props.selectedTests[item.id];
                 const priceDisplay = (this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost);
                 const tooltipContent = converter.makeHtml(item.notes);
+                const url = `/analysis/${item.category}/${item.sop}`;
                 return (
                     <tr key={item.id} >
                         <td>
                             <Checkbox checked={selected} onChange={e => this.onSelection(item, e)} />
                         </td>
                         <td>{item.analysis}</td>
-                        <td>{item.sop === "0" ? "---" : item.sop}</td>
+                        <td>
+                            {item.sop === "0" ? "---" : <a href={url} target="_blank" >{item.sop}</a>} </td>
                         <td><NumberFormat value={priceDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></td>
                         <td style={{ width: '5%' }}>
                             {item.notes ? <i className="analysisTooltip fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-html="true" title={tooltipContent}></i> : ""}
