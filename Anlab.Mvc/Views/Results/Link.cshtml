@@ -2,16 +2,16 @@
 @model AnlabMvc.Models.Order.OrderResultsModel
 
 @{
-    ViewData["Title"] = "Results";
+    ViewData["Title"] = "Results for #" + Model.OrderReviewModel.Order.RequestNum;
 }
-
-<div>
-    <p>
-        <a asp-action="Download" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier">
-            <i class="fa fa-download" aria-hidden="true"></i> Download Results
-        </a>
-    </p>
-</div>
+@section ActionButtons
+{
+<p>
+<a class="btn btn-small" asp-action="Download" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier">
+    <i class="fa fa-download" aria-hidden="true"></i> Download
+    </a>
+</p>
+}
 @if (Model.ShowCreditCardPayment)
 {
     <form action="@Model.CyberSourceUrl" method="post" autocomplete="off">
@@ -24,9 +24,10 @@
     </form>
 }
     
-
+<div class="col">
 @Html.Partial("_OrderDetails", Model.OrderReviewModel)
 
+</div>
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }

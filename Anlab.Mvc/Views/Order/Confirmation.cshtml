@@ -14,7 +14,7 @@
 
 <form asp-controller="order" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
     @Html.Hidden("confirm", true)
-    <button type="submit" class="btn btn-primary"><i class="fa fa-money" aria-hidden="true"> @(String.Format("{0:C}", Model.OrderDetails.Total)) Confirm and Send</i></button>    
+    <button type="submit" class="btn btn-primary"><i class="fa fa-money" aria-hidden="true"> @(String.Format("{0:C}", Model.OrderDetails.Total)) Confirm and Send</i></button>
     <a asp-action="Edit" asp-route-id="@Model.Order.Id" class="btn btn-default">Edit Order</a>
 </form>
 
@@ -32,6 +32,6 @@
             $("#table").dataTable();
         });
     </script>
-    
+
     @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
 }

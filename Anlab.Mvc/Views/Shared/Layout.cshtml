@@ -44,7 +44,7 @@
             </button>
         </div>
         <div class="navbar-collapse collapse boundary">
-            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav" style="margin-left:-25px;">
                 <!-- <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li> -->
                 <li><a asp-controller="Pages" asp-action="about">About</a></li>
                 <li class="dropdown">
@@ -93,11 +93,17 @@
     </div>
     <div class="pagetitle_banner">
       <div class="pagetitle_banner_contents">
-        <h1>@ViewData["Title"]</h1>
+        <div class="title-left"><h1>@ViewData["Title"]</h1></div>
+        <div class="title-right">
+            @RenderSection("ActionButtons", required: false)
+        </div>
+
+
       </div>
+
     </div>
 
-<div class="boundary body-content">
+<div class="boundary">
     @if (!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string))
     {
         <div class="alert alert-danger">
@@ -113,10 +119,10 @@
             @TempData["Message"]
         </div>
     }
+    <div class="row whiteblock">
 
-      <div class="whiteblock">
-        @RenderBody()</div>
-
+        @RenderBody()
+    </div>
 
 
 </div>

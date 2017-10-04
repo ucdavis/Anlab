@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "List Non Admin Users";
 }
-
+<div class="col">
 <table id="table">
     <thead>
     <tr>
@@ -30,6 +30,7 @@
     }
     </tbody>
 </table>
+</div>
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }

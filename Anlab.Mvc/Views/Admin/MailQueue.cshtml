@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Mail Queue";
 }
-
+<div class="col">
 <div id="collapsebutton" class="btn btn-default"><i class="glyphicon glyphicon-minus"></i> Collapse All</div>
 <div id="expandbutton" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> Expand All</div>
 
@@ -49,7 +49,7 @@
                         @Html.Raw(message.Body)
                     </div>
                     <a data-toggle="collapse" href="#@message.Id" aria-expanded="true" aria-controls="@message.Id">Collapse Body </a> |
-                    <a href="@Url.Action("ViewMessage",new { id = message.Id })" target="_blank">Open in a new window</a>   
+                    <a href="@Url.Action("ViewMessage",new { id = message.Id })" target="_blank">Open in a new window</a>
                 </div>
             </td>
             <td>
@@ -58,12 +58,12 @@
                 {
                         @if (message.Sent.Value && message.SentAt.HasValue)
                         {
-                            @:Sent At: 
+                            @:Sent At:
                             @message.SentAt.Value.ToPacificTime().ToString("g")
                         }
                         else
                         {
-                            @:Error: 
+                            @:Error:
                             @message.FailureReason
 
                         }
@@ -80,7 +80,7 @@
     </tbody>
 </table>
     </div>
-
+</div>
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
