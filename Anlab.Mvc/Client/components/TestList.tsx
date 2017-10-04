@@ -70,7 +70,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                 const selected = !!this.props.selectedTests[item.id];
                 const priceDisplay = (this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost);
                 const tooltipContent = converter.makeHtml(item.notes);
-                const url = '/analysis/' + item.category + '/' + item.sop;
+                const url = `/analysis/${item.category}/${item.sop}`;
                 return (
                     <tr key={item.id} >
                         <td>
