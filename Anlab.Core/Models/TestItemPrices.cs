@@ -44,7 +44,7 @@ namespace Anlab.Core.Models
         public string Sop { get; set; }
         
         /// <summary>
-        /// No Cost when true
+        /// No Cost when this is true AND Noninv is true (Unless id is PROC)
         /// </summary>
         public bool Nonrep { get; set; }
         
