@@ -163,9 +163,9 @@ namespace AnlabMvc.Services
                 var tip = new TestItemPrices();
                 tip.Id = testItem.Id;
                 if (tip.Id == "PROC")
-                    tip.Cost = 30;
+                    tip.InternalCost = 30;
                 else
-                    tip.Cost = counter;
+                    tip.InternalCost = counter;
                 tip.SetupCost = 30;
                 tip.Multiplier = 1;
                 tip.Name = testItem.Analysis;
@@ -191,7 +191,7 @@ namespace AnlabMvc.Services
                 var tip1 = new TestItemPrices
                 {
                     Id = temp.Id,
-                    Cost = 30,
+                    InternalCost = 30,
                     SetupCost = 0,
                     Multiplier = 1,
                     Name = temp.Analysis
@@ -203,7 +203,7 @@ namespace AnlabMvc.Services
             var tip = new TestItemPrices
             {
                 Id = temp.Id,
-                Cost = 25,
+                InternalCost = 25,
                 SetupCost = 30,
                 Multiplier = 1,
                 Name = temp.Analysis
