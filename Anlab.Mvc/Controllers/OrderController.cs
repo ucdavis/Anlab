@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace AnlabMvc.Controllers
 {
@@ -233,6 +234,15 @@ namespace AnlabMvc.Controllers
             }
 
             await _orderService.UpdateTestsAndPrices(order);
+
+            var orderDetails = order.GetOrderDetails();
+            var addInfo = JsonConvert.DeserializeObject(orderDetails.AdditionalInfoList);
+            foreach(var item in addInfo)
+            {
+                orderDetails.AdditionalInfo += item;
+            }
+            orderDetails.AdditionalInfoList = null;
+            order.SaveDetails(orderDetails);
 
             order.Status = OrderStatusCodes.Confirmed;
             

@@ -96,6 +96,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.internalProcessingFee = window.App.orderData.internalProcessingFee;
             initialState.externalProcessingFee = window.App.orderData.externalProcessingFee;
             initialState.defaultEmail = window.App.defaultEmail;
+            if (orderInfo.AdditionalInfoList)
+                initialState.additionalInfoList = JSON.parse(orderInfo.AdditionalInfoList);
 
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
@@ -188,16 +190,6 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         };
     }
 
-    getInfo = () => {
-        const { selectedTests, additionalInfo, additionalInfoList } = this.state;
-        let info = additionalInfo;
-        for (var test in additionalInfoList)
-        {
-            info +=  `\n${test}: ${additionalInfoList[test]}`;
-        }
-        return info;
-    }
-
     onSubmit = () => {
         if (this.state.isSubmitting) {
             return;
@@ -207,11 +199,11 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
         this.setState({ ...this.state, isSubmitting: true });
         const selectedTests = this.getTests().selected;
-        const allInfo = this.getInfo();
         const order = {
             orderId: this.state.orderId,
             quantity: this.state.quantity,
-            additionalInfo: allInfo,
+            additionalInfo: this.state.additionalInfo,
+            additionalInfoList: JSON.stringify(this.state.additionalInfoList),
             additionalEmails: this.state.additionalEmails,
             project: this.state.project,
             commodity: this.state.commodity,

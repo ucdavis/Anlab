@@ -7,6 +7,7 @@ interface ITestInfoProps {
     testId: string;
     prompt: string;
     updateAdditionalInfo: Function;
+    value: string;
 }
 
 interface ITestInfoState {
@@ -20,7 +21,7 @@ export class TestInfo extends React.Component<ITestInfoProps, ITestInfoState> {
         super(props);
 
         this.state = {
-            internalValue: '',
+            internalValue: this.props.value,
             active: true
         };
     }
@@ -29,13 +30,13 @@ export class TestInfo extends React.Component<ITestInfoProps, ITestInfoState> {
         this.setState({ ...this.state, internalValue: v });
     }
 
-    toggleModal = () => {
+    saveAction = () => {
         this.setState({ ...this.state, active: false });
         this.props.updateAdditionalInfo(this.props.testId, this.state.internalValue);
     }
 
     actions = [
-        { label: "Save", onClick: this.toggleModal }
+        { label: "Save", onClick: this.saveAction }
     ];
 
     render() {
