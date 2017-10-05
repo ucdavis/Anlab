@@ -5,8 +5,6 @@
     ViewData["Title"] = "Confirmation";
 }
 
-@Html.Partial("_OrderDetails")
-
 <form method="post" asp-controller="Lab" enctype="multipart/form-data" asp-action="Finalize" asp-route-id="@Model.Order.Id">
     
     <div class="form-group">
@@ -33,6 +31,8 @@
     @Html.Hidden("Confirm", true)
     <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true"> Confirm Completed (Update Tests from Labworks)</i></button>
 </form>
+
+@Html.Partial("_OrderDetails")
 
 @section AdditionalStyles
 {
