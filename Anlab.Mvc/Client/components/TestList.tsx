@@ -8,6 +8,7 @@ import { groupBy } from '../util/arrayHelpers';
 
 import showdown from 'showdown';
 import { Dialog } from "react-toolbox/lib/dialog";
+import { TestInfo } from "./TestInfo";
 
 export interface ITestItem {
     id: string;
@@ -24,12 +25,12 @@ export interface ITestItem {
 
 interface ITestListState {
     query: string;
-    active: boolean;
-    additionalInfo: string;
+    additionalInfoList: any;
 }
 
 export interface ITestListProps {
     items: Array<ITestItem>;
+
     payment: IPayment;
     selectedTests: any;
     onTestSelectionChanged: Function;
@@ -38,31 +39,20 @@ export interface ITestListProps {
 export class TestList extends React.Component<ITestListProps, ITestListState> {
     state = {
         query: '',
-        active: false,
-        additionalInfo: ''
+        additionalInfoList: {}
     };
 
     onSelection = (test: ITestItem, e) => {
         const selected = e;
 
-        if (selected && test.additionalInfoPrompt)
-        {
-            this.toggleModal();
-        }
-
         this.props.onTestSelectionChanged(test, selected);
     }
 
-    toggleModal = () => {
-        this.setState({ ...this.state, active: !this.state.active });
-    }
+    updateAdditionalInfo = (id: string, value: string) => {
+        const tests = this.state.additionalInfoList;
+        tests[id] = value;
+        this.forceUpdate();
 
-    actions = [
-        { label: "Save", onClick: this.toggleModal }
-    ];
-
-    updateAdditionalInfo = (value: string) => {
-        this.setState({ ...this.state, additionalInfo: value });
     }
 
     onQueryChange = (value: string) => {
@@ -106,14 +96,8 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                             {item.notes ? <i className="analysisTooltip fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-html="true" title={tooltipContent}></i> : ""}
                         </td>
                         <td hidden>
-                            {item.additionalInfoPrompt &&
-                                <Dialog
-                                    actions={this.actions}
-                                    active={this.state.active}
-                                    title={item.additionalInfoPrompt}
-                            >
-                                <Input type='text' value={this.state.additionalInfo} onChange={this.updateAdditionalInfo} label='Additional Info' />
-                                </Dialog>
+                            {item.additionalInfoPrompt && selected && 
+                                <TestInfo testId={item.id} prompt={item.additionalInfoPrompt} updateAdditionalInfo={this.updateAdditionalInfo} />} 
                             }
                         </td>
                     </tr>
