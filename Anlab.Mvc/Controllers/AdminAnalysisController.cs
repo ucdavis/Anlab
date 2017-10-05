@@ -58,25 +58,49 @@ namespace AnlabMvc.Controllers
         }
 
         // GET: AdminAnalysis/Edit/5
-            public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            var model = await _dbContext.AnalysisMethods.SingleOrDefaultAsync(a => a.Id == id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+            return View(model);
         }
 
         // POST: AdminAnalysis/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, AnalysisMethod analysisMethod)
         {
-            try
+            if (id != analysisMethod.Id)
             {
-                // TODO: Add update logic here
+                return NotFound();
+            }
+            ModelState.Clear();
+            TryValidateModel(analysisMethod);
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
+            if (ModelState.IsValid)
             {
-                return View();
+                try
+                {
+                    _dbContext.Update(analysisMethod);
+                    await _dbContext.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!await _dbContext.AnalysisMethods.AnyAsync(a => a.Id == analysisMethod.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                Message = "Edit saved";
+                return RedirectToAction("Index");
             }
+            return View(analysisMethod);
         }
 
         // GET: AdminAnalysis/Delete/5
