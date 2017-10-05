@@ -92,10 +92,7 @@ namespace AnlabMvc.Controllers
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;                    
                 }
                 Message = "Edit saved";
                 return RedirectToAction("Index");
@@ -104,25 +101,26 @@ namespace AnlabMvc.Controllers
         }
 
         // GET: AdminAnalysis/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return View();
+            var analysisMethod = await _dbContext.AnalysisMethods.SingleOrDefaultAsync(m => m.Id == id);
+            if (analysisMethod == null)
+            {
+                return NotFound();
+            }
+
+            return View(analysisMethod);
         }
 
         // POST: AdminAnalysis/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, IFormCollection collection)
+        [HttpPost, ActionName("Delete")]
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var analysisMethod = await _dbContext.AnalysisMethods.SingleOrDefaultAsync(m => m.Id == id);
+            _dbContext.AnalysisMethods.Remove(analysisMethod);
+            await _dbContext.SaveChangesAsync();
+            Message = "Analysis Method deleted";
+            return RedirectToAction("Index");
         }
     }
 }

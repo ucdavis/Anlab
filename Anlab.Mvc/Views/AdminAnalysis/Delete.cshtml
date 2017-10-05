@@ -1,0 +1,44 @@
+﻿@model AnalysisMethod
+
+@{
+    ViewBag.Title = "Delete Analysis Method";    
+}
+
+<div>
+    <hr />
+    <h3>Are you sure you want to delete this?</h3>
+
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Category)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Content)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Content)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <div class="form-actions no-color col-md-offset-1">
+            <input type="submit" value="Delete" class="btn btn-default" />
+        </div>
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>
