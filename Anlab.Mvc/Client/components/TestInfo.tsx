@@ -29,10 +29,6 @@ export class TestInfo extends React.Component<ITestInfoProps, ITestInfoState> {
         this.setState({ ...this.state, internalValue: v });
     }
 
-    //onBlur = () => {
-    //    this.props.handleChange('clientId', this.state.internalValue);
-    //}
-
     toggleModal = () => {
         this.setState({ ...this.state, active: false });
         this.props.updateAdditionalInfo(this.props.testId, this.state.internalValue);

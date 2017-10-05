@@ -187,18 +187,31 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             selected: filtered.filter(item => !!selectedTests[item.id])
         };
     }
+
+    getInfo = () => {
+        const { selectedTests, additionalInfo, additionalInfoList } = this.state;
+        let info = additionalInfo;
+        for (var test in additionalInfoList)
+        {
+            info +=  `\n${test}: ${additionalInfoList[test]}`;
+        }
+        return info;
+    }
+
     onSubmit = () => {
         if (this.state.isSubmitting) {
             return;
         }
         let postUrl = '/Order/Save';
         let returnUrl = '/Order/Confirmation/';
+
         this.setState({ ...this.state, isSubmitting: true });
         const selectedTests = this.getTests().selected;
+        const allInfo = this.getInfo();
         const order = {
             orderId: this.state.orderId,
             quantity: this.state.quantity,
-            additionalInfo: this.state.additionalInfo,
+            additionalInfo: allInfo,
             additionalEmails: this.state.additionalEmails,
             project: this.state.project,
             commodity: this.state.commodity,
