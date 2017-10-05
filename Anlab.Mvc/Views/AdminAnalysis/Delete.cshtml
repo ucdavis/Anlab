@@ -1,0 +1,45 @@
+﻿@using AnlabMvc.Controllers
+@model AnlabMvc.Controllers.AdminAnalysisController.AnalysisDeleteModel
+
+@{
+    ViewBag.Title = "Delete Analysis Method";    
+}
+
+<div>
+    <hr />
+    <h3>Are you sure you want to delete this?</h3>
+
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AnalysisMethod.Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AnalysisMethod.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AnalysisMethod.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AnalysisMethod.Title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AnalysisMethod.Category)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AnalysisMethod.Category)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AnalysisMethod.Content)
+        </dt>
+        <dd>
+            @Html.Raw(Model.HtmlContent)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <div class="form-actions no-color col-md-offset-1">
+            <input type="submit" value="Delete" class="btn btn-default" />
+        </div>
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

@@ -80,7 +80,8 @@ namespace AnlabMvc.Services
                     InternalSetupCost = Math.Ceiling(p.SetupPrice),
                     Notes = i.NotesEncoded,
                     Public = i.Public,
-                    AdditionalInfoPrompt = i.AdditionalInfoPrompt
+                    AdditionalInfoPrompt = i.AdditionalInfoPrompt,
+                    Sop = p.Sop,
                 }).ToList();
         }
 
@@ -164,6 +165,7 @@ namespace AnlabMvc.Services
             rtValue.SelectedTests = calcualtedTests;
             rtValue.ClientId = orderFromDb.ClientId;
             rtValue.Quantity = orderFromDb.Quantity;
+            rtValue.RushMultiplier = orderFromDb.RushMultiplier;
 
             return rtValue;
         }

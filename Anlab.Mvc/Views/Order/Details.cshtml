@@ -5,13 +5,13 @@
     ViewData["Title"] = "Details";
     ViewBag.Public = true;
 }
-
+<div class="col">
 <h2>Details</h2>
 
 
 @Html.Partial("_OrderDetails")
 
-
+</div>
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
@@ -25,7 +25,7 @@
         $(function() {
             $("#table").dataTable();
         });
-    </script>   
+    </script>
 
     @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
 

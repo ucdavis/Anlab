@@ -3,7 +3,7 @@
 title: "Contact"
 
 ---
-
+<div class="col-8">
 <h3>Sample Receiving Area Information:</h3>
 <p>To <strong>Mail</strong> or <strong>Ship</strong> Samples to the Lab:</p>
 <address>

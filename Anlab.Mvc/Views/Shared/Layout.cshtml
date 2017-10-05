@@ -44,7 +44,7 @@
             </button>
         </div>
         <div class="navbar-collapse collapse boundary">
-            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav" style="margin-left:-25px;">
                 <!-- <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li> -->
                 <li><a asp-controller="Pages" asp-action="about">About</a></li>
                 <li class="dropdown">
@@ -52,7 +52,7 @@
                     <ul class="dropdown-menu">
                     <li><a asp-controller="Pages" asp-action="using-the-lab">Using the Lab</a></li>
                     <li><a asp-controller="Pages" asp-action="rush-request">Rush Request</a></li>
-                    <li><a asp-controller="Pages" asp-action="methods-of-analysis">Methods of Analysis</a></li>
+                    <li><a asp-controller="Analysis" asp-action="Index">Methods of Analysis</a></li>
                     <li><a asp-controller="Pages" asp-action="qa-qc">QA/QC</a></li>
                     <li><a asp-controller="Pages" asp-action="forms-and-guides">Forms and Guides</a></li>
                         <li><a asp-area="" asp-controller="Home" asp-action="SamplingAndPreparation">Sampling and Preparation</a></li>
@@ -81,6 +81,7 @@
                             }
                             <li><a asp-controller="Admin" asp-action="MailQueue">Mail Queue</a></li>
                             <li><a asp-controller="TestItems" asp-action="Index">Test Items</a></li>
+                            <li><a asp-controller="AdminAnalysis" asp-action="Index">Maintain Analysis Methods</a></li>
                         </ul>
                     </li>
                 }
@@ -93,11 +94,17 @@
     </div>
     <div class="pagetitle_banner">
       <div class="pagetitle_banner_contents">
-        <h1>@ViewData["Title"]</h1>
+        <div class="title-left"><h1>@ViewData["Title"]</h1></div>
+        <div class="title-right">
+            @RenderSection("ActionButtons", required: false)
+        </div>
+
+
       </div>
+
     </div>
 
-<div class="boundary body-content">
+<div class="boundary">
     @if (!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string))
     {
         <div class="alert alert-danger">
@@ -113,9 +120,9 @@
             @TempData["Message"]
         </div>
     }
-    <div class="row">
-      <div class="col whiteblock">
-        @RenderBody()</div>
+    <div class="row whiteblock">
+
+        @RenderBody()
     </div>
 
 

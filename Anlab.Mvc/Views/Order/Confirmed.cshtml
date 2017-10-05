@@ -5,7 +5,8 @@
     ViewData["Title"] = "Order Confirmed";
 }
 
-<div id="print">
+<div class="row">
+  <div class="col-8">
     <p>Thank you for placing a work request order with the UC Davis Analytical Laboratory.
     Below is a summary of the tests you requested and an estimate of your charges.
     Please [something something about how to send in samples]</p>
@@ -50,7 +51,7 @@
     </div>
 
     <p>
-        The following estimate of charges is based on routine testing.  Should non-routine testing be required you will be contacted to discuss any additional costs. 
+        The following estimate of charges is based on routine testing.  Should non-routine testing be required you will be contacted to discuss any additional costs.
     </p>
 
     <table id="t">
@@ -116,13 +117,18 @@
         <br />
         For specific questions about sending or preparing samples, you may call me or contact Gary Chan, Receiving Facility Manager (530) 752-0266.
         <br />
-        For laboratory report copies or accounting, office personnel can be reached at (530) 752-0147 or by email at anlab@ucdavis.edu. 
+        For laboratory report copies or accounting, office personnel can be reached at (530) 752-0147 or by email at anlab@ucdavis.edu.
     </p>
 
     <p>
         For your convenience, information on the Lab is also available on our <a href="http://anlab.ucdavis.edu">web site</a> and I have provided links to several useful pages and documents.  We look forward to serving you.
     </p>
 
+        <a asp-action="Index" class="btn btn-default">Back to Orders</a>
+
+  </div>
+    <div class="col-3">
+      <h3>Quick Links</h3>
     <p class="links">
         <a href="http://anlab.ucdavis.edu/feedback">Feedback Form</a><br />
         <a href="http://anlab.ucdavis.edu/fee-info">Fee Information/Fee Schedule</a><br />
@@ -132,10 +138,8 @@
     </p>
 </div>
 
-<div id="noprint">
-    <a asp-action="Index" class="btn btn-default">Back to Orders</a>
-</div>
 
+</div>
 
 @section AdditionalStyles
 {
