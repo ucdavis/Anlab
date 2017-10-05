@@ -1,4 +1,5 @@
-﻿@model AnalysisMethod
+﻿@using AnlabMvc.Controllers
+@model AnlabMvc.Controllers.AdminAnalysisController.AnalysisDeleteModel
 
 @{
     ViewBag.Title = "Delete Analysis Method";    
@@ -10,28 +11,28 @@
 
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Id)
+            @Html.DisplayNameFor(model => model.AnalysisMethod.Id)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Id)
+            @Html.DisplayFor(model => model.AnalysisMethod.Id)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.DisplayNameFor(model => model.AnalysisMethod.Title)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Title)
+            @Html.DisplayFor(model => model.AnalysisMethod.Title)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Category)
+            @Html.DisplayNameFor(model => model.AnalysisMethod.Category)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Category)
+            @Html.DisplayFor(model => model.AnalysisMethod.Category)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Content)
+            @Html.DisplayNameFor(model => model.AnalysisMethod.Content)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Content)
+            @Html.Raw(Model.HtmlContent)
         </dd>
     </dl>
 

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using AnlabMvc.Models.Roles;
+using Markdig;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -108,8 +109,12 @@ namespace AnlabMvc.Controllers
             {
                 return NotFound();
             }
+            var htmlContent = Markdown.ToHtml(analysisMethod.Content);
+            
+            var model = new AnalysisDeleteModel{AnalysisMethod = analysisMethod, HtmlContent = htmlContent};
+            
 
-            return View(analysisMethod);
+            return View(model);
         }
 
         // POST: AdminAnalysis/Delete/5
@@ -121,6 +126,12 @@ namespace AnlabMvc.Controllers
             await _dbContext.SaveChangesAsync();
             Message = "Analysis Method deleted";
             return RedirectToAction("Index");
+        }
+
+        public class AnalysisDeleteModel
+        {
+            public AnalysisMethod AnalysisMethod { get; set; }
+            public String HtmlContent { get; set; }
         }
     }
 }
