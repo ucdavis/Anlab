@@ -37,6 +37,7 @@ interface IOrderState {
     internalProcessingFee: number;
     externalProcessingFee: number;
     defaultEmail: string;
+    additionalInfoList: Object;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -66,7 +67,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             clientId: '',
             internalProcessingFee: window.App.orderData.internalProcessingFee,
             externalProcessingFee: window.App.orderData.externalProcessingFee,
-            defaultEmail: window.App.defaultEmail
+            defaultEmail: window.App.defaultEmail,
+            additionalInfoList: {}
         };
 
         if (window.App.defaultAccount) {
@@ -158,6 +160,13 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         node.focus();
     }
 
+    updateAdditionalInfo = (id: string, value: string) => {
+        const tests = this.state.additionalInfoList;
+        tests[id] = value;
+        this.forceUpdate();
+
+    }
+
     handleChange = (name, value) => {
         this.setState({ ...this.state, [name]: value }, this.validate);
     };
@@ -218,7 +227,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     }
 
     render() {
-        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, commodity, additionalEmails, status, clientId, internalProcessingFee, externalProcessingFee, defaultEmail } = this.state;
+        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, commodity, additionalEmails, status, clientId, internalProcessingFee, externalProcessingFee, defaultEmail, additionalInfoList } = this.state;
 
         const { filtered, selected } = this.getTests();
 
@@ -243,7 +252,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     </div>
                     <ClientId clientId={clientId} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
-                    <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
+                    <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} additionalInfoList={additionalInfoList} updateAdditionalInfo={this.updateAdditionalInfo} />
 
                 </div>
                 <div className="stickyfoot shadowed" data-spy="affix" data-offset-bottom="0">

@@ -25,34 +25,27 @@ export interface ITestItem {
 
 interface ITestListState {
     query: string;
-    additionalInfoList: any;
 }
 
 export interface ITestListProps {
     items: Array<ITestItem>;
+    additionalInfoList: Object;
 
     payment: IPayment;
     selectedTests: any;
     onTestSelectionChanged: Function;
+    updateAdditionalInfo: Function;
 };
 
 export class TestList extends React.Component<ITestListProps, ITestListState> {
     state = {
-        query: '',
-        additionalInfoList: {}
+        query: ''
     };
 
     onSelection = (test: ITestItem, e) => {
         const selected = e;
 
         this.props.onTestSelectionChanged(test, selected);
-    }
-
-    updateAdditionalInfo = (id: string, value: string) => {
-        const tests = this.state.additionalInfoList;
-        tests[id] = value;
-        this.forceUpdate();
-
     }
 
     onQueryChange = (value: string) => {
@@ -97,7 +90,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                         </td>
                         <td hidden>
                             {item.additionalInfoPrompt && selected && 
-                                <TestInfo testId={item.id} prompt={item.additionalInfoPrompt} updateAdditionalInfo={this.updateAdditionalInfo} />} 
+                                <TestInfo testId={item.id} prompt={item.additionalInfoPrompt} updateAdditionalInfo={this.props.updateAdditionalInfo} />} 
                             }
                         </td>
                     </tr>
