@@ -270,6 +270,10 @@ namespace AnlabMvc.Services
         {
             var rtValue =
                 new ClientIdLookupModel {ClientId = "Fake", CopyEmail = "123@test.com", CopyPhoneNumber = "555-555-5555", EMail = "fake@test.com", PhoneNumber = "554-555-5555"};
+            if (clientId == "fail")
+            {
+                rtValue = null;
+            }
             return await Task.FromResult(rtValue);
         }
     }
