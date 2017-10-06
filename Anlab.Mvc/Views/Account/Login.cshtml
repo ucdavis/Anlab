@@ -9,10 +9,9 @@
 @{
     ViewData["Title"] = "Log in";
 }
-
+<div class="col">
 <h2>Choose how you would like to log in</h2>
-<div class="row">
-    <section>
+
         @{
             var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (loginProviders.Count == 0)
@@ -38,7 +37,6 @@
                 </form>
             }
         }
-    </section>
 </div>
 
 @section Scripts {
