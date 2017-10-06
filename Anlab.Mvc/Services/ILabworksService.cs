@@ -266,9 +266,11 @@ namespace AnlabMvc.Services
             return await Task.FromResult(order);
         }
 
-        public Task<ClientIdLookupModel> GetClientIdDetails(string clientId)
+        public async Task<ClientIdLookupModel> GetClientIdDetails(string clientId)
         {
-            throw new NotImplementedException();
+            var rtValue =
+                new ClientIdLookupModel {ClientId = "Fake", CopyEmail = "123@test.com", CopyPhoneNumber = "555-555-5555", EMail = "fake@test.com", PhoneNumber = "554-555-5555"};
+            return await Task.FromResult(rtValue);
         }
     }
 }
