@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Confirmation";
 }
-
+<div class="col">
 <form asp-controller="order" asp-action="Delete" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
     <button type="submit" class="btn btn-danger pull-right"><i class="fa fa-trash" aria-hidden="true"> Delete Order</i></button>
 
@@ -17,7 +17,7 @@
     <button type="submit" class="btn btn-primary"><i class="fa fa-money" aria-hidden="true"> @(String.Format("{0:C}", Model.OrderDetails.Total)) Confirm and Send</i></button>
     <a asp-action="Edit" asp-route-id="@Model.Order.Id" class="btn btn-default">Edit Order</a>
 </form>
-
+</div>
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
