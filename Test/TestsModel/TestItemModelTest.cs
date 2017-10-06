@@ -13,6 +13,7 @@ namespace Test.TestsModel
         {
             #region Arrange
             var expectedFields = new List<NameAndType>();
+            expectedFields.Add(new NameAndType("AdditionalInfoPrompt", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Analysis", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
