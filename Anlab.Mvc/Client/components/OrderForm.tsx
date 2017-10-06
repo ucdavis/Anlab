@@ -17,6 +17,11 @@ import { Input } from "react-toolbox/lib/input";
 declare var window: any;
 declare var $: any;
 
+interface IAdditionalInfoItem {
+    id: string,
+    value: string
+}
+
 interface IOrderState {
     orderId?: number;
     additionalInfo: string;
@@ -37,7 +42,7 @@ interface IOrderState {
     internalProcessingFee: number;
     externalProcessingFee: number;
     defaultEmail: string;
-    additionalInfoList: Object;
+    additionalInfoList: Array<IAdditionalInfoItem>;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -68,7 +73,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             internalProcessingFee: window.App.orderData.internalProcessingFee,
             externalProcessingFee: window.App.orderData.externalProcessingFee,
             defaultEmail: window.App.defaultEmail,
-            additionalInfoList: {}
+            additionalInfoList: []
         };
 
         if (window.App.defaultAccount) {
@@ -82,6 +87,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             // load up existing order
             const orderInfo = JSON.parse(window.App.orderData.order.jsonDetails);
 
+            console.log('info', orderInfo);
             initialState.quantity = orderInfo.Quantity;
             initialState.additionalInfo = orderInfo.AdditionalInfo;
             initialState.additionalEmails = orderInfo.AdditionalEmails;
@@ -96,9 +102,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.internalProcessingFee = window.App.orderData.internalProcessingFee;
             initialState.externalProcessingFee = window.App.orderData.externalProcessingFee;
             initialState.defaultEmail = window.App.defaultEmail;
-            if (orderInfo.AdditionalInfoList)
-                initialState.additionalInfoList = JSON.parse(orderInfo.AdditionalInfoList);
-
+            initialState.additionalInfoList = orderInfo.AdditionalInfoList;
+            
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
 
@@ -163,10 +168,9 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     }
 
     updateAdditionalInfo = (id: string, value: string) => {
-        const tests = this.state.additionalInfoList;
-        tests[id] = value;
-        this.forceUpdate();
-
+        this.setState({
+            additionalInfoList: [...this.state.additionalInfoList, { id, value }]
+        });
     }
 
     handleChange = (name, value) => {
@@ -203,7 +207,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             orderId: this.state.orderId,
             quantity: this.state.quantity,
             additionalInfo: this.state.additionalInfo,
-            additionalInfoList: JSON.stringify(this.state.additionalInfoList),
+            additionalInfoList: this.state.additionalInfoList,
             additionalEmails: this.state.additionalEmails,
             project: this.state.project,
             commodity: this.state.commodity,
