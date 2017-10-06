@@ -30,7 +30,7 @@ interface ITestListState {
 
 export interface ITestListProps {
     items: Array<ITestItem>;
-    additionalInfoList: Array<any>;
+    additionalInfoList: Object;
 
     payment: IPayment;
     selectedTests: any;
@@ -93,7 +93,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                         </td>
                         <td hidden>
                             {selected && item.additionalInfoPrompt &&
-                                <TestInfo testId={item.id} prompt={item.additionalInfoPrompt} updateAdditionalInfo={this.props.updateAdditionalInfo} value={"hi"} />} 
+                                <TestInfo testId={item.id} prompt={item.additionalInfoPrompt} updateAdditionalInfo={this.props.updateAdditionalInfo} value={this.props.additionalInfoList[item.id]} />} 
                             }
                         </td>
                     </tr>

@@ -1,4 +1,7 @@
-﻿using Anlab.Core.Models;
+﻿using System;
+using Anlab.Core.Domain;
+using Anlab.Core.Models;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace AnlabMvc.Models.Order
@@ -15,7 +18,7 @@ namespace AnlabMvc.Models.Order
 
         public string AdditionalInfo { get; set; }
 
-        public AdditionalInfoModel[] AdditionalInfoList { get; set; }
+        public string AdditionalInfoList { get; set; }
 
         [MinLength(1, ErrorMessage = "You must select at least 1 test.")]
         public TestDetails[] SelectedTests { get; set; }
