@@ -295,6 +295,17 @@ namespace AnlabMvc.Controllers
             return RedirectToAction("Index");
 
         }
+
+        [HttpGet]
+        public async Task<ClientIdLookupModel> LookupClientId(string id)
+        {
+            var result = await _labworksService.GetClientIdDetails(id);
+            if (result == null)
+            {
+                return null;
+            }
+            return result;
+        }
     }
    
 }

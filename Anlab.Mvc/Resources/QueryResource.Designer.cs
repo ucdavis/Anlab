@@ -61,6 +61,21 @@ namespace AnlabMvc.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SELECT [LOCCODE] as ClientId
+        ///      ,[CPYEMAIL] as CopyEmail
+        ///      ,[CPYPHONE] as CopyPhoneNumber
+        ///      ,[SUBEMAIL] as EMail
+        ///      ,[SUBPHONE] as PhoneNumber
+        ///FROM [Labworks5].[dbo].[USERFLDS]
+        ///WHERE LOCCODE = @clientId.
+        /// </summary>
+        internal static string AnlabClientIdLookup {
+            get {
+                return ResourceManager.GetString("AnlabClientIdLookup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DECLARE @setup int;
         ///SELECT @setup = APRICE from dbo.ANL_LIST where ACODE = &apos;SETUP&apos;
         ///SELECT[ANL_LIST].[ACODE] as Id,[APRICE] as InternalCost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier, @setup as SetupCost , CAST(SUBSTRING(CASNUMB, 0, 4) as INT) as SOP, 

@@ -21,6 +21,7 @@ namespace AnlabMvc.Services
         Task<TestItemPrices> GetPrice(string code);
         Task<IList<string>> GetTestCodesCompletedForOrder(string RequestNum);
         Task<OrderUpdateFromDbModel> GetRequestDetails(string RequestNum);
+        Task<ClientIdLookupModel> GetClientIdDetails(string clientId);
     }
 
     public class LabworksService : ILabworksService
@@ -133,6 +134,26 @@ namespace AnlabMvc.Services
                 return rtValue;
             }
         }
+
+        public async Task<ClientIdLookupModel> GetClientIdDetails(string clientId)
+        {
+            using (var db = new DbManager(_connectionSettings.AnlabConnection))
+            {
+                IEnumerable<ClientIdLookupModel> clientInfo =
+                    await db.Connection.QueryAsync<ClientIdLookupModel>(QueryResource.AnlabClientIdLookup, new { clientId });
+
+                if (clientInfo == null || !clientInfo.Any())
+                {
+                    return null;
+                }
+                if (clientInfo.Count() > 1)
+                {
+                    throw new Exception("Too many results");
+                }
+
+                return clientInfo.ElementAt(0);
+            }
+        }
     }
     
     
@@ -243,6 +264,11 @@ namespace AnlabMvc.Services
             };
 
             return await Task.FromResult(order);
+        }
+
+        public Task<ClientIdLookupModel> GetClientIdDetails(string clientId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

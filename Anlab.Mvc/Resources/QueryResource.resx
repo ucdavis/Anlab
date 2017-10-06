@@ -117,6 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AnlabClientIdLookup" xml:space="preserve">
+    <value>SELECT [LOCCODE] as ClientId
+      ,[CPYEMAIL] as CopyEmail
+      ,[CPYPHONE] as CopyPhoneNumber
+      ,[SUBEMAIL] as EMail
+      ,[SUBPHONE] as PhoneNumber
+FROM [Labworks5].[dbo].[USERFLDS]
+WHERE LOCCODE = @clientId</value>
+    <comment>Get the clinet info associated with the client id</comment>
+  </data>
   <data name="AnlabItemPrices" xml:space="preserve">
     <value>DECLARE @setup int;
 SELECT @setup = APRICE from dbo.ANL_LIST where ACODE = 'SETUP'
