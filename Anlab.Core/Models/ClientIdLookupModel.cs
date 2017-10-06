@@ -11,5 +11,6 @@ namespace Anlab.Core.Models
         public string PhoneNumber { get; set; }
         public string CopyEmail { get; set; }
         public string CopyPhoneNumber { get; set; }
+        public string Name { get; set; }
     }
 }

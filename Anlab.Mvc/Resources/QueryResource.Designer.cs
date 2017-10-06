@@ -61,13 +61,11 @@ namespace AnlabMvc.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT [LOCCODE] as ClientId
-        ///      ,[CPYEMAIL] as CopyEmail
-        ///      ,[CPYPHONE] as CopyPhoneNumber
-        ///      ,[SUBEMAIL] as EMail
-        ///      ,[SUBPHONE] as PhoneNumber
-        ///FROM [Labworks5].[dbo].[USERFLDS]
-        ///WHERE LOCCODE = @clientId.
+        ///   Looks up a localized string similar to SELECT        dbo.USERFLDS.LOCCODE AS ClientId, dbo.USERFLDS.CPYEMAIL AS CopyEmail, dbo.USERFLDS.CPYPHONE AS CopyPhoneNumber, dbo.USERFLDS.SUBEMAIL AS EMail, 
+        ///                         dbo.USERFLDS.SUBPHONE AS PhoneNumber, dbo.LOCLIST.REPADD1 AS Name
+        ///FROM            dbo.USERFLDS INNER JOIN
+        ///                         dbo.LOCLIST ON dbo.USERFLDS.LOCCODE = dbo.LOCLIST.LOCCODE
+        ///WHERE        dbo.USERFLDS.LOCCODE = @clientId.
         /// </summary>
         internal static string AnlabClientIdLookup {
             get {
