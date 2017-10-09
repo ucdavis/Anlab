@@ -1,8 +1,8 @@
 @using System.Runtime.InteropServices.ComTypes
 @model Anlab.Core.Domain.TestItem
-    
-@Html.HiddenFor(a => a.Category)
 
+@Html.HiddenFor(a => a.Category)
+<div class="col">
 <div class="form-group">
     <label asp-for="Analysis" class="col-md-2 control-label"></label>
     <div class="col-md-10">
@@ -45,4 +45,5 @@
         <textarea asp-for="Notes" class="form-control" rows="3"> </textarea>
         <span asp-validation-for="Notes" class="text-danger"></span>
     </div>
+</div>
 </div>
