@@ -17,9 +17,9 @@
         <p>@Model.OrderDetails.Quantity</p>
     </div>
   </div>
-@if (string.IsNullOrWhiteSpace(Model.Order.RequestNum)) {
+@if (!string.IsNullOrWhiteSpace(Model.Order.RequestNum)) {
   <div class="row no-margin">
-    <div class="form-group">
+    <div class="form-group no-margin">
         <h4>Request Num</h4>
         <p>@Model.Order.RequestNum</p>
     </div>
