@@ -98,7 +98,7 @@ namespace AnlabMvc.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Save(OrderSaveModel model)
-        {
+        {           
             if (!ModelState.IsValid)
             {
                 var errors = new List<string>();
@@ -236,10 +236,10 @@ namespace AnlabMvc.Controllers
             await _orderService.UpdateTestsAndPrices(order);
 
             var orderDetails = order.GetOrderDetails();
-            var addInfo = JsonConvert.DeserializeObject(orderDetails.AdditionalInfoList);
-            foreach(var item in addInfo)
+            
+            foreach(var item in orderDetails.AdditionalInfoList)
             {
-                orderDetails.AdditionalInfo += item;
+                orderDetails.AdditionalInfo += string.Format("{0}{1}: {2}", Environment.NewLine, item.Key, item.Value);
             }
             orderDetails.AdditionalInfoList = null;
             order.SaveDetails(orderDetails);

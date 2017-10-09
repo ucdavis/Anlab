@@ -11,7 +11,7 @@ namespace Anlab.Core.Models
         public string SampleType { get; set; }
         [DataType(DataType.MultilineText)]
         public string AdditionalInfo { get; set; }
-        public dynamic AdditionalInfoList { get; set; }
+        public Dictionary<string,string> AdditionalInfoList { get; set; }
         public IList<TestDetails> SelectedTests { get; set; }
 
         public Decimal Total { get; set; }
