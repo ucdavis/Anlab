@@ -54,7 +54,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             quantity: null,
             sampleType: 'Soil',
             testItems: window.App.orderData.testItems,
-            selectedTests: { },
+            selectedTests: {},
             isValid: false,
             isSubmitting: false,
             project: '',
@@ -63,11 +63,11 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             isErrorActive: false,
             errorMessage: '',
             status: '',
-            clientId: '',
+            clientId: window.App.defaultClientId,
             internalProcessingFee: window.App.orderData.internalProcessingFee,
             externalProcessingFee: window.App.orderData.externalProcessingFee,
             defaultEmail: window.App.defaultEmail
-        };
+    };
 
         if (window.App.defaultAccount) {
             initialState.payment.account = window.App.defaultAccount;

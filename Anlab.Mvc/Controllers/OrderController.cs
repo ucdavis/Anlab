@@ -51,10 +51,19 @@ namespace AnlabMvc.Controllers
                 InternalProcessingFee = Math.Ceiling(proc.Cost),
                 ExternalProcessingFee = Math.Ceiling(proc.Cost * _appSettings.NonUcRate)
             };
-
+            
             var user = _context.Users.Single(a => a.Id == CurrentUserId);
             model.DefaultAccount = user.Account?.ToUpper();
             model.DefaultEmail = user.Email;
+
+            var defaults = await _labworksService.GetClientDefaults(user.Email);
+            //var defaults = await _labworksService.GetClientDefaults("klbeckley@ucla.edu"); //Just to test.
+            if (defaults != null)
+            {
+                model.DefaultAccount = model.DefaultAccount ?? defaults.DefaultAccount;
+                model.DefaultClientId = defaults.ClientId;
+
+            }
 
             return View(model);
         }

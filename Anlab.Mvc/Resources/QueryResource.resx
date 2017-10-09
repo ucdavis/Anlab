@@ -125,6 +125,13 @@ FROM            dbo.USERFLDS INNER JOIN
 WHERE        dbo.USERFLDS.LOCCODE = @clientId</value>
     <comment>Get the clinet info associated with the client id</comment>
   </data>
+  <data name="AnlabDefaultsForUser" xml:space="preserve">
+    <value>SELECT dbo.USERFLDS.LOCCODE AS ClientId, dbo.USERFLDS.CPYEMAIL AS CopyEmail, dbo.LOCLIST.[INVADD4] as DefaultAccount
+FROM dbo.USERFLDS INNER JOIN
+dbo.LOCLIST ON dbo.USERFLDS.LOCCODE = dbo.LOCLIST.LOCCODE
+WHERE dbo.USERFLDS.SUBEMAIL = @userEmail</value>
+    <comment>Some Default values for when creating an order</comment>
+  </data>
   <data name="AnlabItemPrices" xml:space="preserve">
     <value>DECLARE @setup int;
 SELECT @setup = APRICE from dbo.ANL_LIST where ACODE = 'SETUP'
