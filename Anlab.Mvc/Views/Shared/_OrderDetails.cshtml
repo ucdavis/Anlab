@@ -2,15 +2,29 @@
 @using Humanizer
 @model AnlabMvc.Models.Order.OrderReviewModel
 
-<div class="details_wrapper">
-        <div class="form-group">
-            <strong>Created By</strong>
-            <span>@Model.Order.Creator.Name</span>
-        </div>
-        <div class="form-group">
-            <strong>Project</strong>
-            <span>@Model.Order.Project</span>
-        </div>
+<div class="space_between">
+  <div class="row no-top-margin">
+    <div class="form-group">
+      <h4>Created By</h4>
+      <p>@Model.Order.Creator.Name</p>
+    </div>
+    <div class="form-group">
+        <h4>Project</h4>
+        <p>@Model.Order.Project</p>
+    </div>
+    <div class="form-group">
+        <h4>Quantity</h4>
+        <p>@Model.OrderDetails.Quantity</p>
+    </div>
+  </div>
+  <div class="row no-top-margin">
+    <div class="form-group">
+        <h4>Request Num</h4>
+        <p>@Model.Order.RequestNum</p>
+    </div>
+  </div>
+
+</div>
         @if (!String.IsNullOrWhiteSpace(Model.OrderDetails.Commodity))
         {
             <div class="form-group">
@@ -19,10 +33,7 @@
             </div>
 
         }
-        <div class="form-group">
-            <strong>Request Num</strong>
-            <span>@Model.Order.RequestNum</span>
-        </div>
+
         @if (Model.OrderDetails.AdditionalEmails.Length > 0)
     {
         <div class="form-group">
@@ -30,16 +41,12 @@
             <span><a href="mailto:@Model.Order.AdditionalEmails">@Model.Order.AdditionalEmails</a></span>
         </div>
     }
-        <div class="form-group">
-            <strong>Quantity</strong>
-            <span>@Model.OrderDetails.Quantity</span>
-        </div>
 
+@if (Model.OrderDetails.AdditionalEmails.Length > 0) {
         <div class="form-group">
             <strong>Additional Info</strong>
             <pre>@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</pre>
-        </div>
-
+        </div>}
         <div class="form-group">
             <strong>Sample Type</strong>
             <span>@Model.OrderDetails.SampleType</span>
