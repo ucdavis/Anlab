@@ -2,27 +2,29 @@
 @using Humanizer
 @model AnlabMvc.Models.Order.OrderReviewModel
 
-<div class="space_between">
-  <div class="row no-top-margin">
-    <div class="form-group">
+<div class="space_between border-bottom">
+  <div class="row no-margin">
+    <div class="form-group no-margin detail-bumper">
       <h4>Created By</h4>
       <p>@Model.Order.Creator.Name</p>
     </div>
-    <div class="form-group">
+    <div class="form-group no-margin detail-bumper">
         <h4>Project</h4>
         <p>@Model.Order.Project</p>
     </div>
-    <div class="form-group">
+    <div class="form-group no-margin detail-bumper">
         <h4>Quantity</h4>
         <p>@Model.OrderDetails.Quantity</p>
     </div>
   </div>
-  <div class="row no-top-margin">
+@if (string.IsNullOrWhiteSpace(Model.Order.RequestNum)) {
+  <div class="row no-margin">
     <div class="form-group">
         <h4>Request Num</h4>
         <p>@Model.Order.RequestNum</p>
     </div>
   </div>
+}
 
 </div>
         @if (!String.IsNullOrWhiteSpace(Model.OrderDetails.Commodity))

@@ -13,7 +13,7 @@
 <a asp-action="Edit" asp-route-id="@Model.Order.Id" class="btn btn-small">Edit Order</a>
 @Html.Hidden("confirm", true)
 <a asp-controller="order" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post" class="btn btn-small">
-  <i class="fa fa-money" aria-hidden="true"> @(String.Format("{0:C}", Model.OrderDetails.Total)) Confirm and Send</i>
+  @(String.Format("{0:C}", Model.OrderDetails.Total)) Confirm and Send
 </a>
 </p>
 
