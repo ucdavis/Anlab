@@ -4,10 +4,10 @@ import { Dialog } from "react-toolbox/lib/dialog";
 import { ITestItem } from './TestList';
 
 interface ITestInfoProps {
-    testId: string;
-    prompt: string;
+    test: ITestItem;
     updateAdditionalInfo: Function;
     value: string;
+    unCheck: Function;
 }
 
 interface ITestInfoState {
@@ -32,10 +32,15 @@ export class TestInfo extends React.Component<ITestInfoProps, ITestInfoState> {
 
     saveAction = () => {
         this.setState({ ...this.state, active: false });
-        this.props.updateAdditionalInfo(this.props.testId, this.state.internalValue);
+        this.props.updateAdditionalInfo(this.props.test.id, this.state.internalValue);
     }
 
+    cancelAction = () => {
+        this.setState({ ...this.state, active: false });
+        this.props.unCheck(this.props.test, false);
+    }
     actions = [
+        { label: "Cancel", onClick: this.cancelAction },
         { label: "Save", onClick: this.saveAction }
     ];
 
@@ -44,7 +49,7 @@ export class TestInfo extends React.Component<ITestInfoProps, ITestInfoState> {
             <Dialog
                 actions={this.actions}
                 active={this.state.active}
-                title={this.props.prompt}
+                title={this.props.test.additionalInfoPrompt}
             >
                 <Input type='text' value={this.state.internalValue} onChange={this.onChange} label='Additional Info Required' />
             </Dialog>

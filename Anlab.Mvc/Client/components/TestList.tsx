@@ -92,8 +92,8 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                             {item.notes ? <i className="analysisTooltip fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-html="true" title={tooltipContent}></i> : ""}
                         </td>
                         <td hidden>
-                            {selected && item.additionalInfoPrompt &&
-                                <TestInfo testId={item.id} prompt={item.additionalInfoPrompt} updateAdditionalInfo={this.props.updateAdditionalInfo} value={this.props.additionalInfoList[item.id]} />} 
+                            {selected && item.additionalInfoPrompt && 
+                                <TestInfo test={item} updateAdditionalInfo={this.props.updateAdditionalInfo} value={this.props.additionalInfoList[item.id]} unCheck={this.props.onTestSelectionChanged} />} 
                             }
                         </td>
                     </tr>
