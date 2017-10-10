@@ -306,7 +306,7 @@ namespace AnlabMvc.Controllers
         }
 
         [HttpGet]
-        public async Task<ClientIdLookupModel> LookupClientId(string id)
+        public async Task<ClientDetailsLookupModel> LookupClientId(string id)
         {
             var result = await _labworksService.GetClientIdDetails(id);
             if (result == null)

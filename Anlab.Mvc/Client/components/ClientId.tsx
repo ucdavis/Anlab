@@ -10,7 +10,6 @@ interface IClientIdProps {
 
 interface IClientIdInputState {
     internalValue: string;
-    clientEmail: string;
     clientName: string;
     error: string;
 }
@@ -22,7 +21,6 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
 
         this.state = {
             internalValue: this.props.clientId,
-            clientEmail: null,
             clientName: null,
             error: null
         };
@@ -39,23 +37,23 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
 
     lookupClientId = () => {
         if (this.state.internalValue === '') {
-            this.setState({ clientEmail: null, clientName: null, error: null });
+            this.setState({ clientName: null, error: null });
             return;
         }
         fetch(`/order/LookupClientId?id=${this.state.internalValue}`, { credentials: 'same-origin' })
             .then(response => {
                 if (response === null) {
-                    this.setState({ clientEmail: null, clientName: null,error: "The client id you entered could not be found" });
+                    this.setState({ clientName: null,error: "The client id you entered could not be found" });
                     return response;
                 }
                 return response;
             })
             .then(response => response.json())
             .then(response => {
-                this.setState({ clientEmail: response.eMail, clientName: response.name,  error: null });
+                this.setState({ clientName: response.name,  error: null });
             })
             .catch(error => {
-                this.setState({ clientEmail: null, clientName: null, error: "The client id you entered could not be found" });
+                this.setState({ clientName: null, error: "The client id you entered could not be found" });
             });
 
     }
@@ -64,7 +62,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
         return (
             <div>
                 <Input type='text' onBlur={this.onBlur} error={this.state.error} value={this.state.internalValue} onChange={this.onChange} label='Client Id' />
-                {this.state.clientEmail} {this.state.clientName}
+                {this.state.clientName}
             </div>
 
     );

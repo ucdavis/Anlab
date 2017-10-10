@@ -21,7 +21,7 @@ namespace AnlabMvc.Services
         Task<TestItemPrices> GetPrice(string code);
         Task<IList<string>> GetTestCodesCompletedForOrder(string RequestNum);
         Task<OrderUpdateFromDbModel> GetRequestDetails(string RequestNum);
-        Task<ClientIdLookupModel> GetClientIdDetails(string clientId);
+        Task<ClientDetailsLookupModel> GetClientIdDetails(string clientId);
         Task<AnlabDefaultsLookup> GetClientDefaults(string userEmail);
 
     }
@@ -137,12 +137,12 @@ namespace AnlabMvc.Services
             }
         }
 
-        public async Task<ClientIdLookupModel> GetClientIdDetails(string clientId)
+        public async Task<ClientDetailsLookupModel> GetClientIdDetails(string clientId)
         {
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {
-                IEnumerable<ClientIdLookupModel> clientInfo =
-                    await db.Connection.QueryAsync<ClientIdLookupModel>(QueryResource.AnlabClientIdLookup, new { clientId });
+                IEnumerable<ClientDetailsLookupModel> clientInfo =
+                    await db.Connection.QueryAsync<ClientDetailsLookupModel>(QueryResource.AnlabClientDetailsLookup, new { clientId });
 
                 if (clientInfo == null || !clientInfo.Any())
                 {
@@ -288,10 +288,10 @@ namespace AnlabMvc.Services
             return await Task.FromResult(order);
         }
 
-        public async Task<ClientIdLookupModel> GetClientIdDetails(string clientId)
+        public async Task<ClientDetailsLookupModel> GetClientIdDetails(string clientId)
         {
             var rtValue =
-                new ClientIdLookupModel {ClientId = "Fake", CopyEmail = "123@test.com", CopyPhoneNumber = "555-555-5555", EMail = "fake@test.com", PhoneNumber = "554-555-5555"};
+                new ClientDetailsLookupModel {ClientId = "Fake", Name = "Fake, Name", DefaultAccount = "X-1234567"};
             if (clientId == "fail")
             {
                 rtValue = null;
