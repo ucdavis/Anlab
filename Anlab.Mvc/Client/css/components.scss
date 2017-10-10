@@ -156,10 +156,10 @@
   min-width: 300px;
   max-width: $max-width;
   @include breakpoint(rufus) {
-    width: 85%;
+    width: 90%;
   }
   @include breakpoint(mobileonly) {
-    width: 90%;
+    width: 95%;
   }
 }
 
@@ -205,6 +205,7 @@
     align-items: flex-end;
     padding-bottom: 8px;
     justify-content: space-between;
+    flex-wrap: wrap;
     .title-right {
       display:flex;
     }

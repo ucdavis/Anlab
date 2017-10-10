@@ -5,6 +5,14 @@
 @{
     ViewData["Title"] = "Orders";
 }
+@section ActionButtons
+{
+<p>
+<a class="btn btn-small" asp-action="Create">
+   Create Order
+    </a>
+</p>
+}
 <div class="col">
     @if (Model.Any(o => o.Status == OrderStatusCodes.Created))
     {
@@ -20,9 +28,6 @@
         </div>
     }
 
-    <p>
-        <a asp-action="Create" class="btn btn-default">Create Order</a>
-    </p>
 
     <table border="0" cellspacing="5" cellpadding="5" align="left">
         <tbody>
