@@ -2,12 +2,14 @@
 import Input from 'react-toolbox/lib/input';
 import { Dialog } from "react-toolbox/lib/dialog";
 import { ITestItem } from './TestList';
+import { Checkbox } from "react-toolbox/lib/checkbox";
 
 interface ITestInfoProps {
     test: ITestItem;
     updateAdditionalInfo: Function;
     value: string;
-    unCheck: Function;
+    onSelection: Function;
+    selected: boolean;
 }
 
 interface ITestInfoState {
@@ -22,8 +24,16 @@ export class TestInfo extends React.Component<ITestInfoProps, ITestInfoState> {
 
         this.state = {
             internalValue: this.props.value,
-            active: true
+            active: false
         };
+    }
+
+    onSelection = (test: ITestItem, e) => {
+        const selected = e;
+
+        this.setState({ ...this.state, active: selected });
+
+        this.props.onSelection(test, selected);
     }
 
     onChange = (v: string) => {
@@ -37,7 +47,7 @@ export class TestInfo extends React.Component<ITestInfoProps, ITestInfoState> {
 
     cancelAction = () => {
         this.setState({ ...this.state, active: false });
-        this.props.unCheck(this.props.test, false);
+        this.props.onSelection(this.props.test, false);
     }
     actions = [
         { label: "Cancel", onClick: this.cancelAction },
@@ -46,13 +56,17 @@ export class TestInfo extends React.Component<ITestInfoProps, ITestInfoState> {
 
     render() {
         return (
-            <Dialog
-                actions={this.actions}
-                active={this.state.active}
-                title={this.props.test.additionalInfoPrompt}
-            >
-                <Input type='text' value={this.state.internalValue} onChange={this.onChange} label='Additional Info Required' />
-            </Dialog>
+            <div>
+                <Checkbox checked={this.props.selected} onChange={e => this.onSelection(this.props.test, e)} />
+
+                <Dialog
+                    actions={this.actions}
+                    active={this.state.active}
+                    title={this.props.test.additionalInfoPrompt}
+                >
+                    <Input type='text' value={this.state.internalValue} onChange={this.onChange} label='Additional Info Required' />
+                </Dialog>
+            </div>
         );
     }
 }
