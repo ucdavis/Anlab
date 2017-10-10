@@ -59,7 +59,7 @@ namespace AnlabMvc.Controllers
             if (!string.IsNullOrWhiteSpace(user.ClientId))
             {
                 //Has a default client id, so try to get defaults:
-                var defaults = await _labworksService.GetClientIdDetails(user.ClientId);
+                var defaults = await _labworksService.GetClientDetails(user.ClientId);
                 if (defaults != null)
                 {                    
                     model.DefaultAccount = model.DefaultAccount ?? defaults.DefaultAccount;
@@ -314,7 +314,7 @@ namespace AnlabMvc.Controllers
         [HttpGet]
         public async Task<ClientDetailsLookupModel> LookupClientId(string id)
         {
-            var result = await _labworksService.GetClientIdDetails(id);
+            var result = await _labworksService.GetClientDetails(id);
             if (result == null)
             {
                 return null;

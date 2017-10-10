@@ -28,7 +28,7 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
         if (this.props.payment.clientType === 'uc') {
             return (
                 <div>
-                    <Input type="text" label="UC Account" error={this.state.error} value={this.props.payment.account} maxLength={15} onChange={this.handleAccountChange} onBlur={this.lookupAccount} />
+                    <Input type="text" label="UC Account" error={this.state.error} value={this.props.payment.account} maxLength={50} onChange={this.handleAccountChange} onBlur={this.lookupAccount} />
                     {this.state.accountName}
                 </div>
             );
@@ -85,13 +85,7 @@ export class PaymentSelection extends React.Component<IPaymentProps, any> {
             if (account === '' || account == undefined) {
                 this.setState({ ...this.state, error: "Account is required" });
             } else {
-                const re = /^(\w)-(\w{7})\/?(\w{5})?$/;
-                if (!re.test((account))) {
-                    this.setState(
-                        { ...this.state, error: "The account must be in the format X-XXXXXXX or X-XXXXXXX/XXXXX" });
-                } else {
-                    this.setState({ ...this.state, error: "" });
-                };
+                this.setState({ ...this.state, error: "" });
             }
         }
     }

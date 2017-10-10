@@ -24,19 +24,22 @@ namespace AnlabMvc.Controllers
         private readonly IEmailSender _emailSender;
         private readonly IDirectorySearchService _directorySearchService;
         private readonly ILogger _logger;
+        private readonly ILabworksService _labworksService;
 
         public AccountController(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             IEmailSender emailSender,
             IDirectorySearchService directorySearchService,
-            ILogger<AccountController> logger)
+            ILogger<AccountController> logger,
+            ILabworksService labworksService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _directorySearchService = directorySearchService;
             _logger = logger;
+            _labworksService = labworksService;
         }
 
         [TempData]
@@ -343,6 +346,12 @@ namespace AnlabMvc.Controllers
                     LastName = info.Principal.FindFirstValue(ClaimTypes.Surname),
                     Name = info.Principal.FindFirstValue(ClaimTypes.Name)
                 };
+                var defaults = await _labworksService.GetClientDetails(user.Email);
+                if (defaults != null)
+                {
+                    user.ClientId = defaults.ClientId;
+                    user.Account = defaults.DefaultAccount;
+                }
 
                 if (string.IsNullOrWhiteSpace(user.Name))
                 {

@@ -64,7 +64,7 @@ namespace AnlabMvc.Resources {
         ///   Looks up a localized string similar to SELECT        dbo.USERFLDS.LOCCODE AS ClientId, dbo.LOCLIST.REPADD1 AS Name, dbo.LOCLIST.[INVADD4] as DefaultAccount
         ///FROM            dbo.USERFLDS INNER JOIN
         ///                         dbo.LOCLIST ON dbo.USERFLDS.LOCCODE = dbo.LOCLIST.LOCCODE
-        ///WHERE        dbo.USERFLDS.LOCCODE = @clientId.
+        ///WHERE        dbo.USERFLDS.LOCCODE = @clientId  OR dbo.USERFLDS.SUBEMAIL = @clientId.
         /// </summary>
         internal static string AnlabClientDetailsLookup {
             get {

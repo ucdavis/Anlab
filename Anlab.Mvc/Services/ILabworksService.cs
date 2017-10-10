@@ -21,7 +21,7 @@ namespace AnlabMvc.Services
         Task<TestItemPrices> GetPrice(string code);
         Task<IList<string>> GetTestCodesCompletedForOrder(string RequestNum);
         Task<OrderUpdateFromDbModel> GetRequestDetails(string RequestNum);
-        Task<ClientDetailsLookupModel> GetClientIdDetails(string clientId);
+        Task<ClientDetailsLookupModel> GetClientDetails(string clientId);
 
     }
 
@@ -136,24 +136,32 @@ namespace AnlabMvc.Services
             }
         }
 
-        public async Task<ClientDetailsLookupModel> GetClientIdDetails(string clientId)
+        public async Task<ClientDetailsLookupModel> GetClientDetails(string clientId)
         {
-            using (var db = new DbManager(_connectionSettings.AnlabConnection))
+            try
             {
-                IEnumerable<ClientDetailsLookupModel> clientInfo =
-                    await db.Connection.QueryAsync<ClientDetailsLookupModel>(QueryResource.AnlabClientDetailsLookup, new { clientId });
-
-                if (clientInfo == null || !clientInfo.Any())
+                using (var db = new DbManager(_connectionSettings.AnlabConnection))
                 {
-                    return null;
-                }
-                if (clientInfo.Count() > 1)
-                {
-                    throw new Exception("Too many results");
-                }
+                    IEnumerable<ClientDetailsLookupModel> clientInfo =
+                        await db.Connection.QueryAsync<ClientDetailsLookupModel>(QueryResource.AnlabClientDetailsLookup, new { clientId });
 
-                return clientInfo.ElementAt(0);
+                    if (clientInfo == null || !clientInfo.Any())
+                    {
+                        return null;
+                    }
+                    if (clientInfo.Count() > 1)
+                    {
+                        throw new Exception("Too many results");
+                    }
+
+                    return clientInfo.ElementAt(0);
+                }
             }
+            catch
+            {
+                return new ClientDetailsLookupModel{Name = "Unknown"};
+            }
+
         }
     }
     
@@ -267,7 +275,7 @@ namespace AnlabMvc.Services
             return await Task.FromResult(order);
         }
 
-        public async Task<ClientDetailsLookupModel> GetClientIdDetails(string clientId)
+        public async Task<ClientDetailsLookupModel> GetClientDetails(string clientId)
         {
             var rtValue =
                 new ClientDetailsLookupModel {ClientId = "Fake", Name = "Fake, Name", DefaultAccount = "X-1234567"};
