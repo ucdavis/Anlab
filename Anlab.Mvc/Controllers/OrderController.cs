@@ -236,12 +236,15 @@ namespace AnlabMvc.Controllers
             await _orderService.UpdateTestsAndPrices(order);
 
             var orderDetails = order.GetOrderDetails();
-            
-            foreach(var item in orderDetails.AdditionalInfoList)
+
+            if (orderDetails.AdditionalInfoList != null)
             {
-                orderDetails.AdditionalInfo += string.Format("{0}{1}: {2}", Environment.NewLine, item.Key, item.Value);
+                foreach (var item in orderDetails.AdditionalInfoList)
+                {
+                    orderDetails.AdditionalInfo += string.Format("{0}{1}: {2}", Environment.NewLine, item.Key, item.Value);
+                }
+                orderDetails.AdditionalInfoList = null;
             }
-            orderDetails.AdditionalInfoList = null;
             order.SaveDetails(orderDetails);
 
             order.Status = OrderStatusCodes.Confirmed;

@@ -198,9 +198,15 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
         this.setState({ ...this.state, isSubmitting: true });
         const selectedTests = this.getTests().selected;
-        const additionalInfoList = Object.keys(this.state.additionalInfoList).map(key => {
-            return { "key": key, "value": this.state.additionalInfoList[key]}
+        const selectedCodes = selectedTests.map(t => t.id);
+        let additionalInfoList = Object.keys(this.state.additionalInfoList).map(key => {
+            if (selectedCodes.indexOf(key) > -1)
+                return { "key": key, "value": this.state.additionalInfoList[key] }
+            else
+                return null;
         });
+        additionalInfoList = additionalInfoList.filter(x => !!x);
+
         const order = {
             orderId: this.state.orderId,
             quantity: this.state.quantity,
