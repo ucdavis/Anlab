@@ -56,14 +56,20 @@ namespace AnlabMvc.Controllers
             model.DefaultAccount = user.Account?.ToUpper();
             model.DefaultEmail = user.Email;
 
-            var defaults = await _labworksService.GetClientDefaults(user.Email);
-            //var defaults = await _labworksService.GetClientDefaults("klbeckley@ucla.edu"); //Just to test.
-            if (defaults != null)
+            if (!string.IsNullOrWhiteSpace(user.ClientId))
             {
-                model.DefaultAccount = model.DefaultAccount ?? defaults.DefaultAccount;
-                model.DefaultClientId = defaults.ClientId;
+                //Has a default client id, so try to get defaults:
+                var defaults = await _labworksService.GetClientIdDetails(user.ClientId);
+                if (defaults != null)
+                {                    
+                    model.DefaultAccount = model.DefaultAccount ?? defaults.DefaultAccount;
+                    model.DefaultClientId = defaults.ClientId;
 
+                }
             }
+
+            
+
 
             return View(model);
         }

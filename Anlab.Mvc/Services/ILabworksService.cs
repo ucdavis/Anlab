@@ -22,7 +22,6 @@ namespace AnlabMvc.Services
         Task<IList<string>> GetTestCodesCompletedForOrder(string RequestNum);
         Task<OrderUpdateFromDbModel> GetRequestDetails(string RequestNum);
         Task<ClientDetailsLookupModel> GetClientIdDetails(string clientId);
-        Task<AnlabDefaultsLookup> GetClientDefaults(string userEmail);
 
     }
 
@@ -156,26 +155,6 @@ namespace AnlabMvc.Services
                 return clientInfo.ElementAt(0);
             }
         }
-
-        public async Task<AnlabDefaultsLookup> GetClientDefaults(string userEmail)
-        {
-            using (var db = new DbManager(_connectionSettings.AnlabConnection))
-            {
-                IEnumerable<AnlabDefaultsLookup> defaults =
-                    await db.Connection.QueryAsync<AnlabDefaultsLookup>(QueryResource.AnlabDefaultsForUser, new { userEmail });
-
-                if (defaults == null || !defaults.Any())
-                {
-                    return null;
-                }
-                if (defaults.Count() > 1)
-                {
-                    throw new Exception("Too many results");
-                }
-
-                return defaults.ElementAt(0);
-            }
-        }
     }
     
     
@@ -299,11 +278,5 @@ namespace AnlabMvc.Services
             return await Task.FromResult(rtValue);
         }
 
-        public async Task<AnlabDefaultsLookup> GetClientDefaults(string userEmail)
-        {
-            var rtValue = new AnlabDefaultsLookup {ClientId = "Fake", DefaultAccount = "3-1234567"};
-
-            return await Task.FromResult(rtValue);
-        }
     }
 }
