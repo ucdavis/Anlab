@@ -31,7 +31,8 @@ export class TestInfo extends React.Component<ITestInfoProps, ITestInfoState> {
     onSelection = (test: ITestItem, e) => {
         const selected = e;
 
-        this.setState({ ...this.state, active: selected });
+        if (test.additionalInfoPrompt)
+            this.setState({ ...this.state, active: selected });
 
         this.props.onSelection(test, selected);
     }
