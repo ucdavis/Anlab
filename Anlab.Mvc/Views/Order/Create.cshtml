@@ -8,9 +8,6 @@
 
 @section Scripts
 {
-    <script src="~/dist/react.js" asp-append-version="true"></script>
-    <script src="~/dist/order.js" asp-append-version="true"></script>
-
     <script>
         App = {};
         App.orderData = @Json.Serialize(Model);
@@ -18,6 +15,9 @@
         App.defaultEmail = @Json.Serialize(Model.DefaultEmail);
         App.defaultClientId = @Json.Serialize(Model.DefaultClientId);
     </script>
+
+    <script src="~/dist/react.js" asp-append-version="true"></script>
+    <script src="~/dist/order.js" asp-append-version="true"></script>
 
     <script type="text/javascript">
         $(function() {
