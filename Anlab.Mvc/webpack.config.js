@@ -41,8 +41,7 @@ module.exports = (env) => {
         plugins: [
             new CheckerPlugin(),
             new webpack.optimize.CommonsChunkPlugin({
-                name: 'react',
-                chunks: ['boot']
+                name: ['react', 'root'],
             })
         ].concat(isDevBuild ? [
             // Plugins that apply in development builds only
@@ -53,7 +52,7 @@ module.exports = (env) => {
         ] : [
             // Plugins that apply in production builds only
             new webpack.optimize.UglifyJsPlugin(),
-            new ExtractTextPlugin('site.css')
+            new ExtractTextPlugin({ filename: '[name].css', allChunks: true })
         ])
     };
 };
