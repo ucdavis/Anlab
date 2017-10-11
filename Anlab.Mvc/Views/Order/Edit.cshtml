@@ -7,18 +7,18 @@
 @Html.AntiForgeryToken()
 <div id="react-app"></div>
 
-<script>
-    App = {};
-    App.orderData = @Json.Serialize(Model);
-    App.OrderId = @Model.Order.Id;
-    App.defaultEmail = @Json.Serialize(Model.DefaultEmail);
-</script>
-
-<script src="~/dist/react.js" asp-append-version="true"></script>
-<script src="~/dist/order.js" asp-append-version="true"></script>
-
 @section Scripts
 {
+    <script>
+        App = {};
+        App.orderData = @Json.Serialize(Model);
+        App.OrderId = @Model.Order.Id;
+        App.defaultEmail = @Json.Serialize(Model.DefaultEmail);
+    </script>
+    
+    <script src="~/dist/react.js" asp-append-version="true"></script>
+    <script src="~/dist/order.js" asp-append-version="true"></script>
+
     <script type="text/javascript">
         $(function() {
             $('body').tooltip({

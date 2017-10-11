@@ -12,7 +12,9 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" />
     </environment>
     <environment names="Staging,Production">
-        <link rel="stylesheet" href="~/dist/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/dist/root.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/dist/react.css" asp-append-version="true" />
+
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
     </environment>
@@ -81,6 +83,7 @@
                             }
                             <li><a asp-controller="Admin" asp-action="MailQueue">Mail Queue</a></li>
                             <li><a asp-controller="TestItems" asp-action="Index">Test Items</a></li>
+                            <li><a asp-controller="AdminAnalysis" asp-action="Index">Maintain Analysis Methods</a></li>
                         </ul>
                     </li>
                 }

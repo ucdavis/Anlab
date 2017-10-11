@@ -1,0 +1,97 @@
+﻿@using Humanizer
+@model IEnumerable<AnalysisMethod>
+
+@{
+    ViewBag.Title = "Analysis List";   
+}
+
+
+<p>
+    <a asp-action="Create" class="btn btn-default">Create New</a>
+</p>
+<table id="table" class="row-border order-column hover">
+    <thead>
+    <tr>
+        <th></th>
+        <th>
+            @Html.DisplayNameFor(model => model.Id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Category) <select name="category" id="category">
+                <option value="All">All</option>
+                @foreach (var category in TestCategories.All)
+                {
+                    <option value="@category">@category</option>
+                }
+            </select>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-controller="Analysis" asp-action="Details" asp-route-id="@item.Id" target="_blank">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @item.Category.Humanize(LetterCasing.Title)
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@section AdditionalStyles
+{
+    @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+}
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+    <script type="text/javascript">
+        $(function() {
+            var table = $("#table").DataTable({
+                "sorting": [[1, "asc"]],
+                "pageLength": 25,
+                "stateSave": true,
+                "stateDuration": 60 * 10,
+                "columnDefs": [
+                    { "orderable": false, "targets": [0,2] },
+                    { "searchable":false, "targets": 0 }
+                ]
+            });
+
+            $('#category').change(function () {
+                table.draw();
+            });
+        });
+
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+
+                var category = data[3];
+                var categoryFilter = $('#category').val();
+
+                if (categoryFilter == "All" || category.indexOf(categoryFilter) !== -1) {
+                    return true;
+                }
+                return false;
+            }
+        );
+
+    </script>
+
+
+}

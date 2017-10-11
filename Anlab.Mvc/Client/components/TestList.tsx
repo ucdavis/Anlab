@@ -1,12 +1,13 @@
 ﻿import * as React from 'react';
 import Input from 'react-toolbox/lib/input';
-import Checkbox from 'react-toolbox/lib/checkbox';
 
 import { IPayment } from './PaymentSelection';
 import NumberFormat from 'react-number-format';
 import { groupBy } from '../util/arrayHelpers';
 
 import showdown from 'showdown';
+import { Dialog } from "react-toolbox/lib/dialog";
+import { TestInfo } from "./TestInfo";
 
 export interface ITestItem {
     id: string;
@@ -18,6 +19,7 @@ export interface ITestItem {
     category: string;
     categories: string[];
     notes: string;
+    additionalInfoPrompt?: string;
     sop: string;
 }
 
@@ -27,19 +29,18 @@ interface ITestListState {
 
 export interface ITestListProps {
     items: Array<ITestItem>;
+    additionalInfoList: Object;
+
     payment: IPayment;
     selectedTests: any;
     onTestSelectionChanged: Function;
+    updateAdditionalInfo: Function;
 };
 
 export class TestList extends React.Component<ITestListProps, ITestListState> {
-    state = { query: '' };
-
-    onSelection = (test: ITestItem, e) => {
-        const selected = e;
-
-        this.props.onTestSelectionChanged(test, selected);
-    }
+    state = {
+        query: ''
+    };
 
     onQueryChange = (value: string) => {
         this.setState({ ...this.state, query: value });
@@ -74,7 +75,7 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                 return (
                     <tr key={item.id} >
                         <td>
-                            <Checkbox checked={selected} onChange={e => this.onSelection(item, e)} />
+                            <TestInfo test={item} selected={selected} updateAdditionalInfo={this.props.updateAdditionalInfo} value={this.props.additionalInfoList[item.id]} onSelection={this.props.onTestSelectionChanged} /> 
                         </td>
                         <td>{item.analysis}</td>
                         <td>

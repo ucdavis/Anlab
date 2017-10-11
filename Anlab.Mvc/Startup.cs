@@ -30,6 +30,7 @@ namespace AnlabMvc
     public class Startup
     {
         private IDirectorySearchService _directorySearchService;
+        private IHostingEnvironment _environment;
 
         public Startup(IHostingEnvironment env)
         {
@@ -48,6 +49,7 @@ namespace AnlabMvc
             Configuration = builder.Build();
 
             StackifyLib.Config.Environment = env.EnvironmentName;
+            _environment = env;
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -64,10 +66,18 @@ namespace AnlabMvc
             services.Configure<FinancialSettings>(Configuration.GetSection("Financial"));
 
             // Add framework services.
-            services.AddDbContext<ApplicationDbContext>(options =>
-              options.UseSqlite("Data Source=anlab.db")
-              // options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
-            );
+            if (_environment.IsDevelopment())
+            {
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlite("Data Source=anlab.db")
+                );
+            }
+            else
+            {
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+                );                
+            }
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()

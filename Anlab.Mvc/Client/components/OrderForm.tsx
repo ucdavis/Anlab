@@ -37,6 +37,7 @@ interface IOrderState {
     internalProcessingFee: number;
     externalProcessingFee: number;
     defaultEmail: string;
+    additionalInfoList: Object;
 }
 
 export default class OrderForm extends React.Component<undefined, IOrderState> {
@@ -54,7 +55,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             quantity: null,
             sampleType: 'Soil',
             testItems: window.App.orderData.testItems,
-            selectedTests: { },
+            selectedTests: {},
             isValid: false,
             isSubmitting: false,
             project: '',
@@ -63,11 +64,12 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             isErrorActive: false,
             errorMessage: '',
             status: '',
-            clientId: '',
+            clientId: window.App.defaultClientId,
             internalProcessingFee: window.App.orderData.internalProcessingFee,
             externalProcessingFee: window.App.orderData.externalProcessingFee,
-            defaultEmail: window.App.defaultEmail
-        };
+            defaultEmail: window.App.defaultEmail,
+            additionalInfoList: {}
+    };
 
         if (window.App.defaultAccount) {
             initialState.payment.account = window.App.defaultAccount;
@@ -94,6 +96,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.internalProcessingFee = window.App.orderData.internalProcessingFee;
             initialState.externalProcessingFee = window.App.orderData.externalProcessingFee;
             initialState.defaultEmail = window.App.defaultEmail;
+            initialState.additionalInfoList = orderInfo.AdditionalInfoList;
 
             orderInfo.SelectedTests.forEach(test => { initialState.selectedTests[test.Id] = true; });
         }
@@ -103,11 +106,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     validate = () => {
         let valid = this.state.quantity > 0 && this.state.quantity <= 100 && !!this.state.project.trim();
         if (valid) {
-            if (this.state.payment.clientType === 'uc') {
-                const re = /^(\w)-(\w{7})\/?(\w{5})?$/;
-                if (!re.test((this.state.payment.account))) {
-                    valid = false;
-                };
+            if (this.state.payment.clientType === 'uc' && (this.state.payment.account === '' || this.state.payment.account == undefined)) {
+                valid = false;                
             }
         }
         this.setState({ ...this.state, isValid: valid });
@@ -158,6 +158,13 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         node.focus();
     }
 
+    updateAdditionalInfo = (id: string, value: string) => {
+        const tests = this.state.additionalInfoList;
+        tests[id] = value;
+        this.forceUpdate();
+
+    }
+
     handleChange = (name, value) => {
         this.setState({ ...this.state, [name]: value }, this.validate);
     };
@@ -178,18 +185,30 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             selected: filtered.filter(item => !!selectedTests[item.id])
         };
     }
+
     onSubmit = () => {
         if (this.state.isSubmitting) {
             return;
         }
         let postUrl = '/Order/Save';
         let returnUrl = '/Order/Confirmation/';
+
         this.setState({ ...this.state, isSubmitting: true });
         const selectedTests = this.getTests().selected;
+        const selectedCodes = selectedTests.map(t => t.id);
+        let additionalInfoList = Object.keys(this.state.additionalInfoList).map(key => {
+            if (selectedCodes.indexOf(key) > -1)
+                return { "key": key, "value": this.state.additionalInfoList[key] }
+            else
+                return null;
+        });
+        additionalInfoList = additionalInfoList.filter(x => !!x);
+
         const order = {
             orderId: this.state.orderId,
             quantity: this.state.quantity,
             additionalInfo: this.state.additionalInfo,
+            additionalInfoList, // return in dictionary format
             additionalEmails: this.state.additionalEmails,
             project: this.state.project,
             commodity: this.state.commodity,
@@ -218,7 +237,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     }
 
     render() {
-        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, commodity, additionalEmails, status, clientId, internalProcessingFee, externalProcessingFee, defaultEmail } = this.state;
+        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, commodity, additionalEmails, status, clientId, internalProcessingFee, externalProcessingFee, defaultEmail, additionalInfoList } = this.state;
 
         const { filtered, selected } = this.getTests();
 
@@ -243,7 +262,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     </div>
                     <ClientId clientId={clientId} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
-                    <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
+                    <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} additionalInfoList={additionalInfoList} updateAdditionalInfo={this.updateAdditionalInfo} />
 
                 </div>
                 <div className="stickyfoot shadowed" data-spy="affix" data-offset-bottom="0">
