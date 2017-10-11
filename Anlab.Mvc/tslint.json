@@ -1,0 +1,8 @@
+{
+  "extends": [ "tslint:latest", "tslint-react" ],
+  "rules": {
+    "indent": [true, "spaces", 4],
+    "no-submodule-imports": [true, "react-toolbox"],
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
+  }
+}
