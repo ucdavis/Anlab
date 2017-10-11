@@ -21,6 +21,8 @@ namespace AnlabMvc.Services
         Task<TestItemPrices> GetPrice(string code);
         Task<IList<string>> GetTestCodesCompletedForOrder(string RequestNum);
         Task<OrderUpdateFromDbModel> GetRequestDetails(string RequestNum);
+        Task<ClientDetailsLookupModel> GetClientDetails(string clientId);
+
     }
 
     public class LabworksService : ILabworksService
@@ -133,6 +135,34 @@ namespace AnlabMvc.Services
                 return rtValue;
             }
         }
+
+        public async Task<ClientDetailsLookupModel> GetClientDetails(string clientId)
+        {
+            try
+            {
+                using (var db = new DbManager(_connectionSettings.AnlabConnection))
+                {
+                    IEnumerable<ClientDetailsLookupModel> clientInfo =
+                        await db.Connection.QueryAsync<ClientDetailsLookupModel>(QueryResource.AnlabClientDetailsLookup, new { clientId });
+
+                    if (clientInfo == null || !clientInfo.Any())
+                    {
+                        return null;
+                    }
+                    if (clientInfo.Count() > 1)
+                    {
+                        throw new Exception("Too many results");
+                    }
+
+                    return clientInfo.ElementAt(0);
+                }
+            }
+            catch
+            {
+                return new ClientDetailsLookupModel{Name = "Unknown"};
+            }
+
+        }
     }
     
     
@@ -244,5 +274,17 @@ namespace AnlabMvc.Services
 
             return await Task.FromResult(order);
         }
+
+        public async Task<ClientDetailsLookupModel> GetClientDetails(string clientId)
+        {
+            var rtValue =
+                new ClientDetailsLookupModel {ClientId = "Fake", Name = "Fake, Name", DefaultAccount = "X-1234567"};
+            if (clientId == "fail")
+            {
+                rtValue = null;
+            }
+            return await Task.FromResult(rtValue);
+        }
+
     }
 }
