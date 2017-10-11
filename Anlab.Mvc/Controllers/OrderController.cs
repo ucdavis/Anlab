@@ -51,10 +51,25 @@ namespace AnlabMvc.Controllers
                 InternalProcessingFee = Math.Ceiling(proc.Cost),
                 ExternalProcessingFee = Math.Ceiling(proc.Cost * _appSettings.NonUcRate)
             };
-
+            
             var user = _context.Users.Single(a => a.Id == CurrentUserId);
             model.DefaultAccount = user.Account?.ToUpper();
             model.DefaultEmail = user.Email;
+
+            if (!string.IsNullOrWhiteSpace(user.ClientId))
+            {
+                //Has a default client id, so try to get defaults:
+                var defaults = await _labworksService.GetClientDetails(user.ClientId);
+                if (defaults != null)
+                {                    
+                    model.DefaultAccount = model.DefaultAccount ?? defaults.DefaultAccount;
+                    model.DefaultClientId = defaults.ClientId;
+
+                }
+            }
+
+            
+
 
             return View(model);
         }
@@ -294,6 +309,17 @@ namespace AnlabMvc.Controllers
             Message = "Order deleted";
             return RedirectToAction("Index");
 
+        }
+
+        [HttpGet]
+        public async Task<ClientDetailsLookupModel> LookupClientId(string id)
+        {
+            var result = await _labworksService.GetClientDetails(id);
+            if (result == null)
+            {
+                return null;
+            }
+            return result;
         }
     }
    

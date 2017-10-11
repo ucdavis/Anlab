@@ -54,7 +54,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             quantity: null,
             sampleType: 'Soil',
             testItems: window.App.orderData.testItems,
-            selectedTests: { },
+            selectedTests: {},
             isValid: false,
             isSubmitting: false,
             project: '',
@@ -63,11 +63,11 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             isErrorActive: false,
             errorMessage: '',
             status: '',
-            clientId: '',
+            clientId: window.App.defaultClientId,
             internalProcessingFee: window.App.orderData.internalProcessingFee,
             externalProcessingFee: window.App.orderData.externalProcessingFee,
             defaultEmail: window.App.defaultEmail
-        };
+    };
 
         if (window.App.defaultAccount) {
             initialState.payment.account = window.App.defaultAccount;
@@ -103,11 +103,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     validate = () => {
         let valid = this.state.quantity > 0 && this.state.quantity <= 100 && !!this.state.project.trim();
         if (valid) {
-            if (this.state.payment.clientType === 'uc') {
-                const re = /^(\w)-(\w{7})\/?(\w{5})?$/;
-                if (!re.test((this.state.payment.account))) {
-                    valid = false;
-                };
+            if (this.state.payment.clientType === 'uc' && (this.state.payment.account === '' || this.state.payment.account == undefined)) {
+                valid = false;                
             }
         }
         this.setState({ ...this.state, isValid: valid });
