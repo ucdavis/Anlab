@@ -20,7 +20,7 @@ namespace AnlabMvc.Models.Order
 
         // additional info comes across as code: value
         
-        public Dictionary<string,string> AdditionalInfoList { get; set; }
+        public Dictionary<string,string> AdditionalInfoList { get; set; } = new Dictionary<string, string>();
 
         [MinLength(1, ErrorMessage = "You must select at least 1 test.")]
         public TestDetails[] SelectedTests { get; set; }
