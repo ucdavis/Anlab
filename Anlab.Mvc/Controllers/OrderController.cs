@@ -258,7 +258,7 @@ namespace AnlabMvc.Controllers
                 {
                     orderDetails.AdditionalInfo += string.Format("{0}{1}: {2}", Environment.NewLine, item.Key, item.Value);
                 }
-                orderDetails.AdditionalInfoList = null;
+                orderDetails.AdditionalInfoList = new Dictionary<string, string>();
             }
             order.SaveDetails(orderDetails);
 
