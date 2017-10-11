@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace AnlabMvc.Controllers
 {
@@ -112,7 +113,7 @@ namespace AnlabMvc.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Save(OrderSaveModel model)
-        {
+        {           
             if (!ModelState.IsValid)
             {
                 var errors = new List<string>();
@@ -248,6 +249,18 @@ namespace AnlabMvc.Controllers
             }
 
             await _orderService.UpdateTestsAndPrices(order);
+
+            var orderDetails = order.GetOrderDetails();
+
+            if (orderDetails.AdditionalInfoList != null)
+            {
+                foreach (var item in orderDetails.AdditionalInfoList)
+                {
+                    orderDetails.AdditionalInfo += string.Format("{0}{1}: {2}", Environment.NewLine, item.Key, item.Value);
+                }
+                orderDetails.AdditionalInfoList = new Dictionary<string, string>();
+            }
+            order.SaveDetails(orderDetails);
 
             order.Status = OrderStatusCodes.Confirmed;
             
