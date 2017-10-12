@@ -19,6 +19,7 @@ interface IClientIdModalProps {
 interface IClientIdModalState {
     newClientInfo: INewClientInfo;
     active: boolean;
+    isValid: boolean;
 }
 
 export class ClientIdModal extends React.Component<IClientIdModalProps, IClientIdModalState> {
@@ -32,7 +33,8 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
                 email: this.props.clientInfo.email,
                 phoneNumber: this.props.clientInfo.phoneNumber
             },
-            active: false
+            active: false,
+            isValid: false
         };
     }
 
@@ -45,13 +47,25 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
             ...this.state, newClientInfo: {
                 ...this.state.newClientInfo,
                 [property]: value
-                }
-            });
+            }
+        }, this.validate);
+    }
+
+    validate = () => {
+        const emailre = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const phoneRe = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+
+        let valid = !!this.state.newClientInfo.employer.trim() && !!this.state.newClientInfo.name.trim() && emailre.test((this.state.newClientInfo.email)) && phoneRe.test((this.state.newClientInfo.phoneNumber));
+
+        this.setState({ ...this.state, isValid: valid });
     }
 
     saveAction = () => {
-        this.setState({ ...this.state, active: false });
-        this.props.updateClient(this.state.newClientInfo);
+        if (this.state.isValid)
+        {
+            this.setState({ ...this.state, active: false });
+            this.props.updateClient(this.state.newClientInfo);
+        }
     }
 
     cancelAction = () => {
@@ -64,6 +78,8 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
 
     render() {
         let title = "Please input the following information";
+        const errorText = "Please correct any errors and complete any required fields before you proceed";
+
         return (
             <div>
                 <Button className="btn btn-order" onClick={this.toggleModal} >New Client</Button>
@@ -76,6 +92,7 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
                     <ClientIdModalInput property="employer" value={this.state.newClientInfo.employer} label="Employer" handleChange={this.handleChange} />
                     <ClientIdModalInput property="email" value={this.state.newClientInfo.email} label="Email" handleChange={this.handleChange} />
                     <ClientIdModalInput property="phoneNumber" value={this.state.newClientInfo.phoneNumber} label="Phone Number" handleChange={this.handleChange} />
+                    {!this.state.isValid ? <div className="alert alert-danger">{errorText}</div> : null}
                 </Dialog>
             </div>
         );
