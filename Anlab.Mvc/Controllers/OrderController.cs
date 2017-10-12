@@ -251,6 +251,14 @@ namespace AnlabMvc.Controllers
             await _orderService.UpdateTestsAndPrices(order);
 
             var orderDetails = order.GetOrderDetails();
+            if (orderDetails.NewClientInfo != null)
+            {
+                orderDetails.AdditionalInfo += string.Format("{0}New Client Info", Environment.NewLine);
+                orderDetails.AdditionalInfo += string.Format("{0}Name: {1}", Environment.NewLine, orderDetails.NewClientInfo.Name);
+                orderDetails.AdditionalInfo += string.Format("{0}Employer: {1}", Environment.NewLine, orderDetails.NewClientInfo.Employer);
+                orderDetails.AdditionalInfo += string.Format("{0}Email: {1}", Environment.NewLine, orderDetails.NewClientInfo.Email);
+                orderDetails.AdditionalInfo += string.Format("{0}Phone Number: {1}", Environment.NewLine, orderDetails.NewClientInfo.PhoneNumber);
+            }
 
             if (orderDetails.AdditionalInfoList != null)
             {
@@ -260,6 +268,7 @@ namespace AnlabMvc.Controllers
                 }
                 orderDetails.AdditionalInfoList = new Dictionary<string, string>();
             }
+
             order.SaveDetails(orderDetails);
 
             order.Status = OrderStatusCodes.Confirmed;

@@ -66,5 +66,5 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
             </div>
 
     );
-}
+    }
 }
