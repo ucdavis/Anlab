@@ -7,14 +7,18 @@
 @section ActionButtons
 {
 <p>
-<a class="btn btn-small" asp-action="Delete" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
-    <i class="fa fa-trash" aria-hidden="true"></i> Delete
-</a>
-<a asp-action="Edit" asp-route-id="@Model.Order.Id" class="btn btn-small">Edit Order</a>
-@Html.Hidden("confirm", true)
-<a asp-controller="order" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post" class="btn btn-small">
-  @(String.Format("{0:C}", Model.OrderDetails.Total)) Confirm and Send
-</a>
+
+    <form asp-controller="order" asp-action="Delete" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal" style="margin-left: 5px;margin-right: 5px">
+        <button type="submit" class="btn btn-small"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>  
+    </form>
+    
+    <a asp-action="Edit" asp-route-id="@Model.Order.Id" class="btn btn-small">Edit Order</a>
+    
+    <form asp-controller="order" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal" style="margin-left: 5px;margin-right: 5px">
+        @Html.Hidden("confirm", true)
+        <button type="submit" class="btn btn-small"> @(String.Format("{0:C}", Model.OrderDetails.Total)) Confirm and Send</button>
+    </form>
+    
 </p>
 
 
