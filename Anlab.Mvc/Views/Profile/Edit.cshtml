@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Edit profile";
 }
-
+<div class="col">
     <form asp-action="Edit" method="post" asp-antiforgery="true">
         <div class="form-group">
             <label asp-for="FirstName" class="col-md-2 control-label"></label>
@@ -46,7 +46,7 @@
             </div>
         </div>
     </form>
-
+</div>
 
 
 @section Scripts {

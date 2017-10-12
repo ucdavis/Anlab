@@ -4,11 +4,11 @@
 @{
     ViewData["Title"] = "Confirmation";
 }
-
+<div class="col">
 @Html.Partial("_OrderDetails")
 
 <form method="post" asp-controller="Lab" enctype="multipart/form-data" asp-action="Finalize" asp-route-id="@Model.Order.Id">
-    
+
     <div class="form-group">
         <span>Upload Results</span>
         @if (string.IsNullOrWhiteSpace(Model.Order.ResultsFileIdentifier))
@@ -28,12 +28,12 @@
         <div>Adjustment Amount: $<span id="adjustAmt">@Model.OrderDetails.AdjustmentAmount</span></div>
         <input type="hidden" class="form-control" id="adjustmentAmount" name="AdjustmentAmount" value="0"/>
     </div>
-    
+
 
     @Html.Hidden("Confirm", true)
     <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true"> Confirm Completed (Update Tests from Labworks)</i></button>
 </form>
-
+</div>
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
@@ -62,11 +62,11 @@
         });
 
         $('#UploadFile').on('change', function () {
-            var upload = $("#UploadFile");           
+            var upload = $("#UploadFile");
             var fullFileName = upload.val().replace(/^.*[\\\/]/, '').toUpperCase();
             var fileName = fullFileName.replace(/\.[^/.]+$/, "");
             var extension = fullFileName.split('.').pop();
-            
+
             var error = "";
             if (extension !== 'XLS' && extension !== 'XLSX') {
                 error = "Only XLS and XLSX files can be uploaded";
@@ -76,9 +76,9 @@
                 error = "File name did not include request number: " + "@Model.Order.RequestNum";
             }
             upload[0].setCustomValidity(error);
-            
+
         });
     </script>
-                                                                  
+
     @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
 }

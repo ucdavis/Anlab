@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Confirmation";
 }
-
+<div class="col">
 <form asp-controller="Lab" asp-action="AddRequestNumber" asp-route-id="@Model.Order.Id" method="post">
     @Html.Hidden("confirm", true)
     <div class="form-group">
@@ -17,7 +17,7 @@
 
 <h3>This info is outdated and will be updated from the request number</h3>
 @Html.Partial("_OrderDetails")
-
+</div>
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }

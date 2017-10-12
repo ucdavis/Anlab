@@ -5,17 +5,21 @@
 @{
     ViewData["Title"] = "Test Items";
 }
-
+@section ActionButtons
+{
 <p>
-    <a asp-action="Create" class="btn btn-default">Create New</a>
+<a class="btn btn-small" asp-action="Create">
+   Create New
+    </a>
 </p>
+}
 <table id="table" class="row-border order-column hover">
     <thead>
         <tr>
             <th></th>
             <th>
                 @Html.DisplayNameFor(model => model.Id)
-            </th>  
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Analysis)
             </th>
@@ -44,8 +48,8 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | 
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> | 
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
             <td>

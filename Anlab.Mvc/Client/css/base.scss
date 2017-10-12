@@ -25,8 +25,13 @@ header {
   display:flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
 }
 .login_wrapper {
+  @include breakpoint(mobileonly) {
+    margin:auto;
+    padding:10px 0px;
+  }
   p {
     margin-bottom:0px;
     margin-right:8px;
@@ -53,6 +58,9 @@ header {
 .logo_wrapper {
   padding:10px;
   padding-left:0px;
+  @include breakpoint(mobileonly) {
+    margin:auto;
+  }
 }
 footer {
   .footer_contents {
