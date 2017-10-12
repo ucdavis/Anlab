@@ -1,8 +1,11 @@
-﻿namespace Anlab.Core.Domain
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Anlab.Core.Domain
 {
     public class AnalysisMethod
     {
         // SOP number
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
         
         public string Title { get; set; }
