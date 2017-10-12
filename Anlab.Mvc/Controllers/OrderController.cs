@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace AnlabMvc.Controllers
 {
@@ -51,10 +52,25 @@ namespace AnlabMvc.Controllers
                 InternalProcessingFee = Math.Ceiling(proc.Cost),
                 ExternalProcessingFee = Math.Ceiling(proc.Cost * _appSettings.NonUcRate)
             };
-
+            
             var user = _context.Users.Single(a => a.Id == CurrentUserId);
             model.DefaultAccount = user.Account?.ToUpper();
             model.DefaultEmail = user.Email;
+
+            if (!string.IsNullOrWhiteSpace(user.ClientId))
+            {
+                //Has a default client id, so try to get defaults:
+                var defaults = await _labworksService.GetClientDetails(user.ClientId);
+                if (defaults != null)
+                {                    
+                    model.DefaultAccount = model.DefaultAccount ?? defaults.DefaultAccount;
+                    model.DefaultClientId = defaults.ClientId;
+
+                }
+            }
+
+            
+
 
             return View(model);
         }
@@ -97,7 +113,7 @@ namespace AnlabMvc.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Save(OrderSaveModel model)
-        {
+        {           
             if (!ModelState.IsValid)
             {
                 var errors = new List<string>();
@@ -237,13 +253,22 @@ namespace AnlabMvc.Controllers
             var orderDetails = order.GetOrderDetails();
             if (orderDetails.NewClientInfo != null)
             {
-                orderDetails.AdditionalInfo += string.Format("{0}New Client Info",Environment.NewLine);
+                orderDetails.AdditionalInfo += string.Format("{0}New Client Info", Environment.NewLine);
                 orderDetails.AdditionalInfo += string.Format("{0}Name: {1}", Environment.NewLine, orderDetails.NewClientInfo.Name);
                 orderDetails.AdditionalInfo += string.Format("{0}Employer: {1}", Environment.NewLine, orderDetails.NewClientInfo.Employer);
                 orderDetails.AdditionalInfo += string.Format("{0}Email: {1}", Environment.NewLine, orderDetails.NewClientInfo.Email);
                 orderDetails.AdditionalInfo += string.Format("{0}Phone Number: {1}", Environment.NewLine, orderDetails.NewClientInfo.PhoneNumber);
-
             }
+
+            if (orderDetails.AdditionalInfoList != null)
+            {
+                foreach (var item in orderDetails.AdditionalInfoList)
+                {
+                    orderDetails.AdditionalInfo += string.Format("{0}{1}: {2}", Environment.NewLine, item.Key, item.Value);
+                }
+                orderDetails.AdditionalInfoList = new Dictionary<string, string>();
+            }
+
             order.SaveDetails(orderDetails);
 
             order.Status = OrderStatusCodes.Confirmed;
@@ -306,6 +331,17 @@ namespace AnlabMvc.Controllers
             Message = "Order deleted";
             return RedirectToAction("Index");
 
+        }
+
+        [HttpGet]
+        public async Task<ClientDetailsLookupModel> LookupClientId(string id)
+        {
+            var result = await _labworksService.GetClientDetails(id);
+            if (result == null)
+            {
+                return null;
+            }
+            return result;
         }
     }
    

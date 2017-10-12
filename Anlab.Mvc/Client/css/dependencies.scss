@@ -20,16 +20,13 @@
 
 
 // fonts
-$sans-serif: "proxima-nova-r",
-arial,
-sans-serif; // light 300, reg 400, medium 500, semibold 600
-$serif:"proxima-nova-r",
-Georgia,
-serif; // light 300, book 400, regular 500
+$sans-serif: "proxima-nova-r",arial,sans-serif; // light 300, reg 400, medium 500, semibold 600
+$serif:"proxima-nova-r",Georgia,serif; // light 300, book 400, regular 500
 // pretty colors
-$primary-sans:	"proxima-nova",sans-serif;
+$primary-sans:	"proxima-nova-r",sans-serif;
 $sans-italic:   "proxima-nova-i",sans-serif;
 $sans-bold:     "proxima-nova-b",sans-serif;
+$sans-reg:     "proxima-nova-r",sans-serif;
 
 $primary-color: #347694;
 $secondary-color: #f0ca44;
@@ -153,9 +150,9 @@ $shingle-brown: #4f2c1d;
     min-width: 300px;
     max-width:$max-width;
     @include breakpoint(rufus) {
-      width:85%;
+      width:90%;
     }
     @include breakpoint(mobileonly) {
-        width: 90%;
+        width: 95%;
     }
 }

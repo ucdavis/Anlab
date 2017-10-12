@@ -156,10 +156,10 @@
   min-width: 300px;
   max-width: $max-width;
   @include breakpoint(rufus) {
-    width: 85%;
+    width: 90%;
   }
   @include breakpoint(mobileonly) {
-    width: 90%;
+    width: 95%;
   }
 }
 
@@ -192,7 +192,7 @@
 
 .whiteblock {
   background-color: #fff;
-  padding: 16px 32px;
+  padding: 24px 32px;
 }
 
 .pagetitle_banner {
@@ -205,12 +205,18 @@
     align-items: flex-end;
     padding-bottom: 8px;
     justify-content: space-between;
+    flex-wrap: wrap;
     .title-right {
       display:flex;
     }
   }
 }
-
+.no-margin {
+  margin-top:0px;
+  margin-bottom:0px;
+  margin-right:0px;
+  margin-left:0px;
+}
 .block-shortener {
   max-width: 57em;
 }
@@ -227,3 +233,31 @@
   margin-bottom: 0 !important;
 }
 .shadowed {box-shadow: 0 4px 6px rgba(50,50,93,.11), 0 1px 3px rgba(0,0,0,.08);}
+.border-bottom {
+  border-bottom: 1px solid $borders;
+  padding-bottom:16px;
+  margin-bottom:16px;
+}
+
+.space_between {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.detail-bumper {
+  margin-right:32px;
+}
+table.table {
+  thead {
+    tr {
+      th {
+        padding-left:6px;
+      }
+    }
+  }
+}

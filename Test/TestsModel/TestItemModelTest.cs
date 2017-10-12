@@ -13,6 +13,7 @@ namespace Test.TestsModel
         {
             #region Arrange
             var expectedFields = new List<NameAndType>();
+            expectedFields.Add(new NameAndType("AdditionalInfoPrompt", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Analysis", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
@@ -35,7 +36,7 @@ namespace Test.TestsModel
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Code\")]",
                 "[System.ComponentModel.DataAnnotations.KeyAttribute()]",
-                "[System.ComponentModel.DataAnnotations.RegularExpressionAttribute(\"([A-Z0-9a-z\\-#])+\", ErrorMessage = \"Codes can only contain alphanumerics, #, and dashes.\")]",
+                "[System.ComponentModel.DataAnnotations.RegularExpressionAttribute(\"([A-Z0-9a-z\\-#_])+\", ErrorMessage = \"Codes can only contain alphanumerics, #, _, and dashes.\")]",
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)128)]"                
             }));
             expectedFields.Add(new NameAndType("Notes", "System.String", new List<string>()));

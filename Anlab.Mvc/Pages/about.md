@@ -3,6 +3,7 @@
 title: "About Us"
 
 ---
+<div class="col-8">
 <div class="imagewrapper imagewrapper--right">
   <img class="img-respo" src="/media/about_anlab.png" alt="woman in lab">
 </div>
@@ -34,3 +35,4 @@ title: "About Us"
     <li>Main Laboratory Area - Room 213, Hoagland Hall</li>
     <li>Sample Receiving Area - Hoagland Annex, 530-752-0266</li>
 </ul>
+</div>

@@ -80,6 +80,7 @@ namespace AnlabMvc.Services
                     InternalSetupCost = Math.Ceiling(p.SetupPrice),
                     Notes = i.NotesEncoded,
                     Public = i.Public,
+                    AdditionalInfoPrompt = i.AdditionalInfoPrompt,
                     Sop = p.Sop,
                 }).ToList();
         }
