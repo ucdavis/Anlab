@@ -50,6 +50,9 @@ namespace Anlab.Core.Domain
                 return encoder.Encode(Notes);
             }
         }
+        
+        public int RequestOrder { get; set; }
+        public int LabOrder { get; set; }
     }
 
     public static class TestCategories
