@@ -53,7 +53,7 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
 
         return this.props.addedEmails.map((item) => {
             return (
-                <Chip key={item} deletable={true} onDeleteClick={this._onDelete.bind(this, item)}>
+                <Chip key={item} deletable={true} onDeleteClick={() => this._onDelete(item)}>
                   {item}
                 </Chip>
             );
