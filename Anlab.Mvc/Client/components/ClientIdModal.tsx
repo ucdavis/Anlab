@@ -27,12 +27,7 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
         super(props);
 
         this.state = {
-            newClientInfo: {
-                employer: this.props.clientInfo.employer,
-                name: this.props.clientInfo.name,
-                email: this.props.clientInfo.email,
-                phoneNumber: this.props.clientInfo.phoneNumber
-            },
+            newClientInfo: { ...this.props.clientInfo },
             active: false,
             isValid: false
         };

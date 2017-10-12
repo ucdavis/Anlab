@@ -101,7 +101,12 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.payment.clientType = orderInfo.Payment.ClientType;
             initialState.payment.account = orderInfo.Payment.Account;
             initialState.clientId = orderInfo.ClientId;
-            initialState.newClientInfo = orderInfo.NewClientInfo;
+            initialState.newClientInfo = {
+                name: orderInfo.NewClientInfo.Name,
+                employer: orderInfo.NewClientInfo.Employer,
+                email: orderInfo.NewClientInfo.Email,
+                phoneNumber: orderInfo.NewClientInfo.PhoneNumber
+            };
             initialState.internalProcessingFee = window.App.orderData.internalProcessingFee;
             initialState.externalProcessingFee = window.App.orderData.externalProcessingFee;
             initialState.defaultEmail = window.App.defaultEmail;
@@ -142,12 +147,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
     updateNewClientInfo = (info: INewClientInfo) => {
         this.setState({...this.state,
-            newClientInfo: {
-                employer: info.employer,
-                name: info.name,
-                email: info.email,
-                phoneNumber: info.phoneNumber
-            }
+            newClientInfo: { ...info }
         });
     }
 
