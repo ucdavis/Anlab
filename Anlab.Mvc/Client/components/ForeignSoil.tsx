@@ -2,22 +2,48 @@
 import Checkbox from 'react-toolbox/lib/checkbox';
 
 interface IForeignSoilProps {
-    foreignSoil: boolean;
     handleChange: Function;
     sampleType: string;
 }
 
+interface IForeignSoilState {
+    soilIsImported: boolean;
+}
 
+export class ForeignSoil extends React.Component<IForeignSoilProps, IForeignSoilState> {
 
-export class ForeignSoil extends React.Component<IForeignSoilProps, any> {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            soilIsImported: false
+        };
+    }
+
+    onChange = () => {
+        this.setState({ soilIsImported: !this.state.soilIsImported });
+    }
+
     render() {
-        if (this.props.sampleType !== "Soil" ) {
+        if (this.props.sampleType !== "Soil") {
             return null;
         }
         return (
             <div>
-                <Checkbox checked={this.props.foreignSoil} label="Foreign Soil" onChange={this.props.handleChange.bind(this, 'foreignSoil')} />
+                <label>Is your soil sample imported?</label>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="radio" checked={this.state.soilIsImported} onChange={this.onChange} /> Yes
+                        </td>
+                            <td>
+                                <input type="radio" checked={!this.state.soilIsImported} onChange={this.onChange} /> No
+                        </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         );
-    } 
+    }
 }

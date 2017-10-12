@@ -3,6 +3,7 @@ import Dialog from 'react-toolbox/lib/dialog';
 import { ITestItem, TestList } from './TestList';
 import { IPayment, PaymentSelection } from './PaymentSelection';
 import { SampleTypeSelection } from './SampleTypeSelection';
+import { SampleTypeQuestions } from './SampleTypeQuestions';
 import { Quantity } from './Quantity';
 import { Summary } from './Summary';
 import { AdditionalInfo } from './AdditionalInfo';
@@ -270,6 +271,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
 
                     <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
+                    <SampleTypeQuestions sampleType={sampleType} handleChange={this.handleChange} />
 
                     <div className="form_wrap">
                         <label className="form_header">How many samples will you require?</label>

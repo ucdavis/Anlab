@@ -16,6 +16,8 @@ namespace AnlabMvc.Models.Order
         [Required]
         public string SampleType { get; set; }
 
+        public SampleTypeQuestions SampleTypeQuestions { get; set; }
+
         public string AdditionalInfo { get; set; }
 
         // additional info comes across as code: value
