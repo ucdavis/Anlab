@@ -9,6 +9,7 @@ import { AdditionalInfo } from './AdditionalInfo';
 import { Project } from "./Project";
 import { AdditionalEmails } from "./AdditionalEmails";
 import { ClientId } from "./ClientId";
+import { ClientIdModal } from "./ClientIdModal";
 import { Commodity } from "./Commodity";
 import { Button } from "react-toolbox/lib/button";
 import * as ReactDOM from "react-dom";
@@ -131,6 +132,10 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.setState({ ...this.state, quantity }, this.validate);
     }
 
+    updateClient = () => {
+
+    }
+
     onEmailAdded = (additionalEmail: string) => {
         this.setState({
                 ...this.state,
@@ -241,6 +246,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                         <Project project={project} handleChange={this.handleChange} projectRef={(inputRef) => { this.projectRef = inputRef }} />
                         <Commodity commodity={commodity} handleChange={this.handleChange} />
                     </div>
+                    <ClientIdModal clientId={clientId} updateClient={this.updateClient} />
                     <ClientId clientId={clientId} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />
