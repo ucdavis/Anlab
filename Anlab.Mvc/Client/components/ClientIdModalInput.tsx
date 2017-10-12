@@ -3,6 +3,8 @@ import Input from 'react-toolbox/lib/input';
 
 interface IClientIdModalInputProps {
     property: string;
+    value: string;
+    label: string;
     handleChange: Function;
 }
 
@@ -15,7 +17,7 @@ export class ClientIdModalInput extends React.Component<IClientIdModalInputProps
         super(props);
 
         this.state = {
-            internalValue: ''
+            internalValue: this.props.value
         };
     }
 
@@ -29,7 +31,7 @@ export class ClientIdModalInput extends React.Component<IClientIdModalInputProps
 
     render() {
         return (
-            <Input type='text' value={this.state.internalValue} onChange={this.onChange} onBlur={this.onBlur} label='Additional Info Required' />
+            <Input type='text' value={this.state.internalValue} onChange={this.onChange} onBlur={this.onBlur} label={this.props.label}/>
         );
     }
 }

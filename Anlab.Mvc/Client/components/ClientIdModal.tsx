@@ -12,7 +12,7 @@ export interface INewClientInfo {
 }
 
 interface IClientIdModalProps {
-    clientId: string;
+    clientInfo: INewClientInfo;
     updateClient: Function;
 }
 
@@ -27,10 +27,10 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
 
         this.state = {
             newClientInfo: {
-                employer: '',
-                name: '',
-                email: '',
-                phoneNumber: ''
+                employer: this.props.clientInfo.employer,
+                name: this.props.clientInfo.name,
+                email: this.props.clientInfo.email,
+                phoneNumber: this.props.clientInfo.phoneNumber
             },
             active: false
         };
@@ -51,7 +51,7 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
 
     saveAction = () => {
         this.setState({ ...this.state, active: false });
-        this.props.updateClient();
+        this.props.updateClient(this.state.newClientInfo);
     }
 
     cancelAction = () => {
@@ -72,14 +72,10 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
                     active={this.state.active}
                     title={title}
                 >
-                    <label>Name:</label>
-                    <ClientIdModalInput property="name" handleChange={this.handleChange} />
-                    <label>Employer:</label>
-                    <ClientIdModalInput property="employer" handleChange={this.handleChange} />
-                    <label>Email:</label>
-                    <ClientIdModalInput property="email" handleChange={this.handleChange} />
-                    <label>Phone Number:</label>
-                    <ClientIdModalInput property="phoneNumber" handleChange={this.handleChange} />
+                    <ClientIdModalInput property="name" value={this.state.newClientInfo.name} label="Name" handleChange={this.handleChange} />
+                    <ClientIdModalInput property="employer" value={this.state.newClientInfo.employer} label="Employer" handleChange={this.handleChange} />
+                    <ClientIdModalInput property="email" value={this.state.newClientInfo.email} label="Email" handleChange={this.handleChange} />
+                    <ClientIdModalInput property="phoneNumber" value={this.state.newClientInfo.phoneNumber} label="Phone Number" handleChange={this.handleChange} />
                 </Dialog>
             </div>
         );

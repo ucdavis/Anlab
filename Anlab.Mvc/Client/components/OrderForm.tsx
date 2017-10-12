@@ -9,7 +9,7 @@ import { AdditionalInfo } from './AdditionalInfo';
 import { Project } from "./Project";
 import { AdditionalEmails } from "./AdditionalEmails";
 import { ClientId } from "./ClientId";
-import { ClientIdModal } from "./ClientIdModal";
+import { ClientIdModal, INewClientInfo } from "./ClientIdModal";
 import { Commodity } from "./Commodity";
 import { Button } from "react-toolbox/lib/button";
 import * as ReactDOM from "react-dom";
@@ -35,6 +35,7 @@ interface IOrderState {
     errorMessage: string;
     status: string;
     clientId: string;
+    newClientInfo: INewClientInfo;
     internalProcessingFee: number;
     externalProcessingFee: number;
     defaultEmail: string;
@@ -65,6 +66,12 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             errorMessage: '',
             status: '',
             clientId: '',
+            newClientInfo: {
+                name: '',
+                employer: '',
+                email: window.App.defaultEmail,
+                phoneNumber: ''
+            },
             internalProcessingFee: window.App.orderData.internalProcessingFee,
             externalProcessingFee: window.App.orderData.externalProcessingFee,
             defaultEmail: window.App.defaultEmail
@@ -92,6 +99,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.payment.clientType = orderInfo.Payment.ClientType;
             initialState.payment.account = orderInfo.Payment.Account;
             initialState.clientId = orderInfo.ClientId;
+            initialState.newClientInfo = orderInfo.NewClientInfo;
             initialState.internalProcessingFee = window.App.orderData.internalProcessingFee;
             initialState.externalProcessingFee = window.App.orderData.externalProcessingFee;
             initialState.defaultEmail = window.App.defaultEmail;
@@ -132,8 +140,15 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.setState({ ...this.state, quantity }, this.validate);
     }
 
-    updateClient = () => {
-
+    updateNewClientInfo = (info: INewClientInfo) => {
+        this.setState({...this.state,
+            newClientInfo: {
+                employer: info.employer,
+                name: info.name,
+                email: info.email,
+                phoneNumber: info.phoneNumber
+            }
+        });
     }
 
     onEmailAdded = (additionalEmail: string) => {
@@ -202,6 +217,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             sampleType: this.state.sampleType,
             selectedTests,
             clientId: this.state.clientId,
+            newClientInfo: this.state.newClientInfo,
             internalProcessingFee: this.state.internalProcessingFee,
             externalProcessingFee: this.state.externalProcessingFee
         }
@@ -223,7 +239,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     }
 
     render() {
-        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, commodity, additionalEmails, status, clientId, internalProcessingFee, externalProcessingFee, defaultEmail } = this.state;
+        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, commodity, additionalEmails, status, clientId, newClientInfo, internalProcessingFee, externalProcessingFee, defaultEmail } = this.state;
 
         const { filtered, selected } = this.getTests();
 
@@ -246,7 +262,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                         <Project project={project} handleChange={this.handleChange} projectRef={(inputRef) => { this.projectRef = inputRef }} />
                         <Commodity commodity={commodity} handleChange={this.handleChange} />
                     </div>
-                    <ClientIdModal clientId={clientId} updateClient={this.updateClient} />
+                    <ClientIdModal clientInfo={newClientInfo} updateClient={this.updateNewClientInfo} />
                     <ClientId clientId={clientId} handleChange={this.handleChange} />
                     <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
                     <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} />

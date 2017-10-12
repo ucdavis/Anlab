@@ -48,7 +48,6 @@
   </ItemGroup>
   <ItemGroup>
     <!-- Files not to show in IDE -->
-    <None Remove="Client\components\ClientIdModal.tsx" />
     <None Remove="yarn.lock" />
   </ItemGroup>
   <ItemGroup>
@@ -61,9 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Anlab.Core\Anlab.Core.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="Client\components\ClientIdModal.tsx" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Pages\**\*.md">
