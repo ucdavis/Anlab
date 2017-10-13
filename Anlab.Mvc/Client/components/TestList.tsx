@@ -1,12 +1,12 @@
-﻿import * as React from 'react';
-import Input from 'react-toolbox/lib/input';
+﻿import * as React from "react";
+import Input from "react-toolbox/lib/input";
 
-import { IPayment } from './PaymentSelection';
-import NumberFormat from 'react-number-format';
-import { groupBy } from '../util/arrayHelpers';
+import NumberFormat from "react-number-format";
+import { groupBy } from "../util/arrayHelpers";
+import { IPayment } from "./PaymentSelection";
 
-import showdown from 'showdown';
 import { Dialog } from "react-toolbox/lib/dialog";
+import showdown from "showdown";
 import { TestInfo } from "./TestInfo";
 
 export interface ITestItem {
@@ -28,78 +28,37 @@ interface ITestListState {
 }
 
 export interface ITestListProps {
-    items: Array<ITestItem>;
-    additionalInfoList: Object;
+    items: ITestItem[];
+    additionalInfoList: object;
 
     payment: IPayment;
-    selectedTests: any;
-    onTestSelectionChanged: Function;
-    updateAdditionalInfo: Function;
-};
+    selectedTests: object;
+    onTestSelectionChanged: (test: ITestItem, selected: boolean) => void;
+    updateAdditionalInfo: (key: string, value: string) => void;
+}
+
+const showdownConverter = new showdown.Converter();
 
 export class TestList extends React.Component<ITestListProps, ITestListState> {
-    state = {
-        query: ''
-    };
-
-    onQueryChange = (value: string) => {
-        this.setState({ ...this.state, query: value });
+    constructor(props) {
+        super(props);
+        this.state = {
+            query: "",
+        };
     }
 
-    renderRows = () => {
-        let filteredItems = this.props.items;
-        const loweredQuery = this.state.query.toLowerCase();
-
-        if (loweredQuery) {
-            filteredItems = this.props.items.filter(item => {
-                return item.analysis.toLowerCase().indexOf(loweredQuery) !== -1 || item.id.toLowerCase().indexOf(loweredQuery) !== -1;
-            });
-        }
-
-        const grouped = groupBy(filteredItems, 'group');
-
-        const rows = [];
-
-        var converter = new showdown.Converter();
-
-        Object.keys(grouped).map(groupName => {
-            // push the group header
-            rows.push(<tr key={`group-${groupName}`} className="group-header"><td colSpan={5}>Group {groupName}</td></tr>);
-
-            // now get all tests for that group
-            const testRows = grouped[groupName].map(item => {
-                const selected = !!this.props.selectedTests[item.id];
-                const priceDisplay = (this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost);
-                const tooltipContent = converter.makeHtml(item.notes);
-                const url = `/analysis/${item.category}/${item.sop}`;
-                return (
-                    <tr key={item.id} >
-                        <td>
-                            <TestInfo test={item} selected={selected} updateAdditionalInfo={this.props.updateAdditionalInfo} value={this.props.additionalInfoList[item.id]} onSelection={this.props.onTestSelectionChanged} /> 
-                        </td>
-                        <td>{item.analysis}</td>
-                        <td>
-                            {item.sop === "0" ? "---" : <a href={url} target="_blank" >{item.sop}</a>} </td>
-                        <td><NumberFormat value={priceDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></td>
-                        <td style={{ width: '5%' }}>
-                            {item.notes ? <i className="analysisTooltip fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-html="true" title={tooltipContent}></i> : ""}
-                        </td>
-                    </tr>
-                );
-            });
-
-            // add those tests
-            rows.push.apply(rows, testRows);
-        })
-
-        return rows;
-    };
-    render() {
+    public render() {
         return (
           <div className="form_wrap">
           <h2 className="form_header margin-bottom-zero">Which tests would you like to run?</h2>
             <div>
-                <Input type='search' label='Search' name='name' value={this.state.query} onChange={this.onQueryChange} />
+                <Input
+                    type="search"
+                    label="Search"
+                    name="name"
+                    value={this.state.query}
+                    onChange={this._onQueryChange}
+                />
                 <table className="table">
                     <thead>
                         <tr>
@@ -111,11 +70,99 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.renderRows()}
+                        {this._renderRows()}
                     </tbody>
                 </table>
             </div>
             </div>
         );
+    }
+
+    private _renderRows = () => {
+        let filteredItems = this.props.items;
+        const loweredQuery = this.state.query.toLowerCase();
+
+        if (loweredQuery) {
+            filteredItems = this.props.items.filter((item) => {
+                return item.analysis.toLowerCase().indexOf(loweredQuery) !== -1
+                    || item.id.toLowerCase().indexOf(loweredQuery) !== -1;
+            });
+        }
+
+        const grouped = groupBy(filteredItems, "group");
+
+        const rows = [];
+
+        Object.keys(grouped).forEach((groupName) => {
+            // push the group header
+            rows.push((
+                <tr key={`group-${groupName}`} className="group-header">
+                    <td colSpan={5}>Group {groupName}</td>
+                </tr>
+            ));
+
+            // now get all tests for that group
+            const testRows = grouped[groupName].map((item) => this._renderRow(item));
+
+            // add those tests
+            rows.push.apply(rows, testRows);
+        });
+
+        return rows;
+    }
+
+    private _renderRow = (item) => {
+        const selected = !!this.props.selectedTests[item.id];
+        const priceDisplay = (this.props.payment.clientType === "uc" ? item.internalCost : item.externalCost);
+        const url = `/analysis/${item.category}/${item.sop}`;
+        return (
+            <tr key={item.id} >
+                <td>
+                    <TestInfo
+                        test={item}
+                        selected={selected}
+                        updateAdditionalInfo={this.props.updateAdditionalInfo}
+                        value={this.props.additionalInfoList[item.id] as string}
+                        onSelection={this.props.onTestSelectionChanged}
+                    />
+                </td>
+                <td>{item.analysis}</td>
+                <td>
+                    {item.sop === "0" ? "---" : <a href={url} target="_blank" >{item.sop}</a>} </td>
+                <td>
+                    <NumberFormat
+                        value={priceDisplay}
+                        displayType={"text"}
+                        thousandSeparator={true}
+                        decimalPrecision={2}
+                        prefix={"$"}
+                    />
+                </td>
+                <td style={{ width: "5%" }}>
+                    {this._renderNotes(item.notes)}
+                </td>
+            </tr>
+        );
+    }
+
+    private _renderNotes(notes) {
+        if (!notes) {
+            return null;
+        }
+
+        const tooltipContent = showdownConverter.makeHtml(notes);
+        return (
+            <i
+                className="analysisTooltip fa fa-info-circle"
+                aria-hidden="true"
+                data-toggle="tooltip"
+                data-html="true"
+                title={tooltipContent}
+            />
+        );
+    }
+
+    private _onQueryChange = (value: string) => {
+        this.setState({ query: value });
     }
 }

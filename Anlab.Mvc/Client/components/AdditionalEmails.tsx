@@ -106,7 +106,7 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
 
     private _onEmailChanged = (e) => {
         const newEmail = e.target.value;
-        this.setState({ ...this.state, email: newEmail });
+        this.setState({ email: newEmail });
     }
 
     private _addEmailAddress = () => {
@@ -115,7 +115,6 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
         // check for valid email address
         if (!validateEmail(emailtoAdd)) {
           this.setState({
-            ...this.state,
             errorText: "Invalid email",
             hasError: true,
           });
@@ -124,13 +123,15 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
 
         // check for duplicate email
         if (emailtoAdd === this.props.defaultEmail || this.props.addedEmails.indexOf(emailtoAdd) >= 0) {
-          this.setState({ ...this.state, hasError: true, errorText: "Email already added" });
+          this.setState({
+            errorText: "Email already added",
+            hasError: true,
+          });
           return;
         }
 
         this.props.onEmailAdded(emailtoAdd);
         this.setState({
-          ...this.state,
           email: "",
           errorText: "",
           hasError: false,
@@ -138,8 +139,8 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
         });
     }
 
-    private _onDelete = (email2Delete: any) => {
-        this.props.onDeleteEmail(email2Delete);
+    private _onDelete = (email: string) => {
+        this.props.onDeleteEmail(email);
     }
 
     private _handleKeyPress = (e) => {
