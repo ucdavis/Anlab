@@ -25,7 +25,8 @@ namespace Anlab.Core.Domain
         public string ClientId { get; set; }
 
         [Phone]
-        public string Phone { get; set; }
+        [StringLength(256)]
+        public string Phone { get; set; } //Note, there is also a "PhoneNumber" field in the DB...
 
         [StringLength(50)]       
         public string Account { get; set; }

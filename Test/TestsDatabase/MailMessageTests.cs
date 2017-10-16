@@ -37,7 +37,8 @@ namespace Test.TestsDatabase
             expectedFields.Add(new NameAndType("SentAt", "System.Nullable`1[System.DateTime]", new List<string>()));
             expectedFields.Add(new NameAndType("Subject", "System.String", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+                "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)256)]"
             }));
             expectedFields.Add(new NameAndType("User", "Anlab.Core.Domain.User", new List<string>()));
 
