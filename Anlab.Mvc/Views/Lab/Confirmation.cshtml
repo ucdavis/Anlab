@@ -19,7 +19,7 @@
             <input type="hidden" class="form-control" id="adjustmentAmount" name="AdjustmentAmount" value="0" />
         </div>
         <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true"></i> Confirm Received</button>
-        <a asp-action="AddRequestNumber" asp-route-id="@Model.Order.Id" class="btn btn-danger"><i class="fa fa-undo"></i> Opps wrong one. Change it</a>
+        <a asp-action="AddRequestNumber" asp-route-id="@Model.Order.Id"> Opps wrong one. Change it</a>
     </form>
 </div>
 @section AdditionalStyles
