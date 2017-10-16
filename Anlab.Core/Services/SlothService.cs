@@ -100,6 +100,11 @@ namespace Anlab.Core.Services
                 var roledBackCount = 0;
                 foreach (var order in orders)
                 {
+                    if (!order.SlothTransactionId.HasValue)
+                    {
+                        Console.WriteLine($"Order {order.Id} missing SlothTransactionId"); //TODO: Log it
+                        continue;
+                    }
                     var response = await client.GetAsync(order.SlothTransactionId.ToString());
                     if (response.StatusCode == HttpStatusCode.NotFound)
                     {
