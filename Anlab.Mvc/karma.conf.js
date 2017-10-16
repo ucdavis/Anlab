@@ -9,10 +9,10 @@ module.exports = function (config) {
   config.set({
     frameworks: ["jasmine"],
     files: [
-        'webpack.tests.js',
+        'tests.js',
     ],
     preprocessors: {
-      "webpack.tests.js": [ "webpack", 'sourcemap' ],
+      "tests.js": [ "webpack", 'sourcemap' ],
     },
     reporters: reporters,
     browsers: ["jsdom"],
