@@ -23,6 +23,20 @@
         </div>
     </div>
     <div class="form-group">
+        <label asp-for="LabOrder" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="LabOrder" class="form-control" />
+            <span asp-validation-for="LabOrder" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="RequestOrder" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="RequestOrder" class="form-control" />
+            <span asp-validation-for="RequestOrder" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
         <label asp-for="Group" class="col-md-2 control-label"></label>
         <div class="col-md-10">
             <input asp-for="Group" class="form-control" />
