@@ -3,7 +3,7 @@
     [AdditionalInfoPrompt] NVARCHAR (MAX) NULL,
     [Analysis]             NVARCHAR (512) NOT NULL,
     [Category]             NVARCHAR (64)  NOT NULL,
-    [Group]                NVARCHAR (MAX) NOT NULL,
+    [Group]                NVARCHAR (512) NOT NULL,
     [LabOrder]             INT            NOT NULL,
     [Notes]                NVARCHAR (MAX) NULL,
     [Public]               BIT            NOT NULL,

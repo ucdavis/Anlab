@@ -31,6 +31,7 @@ namespace Anlab.Core.Domain
         }
 
         [Required]
+        [StringLength(512)]
         public string Group { get; set; }
 
         public bool Public { get; set; }

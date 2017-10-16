@@ -38,7 +38,8 @@ namespace Test.TestsDatabase
             }));
             expectedFields.Add(new NameAndType("Group", "System.String", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+                "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)512)]"
             }));
             expectedFields.Add(new NameAndType("Id", "System.String", new List<string>
             {
