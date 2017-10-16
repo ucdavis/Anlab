@@ -306,7 +306,7 @@ namespace AnlabMvc.Controllers
                 if (slothResult.Success)
                 {
                     order.KfsTrackingNumber = slothResult.KfsTrackingNumber;
-                    order.SlothTransactionId = slothResult.Id.ToString();
+                    order.SlothTransactionId = slothResult.Id;
                     order.Paid = true;
                     extraMessage = " and UC Davis account marked as paid";
                 }

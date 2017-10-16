@@ -17,6 +17,7 @@ namespace Anlab.Core.Domain
         public int Id { get; set; }
         
         [Required]
+        [StringLength(450)]
         public string CreatorId { get; set; }
 
         [ForeignKey("CreatorId")]
@@ -40,8 +41,10 @@ namespace Anlab.Core.Domain
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }
 
+        [StringLength(50)]
         public string Status { get; set; }
-
+        
+        [StringLength(50)]
         public string RequestNum { get; set; }
 
         public string ResultsFileIdentifier { get; set; }
@@ -50,12 +53,13 @@ namespace Anlab.Core.Domain
         public ICollection<MailMessage> MailMessages { get; set; }
 
         public PaymentEvent ApprovedPayment { get; set; }
-        
+        [StringLength(20)] //It is 10 in sloth, but just in case...
         public string KfsTrackingNumber { get; set; }
-        public string SlothTransactionId { get; set; } //TODO: Change to Guid? ?
+        public Guid? SlothTransactionId { get; set; } 
 
         public bool Paid { get; set; } = false;
-        
+
+        [StringLength(50)]
         public string PaymentType { get; set; }
 
         public OrderDetails GetOrderDetails()

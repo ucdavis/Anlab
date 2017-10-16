@@ -100,7 +100,7 @@ namespace Anlab.Core.Services
                 var roledBackCount = 0;
                 foreach (var order in orders)
                 {
-                    var response = await client.GetAsync(order.SlothTransactionId);
+                    var response = await client.GetAsync(order.SlothTransactionId.ToString());
                     if (response.StatusCode == HttpStatusCode.NotFound)
                     {
                         continue;
@@ -171,7 +171,7 @@ namespace Anlab.Core.Services
 
                         updatedCount++;
                         order.KfsTrackingNumber = slothResponse.KfsTrackingNumber;
-                        order.SlothTransactionId = slothResponse.Id.ToString();
+                        order.SlothTransactionId = slothResponse.Id;
                         order.Status = OrderStatusCodes.Complete;
                     }
                 }
