@@ -16,7 +16,7 @@ namespace Test.TestsDatabase
         /// Tests all fields in the database have been tested.
         /// If this fails and no other tests, it means that a field has been added which has not been tested above.
         /// </summary>
-        [Fact(Skip = "Ignore for now")]
+        [Fact]
         public void TestAllFieldsInTheDatabaseHaveBeenTested()
         {
             #region Arrange
@@ -24,9 +24,9 @@ namespace Test.TestsDatabase
             expectedFields.Add(new NameAndType("AccessFailedCount", "System.Int32", new List<string>()));
             expectedFields.Add(new NameAndType("Account", "System.String", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)16)]"
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
             }));
-            expectedFields.Add(new NameAndType("Claims", "System.Collections.Generic.ICollection`1[Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim`1[System.String]]", new List<string>()));
+            //expectedFields.Add(new NameAndType("Claims", "System.Collections.Generic.ICollection`1[Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim`1[System.String]]", new List<string>()));
             expectedFields.Add(new NameAndType("ClientId", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)16)]"
@@ -47,7 +47,7 @@ namespace Test.TestsDatabase
             }));
             expectedFields.Add(new NameAndType("LockoutEnabled", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("LockoutEnd", "System.Nullable`1[System.DateTimeOffset]", new List<string>()));
-            expectedFields.Add(new NameAndType("Logins", "System.Collections.Generic.ICollection`1[Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin`1[System.String]]", new List<string>()));
+            //expectedFields.Add(new NameAndType("Logins", "System.Collections.Generic.ICollection`1[Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin`1[System.String]]", new List<string>()));
             expectedFields.Add(new NameAndType("MailMessages", "System.Collections.Generic.ICollection`1[Anlab.Core.Domain.MailMessage]", new List<string>()));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>
             {
@@ -61,14 +61,16 @@ namespace Test.TestsDatabase
             expectedFields.Add(new NameAndType("PasswordHash", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Phone", "System.String", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.PhoneAttribute()]"
+                "[System.ComponentModel.DataAnnotations.PhoneAttribute()]",
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)256)]"
             }));
             expectedFields.Add(new NameAndType("PhoneNumber", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("PhoneNumberConfirmed", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("Roles", "System.Collections.Generic.ICollection`1[Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserRole`1[System.String]]", new List<string>()));
+            //expectedFields.Add(new NameAndType("Roles", "System.Collections.Generic.ICollection`1[Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserRole`1[System.String]]", new List<string>()));
             expectedFields.Add(new NameAndType("SecurityStamp", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("TwoFactorEnabled", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("UserName", "System.String", new List<string>()));
+
 
             #endregion Arrange
 
