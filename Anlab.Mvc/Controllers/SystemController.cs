@@ -50,8 +50,9 @@ namespace AnlabMvc.Controllers
 
         public async Task<IActionResult> ResetDb()
         {
+#if DEBUG
             await _dbInitializationService.RecreateAndInitialize();
-
+#endif
             return RedirectToAction("LogoutDirect", "Account");
         }
 
