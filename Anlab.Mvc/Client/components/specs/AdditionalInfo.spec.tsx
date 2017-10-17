@@ -52,15 +52,15 @@ describe('<AdditionalInfo />', () => {
     });
 
 
-    it('should call handleChange with state.internalValue on blur event', () => {
-        const handleChange = jasmine.createSpy('handleChange');
-        const target = shallow(<AdditionalInfo additionalInfo="x" handleChange={handleChange}/>);
-        const internal = target.instance();
+    //it('should call handleChange with state.internalValue on blur event', () => {
+    //    const handleChange = jasmine.createSpy('handleChange');
+    //    const target = shallow(<AdditionalInfo additionalInfo="x" handleChange={handleChange}/>);
+    //    const internal = target.instance();
 
-        internal.state.internalValue = 'test';
-        internal.onBlur();
+    //    internal.state.internalValue = 'test';
+    //    internal.onBlur();
 
-        expect(handleChange).toHaveBeenCalled();
-        expect(handleChange).toHaveBeenCalledWith('additionalInfo', 'test');
-    });
+    //    expect(handleChange).toHaveBeenCalled();
+    //    expect(handleChange).toHaveBeenCalledWith('additionalInfo', 'test');
+    //});
 });
