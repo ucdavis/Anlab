@@ -44,7 +44,7 @@ title: "Contact"
     $5 bills, Visa or<br />MasterCard credit cards. Parking is free on weekends and observed holidays, except during<br />special events.</p>
 <p>See also the <a class="external-link" href="http://taps.ucdavis.edu/parking/information/visitor" target="_blank" title="UCD Visitor Parking Info">University's page for more parking information</a>.</p>
 </div>
-<div class="col-4 whiteblock">
+<div class="col-4">
 <p><a href="mailto:dmholstege@ucdavis.edu"><b>Dirk Holstege</b></a> <br> Director<br> 530-752-0147<br> Room 224 Hoagland Hall</p>
 <p><a href="mailto:anlab@ucdavis.edu"><b>Main Office</b></a><br> 530-752-0147<br> Room 224 Hoagland Hall</p>
 <p><a href="http://campusmap.ucdavis.edu/?b=82" target="_blank">Campus Map</a><span class="external-link"> — Hoagland Hall

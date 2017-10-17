@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Create New Test Item";
 }
-
+<div class="col">
 <form asp-action="Create">
     <div class="form-horizontal">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -27,7 +27,7 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-
+</div>
 @section Scripts
 {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -25,6 +25,7 @@ namespace AnlabMvc.Services
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        public int TestItemCount = 1000;
 
         public DbInitializationService(ApplicationDbContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
@@ -666,9 +667,12 @@ namespace AnlabMvc.Services
                 Category = category,
                 Group = group,
                 Notes = notes,
-                Public = pub
+                Public = pub,
+                LabOrder = TestItemCount,
+                RequestOrder = TestItemCount
             };
             _context.Add(testItem);
+            TestItemCount += 100;
         }
     }
 

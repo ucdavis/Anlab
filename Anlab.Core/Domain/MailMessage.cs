@@ -18,6 +18,7 @@ namespace Anlab.Core.Domain
         public bool? Sent { get; set; }
 
         [Required]
+        [StringLength(256)]
         public string Subject { get; set; }
 
         [Required]

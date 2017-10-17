@@ -12,7 +12,7 @@ namespace Anlab.Core.Domain
         [Key]
         [StringLength(128)]
         [Display(Name = "Code")]
-        [RegularExpression(@"([A-Z0-9a-z\-#])+", ErrorMessage = "Codes can only contain alphanumerics, #, and dashes.")]
+        [RegularExpression(@"([A-Z0-9a-z\-#_])+", ErrorMessage = "Codes can only contain alphanumerics, #, _, and dashes.")]
         public string Id { get; set; }
 
         [Required]
@@ -31,6 +31,7 @@ namespace Anlab.Core.Domain
         }
 
         [Required]
+        [StringLength(512)]
         public string Group { get; set; }
 
         public bool Public { get; set; }
@@ -50,6 +51,9 @@ namespace Anlab.Core.Domain
                 return encoder.Encode(Notes);
             }
         }
+        
+        public int RequestOrder { get; set; }
+        public int LabOrder { get; set; }
     }
 
     public static class TestCategories

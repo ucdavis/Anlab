@@ -4,20 +4,33 @@
 @{
     ViewData["Title"] = "Confirmation";
 }
+@section ActionButtons
+{
+<p>
 
-<form asp-controller="order" asp-action="Delete" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
-    <button type="submit" class="btn btn-danger pull-right"><i class="fa fa-trash" aria-hidden="true"> Delete Order</i></button>
+    <form asp-controller="order" asp-action="Delete" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal" style="margin-left: 5px;margin-right: 5px">
+        <button type="submit" class="btn btn-small"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>  
+    </form>
+    
+    <a asp-action="Edit" asp-route-id="@Model.Order.Id" class="btn btn-small">Edit Order</a>
+    
+    <form asp-controller="order" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal" style="margin-left: 5px;margin-right: 5px">
+        @Html.Hidden("confirm", true)
+        <button type="submit" class="btn btn-small"> @(String.Format("{0:C}", Model.OrderDetails.Total)) Confirm and Send</button>
+    </form>
+    
+</p>
 
-</form>
+
+
+
+}
+<div class="col">
 
 @Html.Partial("_OrderDetails")
 
-<form asp-controller="order" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal">
-    @Html.Hidden("confirm", true)
-    <button type="submit" class="btn btn-primary"><i class="fa fa-money" aria-hidden="true"> @(String.Format("{0:C}", Model.OrderDetails.Total)) Confirm and Send</i></button>
-    <a asp-action="Edit" asp-route-id="@Model.Order.Id" class="btn btn-default">Edit Order</a>
-</form>
 
+</div>
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }

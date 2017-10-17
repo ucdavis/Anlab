@@ -10,7 +10,6 @@
   margin-right:0px;
   margin-bottom:16px;
   margin-top:16px;
-  justify-content: space-between;
 }
 
 .col {
@@ -22,7 +21,6 @@
     -ms-flex-positive: 1;
     flex-grow: 1;
     max-width: 100%;
-    margin:0px 16px;
     &:first-child {
       margin-left:0px;
     }
@@ -72,6 +70,16 @@
     flex: 0 0 66.666667%;
     max-width: 66.666667%;
     padding-right:64px;
+    @include breakpoint(mobileonly) {
+      padding-right:0px;
+    }
+    @include breakpoint(mobileonly) {
+      -webkit-box-flex: 0;
+      -webkit-flex: 0 0 100%;
+      -ms-flex: 0 0 100%;
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
   }
   .col-9 {
       -webkit-box-flex: 0;

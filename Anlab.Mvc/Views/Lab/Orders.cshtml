@@ -85,11 +85,11 @@
             <td>
                 @if (order.Status == OrderStatusCodes.Confirmed)
                 {
-                    <a asp-action="AddRequestNumber" asp-route-id="@order.Id"><i class="fa fa-check"> Receive</i></a>
+                    <a asp-action="AddRequestNumber" asp-route-id="@order.Id"><i class="fa fa-check"></i> Receive</a>
                 }
                 @if (order.Status == OrderStatusCodes.Received)
                 {
-                    <a asp-action="Finalize" asp-route-id="@order.Id"><i class="fa fa-upload" style="color: red"> Finalize</i></a>
+                    <a asp-action="Finalize" asp-route-id="@order.Id"><i class="fa fa-upload" style="color: red"></i> Finalize</a>
                 }
 
             </td>

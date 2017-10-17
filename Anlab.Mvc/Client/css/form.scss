@@ -118,10 +118,17 @@ input {
 .theme__input___lFVgC {
   transition: all 0.15s ease;
 }
-
-// orderdetails
-.details_wrapper  {
-  .form-group  {
-    font-size:1.8rem;
+.form-group {
+  h4 {
+    text-transform: uppercase;
+    font-size:1.4rem;
+    margin-bottom:0px;
+    margin-top:0px;
+    font-family: $sans-reg;
+    color:$secondary-font;
+  }
+  p {
+    font-family: $sans-bold;
+    margin-bottom:0px;
   }
 }
