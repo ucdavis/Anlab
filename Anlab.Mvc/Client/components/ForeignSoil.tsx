@@ -30,16 +30,20 @@ export class ForeignSoil extends React.Component<IForeignSoilProps, IForeignSoil
         }
         return (
             <div>
-                <label>Is your soil sample imported?</label>
                 <table>
                     <tbody>
                         <tr>
+                            <th colSpan={2}>
+                                Is your soil sample imported?
+                            </th>
+                        </tr>
+                        <tr>
                             <td>
                                 <input type="radio" checked={this.state.soilIsImported} onChange={this.onChange} /> Yes
-                        </td>
+                            </td>
                             <td>
                                 <input type="radio" checked={!this.state.soilIsImported} onChange={this.onChange} /> No
-                        </td>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

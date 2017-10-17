@@ -1,5 +1,7 @@
 ﻿import * as React from 'react';
 import { ForeignSoil } from './ForeignSoil';
+import { SampleWaterQuestions } from './SampleWaterQuestions';
+import { SamplePlantQuestions } from "./SamplePlantQuestions";
 import Input from 'react-toolbox/lib/input';
 import 'isomorphic-fetch';
 
@@ -30,6 +32,8 @@ export class SampleTypeQuestions extends React.Component<ISampleTypeQuestionsPro
         return (
             <div>
                 <ForeignSoil sampleType={this.props.sampleType} handleChange={this.handleChange} />
+                <SampleWaterQuestions sampleType={this.props.sampleType} handleChange={this.handleChange} />
+                <SamplePlantQuestions sampleType={this.props.sampleType} handleChange={this.handleChange} />
             </div>
 
         );
