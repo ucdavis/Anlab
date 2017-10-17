@@ -5,10 +5,14 @@
     ViewBag.Title = "Analysis List";   
 }
 
-<div class="col">
+
+@section ActionButtons
+{
     <p>
         <a asp-action="Create" class="btn btn-default">Create New</a>
     </p>
+}
+<div class="col">
     <table id="table" class="row-border order-column hover">
         <thead>
             <tr>
