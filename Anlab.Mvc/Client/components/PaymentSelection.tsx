@@ -29,7 +29,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
     public render() {
         const activeDiv = "anlab_form_style col-5 active-border active-text active-bg";
         const inactiveDiv = "anlab_form_style col-5";
-        const isUcClient = this.props.payment.clientType !== "uc";
+        const isUcClient = this.props.payment.clientType === "uc";
 
         return (
             <div className="form_wrap">
