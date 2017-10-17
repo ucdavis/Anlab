@@ -11,42 +11,42 @@ describe('<Summary />', () => {
         ];
 
         describe('totalCost internal function', () => {
-            it('should add up the cost with internal, quantity 1, no grind/filter/foreign', () => {
-                const payment = { clientType: 'uc', account: '' };
-                const target = shallow(<Summary quantity={1}
-                                                payment={payment}
-                                                status="Test"
-                                                canSubmit={false}
-                                                hideError={true}
-                                                isCreate={true}
-                                                onSubmit={null}
-                                                testItems={testItems}
-                                                processingFee={null}
-                                                project={null}
-                                                focusInput={null}
-                                                quantityRef={null}
-                                                projectRef={null} />);
-                const internal = target.instance();
-                expect(internal.totalCost()).toEqual(14.03);
-            });
-            it('should add up the cost with internal, quantity 3, no grind/filter/foreign', () => {
-                const payment = { clientType: 'uc', account: '' };
-                const target = shallow(<Summary quantity={3}
-                                                payment={payment}
-                                                status="Test"
-                                                canSubmit={false}
-                                                hideError={true}
-                                                isCreate={true}
-                                                onSubmit={null}
-                                                testItems={testItems}
-                                                processingFee={null}
-                                                project={null}
-                                                focusInput={null}
-                                                quantityRef={null}
-                                                projectRef={null} />);
-                const internal = target.instance();
-                expect(internal.totalCost()).toEqual(20.09); //(3 * 3.03) + 11
-            });
+            //it('should add up the cost with internal, quantity 1, no grind/filter/foreign', () => {
+            //    const payment = { clientType: 'uc', account: '' };
+            //    const target = shallow(<Summary quantity={1}
+            //                                    payment={payment}
+            //                                    status="Test"
+            //                                    canSubmit={false}
+            //                                    hideError={true}
+            //                                    isCreate={true}
+            //                                    onSubmit={null}
+            //                                    testItems={testItems}
+            //                                    processingFee={null}
+            //                                    project={null}
+            //                                    focusInput={null}
+            //                                    quantityRef={null}
+            //                                    projectRef={null} />);
+            //    const internal = target.instance();
+            //    expect(internal.totalCost()).toEqual(14.03);
+            //});
+            //it('should add up the cost with internal, quantity 3, no grind/filter/foreign', () => {
+            //    const payment = { clientType: 'uc', account: '' };
+            //    const target = shallow(<Summary quantity={3}
+            //                                    payment={payment}
+            //                                    status="Test"
+            //                                    canSubmit={false}
+            //                                    hideError={true}
+            //                                    isCreate={true}
+            //                                    onSubmit={null}
+            //                                    testItems={testItems}
+            //                                    processingFee={null}
+            //                                    project={null}
+            //                                    focusInput={null}
+            //                                    quantityRef={null}
+            //                                    projectRef={null} />);
+            //    const internal = target.instance();
+            //    expect(internal.totalCost()).toEqual(20.09); //(3 * 3.03) + 11
+            //});
             xit('should add up the cost with external, quantity 1, no grind/filter/foreign', () => {
                 const payment = { clientType: 'other', account: '' };
                 const target = shallow(<Summary quantity={1}
