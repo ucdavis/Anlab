@@ -84,6 +84,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
           || !this.props.payment.account
           || !this._checkChart(this.props.payment.account.charAt(0))) {
           this.setState({ accountName: null });
+          return;
         }
 
         fetch(`/financial/info?account=${this.props.payment.account}`, { credentials: "same-origin" })
