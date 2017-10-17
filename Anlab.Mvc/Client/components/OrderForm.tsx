@@ -104,6 +104,14 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.additionalInfo = orderInfo.AdditionalInfo;
             initialState.additionalEmails = orderInfo.AdditionalEmails;
             initialState.sampleType = orderInfo.SampleType;
+            initialState.sampleTypeQuestions = {
+                soilImported: orderInfo.SampleTypeQuestions.SoilImported,
+                plantReportingBasis: orderInfo.SampleTypeQuestions.PlantReportingBasis,
+                waterFiltered: orderInfo.SampleTypeQuestions.WaterFiltered,
+                waterPreservativeAdded: orderInfo.SampleTypeQuestions.WaterPreservativeAdded,
+                waterPreservativeInfo: orderInfo.SampleTypeQuestions.WaterPreservativeInfo,
+                waterReportedInMgL: orderInfo.SampleTypeQuestions.WaterReportedInMgL
+            },
             initialState.orderId = window.App.OrderId;
             initialState.project = orderInfo.Project;
             initialState.commodity = orderInfo.Commodity;

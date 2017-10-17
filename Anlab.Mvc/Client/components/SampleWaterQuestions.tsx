@@ -18,7 +18,7 @@ export class SampleWaterQuestions extends React.Component<IWaterQuestionsProps, 
         super(props);
 
         this.state = {
-            waterPreservativeInfo: "",
+            waterPreservativeInfo: this.props.questions.waterPreservativeInfo,
         };
     }
 
