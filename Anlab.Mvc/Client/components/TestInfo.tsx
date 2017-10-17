@@ -1,14 +1,14 @@
-﻿import * as React from 'react';
-import Input from 'react-toolbox/lib/input';
-import { Dialog } from "react-toolbox/lib/dialog";
-import { ITestItem } from './TestList';
+﻿import * as React from "react";
 import { Checkbox } from "react-toolbox/lib/checkbox";
+import { Dialog } from "react-toolbox/lib/dialog";
+import Input from "react-toolbox/lib/input";
+import { ITestItem } from "./TestList";
 
 interface ITestInfoProps {
     test: ITestItem;
-    updateAdditionalInfo: Function;
+    updateAdditionalInfo: (key: string, value: string) => void;
     value: string;
-    onSelection: Function;
+    onSelection: (test: ITestItem, selected: boolean) => void;
     selected: boolean;
 }
 
@@ -23,51 +23,56 @@ export class TestInfo extends React.Component<ITestInfoProps, ITestInfoState> {
         super(props);
 
         this.state = {
+            active: false,
             internalValue: this.props.value,
-            active: false
         };
     }
 
-    onSelection = (test: ITestItem, e) => {
-        const selected = e;
+    public render() {
+        const actions = [
+            { label: "Cancel", onClick: this._cancelAction },
+            { label: "Save", onClick: this._saveAction },
+        ];
 
-        if (test.additionalInfoPrompt)
-            this.setState({ ...this.state, active: selected });
+        return (
+            <div>
+                <Checkbox checked={this.props.selected} onChange={(e) => this._onSelection(this.props.test, e)} />
+
+                <Dialog
+                    actions={actions}
+                    active={this.state.active}
+                    title={this.props.test.additionalInfoPrompt}
+                >
+                    <Input
+                        type="text"
+                        value={this.state.internalValue}
+                        onChange={this._onChange}
+                        label="Additional Info Required"
+                    />
+                </Dialog>
+            </div>
+        );
+    }
+
+    private _onSelection = (test: ITestItem, selected: boolean) => {
+        if (test.additionalInfoPrompt) {
+            this.setState({ active: selected });
+        }
 
         this.props.onSelection(test, selected);
     }
 
-    onChange = (v: string) => {
-        this.setState({ ...this.state, internalValue: v });
+    private _onChange = (v: string) => {
+        this.setState({ internalValue: v });
     }
 
-    saveAction = () => {
-        this.setState({ ...this.state, active: false });
+    private _saveAction = () => {
+        this.setState({ active: false });
         this.props.updateAdditionalInfo(this.props.test.id, this.state.internalValue);
     }
 
-    cancelAction = () => {
-        this.setState({ ...this.state, active: false });
+    private _cancelAction = () => {
+        this.setState({ active: false });
         this.props.onSelection(this.props.test, false);
-    }
-    actions = [
-        { label: "Cancel", onClick: this.cancelAction },
-        { label: "Save", onClick: this.saveAction }
-    ];
-
-    render() {
-        return (
-            <div>
-                <Checkbox checked={this.props.selected} onChange={e => this.onSelection(this.props.test, e)} />
-
-                <Dialog
-                    actions={this.actions}
-                    active={this.state.active}
-                    title={this.props.test.additionalInfoPrompt}
-                >
-                    <Input type='text' value={this.state.internalValue} onChange={this.onChange} label='Additional Info Required' />
-                </Dialog>
-            </div>
-        );
     }
 }

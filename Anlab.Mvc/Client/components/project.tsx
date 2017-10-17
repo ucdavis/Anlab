@@ -1,9 +1,9 @@
-﻿import * as React from 'react';
-import Input from 'react-toolbox/lib/input';
+﻿import * as React from "react";
+import Input from "react-toolbox/lib/input";
 
-interface IProjectProps {
+interface IProjectInputProps {
     project: string;
-    handleChange: Function;
+    handleChange: (key: string, value: string) => void;
     projectRef: any;
 }
 
@@ -12,39 +12,51 @@ interface IProjectInputState {
     error: string;
 }
 
-export class Project extends React.Component<IProjectProps, IProjectInputState> {
+export class Project extends React.Component<IProjectInputProps, IProjectInputState> {
     constructor(props) {
         super(props);
 
         this.state = {
+            error: null,
             internalValue: this.props.project,
-            error: null
         };
     }
-    validate = (v: string) => {
+
+    public render() {
+        return (
+            <div>
+                <Input
+                  ref={this.props.projectRef}
+                  type="text"
+                  onBlur={this._onBlur}
+                  error={this.state.error}
+                  required={true}
+                  maxLength={256}
+                  value={this.state.internalValue}
+                  onChange={this._onChange}
+                  label="Project Title"
+                />
+            </div>
+          );
+    }
+
+    private _onChange = (v: string) => {
+        this.setState({ internalValue: v });
+        this._validate(v);
+    }
+
+    private _onBlur = () => {
+        const internalValue = this.state.internalValue;
+        this._validate(internalValue);
+        this.props.handleChange("project", internalValue);
+    }
+
+    private _validate = (v: string) => {
         let error = null;
         if (v.trim() === "") {
             error = "The project Title is required";
         }
 
-        this.setState({ error } as IProjectInputState);
+        this.setState({ error });
     }
-
-    onChange = (v: string) => {
-        this.setState({ ...this.state, internalValue: v });
-        this.validate(v);
-    }
-
-    onBlur = () => {
-        let internalValue = this.state.internalValue;
-        this.validate(internalValue);
-        this.props.handleChange('project', internalValue);
-    }
-    render() {
-        return (
-            <div>
-                <Input ref={this.props.projectRef} type='text' onBlur={this.onBlur} error={this.state.error} required={true} maxLength={256} value={this.state.internalValue} onChange={this.onChange} label='Project Title' />
-            </div>
-    );
-}
 }
