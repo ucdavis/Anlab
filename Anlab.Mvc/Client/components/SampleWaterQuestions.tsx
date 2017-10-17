@@ -1,49 +1,48 @@
 ﻿import * as React from 'react';
 import Checkbox from 'react-toolbox/lib/checkbox';
-import { Input } from "react-toolbox/lib/input";
+import { ISampleTypeQuestions } from "./SampleTypeQuestions";
 
-interface IWaterQuestionProps {
-    sampleType: string;
+interface IWaterQuestionsProps {
     handleChange: Function;
+    sampleType: string;
+    questions: ISampleTypeQuestions;
 }
 
-interface IWaterQuestionState {
-    filterWater: boolean;
-    preservativeAdded: boolean;
-    preservativeText: string;
-    reportedInMgL: boolean;
+interface IWaterQuestionsState {
+    waterPreservativeInfo: string;
 }
 
-export class SampleWaterQuestions extends React.Component<IWaterQuestionProps, IWaterQuestionState> {
+export class SampleWaterQuestions extends React.Component<IWaterQuestionsProps, IWaterQuestionsState > {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            filterWater: false,
-            preservativeAdded: false,
-            preservativeText: "",
-            reportedInMgL: false,
+            waterPreservativeInfo: "",
         };
     }
 
     private _changeFilter = () => {
-        this.setState({ filterWater: !this.state.filterWater });
+        this.props.handleChange("waterFiltered", !this.props.questions.waterFiltered);
     }
 
     private _changePreservative = () => {
-        this.setState({ preservativeAdded: !this.state.preservativeAdded });
+        this.props.handleChange("waterPreservativeAdded", !this.props.questions.waterPreservativeAdded);
     }
 
-    private _changePreservativeText = (e) => {
-        this.setState({ preservativeText: e.target.value });
+    private _onChangePreservativeText = (e) => {
+        this.setState({ waterPreservativeInfo: e.target.value });
+    }
+
+    private _onBlurPreservativeText = () => {
+        this.props.handleChange("waterPreservativeInfo", this.state.waterPreservativeInfo);
     }
 
     private _changeReporting = () => {
-        this.setState({ reportedInMgL: !this.state.reportedInMgL });
+        this.props.handleChange("waterReportedInMgL", !this.props.questions.waterReportedInMgL)
     }
 
-    render() {
+    public render() {
         if (this.props.sampleType !== "Water") {
             return null;
         }
@@ -58,10 +57,10 @@ export class SampleWaterQuestions extends React.Component<IWaterQuestionProps, I
                         </tr>
                         <tr>
                             <td>
-                                <input type="radio" checked={this.state.filterWater} onChange={this._changeFilter} /> Yes
+                                <input type="radio" checked={this.props.questions.waterFiltered} onChange={this._changeFilter} /> Yes
                             </td>
                             <td>
-                                <input type="radio" checked={!this.state.filterWater} onChange={this._changeFilter} /> No
+                                <input type="radio" checked={!this.props.questions.waterFiltered} onChange={this._changeFilter} /> No
                             </td>
                         </tr>
                         <tr>
@@ -71,17 +70,19 @@ export class SampleWaterQuestions extends React.Component<IWaterQuestionProps, I
                         </tr>
                         <tr>
                             <td>
-                                <input type="radio" checked={this.state.preservativeAdded} onChange={this._changePreservative} /> Yes
+                                <input type="radio" checked={this.props.questions.waterPreservativeAdded} onChange={this._changePreservative} /> Yes
                             </td>
                             <td>
-                                <input type="radio" checked={!this.state.preservativeAdded} onChange={this._changePreservative} /> No
+                                <input type="radio" checked={!this.props.questions.waterPreservativeAdded} onChange={this._changePreservative} /> No
                             </td>
                         </tr>
-                        <tr hidden={!this.state.preservativeAdded} >
+                        {this.props.questions.waterPreservativeAdded &&
+                            <tr>
                             <td colSpan={2}>
-                                <input type="text" value ={this.state.preservativeText} onChange={this._changePreservativeText} />
-                            </td>
-                        </tr>
+                                <input type="text" value={this.state.waterPreservativeInfo} onChange={this._onChangePreservativeText} onBlur={this._onBlurPreservativeText} />
+                                </td>
+                            </tr>
+                        }
                         <tr>
                             <th colSpan={2}>
                                  Cl and Soluble Ca, Mg, and Na are reported in meq/L. Do you want them reported in mg/L?
@@ -89,10 +90,10 @@ export class SampleWaterQuestions extends React.Component<IWaterQuestionProps, I
                         </tr>
                         <tr>
                             <td>
-                                <input type="radio" checked={this.state.reportedInMgL} onChange={this._changeReporting} /> Yes
+                                <input type="radio" checked={this.props.questions.waterReportedInMgL} onChange={this._changeReporting} /> Yes
                             </td>
                             <td>
-                                <input type="radio" checked={!this.state.reportedInMgL} onChange={this._changeReporting} /> No
+                                <input type="radio" checked={!this.props.questions.waterReportedInMgL} onChange={this._changeReporting} /> No
                             </td>
                         </tr>
                     </tbody>

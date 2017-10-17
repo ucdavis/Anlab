@@ -1,39 +1,34 @@
 ﻿import * as React from 'react';
-import { ForeignSoil } from './ForeignSoil';
+import { SampleSoilQuestions } from './SampleSoilQuestions';
 import { SampleWaterQuestions } from './SampleWaterQuestions';
 import { SamplePlantQuestions } from "./SamplePlantQuestions";
-import Input from 'react-toolbox/lib/input';
-import 'isomorphic-fetch';
 
+export interface ISampleTypeQuestions {
+    soilImported: boolean;
+    plantReportingBasis: string;
+    waterFiltered: boolean;
+    waterPreservativeAdded: boolean;
+    waterPreservativeInfo: string;
+    waterReportedInMgL: boolean;
+}
 interface ISampleTypeQuestionsProps {
     sampleType: string;
+    questions: ISampleTypeQuestions;
     handleChange: Function;
 }
 
-interface ISampleTypeQuestionsState {
-    soilIsImported: boolean;
-}
-
-export class SampleTypeQuestions extends React.Component<ISampleTypeQuestionsProps, ISampleTypeQuestionsState> {
+export class SampleTypeQuestions extends React.Component<ISampleTypeQuestionsProps, {}> {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-            soilIsImported: false
-        };
     }
-
-    handleChange = (name, value) => {
-        this.setState({ ...this.state, [name]: value });
-    };
 
     render() {
         return (
             <div>
-                <ForeignSoil sampleType={this.props.sampleType} handleChange={this.handleChange} />
-                <SampleWaterQuestions sampleType={this.props.sampleType} handleChange={this.handleChange} />
-                <SamplePlantQuestions sampleType={this.props.sampleType} handleChange={this.handleChange} />
+                <SampleSoilQuestions sampleType={this.props.sampleType} questions={this.props.questions} handleChange={this.props.handleChange} />
+                <SampleWaterQuestions sampleType={this.props.sampleType} questions={this.props.questions} handleChange={this.props.handleChange} />
+                <SamplePlantQuestions sampleType={this.props.sampleType} questions={this.props.questions} handleChange={this.props.handleChange} />
             </div>
 
         );
