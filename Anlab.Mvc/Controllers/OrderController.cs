@@ -262,52 +262,6 @@ namespace AnlabMvc.Controllers
 
         }
 
-        private void UpdateAdditionalInfo(Order order)
-        {
-            var orderDetails = order.GetOrderDetails();
-
-            StringBuilder sb = new StringBuilder(orderDetails.AdditionalInfo);
-
-            //TODO, remove from here and just show on admin receive
-            if(orderDetails.ClientId == null)
-            {
-                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Name", orderDetails.NewClientInfo.Name);
-                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Employer", orderDetails.NewClientInfo.Employer);
-                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Email", orderDetails.NewClientInfo.Email);
-                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Phone Number", orderDetails.NewClientInfo.PhoneNumber);
-            }
-
-            if (orderDetails.SampleType == TestCategories.Plant)
-            {
-                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Plant reporting basis:", orderDetails.SampleTypeQuestions.PlantReportingBasis);
-            }
-
-            if (orderDetails.SampleType == TestCategories.Soil)
-            {
-                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Soil is imported", orderDetails.SampleTypeQuestions.SoilImported);
-            }
-
-            if (orderDetails.SampleType == TestCategories.Water)
-            {
-                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Water filtered", orderDetails.SampleTypeQuestions.WaterFiltered);
-                sb.AppendFormat("{0}{1}: {2} {3}", Environment.NewLine, "Water preservative added", orderDetails.SampleTypeQuestions.WaterPreservativeAdded, orderDetails.SampleTypeQuestions.WaterPreservativeInfo);
-                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Water reported in mg/L", orderDetails.SampleTypeQuestions.WaterReportedInMgL);
-            }
-
-            if (orderDetails.AdditionalInfoList != null)
-            {
-                foreach (var item in orderDetails.AdditionalInfoList)
-                {
-                    sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, item.Key, item.Value);
-                }
-                orderDetails.AdditionalInfoList = new Dictionary<string, string>();
-            }
-
-            orderDetails.AdditionalInfo = sb.ToString();
-
-            order.SaveDetails(orderDetails);
-        }
-
         public async Task<IActionResult> Confirmed(int id)
         {
             var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
@@ -369,6 +323,52 @@ namespace AnlabMvc.Controllers
                 return null;
             }
             return result;
+        }
+
+        private void UpdateAdditionalInfo(Order order)
+        {
+            var orderDetails = order.GetOrderDetails();
+
+            StringBuilder sb = new StringBuilder(orderDetails.AdditionalInfo);
+
+            //TODO, remove from here and just show on admin receive
+            if (orderDetails.ClientId == null)
+            {
+                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Name", orderDetails.NewClientInfo.Name);
+                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Employer", orderDetails.NewClientInfo.Employer);
+                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Email", orderDetails.NewClientInfo.Email);
+                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Phone Number", orderDetails.NewClientInfo.PhoneNumber);
+            }
+
+            if (orderDetails.SampleType == TestCategories.Plant)
+            {
+                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Plant reporting basis", orderDetails.SampleTypeQuestions.PlantReportingBasis);
+            }
+
+            if (orderDetails.SampleType == TestCategories.Soil)
+            {
+                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Soil is imported", orderDetails.SampleTypeQuestions.SoilImported);
+            }
+
+            if (orderDetails.SampleType == TestCategories.Water)
+            {
+                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Water filtered", orderDetails.SampleTypeQuestions.WaterFiltered);
+                sb.AppendFormat("{0}{1}: {2} {3}", Environment.NewLine, "Water preservative added", orderDetails.SampleTypeQuestions.WaterPreservativeAdded, orderDetails.SampleTypeQuestions.WaterPreservativeInfo);
+                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Water reported in mg/L", orderDetails.SampleTypeQuestions.WaterReportedInMgL);
+            }
+
+            if (orderDetails.AdditionalInfoList != null)
+            {
+                foreach (var item in orderDetails.AdditionalInfoList)
+                {
+                    sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, item.Key, item.Value);
+                }
+                orderDetails.AdditionalInfoList = new Dictionary<string, string>();
+            }
+
+            orderDetails.AdditionalInfo = sb.ToString();
+
+            order.SaveDetails(orderDetails);
         }
     }
    
