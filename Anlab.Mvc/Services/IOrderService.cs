@@ -68,6 +68,7 @@ namespace AnlabMvc.Services
         {
             return (from i in items
                 join p in prices on i.Id equals p.Id
+                orderby i.RequestOrder
                 select new TestItemModel
                 {
                     Analysis = i.Analysis,
@@ -82,6 +83,7 @@ namespace AnlabMvc.Services
                     Public = i.Public,
                     AdditionalInfoPrompt = i.AdditionalInfoPrompt,
                     Sop = p.Sop,
+                    RequestOrder = i.RequestOrder,
                 }).ToList();
         }
 
