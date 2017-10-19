@@ -48,6 +48,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
     private quantityRef: any;
     private projectRef: any;
+    private waterPreservativeRef: any;
 
     constructor(props) {
         super(props);
@@ -136,7 +137,8 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.state = { ...initialState };
     }
     validate = () => {
-        let valid = this.state.quantity > 0 && this.state.quantity <= 100 && !!this.state.project.trim();
+        let valid = this.state.quantity > 0 && this.state.quantity <= 100 && !!this.state.project.trim()
+            && (this.state.sampleType != "Water" || !this.state.sampleTypeQuestions.waterPreservativeAdded || !!this.state.sampleTypeQuestions.waterPreservativeInfo.trim());
         if (valid) {
             if (this.state.payment.clientType === 'uc' && (this.state.payment.account === '' || this.state.payment.account == undefined)) {
                 valid = false;                
@@ -164,7 +166,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.setState({
             ...this.state,
             sampleTypeQuestions: { ...this.state.sampleTypeQuestions, [question]: answer }
-        });
+        }, this.validate);
     }
 
     onQuantityChanged = (quantity?: number) => {
@@ -297,7 +299,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
 
                     <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
-                    <SampleTypeQuestions sampleType={sampleType} questions={sampleTypeQuestions} handleChange={this.onSampleQuestionChanged} />
+                    <SampleTypeQuestions waterPreservativeRef={(inputRef) => { this.waterPreservativeRef = inputRef }} sampleType={sampleType} questions={sampleTypeQuestions} handleChange={this.onSampleQuestionChanged} />
 
                     <div className="form_wrap">
                         <label className="form_header">How many samples will you require?</label>
@@ -330,7 +332,11 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     project={this.state.project}
                     focusInput={this.focusInput}
                     quantityRef={this.quantityRef}
-                    projectRef={this.projectRef} />
+                    projectRef={this.projectRef}
+                    sampleType={this.state.sampleType}
+                    waterPreservativeAdded={this.state.sampleTypeQuestions.waterPreservativeAdded}
+                    waterPreservativeInfo={this.state.sampleTypeQuestions.waterPreservativeInfo}
+                    waterPreservativeRef={this.waterPreservativeRef} />
                 </div>
 
                 <Dialog

@@ -18,6 +18,11 @@ interface ISummaryProps {
     focusInput: Function;
     quantityRef: any;
     projectRef: any;
+
+    sampleType: string;
+    waterPreservativeAdded: boolean;
+    waterPreservativeInfo: string;
+    waterPreservativeRef: any;
 }
 
 export class Summary extends React.Component<ISummaryProps, any> {
@@ -61,7 +66,11 @@ export class Summary extends React.Component<ISummaryProps, any> {
     handleErrors = () => {
         if (!this.props.hideError)
         {
-            if (this.props.quantity < 1)
+            if (this.props.sampleType == "Water" && this.props.waterPreservativeAdded && !this.props.waterPreservativeInfo.trim())
+            {
+                this.props.focusInput(this.props.waterPreservativeRef);
+            }
+            else if (this.props.quantity < 1)
             {
                 this.props.focusInput(this.props.quantityRef);
             }
