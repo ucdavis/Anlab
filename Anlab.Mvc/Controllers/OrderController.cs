@@ -268,6 +268,15 @@ namespace AnlabMvc.Controllers
 
             StringBuilder sb = new StringBuilder(orderDetails.AdditionalInfo);
 
+            //TODO, remove from here and just show on admin receive
+            if(orderDetails.ClientId == null)
+            {
+                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Name", orderDetails.NewClientInfo.Name);
+                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Employer", orderDetails.NewClientInfo.Employer);
+                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Email", orderDetails.NewClientInfo.Email);
+                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Phone Number", orderDetails.NewClientInfo.PhoneNumber);
+            }
+
             if (orderDetails.SampleType == TestCategories.Plant)
             {
                 sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Plant reporting basis:", orderDetails.SampleTypeQuestions.PlantReportingBasis);
