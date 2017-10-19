@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace AnlabMvc.Controllers
 {
@@ -24,7 +25,7 @@ namespace AnlabMvc.Controllers
         private readonly ILabworksService _labworksService;
         private readonly AppSettings _appSettings;
 
-        private const string processingCode = "PROC"; 
+        private const string processingCode = "PROC";
 
         public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ILabworksService labworksService, IOptions<AppSettings> appSettings)
         {
@@ -44,7 +45,7 @@ namespace AnlabMvc.Controllers
 
         public async Task<IActionResult> Create()
         {
-            var joined = await  _orderService.PopulateTestItemModel();
+            var joined = await _orderService.PopulateTestItemModel();
             var proc = await _labworksService.GetPrice(processingCode);
 
             var model = new OrderEditModel {
@@ -52,7 +53,7 @@ namespace AnlabMvc.Controllers
                 InternalProcessingFee = Math.Ceiling(proc.Cost),
                 ExternalProcessingFee = Math.Ceiling(proc.Cost * _appSettings.NonUcRate)
             };
-            
+
             var user = _context.Users.Single(a => a.Id == CurrentUserId);
             model.DefaultAccount = user.Account?.ToUpper();
             model.DefaultEmail = user.Email;
@@ -62,14 +63,14 @@ namespace AnlabMvc.Controllers
                 //Has a default client id, so try to get defaults:
                 var defaults = await _labworksService.GetClientDetails(user.ClientId);
                 if (defaults != null)
-                {                    
+                {
                     model.DefaultAccount = model.DefaultAccount ?? defaults.DefaultAccount;
                     model.DefaultClientId = defaults.ClientId;
 
                 }
             }
 
-            
+
 
 
             return View(model);
@@ -79,9 +80,9 @@ namespace AnlabMvc.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            var order = await _context.Orders.Include(i=>i.Creator).SingleOrDefaultAsync(o=>o.Id == id);
+            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
-            if (order == null){
+            if (order == null) {
                 return NotFound();
             }
             if (order.CreatorId != CurrentUserId)
@@ -107,13 +108,13 @@ namespace AnlabMvc.Controllers
                 DefaultEmail = order.Creator.Email
             };
 
-            return View(model); 
+            return View(model);
         }
-        
+
 
         [HttpPost]
         public async Task<IActionResult> Save(OrderSaveModel model)
-        {           
+        {
             if (!ModelState.IsValid)
             {
                 var errors = new List<string>();
@@ -136,9 +137,9 @@ namespace AnlabMvc.Controllers
                 var orderToUpdate = await _context.Orders.SingleAsync(a => a.Id == model.OrderId.Value);
                 if (orderToUpdate.CreatorId != CurrentUserId)
                 {
-                    return Json(new {success = false, message = "This is not your order."});
+                    return Json(new { success = false, message = "This is not your order." });
                 }
-                if(orderToUpdate.Status != OrderStatusCodes.Created)
+                if (orderToUpdate.Status != OrderStatusCodes.Created)
                 {
                     return Json(new { success = false, message = "This has been confirmed and may not be updated." });
                 }
@@ -163,13 +164,13 @@ namespace AnlabMvc.Controllers
                 var allTests = await _orderService.PopulateTestItemModel();
                 order.SaveTestDetails(allTests);
 
-                 _orderService.PopulateOrder(model, order);
+                _orderService.PopulateOrder(model, order);
 
                 _context.Add(order);
                 await _context.SaveChangesAsync();
                 idForRedirection = order.Id;
             }
-            
+
 
             return Json(new { success = true, id = idForRedirection });
         }
@@ -222,7 +223,7 @@ namespace AnlabMvc.Controllers
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
-            
+
             return View(model);
         }
 
@@ -250,35 +251,52 @@ namespace AnlabMvc.Controllers
 
             await _orderService.UpdateTestsAndPrices(order);
 
-            var orderDetails = order.GetOrderDetails();
-            if (orderDetails.NewClientInfo != null)
-            {
-                orderDetails.AdditionalInfo += string.Format("{0}New Client Info", Environment.NewLine);
-                orderDetails.AdditionalInfo += string.Format("{0}Name: {1}", Environment.NewLine, orderDetails.NewClientInfo.Name);
-                orderDetails.AdditionalInfo += string.Format("{0}Employer: {1}", Environment.NewLine, orderDetails.NewClientInfo.Employer);
-                orderDetails.AdditionalInfo += string.Format("{0}Email: {1}", Environment.NewLine, orderDetails.NewClientInfo.Email);
-                orderDetails.AdditionalInfo += string.Format("{0}Phone Number: {1}", Environment.NewLine, orderDetails.NewClientInfo.PhoneNumber);
-            }
-
-            if (orderDetails.AdditionalInfoList != null)
-            {
-                foreach (var item in orderDetails.AdditionalInfoList)
-                {
-                    orderDetails.AdditionalInfo += string.Format("{0}{1}: {2}", Environment.NewLine, item.Key, item.Value);
-                }
-                orderDetails.AdditionalInfoList = new Dictionary<string, string>();
-            }
-
-            order.SaveDetails(orderDetails);
-
+            UpdateAdditionalInfo(order);
             order.Status = OrderStatusCodes.Confirmed;
-            
+
             await _orderMessageService.EnqueueCreatedMessage(order);
 
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Confirmed", new { id = id });
 
+        }
+
+        private void UpdateAdditionalInfo(Order order)
+        {
+            var orderDetails = order.GetOrderDetails();
+
+            StringBuilder sb = new StringBuilder();
+
+            if (orderDetails.SampleType == TestCategories.Plant)
+            {
+                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Plant reporting basis:", orderDetails.SampleTypeQuestions.PlantReportingBasis);
+            }
+
+            if (orderDetails.SampleType == TestCategories.Soil)
+            {
+                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Soil is imported", orderDetails.SampleTypeQuestions.SoilImported);
+            }
+
+            if (orderDetails.SampleType == TestCategories.Water)
+            {
+                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Water filtered", orderDetails.SampleTypeQuestions.WaterFiltered);
+                sb.AppendFormat("{0}{1}: {2} {3}", Environment.NewLine, "Water preservative added", orderDetails.SampleTypeQuestions.WaterPreservativeAdded, orderDetails.SampleTypeQuestions.WaterPreservativeInfo);
+                sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, "Water reported in mg/L", orderDetails.SampleTypeQuestions.WaterReportedInMgL);
+            }
+
+            if (orderDetails.AdditionalInfoList != null)
+            {
+                foreach (var item in orderDetails.AdditionalInfoList)
+                {
+                    sb.AppendFormat("{0}{1}: {2}", Environment.NewLine, item.Key, item.Value);
+                }
+                orderDetails.AdditionalInfoList = new Dictionary<string, string>();
+            }
+
+            orderDetails.AdditionalInfo = sb.ToString();
+
+            order.SaveDetails(orderDetails);
         }
 
         public async Task<IActionResult> Confirmed(int id)
