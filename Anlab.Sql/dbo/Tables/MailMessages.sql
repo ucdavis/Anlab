@@ -7,7 +7,7 @@
     [SendTo]        NVARCHAR (MAX) NOT NULL,
     [Sent]          BIT            NULL,
     [SentAt]        DATETIME2 (7)  NULL,
-    [Subject]       NVARCHAR (MAX) NOT NULL,
+    [Subject]       NVARCHAR (256) NOT NULL,
     [UserId]        NVARCHAR (450) NULL,
     CONSTRAINT [PK_MailMessages] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_MailMessages_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [dbo].[AspNetUsers] ([Id]),

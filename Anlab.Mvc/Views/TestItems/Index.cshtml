@@ -13,6 +13,7 @@
     </a>
 </p>
 }
+<div class="col">
 <table id="table" class="row-border order-column hover">
     <thead>
         <tr>
@@ -22,6 +23,12 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Analysis)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LabOrder)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RequestOrder)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Category) <select name="category" id="category">
@@ -59,6 +66,12 @@
                 @Html.DisplayFor(modelItem => item.Analysis)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.LabOrder)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RequestOrder)
+            </td>
+            <td>
                 @item.Category.Humanize(LetterCasing.Title)
             </td>
             <td>
@@ -82,7 +95,7 @@
     </tbody>
 </table>
 
-
+</div>
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
@@ -98,7 +111,7 @@
                 "stateSave": true,
                 "stateDuration": 60 * 10,
                 "columnDefs": [
-                    { "orderable": false, "targets": [0,3] },
+                    { "orderable": false, "targets": [0,5] },
                     { "searchable":false, "targets": 0 }
                 ]
             });
@@ -111,7 +124,7 @@
         $.fn.dataTable.ext.search.push(
             function (settings, data, dataIndex) {
 
-                var category = data[3];
+                var category = data[5];
                 var categoryFilter = $('#category').val();
 
                 if (categoryFilter == "All" || category.indexOf(categoryFilter) !== -1) {

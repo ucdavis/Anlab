@@ -30,7 +30,8 @@ namespace Test.TestsModel
             }));
             expectedFields.Add(new NameAndType("Group", "System.String", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+                "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)512)]"
             }));
             expectedFields.Add(new NameAndType("Id", "System.String", new List<string>
             {
@@ -39,9 +40,11 @@ namespace Test.TestsModel
                 "[System.ComponentModel.DataAnnotations.RegularExpressionAttribute(\"([A-Z0-9a-z\\-#_])+\", ErrorMessage = \"Codes can only contain alphanumerics, #, _, and dashes.\")]",
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)128)]"                
             }));
+            expectedFields.Add(new NameAndType("LabOrder", "System.Int32", new List<string>()));
             expectedFields.Add(new NameAndType("Notes", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("NotesEncoded", "System.String", new List<string>()));
-            expectedFields.Add(new NameAndType("Public", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("Public", "System.Boolean", new List<string>()));            
+            expectedFields.Add(new NameAndType("RequestOrder", "System.Int32", new List<string>()));
             #endregion Arrange
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(TestItem));

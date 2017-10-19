@@ -1,11 +1,11 @@
-﻿import * as React from 'react';
-import { ITestItem } from './TestList';
-import { IPayment } from './PaymentSelection';
-import NumberFormat from 'react-number-format';
-import {Button} from 'react-toolbox/lib/button';
+﻿import * as React from "react";
+import NumberFormat from "react-number-format";
+import {Button} from "react-toolbox/lib/button";
+import { IPayment } from "./PaymentSelection";
+import { ITestItem } from "./TestList";
 
 interface ISummaryProps {
-    testItems: Array<ITestItem>;
+    testItems: ITestItem[];
     quantity: number;
     payment: IPayment;
     onSubmit: Function;
@@ -25,126 +25,156 @@ interface ISummaryProps {
     waterPreservativeRef: any;
 }
 
-export class Summary extends React.Component<ISummaryProps, any> {
+const numberFormatOptions = {
+  decimalPrecision: 2,
+  displayType: "text",
+  prefix: "$",
+  thousandSeparator: true,
+};
 
-    totalCost = () => {
-        if (this.props.quantity < 1)
-            return 0;
-        const total = this.props.testItems.reduce((prev, item) => {
-            // total for current item
-            const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
-            const perTest = price * this.props.quantity;
+export class Summary extends React.Component<ISummaryProps, {}> {
 
-            return prev + perTest + (this.props.payment.clientType === 'uc' ? item.internalSetupCost : item.externalSetupCost);
-        }, 0);
+    public render() {
+      if (this.props.testItems.length === 0) {
+          return null;
+      }
 
-        return total + this.props.processingFee;
+      const saveText = "Save & Review";
+      const infoText = "You will be able to review this information before placing your order";
+      const errorText = "Please correct any errors and complete any required fields before you proceed";
+
+      return (
+          <div>
+              <div className="ordersum">
+                  <div>
+                      <h3>Order Total: <NumberFormat value={this._totalCost()} {...numberFormatOptions} /></h3>
+                      <a role="button" data-toggle="collapse" data-target="#testSummary" aria-expanded="false" aria-controls="testSummary">
+                          Order Details
+                      </a>
+                  </div>
+                  <div>
+                      {this._renderErrorButton()}
+                      <Button className="btn btn-order" disabled={!this.props.canSubmit} onClick={this.props.onSubmit}>
+                        {saveText}
+                      </Button>
+                  </div>
+              </div>
+
+              <div className="collapse" id="testSummary">
+                  <div className="well">
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th>Analysis</th>
+                                    <th>Fee {this._renderToolTipIcon("Price Per Sample")}</th>
+                                    <th>Price {this._renderToolTipIcon("Fee * Quantity")}</th>
+                                    <th>Setup</th>
+                                    <th>Total {this._renderToolTipIcon("Price + Setup")}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this._renderTests()}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Processing Fee</th>
+                                    <td colSpan={3} />
+                                    <td><NumberFormat value={this.props.processingFee} {...numberFormatOptions}/></td>
+                                </tr>
+                                <tr>
+                                    <td colSpan={4} />
+                                    <td><NumberFormat value={this._totalCost()} {...numberFormatOptions} /></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {this.props.canSubmit ? <div className="alert alert-info">{infoText}</div> : null}
+                        {!this.props.hideError ? <div className="alert alert-danger">{errorText}</div> : null}
+                        <Button raised={true} primary={true} disabled={!this.props.canSubmit} onClick={this.props.onSubmit}>
+                            {saveText}
+                        </Button>
+                  </div>
+              </div>
+          </div>
+      );
     }
 
+    private _renderErrorButton = () => {
+      if (this.props.hideError) {
+        return null;
+      }
 
-    _renderTests = () => {
+      const errorIconStyle = {
+          color: "red",
+          padding: "0 10px",
+      };
 
-        const tests = this.props.testItems.map(item => {
-            const price = this.props.payment.clientType === 'uc' ? item.internalCost : item.externalCost;
-            const setupCost = this.props.payment.clientType === 'uc' ? item.internalSetupCost : item.externalSetupCost;
-            const perTest = price * this.props.quantity;            
+      return (
+        <a onClick={this._handleErrors}>
+          Fix Errors <i className="fa fa-exclamation" style={errorIconStyle} />
+        </a>
+      );
+    }
+
+    private _renderToolTipIcon = (tooltip: string) => {
+      return (
+        <i
+          className="analysisTooltip fa fa-info-circle"
+          aria-hidden="true"
+          data-toggle="tooltip"
+          title={tooltip}
+          data-container="table"
+        />
+      );
+    }
+
+    private _renderTests = () => {
+        const isUcClient = this.props.payment.clientType === "uc";
+
+        return this.props.testItems.map((item) => {
+            const price = isUcClient ? item.internalCost : item.externalCost;
+            const setupCost = isUcClient ? item.internalSetupCost : item.externalSetupCost;
+            const perTest = price * this.props.quantity;
             const rowTotalDisplay = (perTest + setupCost);
+
             return (
                 <tr key={item.id}>
                     <td>{item.analysis}</td>
-                    <td><NumberFormat value={price} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></td>
-                    <td><NumberFormat value={perTest} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></td>
-                    <td><NumberFormat value={setupCost} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></td>
-                    <td><NumberFormat value={rowTotalDisplay} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></td>
+                    <td><NumberFormat value={price} {...numberFormatOptions} /></td>
+                    <td><NumberFormat value={perTest} {...numberFormatOptions} /></td>
+                    <td><NumberFormat value={setupCost} {...numberFormatOptions} /></td>
+                    <td><NumberFormat value={rowTotalDisplay} {...numberFormatOptions} /></td>
                 </tr>
             );
         });
-
-        return tests;
     }
 
-    handleErrors = () => {
-        if (!this.props.hideError)
-        {
-            if (this.props.sampleType == "Water" && this.props.waterPreservativeAdded && !this.props.waterPreservativeInfo.trim())
-            {
-                this.props.focusInput(this.props.waterPreservativeRef);
-            }
-            else if (this.props.quantity < 1)
-            {
-                this.props.focusInput(this.props.quantityRef);
-            }
-            else if (!this.props.project)
-            {
-                this.props.focusInput(this.props.projectRef);
-            }
+    private _handleErrors = () => {
+        if (this.props.hideError) {
+          return;
+        }
+        if (this.props.sampleType == "Water" && this.props.waterPreservativeAdded && !this.props.waterPreservativeInfo.trim()) {
+            this.props.focusInput(this.props.waterPreservativeRef);
+        } else if (this.props.quantity < 1) {
+            this.props.focusInput(this.props.quantityRef);
+        } else if (!this.props.project) {
+            this.props.focusInput(this.props.projectRef);
         }
     }
 
-    render() {
-        if (this.props.testItems.length === 0) {
-            return null;
+    private _totalCost = () => {
+        if (this.props.quantity < 1) {
+            return 0;
         }
-        let errorIconStyle = {
-            color: 'red',
-            padding: '0 10px'
-        }
-        let saveText = "Save & Review";
-        let infoText = "You will be able to review this information before placing your order";       
-        const errorText = "Please correct any errors and complete any required fields before you proceed";
-        return (
-            <div>
-                <div className="ordersum">
-                    <div>
-                        <h3>Order Total:<NumberFormat value={this.totalCost()} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></h3>
-                        <a role="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                            Order Details
-                        </a>
-                    </div>
-                    <div>
-                        {!this.props.hideError &&
-                            <a onClick={this.handleErrors}>Fix Errors<i className="fa fa-exclamation" style={errorIconStyle} ></i></a>}
-                        <Button className="btn btn-order" disabled={!this.props.canSubmit} onClick={this.props.onSubmit} >{saveText}</Button>
-                    </div>
-                </div>
 
-                <div className="collapse" id="collapseExample">
-                    <div className="well">
+        const isUcClient = this.props.payment.clientType === "uc";
 
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <th>Analysis</th>
-                                        <th>Fee <i className="analysisTooltip fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" title="Price per sample" data-container="table"></i></th>
-                                        <th>Price <i className="analysisTooltip fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" title="Fee*Quantity" data-container="table"></i></th>
-                                        <th>Setup</th>
-                                        <th>Total <i className="analysisTooltip fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" title="Price+Setup" data-container="table"></i></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {this._renderTests()}
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th>Processing Fee</th>
-                                        <td colSpan={3}></td>
-                                        <td><NumberFormat value={this.props.processingFee} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></td>
-                                    </tr>
-                                    <tr>
-                                        <td colSpan={4}></td>
-                                        <td><NumberFormat value={this.totalCost()} displayType={'text'} thousandSeparator={true} decimalPrecision={2} prefix={'$'} /></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                            {this.props.canSubmit ? <div className="alert alert-info">{infoText}</div> : null}
-                            {!this.props.hideError ? <div className="alert alert-danger">{errorText}</div> : null}
-                            <Button raised primary disabled={!this.props.canSubmit} onClick={this.props.onSubmit}>
-                                {saveText}
-                            </Button>
-                    </div>
-                </div>
-                </div>
+        const total = this.props.testItems.reduce((prev, item) => {
+            const setup = isUcClient ? item.internalSetupCost : item.externalSetupCost;
+            const price = isUcClient ? item.internalCost : item.externalCost;
+            const perTest = price * this.props.quantity;
+            return prev + perTest + setup;
+        }, 0);
 
-        );
+        return total + this.props.processingFee;
     }
 }

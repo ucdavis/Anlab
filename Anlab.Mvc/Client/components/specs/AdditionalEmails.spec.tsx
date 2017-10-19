@@ -1,130 +1,149 @@
-﻿import * as React from 'react';
-import { shallow, mount, render } from 'enzyme';
-import { AdditionalEmails } from '../AdditionalEmails';
+﻿import { mount, render, shallow } from "enzyme";
+import * as React from "react";
+import { AdditionalEmails } from "../AdditionalEmails";
 
-xdescribe('<AdditionalEmails />', () => {
-    it('should render an input', () => {
-        const target = mount(<AdditionalEmails addedEmails={[]} onDeleteEmail={null} onEmailAdded={null} defaultEmail={null} />);
-        expect(target.find('input').length).toEqual(1);
-    });
-    it('should render a label', () => {
-        const target = mount(<AdditionalEmails addedEmails={[]} onDeleteEmail={null} onEmailAdded={null} defaultEmail={null} />);
-        expect(target.find('label').length).toEqual(2);
-    });
-    it('should render existing emails', () => {
-        const target = mount(<AdditionalEmails addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]} onDeleteEmail={null} onEmailAdded={null} defaultEmail={null}/>);
-        expect(target.find('Button').length).toEqual(3);
-    });
-    it('should render existing emails1', () => {
-        const target = mount(<AdditionalEmails addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]} onDeleteEmail={null} onEmailAdded={null} defaultEmail={null}/>);
-        const target2 = target.first('Button');
-        expect(target2.text()).toContain("test1@testy.com");
-    });
-    it('should render existing emails2', () => {
-        const target = mount(<AdditionalEmails addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]} onDeleteEmail={null} onEmailAdded={null} defaultEmail={null}/>);
-        const target2 = target.first('Button');
-        expect(target2.text()).toContain("test2@testy.com");
-    });
-    it('should render existing emails3', () => {
-        const target = mount(<AdditionalEmails addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]} onDeleteEmail={null} onEmailAdded={null} defaultEmail={null}/>);
-        const target2 = target.first('Button');
-        expect(target2.text()).toContain("test3@testy.com");
-    });
-    it('should render existing emails4', () => {
-        const target = mount(<AdditionalEmails addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]} onDeleteEmail={null} onEmailAdded={null} defaultEmail={null}/>);
-        const target2 = target.first('Button');
-        expect(target2.text()).not.toContain("test4@testy.com");
+describe("<AdditionalEmails />", () => {
+    it("should render a default email", () => {
+        const target = mount(
+            <AdditionalEmails
+                addedEmails={[]}
+                onDeleteEmail={null}
+                onEmailAdded={null}
+                defaultEmail={"default@example.com"}
+            />);
+
+        expect(target).toContainReact(<span>default@example.com</span>);
     });
 
-    it('should set internal email value', () => {
-        const target = mount(<AdditionalEmails addedEmails={[]} onDeleteEmail={null} onEmailAdded={null} defaultEmail={null}/>);
-        const internal = target.instance();
+    it("should render existing emails", () => {
+        const target = mount(
+            <AdditionalEmails
+                addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]}
+                onDeleteEmail={null}
+                onEmailAdded={null}
+                defaultEmail={null}
+            />);
 
-        expect(internal.state.email).toBe('');
-
-        internal.onEmailChanged('xxx');
-
-        expect(internal.state.email).toBe('xxx');
+        expect(target).toContainReact(<span>test1@testy.com</span>);
+        expect(target).toContainReact(<span>test2@testy.com</span>);
+        expect(target).toContainReact(<span>test3@testy.com</span>);
     });
 
-    it('should call onEmailAdded with valid state.email onClick event', () => {
-        const onEmailAdded = jasmine.createSpy('onEmailAdded');
-        const target = shallow(<AdditionalEmails addedEmails={[]} onDeleteEmail={null} onEmailAdded={onEmailAdded} defaultEmail={null}/>);
-        const internal = target.instance();
+    it("should set state email value on change", () => {
+        const target = mount(
+            <AdditionalEmails
+                addedEmails={[]}
+                onDeleteEmail={null}
+                onEmailAdded={null}
+                defaultEmail={null}
+            />);
+        target.setState({ toggle: true });
+        expect(target.state().email).toBe("");
 
-        internal.state.email = 'test@testy.com';
-        internal.onClick();
+        // act
+        target.find("input").simulate("change", { target: { value: "xxx" } });
+
+        expect(target.state().email).toBe("xxx");
+    });
+
+    it("should call onEmailAdded with valid state.email onBlur event", () => {
+        const onEmailAdded = jasmine.createSpy("onEmailAdded");
+        const target = shallow(
+            <AdditionalEmails
+                addedEmails={[]}
+                onDeleteEmail={null}
+                onEmailAdded={onEmailAdded}
+                defaultEmail={null}
+            />);
+        target.setState({ toggle: true, email: "test@testy.com" });
+
+        // act
+        target.find("input").simulate("blur");
 
         expect(onEmailAdded).toHaveBeenCalled();
-        expect(onEmailAdded).toHaveBeenCalledWith('test@testy.com');
-        expect(internal.state.email).toBe('');
+        expect(onEmailAdded).toHaveBeenCalledWith("test@testy.com");
+        expect(target.state().hasError).toBe(false);
+        expect(target.state().errorText).toBe("");
     });
 
-    it('should call onEmailAdded with valid state.email onClick event and lower it', () => {
-        const onEmailAdded = jasmine.createSpy('onEmailAdded');
-        const target = shallow(<AdditionalEmails addedEmails={[]} onDeleteEmail={null} onEmailAdded={onEmailAdded} defaultEmail={null}/>);
-        const internal = target.instance();
+    it("should call onEmailAdded with valid state.email onClick event and lower it", () => {
+        const onEmailAdded = jasmine.createSpy("onEmailAdded");
+        const target = shallow(
+            <AdditionalEmails
+                addedEmails={[]}
+                onDeleteEmail={null}
+                onEmailAdded={onEmailAdded}
+                defaultEmail={null}
+            />);
+        target.setState({ toggle: true, email: "TEST@testy.com" });
 
-        internal.state.email = 'TEST@testy.COM';
-        internal.onClick();
+        // act
+        target.find("input").simulate("blur");
 
         expect(onEmailAdded).toHaveBeenCalled();
-        expect(onEmailAdded).toHaveBeenCalledWith('test@testy.com');
-        expect(internal.state.email).toBe('');
+        expect(onEmailAdded).toHaveBeenCalledWith("test@testy.com");
+        expect(target.state().hasError).toBe(false);
+        expect(target.state().errorText).toBe("");
     });
 
-    it('should not call onEmailAdded with invalid state.email onClick event', () => {
-        const onEmailAdded = jasmine.createSpy('onEmailAdded');
-        spyOn(window, 'alert');
-        const target = shallow(<AdditionalEmails addedEmails={[]} onDeleteEmail={null} onEmailAdded={onEmailAdded} defaultEmail={null}/>);
-        const internal = target.instance();
+    it("should not call onEmailAdded with invalid state.email onClick event", () => {
+        const onEmailAdded = jasmine.createSpy("onEmailAdded");
+        const target = shallow(
+            <AdditionalEmails
+                addedEmails={[]}
+                onDeleteEmail={null}
+                onEmailAdded={onEmailAdded}
+                defaultEmail={null}
+            />);
+        target.setState({ toggle: true, email: "test@invlid@invalid.com" });
 
-        internal.state.email = 'test@invlid@invalid.com';
-        internal.onClick();
+        // act
+        target.find("input").simulate("blur");
 
         expect(onEmailAdded).not.toHaveBeenCalled();
-        expect(internal.state.email).toBe('test@invlid@invalid.com');
-        expect(window.alert).toHaveBeenCalledWith('Invalid email');
+        expect(target.state().toggle).toBe(true);
+        expect(target.state().email).toBe("test@invlid@invalid.com");
+        expect(target.state().hasError).toBe(true);
+        expect(target.state().errorText).toBe("Invalid email");
     });
 
-    it('should not call onEmailAdded with duplicate state.email onClick event', () => {
-        const onEmailAdded = jasmine.createSpy('onEmailAdded');
-        spyOn(window, 'alert');
-        const target = shallow(<AdditionalEmails addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]} onDeleteEmail={null} onEmailAdded={onEmailAdded} defaultEmail={null}/>);
-        const internal = target.instance();
+    it("should not call onEmailAdded with duplicate state.email onClick event", () => {
+        const onEmailAdded = jasmine.createSpy("onEmailAdded");
+        const target = shallow(
+            <AdditionalEmails
+                addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]}
+                onDeleteEmail={null}
+                onEmailAdded={onEmailAdded}
+                defaultEmail={null}
+            />);
+        target.setState({ toggle: true, email: "test2@testy.com" });
 
-        internal.state.email = 'test2@testy.com';
-        internal.onClick();
+        // act
+        target.find("input").simulate("blur");
 
         expect(onEmailAdded).not.toHaveBeenCalled();
-        expect(internal.state.email).toBe('');
-        expect(window.alert).toHaveBeenCalledWith('Email already added');
+        expect(target.state().email).toBe("test2@testy.com");
+        expect(target.state().hasError).toBe(true);
+        expect(target.state().errorText).toBe("Email already added");
     });
 
-    it('should not call onEmailAdded with duplicate ignoring case state.email onClick event', () => {
-        const onEmailAdded = jasmine.createSpy('onEmailAdded');
-        spyOn(window, 'alert');
-        const target = shallow(<AdditionalEmails addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]} onDeleteEmail={null} onEmailAdded={onEmailAdded} defaultEmail={null}/>);
-        const internal = target.instance();
+    it("should not call onEmailAdded with duplicate ignoring case state.email onClick event", () => {
+        const onEmailAdded = jasmine.createSpy("onEmailAdded");
+        const target = shallow(
+            <AdditionalEmails
+                addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]}
+                onDeleteEmail={null}
+                onEmailAdded={onEmailAdded}
+                defaultEmail={null}
+            />);
+        target.setState({ toggle: true, email: "TEST1@testy.com" });
 
-        internal.state.email = 'TEST2@testy.com';
-        internal.onClick();
+        // act
+        target.find("input").simulate("blur");
 
         expect(onEmailAdded).not.toHaveBeenCalled();
-        expect(internal.state.email).toBe('');
-        expect(window.alert).toHaveBeenCalledWith('Email already added');
-    });
-
-
-    it('should call onDeleteEmail with onDelete event', () => {
-        const onDeleteEmail = jasmine.createSpy('onDeleteEmail');
-        const target = shallow(<AdditionalEmails addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]} onDeleteEmail={onDeleteEmail} onEmailAdded={null} defaultEmail={null}/>);
-        const internal = target.instance();
-
-        internal.state.email = 'test@testy.com';
-        internal.onDelete('test2@testy.com');
-
-        expect(onDeleteEmail).toHaveBeenCalled();
-        expect(onDeleteEmail).toHaveBeenCalledWith('test2@testy.com');
+        expect(target.state().email).toBe("TEST1@testy.com");
+        expect(target.state().hasError).toBe(true);
+        expect(target.state().errorText).toBe("Email already added");
     });
 });

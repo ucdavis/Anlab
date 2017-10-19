@@ -31,6 +31,7 @@ namespace Anlab.Core.Domain
         }
 
         [Required]
+        [StringLength(512)]
         public string Group { get; set; }
 
         public bool Public { get; set; }
@@ -50,6 +51,9 @@ namespace Anlab.Core.Domain
                 return encoder.Encode(Notes);
             }
         }
+        
+        public int RequestOrder { get; set; }
+        public int LabOrder { get; set; }
     }
 
     public static class TestCategories

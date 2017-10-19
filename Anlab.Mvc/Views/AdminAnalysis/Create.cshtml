@@ -4,29 +4,29 @@
     ViewBag.Title = "Create Method of Analysis";
 }
 
-<form asp-action="Create">
-    <div class="form-horizontal">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="Id" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
+<div class="col">
+    <form asp-action="Create">
+        <div class="form-horizontal">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Id" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Id" class="form-control" />
+                    <span asp-validation-for="Id" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        
-        @Html.Partial("_AnalysisMethodForm")
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+            @Html.Partial("_AnalysisMethodForm")
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
             </div>
         </div>
+    </form>
+    <div>
+        <a asp-action="Index">Back to List</a>
     </div>
-</form>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts
