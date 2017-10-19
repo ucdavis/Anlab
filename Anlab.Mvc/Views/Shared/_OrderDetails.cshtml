@@ -44,7 +44,7 @@
         </div>
     }
 
-@if (Model.OrderDetails.AdditionalEmails.Length > 0) {
+@if (!String.IsNullOrWhiteSpace(Model.OrderDetails.AdditionalInfo)) {
         <div class="form-group">
             <strong>Additional Info</strong>
             <pre>@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</pre>

@@ -266,7 +266,7 @@ namespace AnlabMvc.Controllers
         {
             var orderDetails = order.GetOrderDetails();
 
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder(orderDetails.AdditionalInfo);
 
             if (orderDetails.SampleType == TestCategories.Plant)
             {
