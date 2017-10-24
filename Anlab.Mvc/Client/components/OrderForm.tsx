@@ -148,17 +148,16 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                 valid = false;
             }
         }
-        this.setState({ ...this.state, isValid: valid });
+        this.setState({ isValid: valid });
     }
     onPaymentSelected = (payment: any) => {
-        this.setState({ ...this.state, payment }, this.validate);
+        this.setState({ payment }, this.validate);
     }
     onSampleSelected = (sampleType: string) => {
-        this.setState({ ...this.state, sampleType }, this.validate);
+        this.setState({ sampleType }, this.validate);
     }
     onTestSelectionChanged = (test: ITestItem, selected: Boolean) => {
         this.setState({
-            ...this.state,
             selectedTests: {
                 ...this.state.selectedTests,
                 [test.id]: selected
@@ -168,24 +167,22 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
     onSampleQuestionChanged = (question: string, answer: any) => {
         this.setState({
-            ...this.state,
             sampleTypeQuestions: { ...this.state.sampleTypeQuestions, [question]: answer }
         }, this.validate);
     }
 
     onQuantityChanged = (quantity?: number) => {
-        this.setState({ ...this.state, quantity }, this.validate);
+        this.setState({ quantity }, this.validate);
     }
 
     updateNewClientInfo = (info: INewClientInfo) => {
-        this.setState({...this.state,
+        this.setState({
             newClientInfo: { ...info }
         });
     }
 
     onEmailAdded = (additionalEmail: string) => {
         this.setState({
-                ...this.state,
                 additionalEmails: [
                     ...this.state.additionalEmails,
                     additionalEmail
@@ -199,7 +196,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         if (index > -1) {
             const shallowCopy = [...this.state.additionalEmails];
             shallowCopy.splice(index, 1);
-            this.setState({ ...this.state, additionalEmails: shallowCopy });
+            this.setState({ additionalEmails: shallowCopy });
         }
     }
 
@@ -218,11 +215,11 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     }
 
     handleChange = (name, value) => {
-        this.setState({ ...this.state, [name]: value }, this.validate);
+        this.setState({ [name]: value }, this.validate);
     };
 
     handleDialogToggle = () => {
-        this.setState({ ...this.state, isErrorActive: !this.state.isErrorActive});
+        this.setState({ isErrorActive: !this.state.isErrorActive});
     }
 
     dialogActions = [
@@ -245,7 +242,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         let postUrl = '/Order/Save';
         let returnUrl = '/Order/Confirmation/';
 
-        this.setState({ ...this.state, isSubmitting: true });
+        this.setState({ isSubmitting: true });
         const selectedTests = this.getTests().selected;
         const selectedCodes = selectedTests.map(t => t.id);
         let additionalInfoList = Object.keys(this.state.additionalInfoList).map(key => {
@@ -283,10 +280,10 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                 const redirectId = response.id;
                 window.location.replace(returnUrl + redirectId);
             } else {
-                that.setState({ ...that.state, isSubmitting: false, isErrorActive: true, errorMessage: response.message });
+                that.setState({ isSubmitting: false, isErrorActive: true, errorMessage: response.message });
             }
         }).error(() => {
-            that.setState({ ...that.state, isSubmitting: false, isErrorActive: true, errorMessage: "An internal error occured..." });
+            that.setState({ isSubmitting: false, isErrorActive: true, errorMessage: "An internal error occured..." });
         });
     }
 
