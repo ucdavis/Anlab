@@ -79,9 +79,21 @@
     <tr>
         <th>Analysis</th>
         <th>Code</th>
-        <th>Fee (* Qty @Model.OrderDetails.Quantity)</th>
-        <th>SetupCost</th>
-        <th>Sample Total</th>
+        <th>Price 
+            <i class="analysisTooltip fa fa-info-circle"
+               aria-hidden="true"
+               data-toggle="tooltip"
+               title="Fee Per Sample * Quantity"
+               data-container="table" />
+        </th>
+        <th>Setup</th>
+        <th>Total 
+            <i class="analysisTooltip fa fa-info-circle"
+               aria-hidden="true"
+               data-toggle="tooltip"
+               title="Price + Setup"
+               data-container="table" />
+        </th>
     </tr>
     </thead>
     <tbody>
