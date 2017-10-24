@@ -66,36 +66,6 @@
         <span>Credit Card</span>
     }
 
-<div class="form-group">
-    <strong>Processing Fee</strong>
-    @if(Model.OrderDetails.Payment.IsInternalClient)
-    {
-        <span>@(String.Format("{0:C}", Model.OrderDetails.InternalProcessingFee))</span>
-    }
-    else
-    {
-        <span>@(String.Format("{0:C}", Model.OrderDetails.ExternalProcessingFee))</span>
-    }
-</div>
-
-<div class="form-group">
-    <strong>Total Amount</strong>
-    <span>@(String.Format("{0:C}", Model.OrderDetails.Total))</span>
-</div>
-
-@if (Model.OrderDetails.AdjustmentAmount != 0)
-{
-    <div class="form-group">
-        <strong>Adjustment Amount</strong>
-        <span>@(String.Format("{0:C}", Model.OrderDetails.AdjustmentAmount))</span>
-    </div>
-
-    <div class="form-group">
-        <strong>Grand Total</strong>
-        <span>@(String.Format("{0:C}", Model.OrderDetails.GrandTotal))</span>
-    </div>
-}
-
 @if (!String.IsNullOrWhiteSpace(Model.OrderDetails.LabComments))
 {
     <div class="form-group">
@@ -104,7 +74,7 @@
     </div>
 }
 
-<table class="table table-bordered">
+<table class="table">
     <thead>
     <tr>
         <th>Analysis</th>
@@ -137,6 +107,35 @@
         </tr>
     }
     </tbody>
+    <tfoot>
+        <tr>
+            <th>Processing Fee</th>
+            <td colSpan="3" />
+            <td>
+            @if (Model.OrderDetails.Payment.IsInternalClient)
+            {
+                <span>@(String.Format("{0:C}", Model.OrderDetails.InternalProcessingFee))</span>
+            }
+            else
+            {
+                <span>@(String.Format("{0:C}", Model.OrderDetails.ExternalProcessingFee))</span>
+            }</td>
+        </tr>
+        @if (Model.OrderDetails.AdjustmentAmount != 0)
+        {
+            <tr>
+                <th>Adjustment Amount</th>
+                <td colSpan="3" />
+                <td><span>@(String.Format("{0:C}", Model.OrderDetails.AdjustmentAmount))</span></td>
+            </tr>
+
+        }
+        <tr>
+            <th>Total Amount</th>
+            <td colSpan="3" />
+            <td><span>@(String.Format("{0:C}", Model.OrderDetails.GrandTotal))</span></td>
+        </tr>
+    </tfoot>
 </table>
 
 
