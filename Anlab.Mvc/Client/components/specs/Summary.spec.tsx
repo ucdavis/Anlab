@@ -25,9 +25,13 @@ describe('<Summary />', () => {
                                                 project={null}
                                                 focusInput={null}
                                                 quantityRef={null}
-                                                projectRef={null} />);
+                                                projectRef={null}
+                                                sampleType={null}
+                                                waterPreservativeAdded={null}
+                                                waterPreservativeInfo={null}
+                                                waterPreservativeRef={null} />);
                 const internal = target.instance();
-                expect(internal.totalCost()).toEqual(14.03);
+                expect(internal._totalCost()).toEqual(14.03);
             });
             it('should add up the cost with internal, quantity 3, no grind/filter/foreign', () => {
                 const payment = { clientType: 'uc', account: '' };
@@ -43,9 +47,13 @@ describe('<Summary />', () => {
                                                 project={null}
                                                 focusInput={null}
                                                 quantityRef={null}
-                                                projectRef={null} />);
+                                                projectRef={null}
+                                                sampleType={null}
+                                                waterPreservativeAdded={null}
+                                                waterPreservativeInfo={null}
+                                                waterPreservativeRef={null} />);
                 const internal = target.instance();
-                expect(internal.totalCost()).toEqual(20.09); //(3 * 3.03) + 11
+                expect(internal._totalCost()).toEqual(20.09); //(3 * 3.03) + 11
             });
             xit('should add up the cost with external, quantity 1, no grind/filter/foreign', () => {
                 const payment = { clientType: 'other', account: '' };
@@ -61,7 +69,11 @@ describe('<Summary />', () => {
                                                 project={null}
                                                 focusInput={null}
                                                 quantityRef={null}
-                                                projectRef={null} />);
+                                                projectRef={null}
+                                                sampleType={null}
+                                                waterPreservativeAdded={null}
+                                                waterPreservativeInfo={null}
+                                                waterPreservativeRef={null} />);
                 const internal = target.instance();
                 expect(internal.totalCost()).toEqual(18.06); //(7.06 + 11 )
             });
@@ -79,7 +91,11 @@ describe('<Summary />', () => {
                                                 project={null}
                                                 focusInput={null}
                                                 quantityRef={null}
-                                                projectRef={null} />);
+                                                projectRef={null}
+                                                sampleType={null}
+                                                waterPreservativeAdded={null}
+                                                waterPreservativeInfo={null}
+                                                waterPreservativeRef={null} />);
                 const internal = target.instance();
                 expect(internal.totalCost()).toEqual(32.18); //(3 * 7.06) + 11
             });
@@ -90,7 +106,7 @@ describe('<Summary />', () => {
         it('should render nothing if no tests are selected', () => {
             const testItems: Array<ITestItem> = [];
             const payment = { clientType: 'other', account: '' };
-            const target = mount(<Summary quantity={1} payment={payment} status="Test" canSubmit={false} hideError={true} isCreate={true} onSubmit={null} testItems={testItems} processingFee={null} project={null} focusInput={null} quantityRef={null} projectRef={null} />);
+            const target = mount(<Summary quantity={1} payment={payment} status="Test" canSubmit={false} hideError={true} isCreate={true} onSubmit={null} testItems={testItems} processingFee={null} project={null} focusInput={null} quantityRef={null} projectRef={null} sampleType={null} waterPreservativeAdded={null} waterPreservativeInfo={null} waterPreservativeRef={null} />);
             expect(target.find('div').length).toEqual(0);
         });
         it('should render something if tests are selected', () => {
@@ -99,7 +115,7 @@ describe('<Summary />', () => {
                 { analysis: '2ABC', id: '2C-ABC', internalCost: 1.01, externalCost: 4.03, internalSetupCost: 6, externalSetupCost: 7, category: 'Cat2', categories: ['Cat2'], notes: '', sop: '123' }
             ]
             const payment = { clientType: 'other', account: '' };
-            const target = mount(<Summary quantity={1} payment={payment} status="Test" canSubmit={false} hideError={true} isCreate={true} onSubmit={null} testItems={testItems} processingFee={null} project={null} focusInput={null} quantityRef={null} projectRef={null} />);
+            const target = mount(<Summary quantity={1} payment={payment} status="Test" canSubmit={false} hideError={true} isCreate={true} onSubmit={null} testItems={testItems} processingFee={null} project={null} focusInput={null} quantityRef={null} projectRef={null} sampleType={null} waterPreservativeAdded={null} waterPreservativeInfo={null} waterPreservativeRef={null} />);
             expect(target.find('div').length).toBeGreaterThan(0);
         });
     });

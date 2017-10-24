@@ -3,6 +3,7 @@ import Dialog from 'react-toolbox/lib/dialog';
 import { ITestItem, TestList } from './TestList';
 import { IPayment, PaymentSelection } from './PaymentSelection';
 import { SampleTypeSelection } from './SampleTypeSelection';
+import { SampleTypeQuestions, ISampleTypeQuestions } from './SampleTypeQuestions';
 import { Quantity } from './Quantity';
 import { Summary } from './Summary';
 import { AdditionalInfo } from './AdditionalInfo';
@@ -26,6 +27,7 @@ interface IOrderState {
     payment: IPayment;
     quantity?: number;
     sampleType: string;
+    sampleTypeQuestions: ISampleTypeQuestions;
     testItems: Array<ITestItem>;
     selectedTests: any;
     isValid: boolean;
@@ -46,6 +48,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
     private quantityRef: any;
     private projectRef: any;
+    private waterPreservativeRef: any;
 
     constructor(props) {
         super(props);
@@ -56,6 +59,14 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             payment: { clientType: 'uc', account: '' },
             quantity: null,
             sampleType: 'Soil',
+            sampleTypeQuestions: {
+                soilImported: false,
+                plantReportingBasis: "Report results on 100% dry weight basis, based on an average of 10% of the samples.",
+                waterFiltered: false,
+                waterPreservativeAdded: false,
+                waterPreservativeInfo: "",
+                waterReportedInMgL: false,
+            },
             testItems: window.App.orderData.testItems,
             selectedTests: {},
             isValid: false,
@@ -94,6 +105,14 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             initialState.additionalInfo = orderInfo.AdditionalInfo;
             initialState.additionalEmails = orderInfo.AdditionalEmails;
             initialState.sampleType = orderInfo.SampleType;
+            initialState.sampleTypeQuestions = {
+                soilImported: orderInfo.SampleTypeQuestions.SoilImported,
+                plantReportingBasis: orderInfo.SampleTypeQuestions.PlantReportingBasis,
+                waterFiltered: orderInfo.SampleTypeQuestions.WaterFiltered,
+                waterPreservativeAdded: orderInfo.SampleTypeQuestions.WaterPreservativeAdded,
+                waterPreservativeInfo: orderInfo.SampleTypeQuestions.WaterPreservativeInfo,
+                waterReportedInMgL: orderInfo.SampleTypeQuestions.WaterReportedInMgL
+            },
             initialState.orderId = window.App.OrderId;
             initialState.project = orderInfo.Project;
             initialState.commodity = orderInfo.Commodity;
@@ -120,6 +139,11 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     validate = () => {
         let valid = this.state.quantity > 0 && this.state.quantity <= 100 && !!this.state.project.trim();
         if (valid) {
+            if (this.state.sampleType === "Water" && this.state.sampleTypeQuestions.waterPreservativeAdded &&
+                (!this.state.sampleTypeQuestions.waterPreservativeInfo || !this.state.sampleTypeQuestions.waterPreservativeInfo.trim()))
+                valid = false;
+        }
+        if (valid) {
             if (this.state.payment.clientType === 'uc' && (this.state.payment.account === '' || this.state.payment.account == undefined)) {
                 valid = false;
             }
@@ -141,6 +165,14 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             }
         }, this.validate);
     }
+
+    onSampleQuestionChanged = (question: string, answer: any) => {
+        this.setState({
+            ...this.state,
+            sampleTypeQuestions: { ...this.state.sampleTypeQuestions, [question]: answer }
+        }, this.validate);
+    }
+
     onQuantityChanged = (quantity?: number) => {
         this.setState({ ...this.state, quantity }, this.validate);
     }
@@ -234,6 +266,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
             commodity: this.state.commodity,
             payment: this.state.payment,
             sampleType: this.state.sampleType,
+            sampleTypeQuestions: this.state.sampleTypeQuestions,
             selectedTests,
             clientId: this.state.clientId,
             newClientInfo: this.state.newClientInfo,
@@ -258,7 +291,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
     }
 
     render() {
-        const { payment, selectedTests, sampleType, quantity, additionalInfo, project, commodity, additionalEmails, status, clientId, newClientInfo, internalProcessingFee, externalProcessingFee, defaultEmail, additionalInfoList } = this.state;
+        const { payment, selectedTests, sampleType, sampleTypeQuestions, quantity, additionalInfo, project, commodity, additionalEmails, status, clientId, newClientInfo, internalProcessingFee, externalProcessingFee, defaultEmail, additionalInfoList } = this.state;
 
         const { filtered, selected } = this.getTests();
 
@@ -270,6 +303,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     <PaymentSelection payment={payment} onPaymentSelected={this.onPaymentSelected} />
 
                     <SampleTypeSelection sampleType={sampleType} onSampleSelected={this.onSampleSelected} />
+                    <SampleTypeQuestions waterPreservativeRef={(inputRef) => { this.waterPreservativeRef = inputRef }} sampleType={sampleType} questions={sampleTypeQuestions} handleChange={this.onSampleQuestionChanged} />
 
                     <div className="form_wrap">
                         <label className="form_header">How many samples will you require?</label>
@@ -322,7 +356,11 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
                     project={this.state.project}
                     focusInput={this.focusInput}
                     quantityRef={this.quantityRef}
-                    projectRef={this.projectRef} />
+                    projectRef={this.projectRef}
+                    sampleType={this.state.sampleType}
+                    waterPreservativeAdded={this.state.sampleTypeQuestions.waterPreservativeAdded}
+                    waterPreservativeInfo={this.state.sampleTypeQuestions.waterPreservativeInfo}
+                    waterPreservativeRef={this.waterPreservativeRef} />
                 </div>
 
                 <Dialog
