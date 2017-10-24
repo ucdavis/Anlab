@@ -51,6 +51,14 @@ artifacts:
 - path: '**/bin/**/AnlabMvc.*.nupkg'
   name: nugetweb
 
+deploy:
+- provider: NuGet
+  server: https://scruffy.caes.ucdavis.edu/nuget/packages
+  api_key:
+    secure: 0bPmdZ5IVKjvNHKPjW4pNSmM223U0YV/oQKJ/NdN/CE=
+  on:
+    branch: /master/
+
 notifications:
 - provider: Slack
   incoming_webhook: https://hooks.slack.com/services/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
