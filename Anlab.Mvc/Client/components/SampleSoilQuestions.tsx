@@ -10,11 +10,6 @@ interface ISampleSoilQuestions {
 
 export class SampleSoilQuestions extends React.Component<ISampleSoilQuestions, {}> {
 
-    constructor(props) {
-        super(props);
-
-    }
-
     onChange = () => {
         this.props.handleChange("soilImported", !this.props.questions.soilImported)
     }

@@ -20,10 +20,6 @@ interface ISampleTypeQuestionsProps {
 
 export class SampleTypeQuestions extends React.Component<ISampleTypeQuestionsProps, {}> {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <div>

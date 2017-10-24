@@ -8,10 +8,6 @@ interface IPlantQuestionProps {
 }
 export class SamplePlantQuestions extends React.Component<IPlantQuestionProps, {}> {
 
-    constructor(props) {
-        super(props);
-    }
-
     private _changeReporting = (e) => {
         this.props.handleChange("plantReportingBasis",e.target.value);
     }
