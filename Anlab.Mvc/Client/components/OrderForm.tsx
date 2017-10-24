@@ -121,7 +121,7 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         let valid = this.state.quantity > 0 && this.state.quantity <= 100 && !!this.state.project.trim();
         if (valid) {
             if (this.state.payment.clientType === 'uc' && (this.state.payment.account === '' || this.state.payment.account == undefined)) {
-                valid = false;                
+                valid = false;
             }
         }
         this.setState({ ...this.state, isValid: valid });
@@ -273,18 +273,38 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
 
                     <div className="form_wrap">
                         <label className="form_header">How many samples will you require?</label>
-                        <Quantity quantity={quantity} onQuantityChanged={this.onQuantityChanged} quantityRef={(numberRef) => { this.quantityRef = numberRef }} />
+                        <Quantity
+                            quantity={quantity}
+                            onQuantityChanged={this.onQuantityChanged}
+                            quantityRef={(numberRef) => { this.quantityRef = numberRef }}
+                        />
                     </div>
-                    <AdditionalEmails addedEmails={additionalEmails} onEmailAdded={this.onEmailAdded} onDeleteEmail={this.onDeleteEmail} defaultEmail={this.state.defaultEmail} />
+                    <AdditionalEmails
+                        addedEmails={additionalEmails}
+                        onEmailAdded={this.onEmailAdded}
+                        onDeleteEmail={this.onDeleteEmail}
+                        defaultEmail={this.state.defaultEmail}
+                    />
                     <div className="form_wrap">
                         <label className="form_header">What is the project title for this order?</label>
-                        <Project project={project} handleChange={this.handleChange} projectRef={(inputRef) => { this.projectRef = inputRef }} />
+                        <Project
+                            project={project}
+                            handleChange={this.handleChange}
+                            projectRef={(inputRef) => { this.projectRef = inputRef }}
+                        />
                         <Commodity commodity={commodity} handleChange={this.handleChange} />
                     </div>
                     <ClientIdModal clientInfo={newClientInfo} updateClient={this.updateNewClientInfo} />
                     <ClientId clientId={clientId} handleChange={this.handleChange} />
-                    <AdditionalInfo additionalInfo={additionalInfo} handleChange={this.handleChange} />
-                    <TestList items={filtered} payment={payment} selectedTests={selectedTests} onTestSelectionChanged={this.onTestSelectionChanged} additionalInfoList={additionalInfoList} updateAdditionalInfo={this.updateAdditionalInfo} />
+                    <AdditionalInfo value={additionalInfo} name="additionalInfo" handleChange={this.handleChange} />
+                    <TestList
+                        items={filtered}
+                        payment={payment}
+                        selectedTests={selectedTests}
+                        onTestSelectionChanged={this.onTestSelectionChanged}
+                        additionalInfoList={additionalInfoList}
+                        updateAdditionalInfo={this.updateAdditionalInfo}
+                    />
 
                 </div>
                 <div className="stickyfoot shadowed" data-spy="affix" data-offset-bottom="0">
