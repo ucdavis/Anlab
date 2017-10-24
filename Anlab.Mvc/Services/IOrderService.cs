@@ -84,6 +84,7 @@ namespace AnlabMvc.Services
                     AdditionalInfoPrompt = i.AdditionalInfoPrompt,
                     Sop = p.Sop,
                     RequestOrder = i.RequestOrder,
+                    LabOrder = i.LabOrder,
                 }).ToList();
         }
 
@@ -98,11 +99,11 @@ namespace AnlabMvc.Services
             var allTests = order.GetTestDetails();
             // TODO: Do we really want to match on ID, or Code, or some combination?
             var selectedTestIds = orderDetails.SelectedTests.Select(t => t.Id);
-            var tests = PopulateSelectedTestsItemModel(selectedTestIds, allTests);
+            var tests = PopulateSelectedTestsItemModel(selectedTestIds, allTests).OrderBy(a => a.LabOrder);
 
             var calcualtedTests = new List<TestDetails>();
 
-            foreach (var test in orderDetails.SelectedTests)
+            foreach (var test in tests)
             {
                 var dbTest = tests.Single(t => t.Id == test.Id);
 
