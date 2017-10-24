@@ -137,8 +137,12 @@ export default class OrderForm extends React.Component<undefined, IOrderState> {
         this.state = { ...initialState };
     }
     validate = () => {
-        let valid = this.state.quantity > 0 && this.state.quantity <= 100 && !!this.state.project.trim()
-            && (this.state.sampleType !== "Water" || !this.state.sampleTypeQuestions.waterPreservativeAdded || !!this.state.sampleTypeQuestions.waterPreservativeInfo.trim());
+        let valid = this.state.quantity > 0 && this.state.quantity <= 100 && !!this.state.project.trim();
+        if (valid) {
+            if (this.state.sampleType === "Water" && this.state.sampleTypeQuestions.waterPreservativeAdded &&
+                (!this.state.sampleTypeQuestions.waterPreservativeInfo || !this.state.sampleTypeQuestions.waterPreservativeInfo.trim()))
+                valid = false;
+        }
         if (valid) {
             if (this.state.payment.clientType === 'uc' && (this.state.payment.account === '' || this.state.payment.account == undefined)) {
                 valid = false;                
