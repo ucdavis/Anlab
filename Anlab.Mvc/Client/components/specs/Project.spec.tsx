@@ -29,7 +29,7 @@ describe('<Project />', () => {
         const internal = target.instance();
 
         internal.state.internalValue = 'test';
-        internal.onBlur();
+        internal._onBlur();
 
         expect(handleChange).toHaveBeenCalled();
         expect(handleChange).toHaveBeenCalledWith('project','test');
@@ -39,10 +39,10 @@ describe('<Project />', () => {
         const target = shallow(<Project project={' '} handleChange={null} projectRef={null}/>);
         const internal = target.instance();
 
-        internal.onChange(' ');
+        internal._onChange(' ');
         expect(internal.state.error).not.toBeNull();
 
-        internal.onChange('x');
+        internal._onChange('x');
         expect(internal.state.error).toBeNull();
     });
 
@@ -50,7 +50,7 @@ describe('<Project />', () => {
         const target = shallow(<Project project={' '} handleChange={null} projectRef={null}/>);
         const internal = target.instance();
 
-        internal.onChange('');
+        internal._onChange('');
 
         expect(internal.state.error).not.toBeNull();
         expect(internal.state.error).toBe("The project Title is required");
@@ -60,7 +60,7 @@ describe('<Project />', () => {
         const target = shallow(<Project project={' '} handleChange={null} projectRef={null}/>);
         const internal = target.instance();
 
-        internal.onChange('   ');
+        internal._onChange('   ');
 
         expect(internal.state.error).not.toBeNull();
         expect(internal.state.error).toBe("The project Title is required");
