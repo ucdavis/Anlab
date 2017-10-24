@@ -58,7 +58,7 @@ describe('<AdditionalInfo />', () => {
         const internal = target.instance();
 
         internal.state.internalValue = 'test';
-        internal.onBlur();
+        internal._onBlur();
 
         expect(handleChange).toHaveBeenCalled();
         expect(handleChange).toHaveBeenCalledWith('additionalInfo', 'test');

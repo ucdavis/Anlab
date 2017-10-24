@@ -44,7 +44,7 @@ describe('<PaymentSelection/>', () => {
             expect(target.find('Input').length).toEqual(1);
 
             const internal = target.instance();
-            internal.handleAccountChange('xxx');
+            internal._handleAccountChange('xxx');
 
             expect(onPaymentSelected).toHaveBeenCalled();
             expect(onPaymentSelected).toHaveBeenCalledWith({ clientType: 'uc', account: 'xxx' });
@@ -220,7 +220,7 @@ describe('<PaymentSelection/>', () => {
         expect(target.find('Input').length).toEqual(1);
 
         const internal = target.instance();
-        internal.handleChange('other');
+        internal._handleChange('other');
 
         expect(onPaymentSelected).toHaveBeenCalled();
         expect(onPaymentSelected).toHaveBeenCalledWith({ clientType: 'other', account: '123' });
