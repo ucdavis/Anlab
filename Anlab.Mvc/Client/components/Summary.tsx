@@ -18,6 +18,11 @@ interface ISummaryProps {
     focusInput: Function;
     quantityRef: any;
     projectRef: any;
+
+    sampleType: string;
+    waterPreservativeAdded: boolean;
+    waterPreservativeInfo: string;
+    waterPreservativeRef: any;
 }
 
 const numberFormatOptions = {
@@ -147,8 +152,9 @@ export class Summary extends React.Component<ISummaryProps, {}> {
         if (this.props.hideError) {
           return;
         }
-
-        if (this.props.quantity < 1) {
+        if (this.props.sampleType == "Water" && this.props.waterPreservativeAdded && !this.props.waterPreservativeInfo.trim()) {
+            this.props.focusInput(this.props.waterPreservativeRef);
+        } else if (this.props.quantity < 1) {
             this.props.focusInput(this.props.quantityRef);
         } else if (!this.props.project) {
             this.props.focusInput(this.props.projectRef);

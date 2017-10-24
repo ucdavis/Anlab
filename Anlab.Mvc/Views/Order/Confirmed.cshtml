@@ -36,6 +36,12 @@
         <strong># of Samples</strong>
         <span>@Model.OrderDetails.Quantity</span>
     </div>
+    @if (!String.IsNullOrWhiteSpace(Model.OrderDetails.AdditionalInfo))
+    {
+    <div class="form-group">
+        <strong>Additional Info</strong>
+        <pre>@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</pre>
+    </div>}
 
     <div class="form-group">
         <strong>Payment Method</strong>

@@ -9,6 +9,7 @@ namespace Anlab.Core.Models
     {
         public int Quantity { get; set; }
         public string SampleType { get; set; }
+        public SampleTypeQuestions SampleTypeQuestions { get; set; }
         [DataType(DataType.MultilineText)]
         public string AdditionalInfo { get; set; }
         public Dictionary<string,string> AdditionalInfoList { get; set; } = new Dictionary<string, string>();
