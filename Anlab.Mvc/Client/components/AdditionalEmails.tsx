@@ -7,7 +7,7 @@ import Input from "react-toolbox/lib/input";
 
 import { validateEmail } from "../util/email";
 
-interface IAdditionalEmailsProps {
+export interface IAdditionalEmailsProps {
     addedEmails: string[];
     onEmailAdded: (email: string) => void;
     onDeleteEmail: (email: string) => void;
