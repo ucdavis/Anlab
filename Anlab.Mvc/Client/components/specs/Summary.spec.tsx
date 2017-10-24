@@ -31,7 +31,7 @@ describe('<Summary />', () => {
                                                 waterPreservativeInfo={null}
                                                 waterPreservativeRef={null} />);
                 const internal = target.instance();
-                expect(internal.totalCost()).toEqual(14.03);
+                expect(internal._totalCost()).toEqual(14.03);
             });
             it('should add up the cost with internal, quantity 3, no grind/filter/foreign', () => {
                 const payment = { clientType: 'uc', account: '' };
@@ -53,7 +53,7 @@ describe('<Summary />', () => {
                                                 waterPreservativeInfo={null}
                                                 waterPreservativeRef={null} />);
                 const internal = target.instance();
-                expect(internal.totalCost()).toEqual(20.09); //(3 * 3.03) + 11
+                expect(internal._totalCost()).toEqual(20.09); //(3 * 3.03) + 11
             });
             xit('should add up the cost with external, quantity 1, no grind/filter/foreign', () => {
                 const payment = { clientType: 'other', account: '' };
