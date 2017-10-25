@@ -30,7 +30,7 @@
             <div>Current Total: $@Model.OrderDetails.GrandTotal</div>
         }
         <div>Adjustment Amount: $<span id="adjustAmt">@Model.OrderDetails.AdjustmentAmount</span></div>
-        <input type="hidden" class="form-control" id="adjustmentAmount" name="AdjustmentAmount" value="0"/>
+        <input type="hidden" class="form-control" id="adjustmentAmount" name="AdjustmentAmount" value="@Model.OrderDetails.AdjustmentAmount"/>
     </div>
 
 
