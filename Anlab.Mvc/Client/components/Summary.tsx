@@ -83,7 +83,7 @@ export default class Summary extends React.PureComponent<ISummaryProps, {}> {
                                 </tr>
                                 <tr>
                                     <td colSpan={4} />
-                                    <td><NumberFormat value={this._totalCost()} {...numberFormatOptions} /></td>
+                                    <td><NumberFormat id="totalCost" value={this._totalCost()} {...numberFormatOptions} /></td>
                                 </tr>
                             </tfoot>
                         </table>
