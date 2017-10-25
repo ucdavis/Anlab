@@ -21,5 +21,7 @@ namespace Anlab.Core.Models
         public bool Public { get; set; }
         public string AdditionalInfoPrompt { get; set; }        
         public string Sop { get; set; }
+        public int RequestOrder { get; set; }
+        public int LabOrder { get; set; }
     }
 }
