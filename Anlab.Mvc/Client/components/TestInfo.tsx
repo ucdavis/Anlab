@@ -17,7 +17,7 @@ interface ITestInfoState {
     active: boolean;
 }
 
-export class TestInfo extends React.Component<ITestInfoProps, ITestInfoState> {
+export class TestInfo extends React.PureComponent<ITestInfoProps, ITestInfoState> {
 
     constructor(props) {
         super(props);

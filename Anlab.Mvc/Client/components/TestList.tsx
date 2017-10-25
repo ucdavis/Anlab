@@ -31,15 +31,15 @@ export interface ITestListProps {
     items: ITestItem[];
     additionalInfoList: object;
 
-    payment: IPayment;
-    selectedTests: object;
+    clientType: string;
+    selectedCodes: object;
     onTestSelectionChanged: (test: ITestItem, selected: boolean) => void;
     updateAdditionalInfo: (key: string, value: string) => void;
 }
 
 const showdownConverter = new showdown.Converter();
 
-export class TestList extends React.Component<ITestListProps, ITestListState> {
+export class TestList extends React.PureComponent<ITestListProps, ITestListState> {
     constructor(props) {
         super(props);
         this.state = {
@@ -112,8 +112,8 @@ export class TestList extends React.Component<ITestListProps, ITestListState> {
     }
 
     private _renderRow = (item) => {
-        const selected = !!this.props.selectedTests[item.id];
-        const priceDisplay = (this.props.payment.clientType === "uc" ? item.internalCost : item.externalCost);
+        const selected = !!this.props.selectedCodes[item.id];
+        const priceDisplay = (this.props.clientType === "uc" ? item.internalCost : item.externalCost);
         const url = `/analysis/${item.category}/${item.sop}`;
         return (
             <tr key={item.id} >
