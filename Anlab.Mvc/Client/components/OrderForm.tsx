@@ -13,23 +13,31 @@ import { Project } from "./Project";
 import { Quantity } from "./Quantity";
 import { ISampleTypeQuestions, SampleTypeQuestions } from "./SampleTypeQuestions";
 import { SampleTypeSelection } from "./SampleTypeSelection";
-import { Summary } from "./Summary";
+import Summary from "./Summary";
 import { ITestItem, TestList } from "./TestList";
 
 declare var window: any;
 declare var $: any;
 
-interface IOrderState {
+export interface IOrderFormProps {
+    testItems: ITestItem[];
+    defaultAccount: string;
+    defaultEmail: string;
+    defaultClientId: string;
+}
+
+interface IOrderFormState {
     orderId?: number;
     additionalInfo: string;
     project: string;
+    filteredTests: ITestItem[];
     commodity: string;
     payment: IPayment;
     quantity?: number;
     sampleType: string;
     sampleTypeQuestions: ISampleTypeQuestions;
-    testItems: ITestItem[];
-    selectedTests: any;
+    selectedCodes: object;
+    selectedTests: ITestItem[];
     isValid: boolean;
     isSubmitting: boolean;
     additionalEmails: string[];
@@ -40,11 +48,10 @@ interface IOrderState {
     newClientInfo: INewClientInfo;
     internalProcessingFee: number;
     externalProcessingFee: number;
-    defaultEmail: string;
     additionalInfoList: object;
 }
 
-export default class OrderForm extends React.Component<{}, IOrderState> {
+export default class OrderForm extends React.Component<IOrderFormProps, IOrderFormState> {
 
     private quantityRef: any;
     private projectRef: any;
@@ -53,21 +60,21 @@ export default class OrderForm extends React.Component<{}, IOrderState> {
     constructor(props) {
         super(props);
 
-        const initialState = {
+        const initialState: IOrderFormState = {
             additionalEmails: [],
             additionalInfo: "",
             additionalInfoList: {},
-            clientId: window.App.defaultClientId,
+            clientId: this.props.defaultClientId,
             commodity: "",
-            defaultEmail: window.App.defaultEmail,
             errorMessage: "",
             externalProcessingFee: window.App.orderData.externalProcessingFee,
+            filteredTests: this.props.testItems.filter((item) => item.categories.indexOf("Soil") !== -1),
             internalProcessingFee: window.App.orderData.internalProcessingFee,
             isErrorActive: false,
             isSubmitting: false,
             isValid: false,
             newClientInfo: {
-                email: window.App.defaultEmail,
+                email: this.props.defaultEmail,
                 employer: "",
                 name: "",
                 phoneNumber: "",
@@ -85,13 +92,13 @@ export default class OrderForm extends React.Component<{}, IOrderState> {
                 waterPreservativeInfo: "",
                 waterReportedInMgL: false,
             },
-            selectedTests: {},
+            selectedCodes: {},
+            selectedTests: [],
             status: "",
-            testItems: window.App.orderData.testItems,
         };
 
-        if (window.App.defaultAccount) {
-            initialState.payment.account = window.App.defaultAccount;
+        if (this.props.defaultAccount) {
+            initialState.payment.account = this.props.defaultAccount;
             initialState.payment.clientType = "uc";
         } else {
             initialState.payment.clientType = "other";
@@ -128,23 +135,21 @@ export default class OrderForm extends React.Component<{}, IOrderState> {
             };
             initialState.internalProcessingFee = window.App.orderData.internalProcessingFee;
             initialState.externalProcessingFee = window.App.orderData.externalProcessingFee;
-            initialState.defaultEmail = window.App.defaultEmail;
             initialState.additionalInfoList = orderInfo.AdditionalInfoList;
 
-            orderInfo.SelectedTests.forEach((test) => { initialState.selectedTests[test.Id] = true; });
+            orderInfo.SelectedTests.forEach((test) => { initialState.selectedCodes[test.Id] = true; });
         }
 
         this.state = { ...initialState };
     }
 
     public render() {
+        const { defaultEmail } = this.props;
         const {
             payment, selectedTests, sampleType, sampleTypeQuestions, quantity, additionalInfo, project,
             commodity, additionalEmails, status, clientId, newClientInfo, internalProcessingFee, externalProcessingFee,
-            defaultEmail, additionalInfoList,
+            additionalInfoList, filteredTests, selectedCodes,
         } = this.state;
-
-        const { filtered, selected } = this._getTests();
 
         const isUcClient = this.state.payment.clientType === "uc";
         const processingFee = isUcClient ? this.state.internalProcessingFee : this.state.externalProcessingFee;
@@ -170,9 +175,9 @@ export default class OrderForm extends React.Component<{}, IOrderState> {
                     </div>
                     <AdditionalEmails
                         addedEmails={additionalEmails}
+                        defaultEmail={defaultEmail}
                         onEmailAdded={this._onEmailAdded}
                         onDeleteEmail={this._onDeleteEmail}
-                        defaultEmail={this.state.defaultEmail}
                     />
                     <div className="form_wrap">
                         <label className="form_header">What is the project title for this order?</label>
@@ -187,9 +192,9 @@ export default class OrderForm extends React.Component<{}, IOrderState> {
                     <ClientId clientId={clientId} handleChange={this._handleChange} />
                     <AdditionalInfo value={additionalInfo} name="additionalInfo" handleChange={this._handleChange} />
                     <TestList
-                        items={filtered}
-                        payment={payment}
-                        selectedTests={selectedTests}
+                        items={filteredTests}
+                        selectedCodes={selectedCodes}
+                        clientType={payment.clientType}
                         onTestSelectionChanged={this._onTestSelectionChanged}
                         additionalInfoList={additionalInfoList}
                         updateAdditionalInfo={this._updateAdditionalInfo}
@@ -200,9 +205,9 @@ export default class OrderForm extends React.Component<{}, IOrderState> {
                         isCreate={this.state.orderId === null}
                         canSubmit={this.state.isValid && !this.state.isSubmitting}
                         hideError={this.state.isValid || this.state.isSubmitting}
-                        testItems={selected}
+                        selectedTests={selectedTests}
                         quantity={quantity}
-                        payment={payment}
+                        clientType={payment.clientType}
                         onSubmit={this._onSubmit}
                         status={status}
                         processingFee={processingFee}
@@ -267,16 +272,20 @@ export default class OrderForm extends React.Component<{}, IOrderState> {
     }
 
     private _onSampleSelected = (sampleType: string) => {
-        this.setState({ sampleType }, this._validate);
+        const filteredTests = this.props.testItems.filter((item) => item.categories.indexOf(sampleType) !== -1);
+        const selectedTests = this.state.filteredTests.filter((t) => !!this.state.selectedCodes[t.id]);
+
+        this.setState({ filteredTests, selectedTests, sampleType }, this._validate);
     }
 
     private _onTestSelectionChanged = (test: ITestItem, selected: boolean) => {
-        this.setState({
-            selectedTests: {
-                ...this.state.selectedTests,
-                [test.id]: selected,
-            },
-        }, this._validate);
+        const selectedCodes = {
+            ...this.state.selectedCodes,
+            [test.id]: selected,
+        };
+        const selectedTests = this.state.filteredTests.filter((t) => !!selectedCodes[t.id]);
+
+        this.setState({ selectedCodes, selectedTests }, this._validate);
     }
 
     private _onSampleQuestionChanged = (question: string, answer: any) => {
@@ -321,10 +330,12 @@ export default class OrderForm extends React.Component<{}, IOrderState> {
     }
 
     private _updateAdditionalInfo = (id: string, value: string) => {
-        const tests = this.state.additionalInfoList;
-        tests[id] = value;
-        this.forceUpdate();
-
+        this.setState({
+            additionalInfoList: {
+                ...this.state.additionalInfoList,
+                [id]: value,
+            },
+        }, this._validate);
     }
 
     private _handleChange = (name, value) => {
@@ -339,15 +350,6 @@ export default class OrderForm extends React.Component<{}, IOrderState> {
         { label: "Got It!", onClick: this._handleDialogToggle },
     ];
 
-    private _getTests = () => {
-        const { testItems, payment, selectedTests, sampleType, quantity } = this.state;
-        const filtered = testItems.filter((item) => item.categories.indexOf(sampleType) !== -1);
-        return {
-            filtered,
-            selected: filtered.filter((item) => !!selectedTests[item.id]),
-        };
-    }
-
     private _onSubmit = () => {
         // lock for duplicate submits
         if (this.state.isSubmitting) {
@@ -355,17 +357,15 @@ export default class OrderForm extends React.Component<{}, IOrderState> {
         }
         this.setState({ isSubmitting: true });
 
-        // find selected tests and associated additional info, map to dictionary
-        const selectedTests = this._getTests().selected;
-        const selectedCodes = selectedTests.map((t) => t.id);
-        let additionalInfoList = Object.keys(this.state.additionalInfoList).map((key) => {
-            if (selectedCodes.indexOf(key) > -1) {
-                return { key: key, value: this.state.additionalInfoList[key] };
-            } else {
-                return null;
-            }
-        });
-        additionalInfoList = additionalInfoList.filter((x) => !!x);
+        // find selected tests and associated additional info, map to dictionary array
+        const selectedCodes = Object.keys(this.state.selectedCodes).filter((k) => !!k);
+
+        const selectedTests = this.state.filteredTests
+            .filter((t) => selectedCodes.indexOf(t.id) > -1);
+
+        const additionalInfoList = Object.keys(this.state.additionalInfoList)
+            .filter((k) => selectedCodes.indexOf(k) > -1)
+            .map((k) => ({ key: k, value: this.state.additionalInfoList[k] }));
 
         // build order
         const order = {
@@ -405,6 +405,5 @@ export default class OrderForm extends React.Component<{}, IOrderState> {
             that.setState({ isSubmitting: false, isErrorActive: true, errorMessage: "An internal error occured..." });
         });
     }
-
 
 }
