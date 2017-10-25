@@ -16,7 +16,6 @@ import { SampleTypeSelection } from "./SampleTypeSelection";
 import Summary from "./Summary";
 import { ITestItem, TestList } from "./TestList";
 
-declare var window: any;
 declare var $: any;
 
 export interface IOrderFormProps {
@@ -24,10 +23,13 @@ export interface IOrderFormProps {
     defaultAccount: string;
     defaultEmail: string;
     defaultClientId: string;
+    orderInfo: any;
+    internalProcessingFee: number;
+    externalProcessingFee: number;
+    orderId?: number;
 }
 
 interface IOrderFormState {
-    orderId?: number;
     additionalInfo: string;
     project: string;
     filteredTests: ITestItem[];
@@ -46,8 +48,6 @@ interface IOrderFormState {
     status: string;
     clientId: string;
     newClientInfo: INewClientInfo;
-    internalProcessingFee: number;
-    externalProcessingFee: number;
     additionalInfoList: object;
 }
 
@@ -67,9 +67,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             clientId: this.props.defaultClientId,
             commodity: "",
             errorMessage: "",
-            externalProcessingFee: window.App.orderData.externalProcessingFee,
             filteredTests: this.props.testItems.filter((item) => item.categories.indexOf("Soil") !== -1),
-            internalProcessingFee: window.App.orderData.internalProcessingFee,
             isErrorActive: false,
             isSubmitting: false,
             isValid: false,
@@ -79,7 +77,6 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                 name: "",
                 phoneNumber: "",
             },
-            orderId: null,
             payment: { clientType: "uc", account: "" },
             project: "",
             quantity: null,
@@ -104,9 +101,8 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             initialState.payment.clientType = "other";
         }
 
-        if (window.App.orderData.order) {
-            // load up existing order
-            const orderInfo = JSON.parse(window.App.orderData.order.jsonDetails);
+        const { orderInfo } = this.props;
+        if (orderInfo) {
 
             initialState.quantity = orderInfo.Quantity;
             initialState.additionalInfo = orderInfo.AdditionalInfo;
@@ -120,7 +116,6 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                 waterPreservativeInfo: orderInfo.SampleTypeQuestions.WaterPreservativeInfo,
                 waterReportedInMgL: orderInfo.SampleTypeQuestions.WaterReportedInMgL,
             },
-            initialState.orderId = window.App.OrderId;
             initialState.project = orderInfo.Project;
             initialState.commodity = orderInfo.Commodity;
             initialState.isValid = true;
@@ -133,8 +128,6 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                 name: orderInfo.NewClientInfo.Name,
                 phoneNumber: orderInfo.NewClientInfo.PhoneNumber,
             };
-            initialState.internalProcessingFee = window.App.orderData.internalProcessingFee;
-            initialState.externalProcessingFee = window.App.orderData.externalProcessingFee;
             initialState.additionalInfoList = orderInfo.AdditionalInfoList;
 
             orderInfo.SelectedTests.forEach((test) => { initialState.selectedCodes[test.Id] = true; });
@@ -144,15 +137,15 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
     }
 
     public render() {
-        const { defaultEmail } = this.props;
+        const { defaultEmail, internalProcessingFee, externalProcessingFee } = this.props;
         const {
             payment, selectedTests, sampleType, sampleTypeQuestions, quantity, additionalInfo, project,
-            commodity, additionalEmails, status, clientId, newClientInfo, internalProcessingFee, externalProcessingFee,
+            commodity, additionalEmails, status, clientId, newClientInfo,
             additionalInfoList, filteredTests, selectedCodes,
         } = this.state;
 
         const isUcClient = this.state.payment.clientType === "uc";
-        const processingFee = isUcClient ? this.state.internalProcessingFee : this.state.externalProcessingFee;
+        const processingFee = isUcClient ? internalProcessingFee : externalProcessingFee;
 
         return (
             <div>
@@ -202,7 +195,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                 </div>
                 <div className="stickyfoot shadowed" data-spy="affix" data-offset-bottom="0">
                     <Summary
-                        isCreate={this.state.orderId === null}
+                        isCreate={this.props.orderId === null}
                         canSubmit={this.state.isValid && !this.state.isSubmitting}
                         hideError={this.state.isValid || this.state.isSubmitting}
                         selectedTests={selectedTests}
@@ -363,6 +356,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         const selectedTests = this.state.filteredTests
             .filter((t) => selectedCodes.indexOf(t.id) > -1);
 
+        // return in dictionary format
         const additionalInfoList = Object.keys(this.state.additionalInfoList)
             .filter((k) => selectedCodes.indexOf(k) > -1)
             .map((k) => ({ key: k, value: this.state.additionalInfoList[k] }));
@@ -371,13 +365,13 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         const order = {
             additionalEmails: this.state.additionalEmails,
             additionalInfo: this.state.additionalInfo,
-            additionalInfoList, // return in dictionary format
+            additionalInfoList,
             clientId: this.state.clientId,
             commodity: this.state.commodity,
-            externalProcessingFee: this.state.externalProcessingFee,
-            internalProcessingFee: this.state.internalProcessingFee,
+            externalProcessingFee: this.props.externalProcessingFee,
+            internalProcessingFee: this.props.internalProcessingFee,
             newClientInfo: this.state.newClientInfo,
-            orderId: this.state.orderId,
+            orderId: this.props.orderId,
             payment: this.state.payment,
             project: this.state.project,
             quantity: this.state.quantity,

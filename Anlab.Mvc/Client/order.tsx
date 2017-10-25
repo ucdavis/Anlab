@@ -4,13 +4,21 @@ import OrderForm, { IOrderFormProps } from "./components/OrderForm";
 
 declare var window: any;
 
-// build test list form window
+// build defaults and test list from window
 const props = {
-    testItems: window.App.orderData.testItems,
     defaultAccount: window.App.defaultAccount,
-    defaultEmail: window.App.defaultEmail,
     defaultClientId: window.App.defaultClientId,
+    defaultEmail: window.App.defaultEmail,
+    testItems: window.App.orderData.testItems,
+    internalProcessingFee: window.App.orderData.internalProcessingFee,
+    externalProcessingFee: window.App.orderData.externalProcessingFee,
+    orderId: window.App.orderId,
 } as IOrderFormProps;
+
+// existing order info
+if (window.App.orderData.order) {
+    props.orderInfo = JSON.parse(window.App.orderData.order.jsonDetails);
+}
 
 function renderApp() {
     ReactDOM.render(
