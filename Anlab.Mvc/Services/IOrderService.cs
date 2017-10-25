@@ -101,16 +101,14 @@ namespace AnlabMvc.Services
             var selectedTestIds = orderDetails.SelectedTests.Select(t => t.Id);
             var tests = PopulateSelectedTestsItemModel(selectedTestIds, allTests).OrderBy(a => a.LabOrder);
 
-            var calcualtedTests = new List<TestDetails>();
+            var calculatedTests = new List<TestDetails>();
 
             foreach (var test in tests)
             {
-                var dbTest = tests.Single(t => t.Id == test.Id);
-
-                CalculateTest(orderDetails, dbTest, calcualtedTests);
+                CalculateTest(orderDetails, test, calculatedTests);
             }
 
-            return calcualtedTests.ToArray();
+            return calculatedTests.ToArray();
         }
 
         public async Task UpdateTestsAndPrices(Order orderToUpdate)
