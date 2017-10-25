@@ -68,6 +68,7 @@ namespace AnlabMvc.Services
         {
             return (from i in items
                 join p in prices on i.Id equals p.Id
+                orderby i.RequestOrder
                 select new TestItemModel
                 {
                     Analysis = i.Analysis,
@@ -82,6 +83,8 @@ namespace AnlabMvc.Services
                     Public = i.Public,
                     AdditionalInfoPrompt = i.AdditionalInfoPrompt,
                     Sop = p.Sop,
+                    RequestOrder = i.RequestOrder,
+                    LabOrder = i.LabOrder,
                 }).ToList();
         }
 
@@ -96,18 +99,16 @@ namespace AnlabMvc.Services
             var allTests = order.GetTestDetails();
             // TODO: Do we really want to match on ID, or Code, or some combination?
             var selectedTestIds = orderDetails.SelectedTests.Select(t => t.Id);
-            var tests = PopulateSelectedTestsItemModel(selectedTestIds, allTests);
+            var tests = PopulateSelectedTestsItemModel(selectedTestIds, allTests).OrderBy(a => a.LabOrder);
 
-            var calcualtedTests = new List<TestDetails>();
+            var calculatedTests = new List<TestDetails>();
 
-            foreach (var test in orderDetails.SelectedTests)
+            foreach (var test in tests)
             {
-                var dbTest = tests.Single(t => t.Id == test.Id);
-
-                CalculateTest(orderDetails, dbTest, calcualtedTests);
+                CalculateTest(orderDetails, test, calculatedTests);
             }
 
-            return calcualtedTests.ToArray();
+            return calculatedTests.ToArray();
         }
 
         public async Task UpdateTestsAndPrices(Order orderToUpdate)
