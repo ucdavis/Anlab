@@ -26,6 +26,16 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
         };
     }
 
+    public shouldComponentUpdate(nextProps: IPaymentSelectionProps, nextState: IPaymentSelectionState) {
+        return (
+            nextProps.payment.clientType !== this.props.payment.clientType ||
+            nextProps.payment.account !== this.props.payment.account ||
+            nextProps.onPaymentSelected !== this.props.onPaymentSelected ||
+            nextState.accountName !== this.state.accountName ||
+            nextState.error !== this.state.error
+        );
+    }
+
     public render() {
         const activeDiv = "anlab_form_style col-5 active-border active-text active-bg";
         const inactiveDiv = "anlab_form_style col-5";
