@@ -20,13 +20,17 @@
             <div>Results File Identifier: @Model.Order.ResultsFileIdentifier</div>
         }
         <span>Add Lab Comments</span>
-        <textarea class="form-control" name="LabComments"></textarea>
+        <textarea class="form-control" name="LabComments">@Model.OrderDetails.LabComments</textarea>
         <span>Adjust Final Total:</span>
         <input type="hidden" class="form-control" id="prevTotal" value="@Model.OrderDetails.Total"/>
-        <input type="text" class="form-control" id="GrandTotal" value="@Model.OrderDetails.Total" autocomplete="off"/>
-        <div>Current Total: $@Model.OrderDetails.Total</div>
+        <input type="text" class="form-control" id="GrandTotal" value="@Model.OrderDetails.GrandTotal" autocomplete="off"/>
+        <div>Original Total: $@Model.OrderDetails.Total</div>
+        @if (Model.OrderDetails.AdjustmentAmount != 0)
+        {
+            <div>Current Total: $@Model.OrderDetails.GrandTotal</div>
+        }
         <div>Adjustment Amount: $<span id="adjustAmt">@Model.OrderDetails.AdjustmentAmount</span></div>
-        <input type="hidden" class="form-control" id="adjustmentAmount" name="AdjustmentAmount" value="0"/>
+        <input type="hidden" class="form-control" id="adjustmentAmount" name="AdjustmentAmount" value="@Model.OrderDetails.AdjustmentAmount"/>
     </div>
 
 
