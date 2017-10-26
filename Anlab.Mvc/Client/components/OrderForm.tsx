@@ -201,28 +201,29 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                         updateAdditionalInfo={this._updateAdditionalInfo}
                     />
                 </div>
-                <div className="stickyfoot shadowed" data-spy="affix" data-offset-bottom="0">
-                    <Summary
-                        isCreate={this.props.orderId === null}
-                        canSubmit={this.state.isValid && !this.state.isSubmitting}
-                        hideError={this.state.isValid || this.state.isSubmitting}
-                        selectedTests={selectedTests}
-                        quantity={quantity}
-                        clientType={payment.clientType}
-                        onSubmit={this._onSubmit}
-                        status={status}
-                        processingFee={processingFee}
-                        project={this.state.project}
-                        focusInput={this._focusInput}
-                        quantityRef={this.quantityRef}
-                        projectRef={this.projectRef}
-                        sampleType={this.state.sampleType}
-                        waterPreservativeAdded={this.state.sampleTypeQuestions.waterPreservativeAdded}
-                        waterPreservativeInfo={this.state.sampleTypeQuestions.waterPreservativeInfo}
-                        waterPreservativeRef={this.waterPreservativeRef}
-                    />
+                <div className="stickyfoot" data-spy="affix" data-offset-bottom="0">
+                    <div className="summary-container shadowed" >
+                        <Summary
+                            isCreate={this.props.orderId === null}
+                            canSubmit={this.state.isValid && !this.state.isSubmitting}
+                            hideError={this.state.isValid || this.state.isSubmitting}
+                            selectedTests={selectedTests}
+                            quantity={quantity}
+                            clientType={payment.clientType}
+                            onSubmit={this._onSubmit}
+                            status={status}
+                            processingFee={processingFee}
+                            project={this.state.project}
+                            focusInput={this._focusInput}
+                            quantityRef={this.quantityRef}
+                            projectRef={this.projectRef}
+                            sampleType={this.state.sampleType}
+                            waterPreservativeAdded={this.state.sampleTypeQuestions.waterPreservativeAdded}
+                            waterPreservativeInfo={this.state.sampleTypeQuestions.waterPreservativeInfo}
+                            waterPreservativeRef={this.waterPreservativeRef}
+                        />
+                    </div>
                 </div>
-
                 <Dialog
                     actions={this._dialogActions}
                     active={this.state.isErrorActive}
