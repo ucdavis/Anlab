@@ -1,6 +1,6 @@
 ﻿import "isomorphic-fetch";
 import * as React from "react";
-import Input from "react-toolbox/lib/input";
+import Input from "./ui/input/input";
 
 export interface IPayment {
     clientType: string;
@@ -24,6 +24,16 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
             accountName: null,
             error: "",
         };
+    }
+
+    public shouldComponentUpdate(nextProps: IPaymentSelectionProps, nextState: IPaymentSelectionState) {
+        return (
+            nextProps.payment.clientType !== this.props.payment.clientType ||
+            nextProps.payment.account !== this.props.payment.account ||
+            nextProps.onPaymentSelected !== this.props.onPaymentSelected ||
+            nextState.accountName !== this.state.accountName ||
+            nextState.error !== this.state.error
+        );
     }
 
     public render() {
@@ -61,10 +71,9 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
             return (
                 <div>
                     <Input
-                      type="text"
                       label="UC Account"
-                      error={this.state.error}
                       value={this.props.payment.account}
+                      error={this.state.error}
                       maxLength={50}
                       onChange={this._handleAccountChange}
                       onBlur={this._lookupAccount}
@@ -106,7 +115,8 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
         this.props.onPaymentSelected({ ...this.props.payment, clientType });
     }
 
-    private _handleAccountChange = (account: string) => {
+    private _handleAccountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const account = e.target.value;
         this._validateAccount(account, this.props.payment.clientType);
         this.props.onPaymentSelected({ ...this.props.payment, account });
     }

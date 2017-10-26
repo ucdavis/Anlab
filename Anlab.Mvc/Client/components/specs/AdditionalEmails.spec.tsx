@@ -1,14 +1,19 @@
 ﻿import { mount, render, shallow } from "enzyme";
 import * as React from "react";
-import { AdditionalEmails } from "../AdditionalEmails";
+import { AdditionalEmails, IAdditionalEmailsProps } from "../AdditionalEmails";
 
 describe("<AdditionalEmails />", () => {
+    const defaultProps = {
+        addedEmails: [],
+        defaultEmail: "",
+        onDeleteEmail: null,
+        onEmailAdded: null,
+    } as IAdditionalEmailsProps;
+
     it("should render a default email", () => {
         const target = mount(
             <AdditionalEmails
-                addedEmails={[]}
-                onDeleteEmail={null}
-                onEmailAdded={null}
+                {...defaultProps}
                 defaultEmail={"default@example.com"}
             />);
 
@@ -18,10 +23,8 @@ describe("<AdditionalEmails />", () => {
     it("should render existing emails", () => {
         const target = mount(
             <AdditionalEmails
+                {...defaultProps}
                 addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]}
-                onDeleteEmail={null}
-                onEmailAdded={null}
-                defaultEmail={null}
             />);
 
         expect(target).toContainReact(<span>test1@testy.com</span>);
@@ -30,13 +33,7 @@ describe("<AdditionalEmails />", () => {
     });
 
     it("should set state email value on change", () => {
-        const target = mount(
-            <AdditionalEmails
-                addedEmails={[]}
-                onDeleteEmail={null}
-                onEmailAdded={null}
-                defaultEmail={null}
-            />);
+        const target = mount(<AdditionalEmails {...defaultProps} />);
         target.setState({ toggle: true });
         expect(target.state().email).toBe("");
 
@@ -50,10 +47,8 @@ describe("<AdditionalEmails />", () => {
         const onEmailAdded = jasmine.createSpy("onEmailAdded");
         const target = shallow(
             <AdditionalEmails
-                addedEmails={[]}
-                onDeleteEmail={null}
+                {...defaultProps}
                 onEmailAdded={onEmailAdded}
-                defaultEmail={null}
             />);
         target.setState({ toggle: true, email: "test@testy.com" });
 
@@ -70,10 +65,8 @@ describe("<AdditionalEmails />", () => {
         const onEmailAdded = jasmine.createSpy("onEmailAdded");
         const target = shallow(
             <AdditionalEmails
-                addedEmails={[]}
-                onDeleteEmail={null}
+                {...defaultProps}
                 onEmailAdded={onEmailAdded}
-                defaultEmail={null}
             />);
         target.setState({ toggle: true, email: "TEST@testy.com" });
 
@@ -90,10 +83,8 @@ describe("<AdditionalEmails />", () => {
         const onEmailAdded = jasmine.createSpy("onEmailAdded");
         const target = shallow(
             <AdditionalEmails
-                addedEmails={[]}
-                onDeleteEmail={null}
+                {...defaultProps}
                 onEmailAdded={onEmailAdded}
-                defaultEmail={null}
             />);
         target.setState({ toggle: true, email: "test@invlid@invalid.com" });
 
@@ -111,10 +102,9 @@ describe("<AdditionalEmails />", () => {
         const onEmailAdded = jasmine.createSpy("onEmailAdded");
         const target = shallow(
             <AdditionalEmails
+                {...defaultProps}
                 addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]}
-                onDeleteEmail={null}
                 onEmailAdded={onEmailAdded}
-                defaultEmail={null}
             />);
         target.setState({ toggle: true, email: "test2@testy.com" });
 
@@ -131,10 +121,9 @@ describe("<AdditionalEmails />", () => {
         const onEmailAdded = jasmine.createSpy("onEmailAdded");
         const target = shallow(
             <AdditionalEmails
+                {...defaultProps}
                 addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]}
-                onDeleteEmail={null}
                 onEmailAdded={onEmailAdded}
-                defaultEmail={null}
             />);
         target.setState({ toggle: true, email: "TEST1@testy.com" });
 

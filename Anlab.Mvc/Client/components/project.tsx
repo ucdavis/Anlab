@@ -1,10 +1,10 @@
 ﻿import * as React from "react";
-import Input from "react-toolbox/lib/input";
+import Input from "./ui/input/input";
 
 interface IProjectInputProps {
     project: string;
     handleChange: (key: string, value: string) => void;
-    projectRef: any;
+    projectRef: (element: HTMLInputElement) => void;
 }
 
 interface IProjectInputState {
@@ -26,23 +26,23 @@ export class Project extends React.Component<IProjectInputProps, IProjectInputSt
         return (
             <div>
                 <Input
-                  ref={this.props.projectRef}
-                  type="text"
-                  onBlur={this._onBlur}
-                  error={this.state.error}
-                  required={true}
-                  maxLength={256}
-                  value={this.state.internalValue}
-                  onChange={this._onChange}
-                  label="Project Title"
+                    label="Project Title"
+                    value={this.state.internalValue}
+                    error={this.state.error}
+                    required={true}
+                    maxLength={256}
+                    onBlur={this._onBlur}
+                    onChange={this._onChange}
+                    inputRef={this.props.projectRef}
                 />
             </div>
           );
     }
 
-    private _onChange = (v: string) => {
-        this.setState({ internalValue: v });
-        this._validate(v);
+    private _onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        this.setState({ internalValue: value });
+        this._validate(value);
     }
 
     private _onBlur = () => {

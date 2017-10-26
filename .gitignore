@@ -245,3 +245,6 @@ Anlab.Mvc/anlab.db
 
 # rider
 .idea/
+
+# Visual Studio SQL Projects
+*.jfm

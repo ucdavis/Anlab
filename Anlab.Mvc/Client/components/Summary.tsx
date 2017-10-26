@@ -4,10 +4,10 @@ import {Button} from "react-toolbox/lib/button";
 import { IPayment } from "./PaymentSelection";
 import { ITestItem } from "./TestList";
 
-interface ISummaryProps {
-    testItems: ITestItem[];
+export interface ISummaryProps {
+    selectedTests: ITestItem[];
     quantity: number;
-    payment: IPayment;
+    clientType: string;
     onSubmit: Function;
     canSubmit: boolean;
     isCreate: boolean;
@@ -32,10 +32,10 @@ const numberFormatOptions = {
   thousandSeparator: true,
 };
 
-export class Summary extends React.Component<ISummaryProps, {}> {
+export default class Summary extends React.PureComponent<ISummaryProps, {}> {
 
     public render() {
-      if (this.props.testItems.length === 0) {
+      if (this.props.selectedTests.length === 0) {
           return null;
       }
 
@@ -83,13 +83,18 @@ export class Summary extends React.Component<ISummaryProps, {}> {
                                 </tr>
                                 <tr>
                                     <td colSpan={4} />
-                                    <td><NumberFormat value={this._totalCost()} {...numberFormatOptions} /></td>
+                                    <td><NumberFormat id="totalCost" value={this._totalCost()} {...numberFormatOptions} /></td>
                                 </tr>
                             </tfoot>
                         </table>
                         {this.props.canSubmit ? <div className="alert alert-info">{infoText}</div> : null}
                         {!this.props.hideError ? <div className="alert alert-danger">{errorText}</div> : null}
-                        <Button raised={true} primary={true} disabled={!this.props.canSubmit} onClick={this.props.onSubmit}>
+                        <Button
+                            raised={true}
+                            primary={true}
+                            disabled={!this.props.canSubmit}
+                            onClick={this.props.onSubmit}
+                        >
                             {saveText}
                         </Button>
                   </div>
@@ -128,9 +133,9 @@ export class Summary extends React.Component<ISummaryProps, {}> {
     }
 
     private _renderTests = () => {
-        const isUcClient = this.props.payment.clientType === "uc";
+        const isUcClient = this.props.clientType === "uc";
 
-        return this.props.testItems.map((item) => {
+        return this.props.selectedTests.map((item) => {
             const price = isUcClient ? item.internalCost : item.externalCost;
             const setupCost = isUcClient ? item.internalSetupCost : item.externalSetupCost;
             const perTest = price * this.props.quantity;
@@ -152,7 +157,9 @@ export class Summary extends React.Component<ISummaryProps, {}> {
         if (this.props.hideError) {
           return;
         }
-        if (this.props.sampleType == "Water" && this.props.waterPreservativeAdded && !this.props.waterPreservativeInfo.trim()) {
+        if (this.props.sampleType === "Water"
+            && this.props.waterPreservativeAdded
+            && !this.props.waterPreservativeInfo.trim()) {
             this.props.focusInput(this.props.waterPreservativeRef);
         } else if (this.props.quantity < 1) {
             this.props.focusInput(this.props.quantityRef);
@@ -166,9 +173,9 @@ export class Summary extends React.Component<ISummaryProps, {}> {
             return 0;
         }
 
-        const isUcClient = this.props.payment.clientType === "uc";
+        const isUcClient = this.props.clientType === "uc";
 
-        const total = this.props.testItems.reduce((prev, item) => {
+        const total = this.props.selectedTests.reduce((prev, item) => {
             const setup = isUcClient ? item.internalSetupCost : item.externalSetupCost;
             const price = isUcClient ? item.internalCost : item.externalCost;
             const perTest = price * this.props.quantity;

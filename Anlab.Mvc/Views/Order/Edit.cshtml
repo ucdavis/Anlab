@@ -1,4 +1,4 @@
-﻿@model AnlabMvc.Models.Order.OrderEditModel
+@model AnlabMvc.Models.Order.OrderEditModel
 @using Anlab.Core.Domain
 
 @{
@@ -12,7 +12,7 @@
     <script>
         App = {};
         App.orderData = @Json.Serialize(Model);
-        App.OrderId = @Model.Order.Id;
+        App.orderId = @Model.Order.Id;
         App.defaultEmail = @Json.Serialize(Model.DefaultEmail);
     </script>
     

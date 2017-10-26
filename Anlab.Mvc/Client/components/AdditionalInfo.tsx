@@ -1,43 +1,31 @@
 import * as React from "react";
 import Input from "react-toolbox/lib/input";
 
-interface IAdditionalInfoProps {
-    additionalInfo: string;
+export interface IAdditionalInfoProps {
     handleChange: (key: string, value: string) => void;
+    name: string;
+    value: string;
 }
 
-interface IAdditionalInfoState {
-    internalValue: string;
-}
-
-export class AdditionalInfo extends React.Component<IAdditionalInfoProps, IAdditionalInfoState> {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            internalValue: this.props.additionalInfo,
-        };
-    }
-
+export class AdditionalInfo extends React.Component<IAdditionalInfoProps, {}> {
     public render() {
         return (
-            <Input
-              type="text"
-              multiline={true}
-              label="Additional Information"
-              maxLength={2000}
-              value={this.state.internalValue}
-              onChange={this._onChange}
-              onBlur={this._onBlur}
-            />
+            <div className="form-group">
+                <label htmlFor="additionalInfo">Additional Info</label>
+                <textarea
+                    className="form-control"
+                    label="Additional Information"
+                    name={this.props.name}
+                    value={this.props.value}
+                    onChange={this._onChange}
+                    maxLength={2000}
+                    rows={4}
+                />
+            </div>
         );
     }
 
-    private _onChange = (v: string) => {
-        this.setState({ internalValue: v });
-    }
-
-    private _onBlur = () => {
-        this.props.handleChange("additionalInfo", this.state.internalValue);
+    private _onChange = (e) => {
+        this.props.handleChange("additionalInfo", e.target.value);
     }
 }
