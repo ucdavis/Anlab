@@ -121,9 +121,9 @@
                 }
             </td>
             <td>
-                @if(Model.HideLabDetails)
+                @if (Model.HideLabDetails)
                 {
-                    <a href="/analysis/@temp.Category/@temp.Sop" target="_blank">@temp.Sop</a>
+                    <a asp-controller="Analysis" asp-action="@temp.Category" asp-route-id="@temp.Sop" target="_blank">@temp.Sop</a>
                 }
                 else
                 {
