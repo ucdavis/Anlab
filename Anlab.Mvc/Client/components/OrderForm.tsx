@@ -150,28 +150,11 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         return (
             <div>
                 <div>
+                    <ClientIdModal clientInfo={newClientInfo} updateClient={this._updateNewClientInfo} />
+                    <ClientId clientId={clientId} handleChange={this._handleChange} />
+
                     <PaymentSelection payment={payment} onPaymentSelected={this._onPaymentSelected} />
-                    <SampleTypeSelection sampleType={sampleType} onSampleSelected={this._onSampleSelected} />
-                    <SampleTypeQuestions
-                        waterPreservativeRef={(inputRef) => { this.waterPreservativeRef = inputRef; }}
-                        sampleType={sampleType}
-                        questions={sampleTypeQuestions}
-                        handleChange={this._onSampleQuestionChanged}
-                    />
-                    <div className="form_wrap">
-                        <label className="form_header">How many samples will you require?</label>
-                        <Quantity
-                            quantity={quantity}
-                            onQuantityChanged={this._onQuantityChanged}
-                            quantityRef={(numberRef) => { this.quantityRef = numberRef; }}
-                        />
-                    </div>
-                    <AdditionalEmails
-                        addedEmails={additionalEmails}
-                        defaultEmail={defaultEmail}
-                        onEmailAdded={this._onEmailAdded}
-                        onDeleteEmail={this._onDeleteEmail}
-                    />
+
                     <div className="form_wrap">
                         <label className="form_header">What is the project title for this order?</label>
                         <Project
@@ -181,8 +164,32 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                         />
                         <Commodity commodity={commodity} handleChange={this._handleChange} />
                     </div>
-                    <ClientIdModal clientInfo={newClientInfo} updateClient={this._updateNewClientInfo} />
-                    <ClientId clientId={clientId} handleChange={this._handleChange} />
+
+                    <AdditionalEmails
+                        addedEmails={additionalEmails}
+                        defaultEmail={defaultEmail}
+                        onEmailAdded={this._onEmailAdded}
+                        onDeleteEmail={this._onDeleteEmail}
+                    />
+
+                    <div className="form_wrap">
+                        <label className="form_header">How many samples will you require?</label>
+                        <Quantity
+                            quantity={quantity}
+                            onQuantityChanged={this._onQuantityChanged}
+                            quantityRef={(numberRef) => { this.quantityRef = numberRef; }}
+                        />
+                    </div>
+
+                    <SampleTypeSelection sampleType={sampleType} onSampleSelected={this._onSampleSelected} />
+                    <SampleTypeQuestions
+                        waterPreservativeRef={(inputRef) => { this.waterPreservativeRef = inputRef; }}
+                        sampleType={sampleType}
+                        questions={sampleTypeQuestions}
+                        handleChange={this._onSampleQuestionChanged}
+                    />
+
+
                     <AdditionalInfo value={additionalInfo} name="additionalInfo" handleChange={this._handleChange} />
                     <TestList
                         items={filteredTests}
@@ -399,5 +406,4 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             that.setState({ isSubmitting: false, isErrorActive: true, errorMessage: "An internal error occured..." });
         });
     }
-
 }
