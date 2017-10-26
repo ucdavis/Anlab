@@ -1,5 +1,5 @@
 ﻿import * as React from "react";
-import Input from "react-toolbox/lib/input";
+import Input from "./ui/input/input";
 
 import NumberFormat from "react-number-format";
 import { groupBy } from "../util/arrayHelpers";
@@ -53,7 +53,6 @@ export class TestList extends React.PureComponent<ITestListProps, ITestListState
           <h2 className="form_header margin-bottom-zero">Which tests would you like to run?</h2>
             <div>
                 <Input
-                    type="search"
                     label="Search"
                     name="name"
                     value={this.state.query}
@@ -162,7 +161,7 @@ export class TestList extends React.PureComponent<ITestListProps, ITestListState
         );
     }
 
-    private _onQueryChange = (value: string) => {
-        this.setState({ query: value });
+    private _onQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({ query: e.target.value });
     }
 }
