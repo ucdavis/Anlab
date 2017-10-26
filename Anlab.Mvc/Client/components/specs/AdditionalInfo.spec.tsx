@@ -12,37 +12,46 @@ describe("<AdditionalInfo />", () => {
 
     it("should render an input", () => {
         const target = mount(<AdditionalInfo {...defaultProps} />);
-        expect(target).toContainReact(<input />);
+
+        expect(target.find("textarea").length).toEqual(1);
+
+        target.unmount();
     });
 
     it("should have a label", () => {
         const target = mount(<AdditionalInfo {...defaultProps} />);
-        expect(target).toContainReact(<label>Additional Information</label>);
+
+        expect(target.find("label").length).toEqual(1);
+
+        target.unmount();
     });
 
     it("should have a value of Test1", () => {
-        const handleChange = jasmine.createSpy("handleChange");
-        const target = mount(<AdditionalInfo {...defaultProps} />);
-        const input = target.find("Input");
-        expect(input.prop("value")).toEqual("Test1");
+        const target = mount(<AdditionalInfo {...defaultProps} value="Test1" />);
+
+        expect(target.find("textarea").prop("value")).toEqual("Test1");
+
+        target.unmount();
     });
 
     it("should have a value of Test2", () => {
-        const handleChange = jasmine.createSpy("handleChange");
-        const target = mount(<AdditionalInfo {...defaultProps} />);
-        const input = target.find("Input");
-        expect(input.prop("value")).toEqual("Test2");
+        const target = mount(<AdditionalInfo {...defaultProps} value="Test2" />);
+
+        expect(target.find("textarea").prop("value")).toEqual("Test2");
+
+        target.unmount();
     });
 
-    it("should call handleChange with state.internalValue on blur event", () => {
+    it("should call handleChange with state.internalValue on change event", () => {
         const handleChange = jasmine.createSpy("handleChange");
-        const target = shallow(<AdditionalInfo {...defaultProps} handleChange={handleChange}/>);
-        const internal = target.instance();
+        const target = mount(<AdditionalInfo {...defaultProps} handleChange={handleChange}/>);
+        target.setState({ internalValue: "tes" });
 
-        internal.state.internalValue = 'test';
-        internal._onBlur();
+        target.find("textarea").simulate("change", { target: { value: "test" } });
 
         expect(handleChange).toHaveBeenCalled();
         expect(handleChange).toHaveBeenCalledWith("additionalInfo", "test");
+
+        target.unmount();
     });
 });
