@@ -1,4 +1,4 @@
-﻿@model AnlabMvc.Models.Analysis.AnalysisMethodViewModel
+@model AnlabMvc.Models.Analysis.AnalysisMethodViewModel
 
 @{
     ViewBag.Title = @Model.AnalysisMethod.Title;
@@ -15,7 +15,7 @@
     <ul>
         @foreach (var method in Model.AnalysesInCategory)
         {
-            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@Model.AnalysisMethod.Category" asp-route-id="@method.Id">@method.Title</a></li>
+            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@Model.AnalysisMethod.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
         }
     </ul>
 </div>

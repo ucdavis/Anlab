@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
@@ -36,8 +36,8 @@ namespace AnlabMvc.Controllers
             var analysis = await _dbContext.AnalysisMethods.SingleOrDefaultAsync(x => x.Id == id);
 
             if (analysis == null) return NotFound();
-            
-            var content = Markdown.ToHtml(analysis.Content);
+            var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+            var content = Markdown.ToHtml(analysis.Content, pipeline);
             
             // get everything else in that category
             var analysesInCategory = await _dbContext.AnalysisMethods.Where(x => x.Category == analysis.Category)

@@ -1,4 +1,4 @@
-﻿@model List<AnalysisMethod>
+@model List<AnalysisMethod>
 
 @{
     ViewBag.Title = "Methods of Analysis";
@@ -49,7 +49,7 @@
                     <ul>
                         @foreach (var method in Model.Where(x => x.Id >= 600 && x.Id < 700))
                         {
-                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Title</a></li>
+                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
                         }
                     </ul>
                 </div>
@@ -67,7 +67,7 @@
                     <ul>
                         @foreach (var method in Model.Where(x => x.Id >= 700 && x.Id < 800))
                         {
-                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Title</a></li>
+                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
                         }
                     </ul>
                 </div>
@@ -88,7 +88,7 @@
                     <ul>
                         @foreach (var method in Model.Where(x => x.Category == "Plant"))
                         {
-                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Title</a></li>
+                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
                         }
                     </ul>
                 </div>
@@ -112,21 +112,21 @@
                     <ul>
                         @foreach (var method in Model.Where(x => x.Id >= 200 && x.Id < 300))
                         {
-                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Title</a></li>
+                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
                         }
                     </ul>
                     <h3><a name="soil-fertility"></a>Soil Fertility</h3>
                     <ul>
                         @foreach (var method in Model.Where(x => x.Id >= 300 && x.Id < 400))
                         {
-                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Title</a></li>
+                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
                         }
                     </ul>
                     <h3><a name="physio-chemical"></a>Physio-Chemical</h3>
                     <ul>
                         @foreach (var method in Model.Where(x => x.Id >= 400 && x.Id < 500))
                         {
-                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Title</a></li>
+                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
                         }
                     </ul>
                 </div>
@@ -145,7 +145,7 @@
                     <ul>
                         @foreach (var method in Model.Where(x => x.Id >= 950 && x.Id < 1000))
                         {
-                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Title</a></li>
+                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
                         }
                     </ul>
                 </div>
@@ -165,7 +165,7 @@
                     <ul>
                         @foreach (var method in Model.Where(x => x.Id >= 800 && x.Id < 900))
                         {
-                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Title</a></li>
+                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
                         }
                     </ul>
                 </div>
@@ -181,7 +181,7 @@
                     <ul>
                         @foreach (var method in Model.Where(x => x.Id == 905))
                         {
-                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Title</a></li>
+                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
                         }
                     </ul>
                 </div>
