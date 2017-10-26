@@ -131,6 +131,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             initialState.additionalInfoList = orderInfo.AdditionalInfoList;
 
             orderInfo.SelectedTests.forEach((test) => { initialState.selectedCodes[test.Id] = true; });
+            initialState.selectedTests = initialState.filteredTests.filter((t) => !!initialState.selectedCodes[t.id]);
         }
 
         this.state = { ...initialState };
@@ -323,10 +324,9 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
     }
 
     private _focusInput = (component: any) => {
-        const node = ReactDOM.findDOMNode(component).querySelector("input");
-        node.focus();
-        node.blur();
-        node.focus();
+        component.focus();
+        component.blur();
+        component.focus();
     }
 
     private _updateAdditionalInfo = (id: string, value: string) => {
