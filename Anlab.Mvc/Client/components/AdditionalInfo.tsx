@@ -10,15 +10,16 @@ export interface IAdditionalInfoProps {
 export class AdditionalInfo extends React.Component<IAdditionalInfoProps, {}> {
     public render() {
         return (
-            <div className="form-control">
+            <div className="form-group">
                 <label htmlFor="additionalInfo">Additional Info</label>
                 <textarea
-                  label="Additional Information"
-                  name={this.props.name}
-                  value={this.props.value}
-                  onChange={this._onChange}
-                  maxLength={2000}
-                  rows={4}
+                    className="form-control"
+                    label="Additional Information"
+                    name={this.props.name}
+                    value={this.props.value}
+                    onChange={this._onChange}
+                    maxLength={2000}
+                    rows={4}
                 />
             </div>
         );
