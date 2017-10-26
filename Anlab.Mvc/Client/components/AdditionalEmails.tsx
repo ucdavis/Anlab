@@ -3,7 +3,6 @@
 // ui
 import { Button, IconButton } from "react-toolbox/lib/button";
 import Chip from "react-toolbox/lib/chip";
-import Input from "react-toolbox/lib/input";
 
 import { validateEmail } from "../util/email";
 
