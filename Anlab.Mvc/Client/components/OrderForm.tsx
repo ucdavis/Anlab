@@ -324,10 +324,9 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
     }
 
     private _focusInput = (component: any) => {
-        const node = ReactDOM.findDOMNode(component).querySelector("input");
-        node.focus();
-        node.blur();
-        node.focus();
+        component.focus();
+        component.blur();
+        component.focus();
     }
 
     private _updateAdditionalInfo = (id: string, value: string) => {
