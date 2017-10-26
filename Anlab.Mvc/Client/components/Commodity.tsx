@@ -1,5 +1,5 @@
 ﻿import * as React from "react";
-import Input from "react-toolbox/lib/input";
+import Input from "./ui/input/input";
 
 interface ICommodityProps {
     commodity: string;
@@ -10,7 +10,7 @@ interface ICommodityState {
     internalValue: string;
 }
 
-export class Commodity extends React.Component<ICommodityProps, any> {
+export class Commodity extends React.Component<ICommodityProps, ICommodityState> {
     constructor(props) {
         super(props);
 
@@ -22,7 +22,6 @@ export class Commodity extends React.Component<ICommodityProps, any> {
     public render() {
         return (
             <Input
-              type="text"
               label="Commodity"
               value={this.state.internalValue}
               onChange={this._onChange}
@@ -31,8 +30,8 @@ export class Commodity extends React.Component<ICommodityProps, any> {
         );
     }
 
-    private _onChange = (v: string) => {
-        this.setState({ internalValue: v });
+    private _onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({ internalValue: e.target.value });
     }
 
     private _onBlur = () => {

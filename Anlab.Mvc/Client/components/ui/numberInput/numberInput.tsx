@@ -1,16 +1,17 @@
-import * as React from 'react';
-import Input from 'react-toolbox/lib/input';
+import * as React from "react";
+import Input from "../input/input";
 
 interface INumberInputProps {
     name?: string;
     label?: string;
     value?: number;
-    onChanged?: Function;
     min?: number;
     max?: number;
     integer?: boolean;
     required?: boolean;
-    numberRef?: any;
+    onBlur?: () => void;
+    onChange?: (value: number) => void;
+    inputRef?: (element: HTMLInputElement) => void;
 }
 
 interface INumberInputState {
@@ -21,30 +22,45 @@ interface INumberInputState {
 export class NumberInput extends React.Component<INumberInputProps, INumberInputState> {
 
     public static defaultProps: Partial<INumberInputProps> = {
-        integer: false
+        integer: false,
     };
 
     constructor(props) {
         super(props);
 
         this.state = {
+            error: null,
             internalValue: this.transformValue(this.props.value),
-            error: null
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({ internalValue: this.transformValue(nextProps.value) } as INumberInputState);
+    public componentWillReceiveProps(nextProps) {
+        this.setState({ internalValue: this.transformValue(nextProps.value) });
     }
 
-    transformValue = (value: Number) => {
-        return value ? String(value) : '';
+    public render() {
+        return (
+            <Input
+                label={this.props.label}
+                name={this.props.name}
+                value={this.state.internalValue}
+                error={this.state.error}
+                required={this.props.required}
+                onChange={this.onChange}
+                onBlur={this.onBlur}
+                inputRef={this.props.inputRef}
+            />
+        );
     }
 
-    validate = (v: string) => {
+    private transformValue = (value: number) => {
+        return value ? String(value) : "";
+    }
+
+    private validate = (v: string) => {
         let error = null;
         // if it's not a number, return error
-        let value = Number(v);
+        const value = Number(v);
 
         if (isNaN(value)) {
             error = "Must be a number.";
@@ -61,17 +77,18 @@ export class NumberInput extends React.Component<INumberInputProps, INumberInput
         this.setState({ error } as INumberInputState);
     }
 
-    onChange = (v: string) => {
-
-        this.setState({ internalValue: v } as INumberInputState);
-
-        this.validate(v);
-
+    private onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        this.setState({ internalValue: value } as INumberInputState);
+        this.validate(value);
     }
-    onBlur = () => {
+
+    private onBlur = (event: React.FocusEvent<HTMLInputElement>) => {
         let value = Number(this.state.internalValue);
 
-        if (isNaN(value)) value = null;
+        if (isNaN(value)) {
+            value = null;
+        }
 
         // force integer
         if (this.props.integer && !isNaN(value)) {
@@ -80,26 +97,11 @@ export class NumberInput extends React.Component<INumberInputProps, INumberInput
 
         // push possible changes, clear error
         this.setState({
-          internalValue: this.transformValue(value)
-        } as INumberInputState);
+          internalValue: this.transformValue(value),
+        });
 
         this.validate(this.state.internalValue);
 
-        this.props.onChanged(value);
-    }
-    render() {
-        return (
-            <Input
-                ref={this.props.numberRef}
-                type='text'
-                label={this.props.label}
-                name={this.props.name}
-                error={this.state.error}
-                value={this.state.internalValue}
-                onChange={this.onChange}
-                onBlur={this.onBlur}
-                required={this.props.required}
-            />
-        );
+        this.props.onChange(value);
     }
 }

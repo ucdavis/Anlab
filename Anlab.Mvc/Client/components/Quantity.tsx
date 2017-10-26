@@ -1,25 +1,25 @@
 ﻿import * as React from "react";
-import { NumberInput } from "./numberInput/numberInput";
+import { NumberInput } from "./ui/numberInput/numberInput";
 
 interface IQuantityProps {
     quantity?: number;
-    onQuantityChanged: () => void;
-    quantityRef: any;
+    onQuantityChanged: (value: number) => void;
+    quantityRef: (element: HTMLInputElement) => void;
 }
 
 export class Quantity extends React.Component<IQuantityProps, {}> {
     public render() {
         return (
             <NumberInput
-                numberRef={this.props.quantityRef}
                 name="quantity"
                 label="Quantity"
                 value={this.props.quantity}
-                onChanged={this.props.onQuantityChanged}
+                onChange={this.props.onQuantityChanged}
                 integer={true}
                 min={1}
                 max={100}
                 required={true}
+                inputRef={this.props.quantityRef}
             />
         );
     }
