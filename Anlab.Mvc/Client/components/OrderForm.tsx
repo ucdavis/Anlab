@@ -274,7 +274,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
 
     private _onSampleSelected = (sampleType: string) => {
         const filteredTests = this.props.testItems.filter((item) => item.categories.indexOf(sampleType) !== -1);
-        const selectedTests = this.state.filteredTests.filter((t) => !!this.state.selectedCodes[t.id]);
+        const selectedTests = filteredTests.filter((t) => !!this.state.selectedCodes[t.id]);
 
         this.setState({ filteredTests, selectedTests, sampleType }, this._validate);
     }
