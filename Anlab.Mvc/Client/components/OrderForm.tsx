@@ -131,6 +131,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             initialState.additionalInfoList = orderInfo.AdditionalInfoList;
 
             orderInfo.SelectedTests.forEach((test) => { initialState.selectedCodes[test.Id] = true; });
+            initialState.selectedTests = initialState.filteredTests.filter((t) => !!initialState.selectedCodes[t.id]);
         }
 
         this.state = { ...initialState };
