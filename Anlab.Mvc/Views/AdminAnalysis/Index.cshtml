@@ -1,4 +1,4 @@
-﻿@using Humanizer
+@using Humanizer
 @model IEnumerable<AnalysisMethod>
 
 @{
@@ -26,7 +26,7 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Category) <select name="category" id="category">
                         <option value="All">All</option>
-                        @foreach (var category in TestCategories.All)
+                        @foreach (var category in AnalysisCategories.All)
                         {
                             <option value="@category">@category</option>
                         }

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Anlab.Core.Domain
@@ -20,5 +20,16 @@ namespace Anlab.Core.Domain
         // Markdown content
         [Required]
         public string Content { get; set; }
+    }
+
+    public static class AnalysisCategories
+    {
+        public static string Soils = "Soils";
+        public static string Plant = "Plant";
+        public static string Water = "Water";
+        public static string Feed = "Feed";
+        public static string OliveOil = "Olive Oil";
+
+        public static readonly string[] All = { Soils, Plant, Water, Feed, OliveOil };
     }
 }
