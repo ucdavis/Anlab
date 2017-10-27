@@ -1,4 +1,4 @@
-﻿import * as React from 'react';
+import * as React from 'react';
 import { shallow, mount, render } from 'enzyme';
 import { PaymentSelection } from '../PaymentSelection';
 
@@ -24,9 +24,10 @@ describe('<PaymentSelection/>', () => {
             const target = mount(<PaymentSelection payment={payment} onPaymentSelected={null} />);
             const input = target.find('Input').at(0);
 
-            it('should have a type of text', () => {
-                expect(input.prop('type')).toEqual('text');
+            it('should have a type of error', () => {
+                expect(input.prop('error')).toEqual('');
             });
+
             it('should have a label', () => {
                 expect(input.prop('label')).toEqual('UC Account');
             });
