@@ -59,7 +59,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
 
         fetch(`/order/LookupClientId?id=${this.state.internalValue}`, { credentials: "same-origin" })
             .then((response) => {
-                if (response === null) {
+                if (response === null || response.status !== 200) {
                   throw new Error("The client id you entered could not be found");
                 }
                 return response;
