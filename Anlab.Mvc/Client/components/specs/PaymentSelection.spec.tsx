@@ -47,9 +47,6 @@ describe('<PaymentSelection/>', () => {
             const inp = target.find('input');
             inp.simulate('change', { target: { value: 'xxx'} });
 
-            //const internal = target.instance();
-            //internal._handleAccountChange('xxx');
-
             expect(onPaymentSelected).toHaveBeenCalled();
             expect(onPaymentSelected).toHaveBeenCalledWith({ clientType: 'uc', account: 'xxx' });
         });
