@@ -44,8 +44,8 @@ describe('<PaymentSelection/>', () => {
             const target = mount(<PaymentSelection payment={payment} onPaymentSelected={onPaymentSelected} />);
             expect(target.find('Input').length).toEqual(1);
 
-            const internal = target.instance();
-            internal._handleAccountChange('xxx');
+            const inp = target.find('input');
+            inp.simulate('change', { target: { value: 'xxx'} });
 
             expect(onPaymentSelected).toHaveBeenCalled();
             expect(onPaymentSelected).toHaveBeenCalledWith({ clientType: 'uc', account: 'xxx' });

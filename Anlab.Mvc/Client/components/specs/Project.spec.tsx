@@ -1,4 +1,4 @@
-﻿import * as React from 'react';
+import * as React from 'react';
 import { shallow, mount, render } from 'enzyme';
 import { Project } from '../Project';
 
@@ -36,31 +36,36 @@ describe('<Project />', () => {
     });
 
     it('should clear error on good value', () => {
-        const target = shallow(<Project project={' '} handleChange={null} projectRef={null}/>);
+        const target = mount(<Project project={' '} handleChange={null} projectRef={null}/>);
         const internal = target.instance();
 
-        internal._onChange(' ');
+        const inp = target.find('input');
+        
+        inp.simulate('change', { target: { value: ' ' } });  
         expect(internal.state.error).not.toBeNull();
 
-        internal._onChange('x');
+        inp.simulate('change', { target: { value: 'x' } });
         expect(internal.state.error).toBeNull();
     });
 
     it('should set error empty string value', () => {
-        const target = shallow(<Project project={' '} handleChange={null} projectRef={null}/>);
+        const target = mount(<Project project={' '} handleChange={null} projectRef={null}/>);
         const internal = target.instance();
 
-        internal._onChange('');
+        const inp = target.find('input');
+
+        inp.simulate('change', { target: { value: ' ' } }); 
 
         expect(internal.state.error).not.toBeNull();
         expect(internal.state.error).toBe("The project Title is required");
     });
 
     it('should set error spaces string value', () => {
-        const target = shallow(<Project project={' '} handleChange={null} projectRef={null}/>);
+        const target = mount(<Project project={' '} handleChange={null} projectRef={null}/>);
         const internal = target.instance();
+        const inp = target.find('input');
 
-        internal._onChange('   ');
+        inp.simulate('change', { target: { value: '   ' } }); 
 
         expect(internal.state.error).not.toBeNull();
         expect(internal.state.error).toBe("The project Title is required");
