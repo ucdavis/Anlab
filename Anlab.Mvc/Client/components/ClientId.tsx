@@ -68,8 +68,8 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
             .then((response) => {
                 this.setState({ clientName: response.name,  error: null });
             })
-            .catch((error: Error) => {
-                this.setState({ clientName: null, error: error.message });
+            .catch(error => {
+                this.setState({ clientName: null, error: "The client id you entered could not be found" });
             });
     }
 }
