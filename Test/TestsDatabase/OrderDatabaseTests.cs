@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Shouldly;
 using System.Linq;
@@ -146,6 +146,7 @@ namespace Test.TestsDatabase
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)450)]"
             }));
             expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>()));
+            expectedFields.Add(new NameAndType("IsDeleted", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("JsonDetails", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("KfsTrackingNumber", "System.String", new List<string>
             {
