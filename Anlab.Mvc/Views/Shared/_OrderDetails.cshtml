@@ -1,4 +1,5 @@
 @using Anlab.Core.Models
+@using AnlabMvc.Models.Roles
 @using Humanizer
 @model AnlabMvc.Models.Order.OrderReviewModel
 
@@ -16,12 +17,25 @@
             <h4>Quantity</h4>
             <p>@Model.OrderDetails.Quantity</p>
         </div>
+        <div class="form-group no-margin detail-bumper">
+            <h4>Status</h4>
+            <p>@Model.Order.Status</p>
+        </div>
     </div>
     @if (!string.IsNullOrWhiteSpace(Model.Order.RequestNum)) {
         <div class="row no-margin">
             <div class="form-group no-margin">
                 <h4>Request Num</h4>
                 <p>@Model.Order.RequestNum</p>
+            </div>
+        </div>
+    }
+    @if (User != null && User.IsInRole(RoleCodes.Admin) )
+    {
+        <div class="row no-margin">
+            <div class="form-group no-margin">
+                <h4>Override Order</h4>
+                <p><a asp-controller="Lab" asp-action="OverrideOrder" asp-route-id="@Model.Order.Id">Override</a></p>
             </div>
         </div>
     }
