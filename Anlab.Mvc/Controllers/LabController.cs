@@ -357,7 +357,7 @@ namespace AnlabMvc.Controllers
             orderToUpdate.Paid = order.Paid;
             orderToUpdate.Status = order.Status;
             orderToUpdate.IsDeleted = order.IsDeleted;
-            if (orderToUpdate.IsDeleted)
+            if (order.IsDeleted)
             {
                 ErrorMessage = "Order deleted!!!";
             }
@@ -365,8 +365,12 @@ namespace AnlabMvc.Controllers
             await _dbContext.SaveChangesAsync();
 
             Message = "Order Updated";
-
-            return RedirectToAction("OverrideOrder", id);
+            if (order.IsDeleted)
+            {
+                return RedirectToAction("Orders");
+            }
+            
+            return RedirectToAction("Details", id);
         }
 
         [Authorize(Roles = RoleCodes.Admin)]
