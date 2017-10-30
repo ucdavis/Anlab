@@ -370,7 +370,7 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Orders");
             }
             
-            return RedirectToAction("Details", id);
+            return RedirectToAction("Details", new{id});
         }
 
         [Authorize(Roles = RoleCodes.Admin)]
