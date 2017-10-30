@@ -150,14 +150,4 @@
 </table>
 
 
-@if (ViewBag.Public != null && ViewBag.Public)
-{
-    if (Model.Order.Status == OrderStatusCodes.Finalized && !Model.Order.Paid)
-    {
-        if (Model.Order.PaymentType == PaymentTypeCodes.CreditCard)
-        {
-            <a asp-controller="Payment" asp-action="Pay" asp-route-id="@Model.Order.ShareIdentifier" class="btn btn-group-lg"><i class="fa fa-credit-card-alt"> Pay</i> </a>
-        }
 
-    }
-}
