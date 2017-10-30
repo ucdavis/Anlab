@@ -69,7 +69,7 @@ namespace AnlabMvc
             if (_environment.IsDevelopment())
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlite("Data Source=anlab.db")
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
                 );
             }
             else
