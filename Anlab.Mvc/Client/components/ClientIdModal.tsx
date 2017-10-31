@@ -29,7 +29,7 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
         this.state = {
             newClientInfo: { ...this.props.clientInfo },
             active: false,
-            isValid: false
+            isValid: this.props.clientInfo.name ? true : false
         };
     }
 
