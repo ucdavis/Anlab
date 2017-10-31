@@ -1,6 +1,6 @@
 import "isomorphic-fetch";
 import * as React from "react";
-import Input from "react-toolbox/lib/input";
+import Input from "./ui/input/input";
 
 interface IClientIdProps {
     clientId: string;
@@ -29,7 +29,6 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
         return (
             <div>
                 <Input
-                    type="text"
                     onBlur={this._onBlur}
                     error={this.state.error}
                     value={this.state.internalValue}
@@ -42,8 +41,9 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
         );
     }
 
-    private _onChange = (v: string) => {
-        this.setState({ internalValue: v });
+    private _onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        this.setState({ internalValue: value });
     }
 
     private _onBlur = () => {

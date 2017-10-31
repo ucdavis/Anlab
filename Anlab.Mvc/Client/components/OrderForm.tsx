@@ -64,7 +64,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             additionalEmails: [],
             additionalInfo: "",
             additionalInfoList: {},
-            clientId: this.props.defaultClientId,
+            clientId: (this.props.defaultClientId ? this.props.defaultClientId : ""),
             commodity: "",
             errorMessage: "",
             filteredTests: this.props.testItems.filter((item) => item.categories.indexOf("Soil") !== -1),
