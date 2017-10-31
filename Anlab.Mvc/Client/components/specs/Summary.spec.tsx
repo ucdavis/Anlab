@@ -31,21 +31,14 @@ describe("<Summary />", () => {
     const defaultProps: ISummaryProps = {
         canSubmit: false,
         clientType: "",
-        focusInput: null,
+        handleErrors: null,
         hideError: false,
         isCreate: true,
         onSubmit: null,
         processingFee: null,
-        project: null,
-        projectRef: null,
         quantity: 0,
-        quantityRef: null,
-        sampleType: null,
         selectedTests,
         status: "",
-        waterPreservativeAdded: null,
-        waterPreservativeInfo: null,
-        waterPreservativeRef: null,
     };
 
     describe("Rendering", () => {

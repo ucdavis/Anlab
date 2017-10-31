@@ -227,14 +227,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                         onSubmit={this._onSubmit}
                         status={status}
                         processingFee={processingFee}
-                        project={this.state.project}
-                        focusInput={this._focusInput}
-                        quantityRef={this.quantityRef}
-                        projectRef={this.projectRef}
-                        sampleType={this.state.sampleType}
-                        waterPreservativeAdded={this.state.sampleTypeQuestions.waterPreservativeAdded}
-                        waterPreservativeInfo={this.state.sampleTypeQuestions.waterPreservativeInfo}
-                        waterPreservativeRef={this.waterPreservativeRef}
+                        handleErrors={this._handleErrors}
                     />
                 </div>
 
@@ -335,6 +328,21 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             const shallowCopy = [...this.state.additionalEmails];
             shallowCopy.splice(index, 1);
             this.setState({ additionalEmails: shallowCopy });
+        }
+    }
+
+    private _handleErrors = () => {
+        if (this.state.isValid || this.state.isSubmitting) {
+            return;
+        }
+        if (!this.state.project) {
+            this._focusInput(this.projectRef);
+        } else if (this.state.quantity < 1) {
+            this._focusInput(this.quantityRef);
+        } else if (this.state.sampleType === "Water"
+            && this.state.sampleTypeQuestions.waterPreservativeAdded
+            && !this.state.sampleTypeQuestions.waterPreservativeInfo.trim()) {
+            this._focusInput(this.waterPreservativeRef);
         }
     }
 
