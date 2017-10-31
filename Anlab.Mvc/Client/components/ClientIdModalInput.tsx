@@ -5,7 +5,7 @@ interface IClientIdModalInputProps {
     property: string;
     value: string;
     label: string;
-    handleChange: Function;
+    handleChange: (key: string, value: string) => void;
 }
 
 interface IClientIdModalInputState {
@@ -55,7 +55,14 @@ export class ClientIdModalInput extends React.Component<IClientIdModalInputProps
 
     render() {
         return (
-            <Input required error={this.state.error} value={this.state.internalValue} onChange={this.onChange} onBlur={this.onBlur} label={this.props.label} />
+            <Input
+                required={true}
+                error={this.state.error}
+                value={this.state.internalValue}
+                onChange={this.onChange}
+                onBlur={this.onBlur}
+                label={this.props.label}
+            />
         );
     }
 }
