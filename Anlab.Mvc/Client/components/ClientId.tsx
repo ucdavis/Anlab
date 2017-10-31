@@ -1,11 +1,14 @@
 import "isomorphic-fetch";
 import * as React from "react";
 import Input from "./ui/input/input";
+import { ClientIdModal, INewClientInfo } from "./ClientIdModal";
 
 interface IClientIdProps {
     clientId: string;
     handleChange: (key: string, value: string) => void;
     clientIdRef: (element: HTMLInputElement) => void;
+    newClientInfo: INewClientInfo;
+    updateNewClientInfo: Function;
 }
 
 interface IClientIdInputState {
@@ -29,15 +32,23 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     public render() {
         return (
             <div>
+                <div className="row">
+                    <div className="col-4">
                 <Input
                     inputRef={this.props.clientIdRef}
                     onBlur={this._onBlur}
                     error={this.state.error}
                     value={this.state.internalValue}
                     onChange={this._onChange}
-                    label="Client Id"
                 />
-                {this.state.clientName}
+                </div>
+                <div className="flexcol">
+                    <ClientIdModal clientInfo={this.props.newClientInfo} updateClient={this.props.updateNewClientInfo} />
+                </div>
+            </div>
+            <div className="row">
+              {this.state.clientName}
+            </div>
             </div>
 
         );
@@ -58,7 +69,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     private _validate = (v: string) => {
         let error = null;
         if (v.trim() === "") {
-            error = "A Client ID is required. If you do not have a Client ID, please click 'New Client'";
+            error = "Either a Client ID or New Client Info is required";
         }
 
         this.setState({ error });

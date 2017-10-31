@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Button } from "react-toolbox/lib/button";
 import Dialog from "react-toolbox/lib/dialog";
@@ -157,8 +157,9 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                         <ClientId
                             clientId={clientId}
                             handleChange={this._handleChange}
-                            clientIdRef={(inputRef) => { this.clientIdRef = inputRef; }}/>
-                        <ClientIdModal clientInfo={newClientInfo} updateClient={this._updateNewClientInfo} />
+                            clientIdRef={(inputRef) => { this.clientIdRef = inputRef; }}
+                            newClientInfo={newClientInfo}
+                            updateNewClientInfo={this._updateNewClientInfo} />
                     </div>
 
                     <div className="form_wrap">
@@ -278,7 +279,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
 
         // check uc account requirements
         if (this.state.payment.clientType === "uc"
-            && (this.state.payment.account || this.state.payment.account.trim())) {
+            && (!this.state.payment.account || !this.state.payment.account.trim())) {
             valid = false;
         }
 
