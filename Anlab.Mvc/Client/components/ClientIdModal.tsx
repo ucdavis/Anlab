@@ -1,8 +1,8 @@
-﻿import * as React from 'react';
-import Input from 'react-toolbox/lib/input';
+import * as React from "react";
+import Input from "react-toolbox/lib/input";
 import { Dialog } from "react-toolbox/lib/dialog";
 import { Button } from "react-toolbox/lib/button";
-import { ClientIdModalInput } from './ClientIdModalInput';
+import { ClientIdModalInput } from "./ClientIdModalInput";
 
 export interface INewClientInfo {
     employer: string;

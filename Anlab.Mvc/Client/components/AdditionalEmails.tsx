@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 
 // ui
 import { Button, IconButton } from "react-toolbox/lib/button";

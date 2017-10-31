@@ -1,5 +1,5 @@
-﻿import * as React from 'react';
-import Input from 'react-toolbox/lib/input';
+import * as React from "react";
+import Input from "react-toolbox/lib/input";
 
 interface IClientIdModalInputProps {
     property: string;
