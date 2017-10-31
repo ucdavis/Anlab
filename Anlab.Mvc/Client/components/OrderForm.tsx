@@ -273,10 +273,19 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
     }
 
     private _onSampleSelected = (sampleType: string) => {
-        const filteredTests = this.props.testItems.filter((item) => item.categories.indexOf(sampleType) !== -1);
-        const selectedTests = filteredTests.filter((t) => !!this.state.selectedCodes[t.id]);
+        var agree = true;
+        if (this.state.selectedTests.length > 0)
+        {
+            agree = confirm("You may only choose tests from one category. Your previous progress will not be saved on submit.");
+        }
+        if (agree)
+        {
+            const filteredTests = this.props.testItems.filter((item) => item.categories.indexOf(sampleType) !== -1);
+            const selectedTests = filteredTests.filter((t) => !!this.state.selectedCodes[t.id]);
 
-        this.setState({ filteredTests, selectedTests, sampleType }, this._validate);
+            this.setState({ filteredTests, selectedTests, sampleType }, this._validate);
+        }
+
     }
 
     private _onTestSelectionChanged = (test: ITestItem, selected: boolean) => {
