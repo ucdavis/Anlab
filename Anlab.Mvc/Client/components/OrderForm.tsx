@@ -258,7 +258,8 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         let valid = true;
 
         //check either client id or new client info
-        if (!this.state.clientId.trim() && !this.state.newClientInfo.name.trim())
+        if ((!this.state.clientId || !this.state.clientId.trim())
+            && (!this.state.newClientInfo.name || !this.state.newClientInfo.name.trim()))
         {
             valid = false;
         }
