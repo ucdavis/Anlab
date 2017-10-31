@@ -151,10 +151,16 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         return (
             <div>
                 <div>
-                    <ClientIdModal clientInfo={newClientInfo} updateClient={this._updateNewClientInfo} />
-                    <ClientId clientId={clientId} handleChange={this._handleChange} />
+                    <div className="form_wrap">
+                        <label className="form_header">Do you have a Client ID?</label>
+                        <ClientId clientId={clientId} handleChange={this._handleChange} />
+                        <ClientIdModal clientInfo={newClientInfo} updateClient={this._updateNewClientInfo} />
+                    </div>
 
-                    <PaymentSelection payment={payment} onPaymentSelected={this._onPaymentSelected} />
+                    <div className="form_wrap">
+                        <label className="form_header">How will you pay for your order?</label>
+                        <PaymentSelection payment={payment} onPaymentSelected={this._onPaymentSelected} />
+                    </div>
 
                     <div className="form_wrap">
                         <label className="form_header">What is the project title for this order?</label>
@@ -166,12 +172,15 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                         <Commodity commodity={commodity} handleChange={this._handleChange} />
                     </div>
 
-                    <AdditionalEmails
-                        addedEmails={additionalEmails}
-                        defaultEmail={defaultEmail}
-                        onEmailAdded={this._onEmailAdded}
-                        onDeleteEmail={this._onDeleteEmail}
-                    />
+                    <div className="form_wrap">
+                        <label className="form_header">Who should be notified for this test?</label>
+                        <AdditionalEmails
+                            addedEmails={additionalEmails}
+                            defaultEmail={defaultEmail}
+                            onEmailAdded={this._onEmailAdded}
+                            onDeleteEmail={this._onDeleteEmail}
+                        />
+                    </div>
 
                     <div className="form_wrap">
                         <label className="form_header">How many samples will you require?</label>
@@ -182,25 +191,31 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                         />
                     </div>
 
-                    <SampleTypeSelection sampleType={sampleType} onSampleSelected={this._onSampleSelected} />
-                    <SampleTypeQuestions
-                        waterPreservativeRef={(inputRef) => { this.waterPreservativeRef = inputRef; }}
-                        sampleType={sampleType}
-                        questions={sampleTypeQuestions}
-                        handleChange={this._onSampleQuestionChanged}
-                    />
+                    <div className="form_wrap">
+                        <label className="form_header">What type of samples?</label>
+                        <SampleTypeSelection sampleType={sampleType} onSampleSelected={this._onSampleSelected} />
+                        <SampleTypeQuestions
+                            waterPreservativeRef={(inputRef) => { this.waterPreservativeRef = inputRef; }}
+                            sampleType={sampleType}
+                            questions={sampleTypeQuestions}
+                            handleChange={this._onSampleQuestionChanged}
+                        />
+                        <AdditionalInfo value={additionalInfo} name="additionalInfo" handleChange={this._handleChange} />
+                    </div>
 
-
-                    <AdditionalInfo value={additionalInfo} name="additionalInfo" handleChange={this._handleChange} />
-                    <TestList
-                        items={filteredTests}
-                        selectedCodes={selectedCodes}
-                        clientType={payment.clientType}
-                        onTestSelectionChanged={this._onTestSelectionChanged}
-                        additionalInfoList={additionalInfoList}
-                        updateAdditionalInfo={this._updateAdditionalInfo}
-                    />
+                    <div className="form_wrap">
+                        <label className="form_header margin-bottom-zero">Which tests would you like to run?</label>
+                        <TestList
+                            items={filteredTests}
+                            selectedCodes={selectedCodes}
+                            clientType={payment.clientType}
+                            onTestSelectionChanged={this._onTestSelectionChanged}
+                            additionalInfoList={additionalInfoList}
+                            updateAdditionalInfo={this._updateAdditionalInfo}
+                        />
+                    </div>
                 </div>
+
                 <div className="stickyfoot shadowed" data-spy="affix" data-offset-bottom="0">
                     <Summary
                         isCreate={this.props.orderId === null}

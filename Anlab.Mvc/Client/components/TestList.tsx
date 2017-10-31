@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import Input from "./ui/input/input";
 
 import NumberFormat from "react-number-format";
@@ -49,8 +49,6 @@ export class TestList extends React.PureComponent<ITestListProps, ITestListState
 
     public render() {
         return (
-          <div className="form_wrap">
-          <h2 className="form_header margin-bottom-zero">Which tests would you like to run?</h2>
             <div>
                 <Input
                     label="Search"
@@ -72,7 +70,6 @@ export class TestList extends React.PureComponent<ITestListProps, ITestListState
                         {this._renderRows()}
                     </tbody>
                 </table>
-            </div>
             </div>
         );
     }

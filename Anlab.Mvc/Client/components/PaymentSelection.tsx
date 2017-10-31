@@ -1,4 +1,4 @@
-﻿import "isomorphic-fetch";
+import "isomorphic-fetch";
 import * as React from "react";
 import Input from "./ui/input/input";
 
@@ -42,8 +42,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
         const isUcClient = this.props.payment.clientType === "uc";
 
         return (
-            <div className="form_wrap">
-                <h2 className="form_header">How will you pay for your order?</h2>
+            <div>
                 <div className="row">
                     <div
                       className={!isUcClient ? activeDiv : inactiveDiv}
