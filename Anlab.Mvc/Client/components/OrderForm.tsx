@@ -57,6 +57,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
     private projectRef: any;
     private waterPreservativeRef: any;
     private clientIdRef: any;
+    private ucAccountRef: any;
 
     constructor(props) {
         super(props);
@@ -164,7 +165,10 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
 
                     <div className="form_wrap">
                         <label className="form_header">How will you pay for your order?</label>
-                        <PaymentSelection payment={payment} onPaymentSelected={this._onPaymentSelected} />
+                        <PaymentSelection
+                            payment={payment}
+                            onPaymentSelected={this._onPaymentSelected}
+                            ucAccountRef={(inputRef) => { this.ucAccountRef = inputRef; }} />
                     </div>
 
                     <div className="form_wrap">
@@ -346,10 +350,14 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         if (this.state.isValid || this.state.isSubmitting) {
             return;
         }
-        if (!this.state.clientId || !this.state.newClientInfo.name)
+        if (!this.state.clientId && !this.state.newClientInfo.name)
         {
             this._focusInput(this.clientIdRef);
-        } else if (!this.state.project) {
+        } else if (this.state.payment.clientType === "uc"
+            && (!this.state.payment.account || !this.state.payment.account.trim())) {
+            this._focusInput(this.ucAccountRef);
+        }
+        else if (!this.state.project) {
             this._focusInput(this.projectRef);
         } else if (this.state.quantity < 1) {
             this._focusInput(this.quantityRef);

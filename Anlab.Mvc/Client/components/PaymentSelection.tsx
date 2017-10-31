@@ -10,6 +10,7 @@ export interface IPayment {
 interface IPaymentSelectionProps {
     payment: IPayment;
     onPaymentSelected: (payment: IPayment) => void;
+    ucAccountRef: (element: HTMLInputElement) => void;
 }
 
 interface IPaymentSelectionState {
@@ -76,6 +77,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
                       maxLength={50}
                       onChange={this._handleAccountChange}
                       onBlur={this._lookupAccount}
+                      inputRef={this.props.ucAccountRef}
                     />
                     {this.state.accountName}
                 </div>
