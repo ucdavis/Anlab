@@ -360,9 +360,6 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         // find selected tests and associated additional info, map to dictionary array
         const selectedCodes = Object.keys(this.state.selectedCodes).filter((k) => !!k);
 
-        const selectedTests = this.state.filteredTests
-            .filter((t) => selectedCodes.indexOf(t.id) > -1);
-
         // return in dictionary format
         const additionalInfoList = Object.keys(this.state.additionalInfoList)
             .filter((k) => selectedCodes.indexOf(k) > -1)
@@ -384,7 +381,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             quantity: this.state.quantity,
             sampleType: this.state.sampleType,
             sampleTypeQuestions: this.state.sampleTypeQuestions,
-            selectedTests,
+            selectedTests: this.state.selectedTests,
         };
 
         // submit request to server
