@@ -5,6 +5,7 @@ import Input from "./ui/input/input";
 interface IClientIdProps {
     clientId: string;
     handleChange: (key: string, value: string) => void;
+    clientIdRef: (element: HTMLInputElement) => void;
 }
 
 interface IClientIdInputState {
@@ -29,6 +30,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
         return (
             <div>
                 <Input
+                    inputRef={this.props.clientIdRef}
                     onBlur={this._onBlur}
                     error={this.state.error}
                     value={this.state.internalValue}
@@ -47,13 +49,24 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     }
 
     private _onBlur = () => {
-        this.props.handleChange("clientId", this.state.internalValue);
+        const internalValue = this.state.internalValue;
+        this._validate(internalValue);
+        this.props.handleChange("clientId", internalValue);
         this._lookupClientId();
+    }
+
+    private _validate = (v: string) => {
+        let error = null;
+        if (v.trim() === "") {
+            error = "A Client ID is required. If you do not have a Client ID, please click 'New Client'";
+        }
+
+        this.setState({ error });
     }
 
     private _lookupClientId = () => {
         if (this.state.internalValue === "") {
-            this.setState({ clientName: null, error: null });
+            this.setState({ clientName: null });
             return;
         }
 
@@ -66,7 +79,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
             })
             .then((response) => response.json())
             .then((response) => {
-                this.setState({ clientName: response.name,  error: null });
+                this.setState({ clientName: response.name, error: null });
             })
             .catch((error: Error) => {
                 this.setState({ clientName: null, error: error.message });

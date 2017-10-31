@@ -56,6 +56,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
     private quantityRef: any;
     private projectRef: any;
     private waterPreservativeRef: any;
+    private clientIdRef: any;
 
     constructor(props) {
         super(props);
@@ -153,7 +154,10 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                 <div>
                     <div className="form_wrap">
                         <label className="form_header">Do you have a Client ID?</label>
-                        <ClientId clientId={clientId} handleChange={this._handleChange} />
+                        <ClientId
+                            clientId={clientId}
+                            handleChange={this._handleChange}
+                            clientIdRef={(inputRef) => { this.clientIdRef = inputRef; }}/>
                         <ClientIdModal clientInfo={newClientInfo} updateClient={this._updateNewClientInfo} />
                     </div>
 
@@ -248,6 +252,12 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         // default valid
         let valid = true;
 
+        //check either client id or new client info
+        if (!this.state.clientId.trim() && !this.state.newClientInfo.name.trim())
+        {
+            valid = false;
+        }
+
         // check quantity
         if (this.state.quantity <= 0 || this.state.quantity > 100) {
             valid = false;
@@ -310,7 +320,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
     private _updateNewClientInfo = (info: INewClientInfo) => {
         this.setState({
             newClientInfo: { ...info },
-        });
+        }, this._validate);
     }
 
     private _onEmailAdded = (additionalEmail: string) => {
@@ -335,7 +345,10 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         if (this.state.isValid || this.state.isSubmitting) {
             return;
         }
-        if (!this.state.project) {
+        if (!this.state.clientId || !this.state.newClientInfo.name)
+        {
+            this._focusInput(this.clientIdRef);
+        } else if (!this.state.project) {
             this._focusInput(this.projectRef);
         } else if (this.state.quantity < 1) {
             this._focusInput(this.quantityRef);
