@@ -270,7 +270,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         }
 
         // check project name
-        if (!this.state.project.trim()) {
+        if (!this.state.project || !this.state.project.trim()) {
             valid = false;
         }
 
@@ -351,20 +351,21 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         if (this.state.isValid || this.state.isSubmitting) {
             return;
         }
-        if (!this.state.clientId && !this.state.newClientInfo.name)
-        {
+        if((!this.state.clientId || !this.state.clientId.trim())
+            && (!this.state.newClientInfo.name || !this.state.newClientInfo.name.trim())){
             this._focusInput(this.clientIdRef);
         } else if (this.state.payment.clientType === "uc"
             && (!this.state.payment.account || !this.state.payment.account.trim())) {
             this._focusInput(this.ucAccountRef);
         }
-        else if (!this.state.project) {
+        else if (!this.state.project || !this.state.project.trim()) {
             this._focusInput(this.projectRef);
-        } else if (this.state.quantity < 1) {
+        } else if (this.state.quantity <= 0 || this.state.quantity > 100) {
             this._focusInput(this.quantityRef);
         } else if (this.state.sampleType === "Water"
             && this.state.sampleTypeQuestions.waterPreservativeAdded
-            && !this.state.sampleTypeQuestions.waterPreservativeInfo.trim()) {
+            && (!this.state.sampleTypeQuestions.waterPreservativeInfo
+                || !this.state.sampleTypeQuestions.waterPreservativeInfo.trim())) {
             this._focusInput(this.waterPreservativeRef);
         }
     }

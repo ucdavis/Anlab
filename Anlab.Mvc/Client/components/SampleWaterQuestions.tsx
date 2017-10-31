@@ -52,7 +52,7 @@ export class SampleWaterQuestions extends React.Component<IWaterQuestionsProps, 
 
     private _validate = (v: string) => {
         let error = null;
-        if (v.trim() == "") {
+        if (!v || v.trim() === "") {
             error = "This information is required";
         }
 
