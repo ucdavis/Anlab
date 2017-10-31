@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { SampleSoilQuestions } from './SampleSoilQuestions';
-import { SampleWaterQuestions } from './SampleWaterQuestions';
+import * as React from "react";
+import { SampleSoilQuestions } from "./SampleSoilQuestions";
+import { SampleWaterQuestions } from "./SampleWaterQuestions";
 import { SamplePlantQuestions } from "./SamplePlantQuestions";
 
 export interface ISampleTypeQuestions {
