@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import NumberFormat from "react-number-format";
 import {Button} from "react-toolbox/lib/button";
 import { IPayment } from "./PaymentSelection";
@@ -157,15 +157,15 @@ export default class Summary extends React.PureComponent<ISummaryProps, {}> {
         if (this.props.hideError) {
           return;
         }
-        if (this.props.sampleType === "Water"
+        if (!this.props.project) {
+            this.props.focusInput(this.props.projectRef);
+        } else if (this.props.quantity < 1) {
+            this.props.focusInput(this.props.quantityRef);
+        } else if (this.props.sampleType === "Water"
             && this.props.waterPreservativeAdded
             && !this.props.waterPreservativeInfo.trim()) {
             this.props.focusInput(this.props.waterPreservativeRef);
-        } else if (this.props.quantity < 1) {
-            this.props.focusInput(this.props.quantityRef);
-        } else if (!this.props.project) {
-            this.props.focusInput(this.props.projectRef);
-        }
+        } 
     }
 
     private _totalCost = () => {
