@@ -54,24 +54,6 @@ describe('<PaymentSelection/>', () => {
     describe('<div/> ', () => {
         const payment = { clientType: 'uc', account: '' };
         const target = mount(<PaymentSelection payment={payment} onPaymentSelected={null} ucAccountRef={null} />);
-        it('should render with className form_wrap', () => {
-            expect(target.find('div').length).toBeGreaterThan(0);
-            var div = target.find('div').at(0);
-            expect(div.hasClass('form_wrap')).toBe(true);
-        });
-
-        it('should render h2 with className form_header', () => {
-            expect(target.find('div').length).toBeGreaterThan(0);
-            expect(target.find('div').at(0).find('h2').length).toEqual(1);
-            var h2 = target.find('div').at(0).find('h2');
-            expect(h2.hasClass('form_header')).toBe(true);
-        });
-
-        it('should render h2 with expected text', () => {
-            expect(target.find('div').length).toBeGreaterThan(0);
-            var h2 = target.find('div').at(0).find('h2');
-            expect(h2.text()).toEqual('How will you pay for your order?');
-        });
 
         it('second div should render with className row', () => {
             expect(target.find('div').length).toBeGreaterThan(0);
