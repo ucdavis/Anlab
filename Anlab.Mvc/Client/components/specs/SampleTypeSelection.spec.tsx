@@ -1,4 +1,4 @@
-﻿import * as React from 'react';
+import * as React from 'react';
 import { shallow, mount, render } from 'enzyme';
 import { SampleTypeSelection } from '../SampleTypeSelection';
 
@@ -6,26 +6,6 @@ describe('<SampleTypeSelection/>', () => {
     it('should render', () => {
         const target = mount(<SampleTypeSelection sampleType="soil" onSampleSelected={null} />);
         expect(target.find('div').length).toBeGreaterThan(0);
-    });
-
-    it('should render first div with className form_wrap', () => {
-        const target = mount(<SampleTypeSelection sampleType="soil" onSampleSelected={null} />);
-        expect(target.find('div').at(0).hasClass('form_wrap')).toBe(true);
-    });
-    it('should have an h2', () => {
-        const target = mount(<SampleTypeSelection sampleType="soil" onSampleSelected={null} />);
-        const expectedTag = target.find('div').at(0).find('h2');
-        expect(expectedTag.length).toEqual(1);
-    });
-    it('should have an h2 with expected className', () => {
-        const target = mount(<SampleTypeSelection sampleType="soil" onSampleSelected={null} />);
-        const expectedTag = target.find('div').at(0).find('h2');
-        expect(expectedTag.hasClass('form_header')).toEqual(true);
-    });
-    it('should have an h2 with expected text', () => {
-        const target = mount(<SampleTypeSelection sampleType="soil" onSampleSelected={null} />);
-        const expectedTag = target.find('div').at(0).find('h2');
-        expect(expectedTag.text()).toEqual('What type of samples?');
     });
 
     it('should have an inner div with a className of flexrow', () => {
