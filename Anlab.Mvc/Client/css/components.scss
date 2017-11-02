@@ -32,70 +32,82 @@
 }
 
 .btn {
-  white-space: nowrap;
-  display: inline-block;
-  height: 40px;
-  line-height: 40px;
-  padding: 0 20px;
-  box-shadow: 0 -3px 0 rgba(0, 0, 0, 0.15) inset, 0 1px 3px rgba(0,0,0,.08);
-  background: $primary-color;
-  border-radius: 2px;
-  font-size: 1.6rem;
-  letter-spacing: 0.025em;
-  color: #fff !important;
-  text-decoration: none;
-  transition: all 0.15s ease;
-  border: none;
-  font-family: $sans-bold;
-&:active, &:focus {
-  background-color:darken($primary-color, 5);
-}
-  &:hover {
-    color: #fff !important;
-    transform: translateY(-1px);
-    box-shadow: 0 -3px 0 rgba(0, 0, 0, 0.15) inset, 0 3px 6px rgba(0,0,0,.08);
-    background-color: lighten($primary-color, 5);
-  }
-  &.btn-small {
-    font-size:1.4rem;
-  }
-  &.btn-discountcode {
-    box-shadow: none;
-    background-color: #C6C6C6;
+    white-space: nowrap;
+    display: inline-block;
     height: 40px;
-    margin-bottom: 3px;
-    border-radius: 0;
-    font-weight: bold;
-  }
-
-  &.btn-16 {
+    line-height: 40px;
+    padding: 0 20px;
+    box-shadow: 0 -3px 0 rgba(0, 0, 0, 0.15) inset, 0 1px 3px rgba(0,0,0,.08);
+    background: $primary-color;
+    border-radius: 2px;
     font-size: 1.6rem;
-  }
+    letter-spacing: 0.025em;
+    color: #fff !important;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    border: none;
+    font-family: $sans-bold;
 
-  &.btn-18 {
-    font-size: 1.8rem;
-  }
+    &:active, &:focus {
+        background-color: darken($primary-color, 5);
+    }
 
-  &.btn-20 {
-    font-size: 2.0rem;
-  }
+    &:hover {
+        color: #fff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 -3px 0 rgba(0, 0, 0, 0.15) inset, 0 3px 6px rgba(0,0,0,.08);
+        background-color: lighten($primary-color, 5);
+    }
 
-  &.btn-red {
-    background-color: $unitrans-red;
-  }
+    &.btn-small {
+        font-size: 1.4rem;
+    }
 
-  &.btn-blue {
-    background-color: $blue;
-  }
+    &.btn-discountcode {
+        box-shadow: none;
+        background-color: #C6C6C6;
+        height: 40px;
+        margin-bottom: 3px;
+        border-radius: 0;
+        font-weight: bold;
+    }
 
-  &.btn-green {
-    background-color: $sunny-grass;
-  }
-  &.btn-order {
-    background-color:#fff;
-    box-shadow:none;
-    color:$primary-color !important;
-  }
+    &.btn-16 {
+        font-size: 1.6rem;
+    }
+
+    &.btn-18 {
+        font-size: 1.8rem;
+    }
+
+    &.btn-20 {
+        font-size: 2.0rem;
+    }
+
+    &.btn-red {
+        background-color: $unitrans-red;
+
+        &:hover {
+            color: #fff !important;
+            transform: translateY(-1px);
+            box-shadow: 0 -3px 0 rgba(0, 0, 0, 0.15) inset, 0 3px 6px rgba(0,0,0,.08);
+            background-color: lighten($unitrans-red, 5);
+        }
+    }
+
+    &.btn-blue {
+        background-color: $blue;
+    }
+
+    &.btn-green {
+        background-color: $sunny-grass;
+    }
+
+    &.btn-order {
+        background-color: #fff;
+        box-shadow: none;
+        color: $primary-color !important;
+    }
 }
 .btn-hollow {
   background-color: #fff;
