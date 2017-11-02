@@ -46,8 +46,8 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
 
                     </div>
                     <div>
-                        <ClientIdModal clientInfo={this.props.newClientInfo} updateClient={this._updateNewClientInfo} />
-                        {this.state.newClientInfoAdded &&
+                    <ClientIdModal clientInfo={this.props.newClientInfo} updateClient={this._updateNewClientInfo} />
+                    {(this.state.newClientInfoAdded || (this.props.newClientInfo.name != null && !!this.props.newClientInfo.name.trim())) &&
                             <i className="fa fa-check" aria-hidden="true"></i>}
                     </div>
                 </div>
