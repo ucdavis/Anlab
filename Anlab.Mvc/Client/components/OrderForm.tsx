@@ -131,6 +131,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                 phoneNumber: orderInfo.NewClientInfo.PhoneNumber,
             };
             initialState.additionalInfoList = orderInfo.AdditionalInfoList;
+            initialState.filteredTests = this.props.testItems.filter((item) => item.categories.indexOf(orderInfo.SampleType) !== -1);
 
             orderInfo.SelectedTests.forEach((test) => { initialState.selectedCodes[test.Id] = true; });
             initialState.selectedTests = initialState.filteredTests.filter((t) => !!initialState.selectedCodes[t.id]);
