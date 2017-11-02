@@ -83,6 +83,7 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
                     actions={this.actions}
                     active={this.state.active}
                     title={title}
+                    onEscKeyDown={this.cancelAction}
                 >
                     <ClientIdModalInput property="name" value={this.state.newClientInfo.name} label="Name" handleChange={this.handleChange} />
                     <ClientIdModalInput property="employer" value={this.state.newClientInfo.employer} label="Employer" handleChange={this.handleChange} />
