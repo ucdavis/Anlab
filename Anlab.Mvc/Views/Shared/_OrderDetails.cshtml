@@ -79,7 +79,16 @@
     <thead>
     <tr>
         <th>Analysis</th>
-        <th>Code</th>
+        <th>
+            @if(Model.HideLabDetails)
+            {
+                @:SOP
+            }
+            else
+            {
+                @:Code
+            }
+        </th>
         <th>Price 
             <i class="analysisTooltip fa fa-info-circle"
                aria-hidden="true"
@@ -111,7 +120,17 @@
                     <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@temp.Notes')" title="@temp.Notes" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
                 }
             </td>
-            <td>@test.Id</td>
+            <td>
+                @if (Model.HideLabDetails)
+                {
+                    <a asp-controller="Analysis" asp-action="Details" asp-route-id="@temp.Sop" target="_blank">@temp.Sop</a>
+                }
+                else
+                {
+                    @test.Id
+
+                }
+            </td>
             <td>@test.SubTotal.ToString("C")</td>
             <td>@test.SetupCost.ToString("C")</td>
             <td>@test.Total.ToString("C")</td>
