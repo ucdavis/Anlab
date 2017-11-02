@@ -77,7 +77,7 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
         const errorText = "Please correct any errors and complete any required fields before you proceed";
 
         return (
-            <div>
+            <span>
                 <Button className="btn btn-order" onClick={this.toggleModal} >New Client</Button>
                 <Dialog
                     actions={this.actions}
@@ -90,7 +90,7 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
                     <ClientIdModalInput property="phoneNumber" value={this.state.newClientInfo.phoneNumber} label="Phone Number" handleChange={this.handleChange} />
                     {!this.state.isValid ? <div className="alert alert-danger">{errorText}</div> : null}
                 </Dialog>
-            </div>
+            </span>
         );
     }
 }

@@ -15,6 +15,7 @@ interface IClientIdInputState {
     internalValue: string;
     clientName: string;
     error: string;
+    newClientInfoAdded: boolean;
 }
 
 export class ClientId extends React.Component<IClientIdProps, IClientIdInputState> {
@@ -26,36 +27,41 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
             clientName: null,
             error: null,
             internalValue: this.props.clientId,
+            newClientInfoAdded: false,
         };
     }
 
     public render() {
         return (
-            <div>
                 <div className="row">
                     <div className="col-4">
-                <Input
-                    inputRef={this.props.clientIdRef}
-                    onBlur={this._onBlur}
-                    error={this.state.error}
-                    value={this.state.internalValue}
-                    onChange={this._onChange}
-                />
-                </div>
-                <div className="flexcol">
-                    <ClientIdModal clientInfo={this.props.newClientInfo} updateClient={this.props.updateNewClientInfo} />
-                </div>
-            </div>
-            <div className="row">
-              {this.state.clientName}
-            </div>
-            </div>
+                        <Input
+                            inputRef={this.props.clientIdRef}
+                            onBlur={this._onBlur}
+                            error={this.state.error}
+                            value={this.state.internalValue}
+                            onChange={this._onChange}
+                        />
+                        {this.state.clientName}
 
+                    </div>
+                    <div>
+                        <ClientIdModal clientInfo={this.props.newClientInfo} updateClient={this._updateNewClientInfo} />
+                        {this.state.newClientInfoAdded &&
+                            <i className="fa fa-check" aria-hidden="true"></i>}
+                    </div>
+                </div>
         );
+    }
+
+    private _updateNewClientInfo = (info: INewClientInfo) => {
+        this.setState({ newClientInfoAdded: true, error: "" });
+        this.props.updateNewClientInfo(info);
     }
 
     private _onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
+        this._validate(value);
         this.setState({ internalValue: value });
     }
 
@@ -67,16 +73,20 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     }
 
     private _validate = (v: string) => {
-        let error = null;
-        if (v.trim() === "") {
-            error = "Either a Client ID or New Client Info is required";
+        if (v) {
+            this.setState({ error: "" });
+            return;
+        }
+        if (this.state.newClientInfoAdded) {
+            this.setState({ error: "" });
+            return;
         }
 
-        this.setState({ error });
+        this.setState({ error: "Either a Client ID or New Client Info is required" });
     }
 
     private _lookupClientId = () => {
-        if (this.state.internalValue === "") {
+        if (!this.state.internalValue || !this.state.internalValue.trim()) {
             this.setState({ clientName: null });
             return;
         }
