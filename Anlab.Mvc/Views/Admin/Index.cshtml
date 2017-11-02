@@ -22,7 +22,7 @@
                 @if (user.IsUser)
                 {
                     <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="User" asp-route-add="false" asp-antiforgery="true">
-                        <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i> User</button>
+                        <button class="btn btn-red" type="submit"><i class="fa fa-trash"></i> User</button>
                     </form>
 
                 }
@@ -35,7 +35,7 @@
                 @if (user.IsAdmin)
                 {
                     <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role="Admin" asp-route-add="false" asp-antiforgery="true">
-                        <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i> Admin</button>
+                        <button class="btn btn-red" type="submit"><i class="fa fa-trash"></i> Admin</button>
                     </form>
                 }
                 else
