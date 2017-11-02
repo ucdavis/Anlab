@@ -68,8 +68,7 @@ namespace AnlabMvc
             // Add framework services.
             if (_environment.IsDevelopment())
             {
-                var useSql = Configuration.GetSection("Dev:UseSql").Value;
-                if (useSql == "Yes")
+                if (Configuration.GetSection("Dev:UseSql").Value == "Yes")
                 {
                     services.AddDbContext<ApplicationDbContext>(options =>
                         options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
