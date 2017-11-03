@@ -67,8 +67,23 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
     cancelAction = () => {
         this.setState({ ...this.state, active: false });
     }
+
+    clearAction = () => {
+        const clearInfo = {
+            employer: "",
+            name: "",
+            email: "",
+            phoneNumber: "",
+        };
+        this.setState({
+            ...this.state, newClientInfo: clearInfo
+        });
+        this.props.updateClient(clearInfo);
+    }
+
     actions = [
         { label: "Cancel", onClick: this.cancelAction },
+        { label: "Clear", onClick: this.clearAction },
         { label: "Save", onClick: this.saveAction }
     ];
 
