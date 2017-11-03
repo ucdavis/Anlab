@@ -29,7 +29,8 @@ namespace Anlab.Core.Domain
         public static string Water = "Water";
         public static string Feed = "Feed";
         public static string OliveOil = "Olive Oil";
+        public static string ManureAndCompost = "Manure And Compost";
 
-        public static readonly string[] All = { Soils, Plant, Water, Feed, OliveOil };
+        public static readonly string[] All = { Soils, Plant, Water, Feed, OliveOil, ManureAndCompost };
     }
 }
