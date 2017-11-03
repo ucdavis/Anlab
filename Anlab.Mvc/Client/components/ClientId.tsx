@@ -12,7 +12,7 @@ interface IClientIdProps {
 }
 
 interface IClientIdInputState {
-    internalValue: string;
+    //internalValue: string;
     clientName: string;
     error: string;
     newClientInfoAdded: boolean;
@@ -26,7 +26,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
         this.state = {
             clientName: null,
             error: null,
-            internalValue: this.props.clientId,
+            //internalValue: this.props.clientId,
             newClientInfoAdded: false,
         };
     }
@@ -39,7 +39,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
                             inputRef={this.props.clientIdRef}
                             onBlur={this._onBlur}
                             error={this.state.error}
-                            value={this.state.internalValue}
+                            value={this.props.clientId}
                             onChange={this._onChange}
                         />
                         {this.state.clientName}
@@ -62,13 +62,10 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     private _onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         this._validate(value);
-        this.setState({ internalValue: value });
+        this.props.handleChange("clientId", value);
     }
 
     private _onBlur = () => {
-        const internalValue = this.state.internalValue;
-        this._validate(internalValue);
-        this.props.handleChange("clientId", internalValue);
         this._lookupClientId();
     }
 
@@ -86,12 +83,12 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     }
 
     private _lookupClientId = () => {
-        if (!this.state.internalValue || !this.state.internalValue.trim()) {
+        if (!this.props.clientId || !this.props.clientId.trim()) {
             this.setState({ clientName: null });
             return;
         }
 
-        fetch(`/order/LookupClientId?id=${this.state.internalValue}`, { credentials: "same-origin" })
+        fetch(`/order/LookupClientId?id=${this.props.clientId}`, { credentials: "same-origin" })
             .then((response) => {
                 if (response === null || response.status !== 200) {
                   throw new Error("The client id you entered could not be found");

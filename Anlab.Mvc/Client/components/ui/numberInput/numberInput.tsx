@@ -15,7 +15,6 @@ interface INumberInputProps {
 }
 
 interface INumberInputState {
-    internalValue: string;
     error: string;
 }
 
@@ -30,24 +29,23 @@ export class NumberInput extends React.Component<INumberInputProps, INumberInput
 
         this.state = {
             error: null,
-            internalValue: this.transformValue(this.props.value),
         };
     }
 
-    public componentWillReceiveProps(nextProps) {
-        this.setState({ internalValue: this.transformValue(nextProps.value) });
-    }
+    //public componentWillReceiveProps(nextProps) {
+    //    this.setState({ internalValue: this.transformValue(nextProps.value) });
+    //}
 
     public render() {
         return (
             <Input
                 label={this.props.label}
                 name={this.props.name}
-                value={this.state.internalValue}
+                value={this.transformValue(this.props.value)}
                 error={this.state.error}
                 required={this.props.required}
                 onChange={this.onChange}
-                onBlur={this.onBlur}
+                //onBlur={this.onBlur}
                 inputRef={this.props.inputRef}
             />
         );
@@ -79,29 +77,29 @@ export class NumberInput extends React.Component<INumberInputProps, INumberInput
 
     private onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        this.setState({ internalValue: value } as INumberInputState);
         this.validate(value);
+        this.props.onChange(Number(value));
     }
 
-    private onBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-        let value = Number(this.state.internalValue);
+    //private onBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    //    let value = Number(this.state.internalValue);
 
-        if (isNaN(value)) {
-            value = null;
-        }
+    //    if (isNaN(value)) {
+    //        value = null;
+    //    }
 
-        // force integer
-        if (this.props.integer && !isNaN(value)) {
-          value = Math.floor(value);
-        }
+    //    // force integer
+    //    if (this.props.integer && !isNaN(value)) {
+    //      value = Math.floor(value);
+    //    }
 
-        // push possible changes, clear error
-        this.setState({
-          internalValue: this.transformValue(value),
-        });
+    //    // push possible changes, clear error
+    //    this.setState({
+    //      internalValue: this.transformValue(value),
+    //    });
 
-        this.validate(this.state.internalValue);
+    //    this.validate(this.state.internalValue);
 
-        this.props.onChange(value);
-    }
+    //    this.props.onChange(value);
+    //}
 }

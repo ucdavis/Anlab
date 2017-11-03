@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import Input from "./ui/input/input";
 
 interface IProjectInputProps {
@@ -8,7 +8,6 @@ interface IProjectInputProps {
 }
 
 interface IProjectInputState {
-    internalValue: string;
     error: string;
 }
 
@@ -18,7 +17,6 @@ export class Project extends React.Component<IProjectInputProps, IProjectInputSt
 
         this.state = {
             error: null,
-            internalValue: this.props.project,
         };
     }
 
@@ -27,11 +25,11 @@ export class Project extends React.Component<IProjectInputProps, IProjectInputSt
             <div>
                 <Input
                     label="Project Title"
-                    value={this.state.internalValue}
+                    value={this.props.project}
                     error={this.state.error}
                     required={true}
                     maxLength={256}
-                    onBlur={this._onBlur}
+                    //onBlur={this._onBlur}
                     onChange={this._onChange}
                     inputRef={this.props.projectRef}
                 />
@@ -41,15 +39,15 @@ export class Project extends React.Component<IProjectInputProps, IProjectInputSt
 
     private _onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        this.setState({ internalValue: value });
         this._validate(value);
+        this.props.handleChange("project", value);
     }
 
-    private _onBlur = () => {
-        const internalValue = this.state.internalValue;
-        this._validate(internalValue);
-        this.props.handleChange("project", internalValue);
-    }
+    //private _onBlur = () => {
+    //    const internalValue = this.state.internalValue;
+    //    this._validate(internalValue);
+    //    this.props.handleChange("project", internalValue);
+    //}
 
     private _validate = (v: string) => {
         let error = null;
