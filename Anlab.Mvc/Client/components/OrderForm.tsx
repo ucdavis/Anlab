@@ -187,7 +187,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                     </div>
                     </Collapse>
 
-                    <Collapse in={!!this.state.project.trim() || this.state.quantity > 0 }>
+                    <Collapse in={!!this.state.project.trim() || this.state.quantity > 0 || !!this.state.sampleType.trim()}>
                         <div>
                     <div className="form_wrap">
                         <label className="form_header">Who should be notified for this test?</label>
@@ -220,12 +220,16 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                             questions={sampleTypeQuestions}
                             handleChange={this._onSampleQuestionChanged}
                         />
-                        <AdditionalInfo value={additionalInfo} name="additionalInfo" handleChange={this._handleChange} />
                     </div>
                         </Collapse>
 
                     <Collapse in={this.state.sampleType !== ""}>
                         <div>
+                            <div className="form_wrap">
+                                <label className="form_header">Do you have any other information to provide?</label>
+                                <AdditionalInfo value={additionalInfo} name="additionalInfo" handleChange={this._handleChange} />
+                            </div>
+
                     <div className="form_wrap">
                         <label className="form_header margin-bottom-zero">Which tests would you like to run?</label>
                         <TestList
