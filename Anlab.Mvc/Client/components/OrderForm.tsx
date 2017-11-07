@@ -260,7 +260,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
 
         // check uc account requirements
         if (this.state.payment.clientType === "uc"
-            && (this.state.payment.account || this.state.payment.account.trim())) {
+            && (this.state.payment.account === null || this.state.payment.account.trim() === "")) {
             valid = false;
         }
 
