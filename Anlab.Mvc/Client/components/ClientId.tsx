@@ -63,7 +63,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     }
 
     private _validate = (v: string) => {
-        if (v) {
+        if (v && !!v.trim()) {
             if (v.length < 4)
                 this.setState({ error: "Client IDs must be at least 4 characters long" });
             else
@@ -84,7 +84,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
             return;
         }
 
-        fetch(`/order/LookupClientId?id=${value}`, { credentials: "same-origin" })
+        fetch(`/order/LookupClientId?id=${value.trim()}`, { credentials: "same-origin" })
             .then((response) => {
                 if (response === null || response.status !== 200) {
                   throw new Error("The client id you entered could not be found");
