@@ -129,7 +129,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
             return;
         }
 
-        if (account !== null && account.trim()) {
+        if (account && account.trim()) {
           this.setState({ error: "" });
           return;
         }
