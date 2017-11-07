@@ -14,10 +14,10 @@
             
             <th>@Html.DisplayNameFor(model => model[0].Analysis)</th>
             @*<th>@Html.DisplayNameFor(model => model[0].Id)</th>*@
-            <th>@Html.DisplayNameFor(model => model[0].InternalCost)</th>
-            <th>@Html.DisplayNameFor(model => model[0].InternalSetupCost)</th>
-            <th>@Html.DisplayNameFor(model => model[0].ExternalCost)</th>
-            <th>@Html.DisplayNameFor(model => model[0].ExternalSetupCost)</th>
+            <th>@Html.DisplayNameFor(model => model[0].InternalCost).Humanize()</th>
+            <th>@Html.DisplayNameFor(model => model[0].InternalSetupCost).Humanize()</th>
+            <th>@Html.DisplayNameFor(model => model[0].ExternalCost).Humanize()</th>
+            <th>@Html.DisplayNameFor(model => model[0].ExternalSetupCost).Humanize()</th>
         </tr>
         </thead>
         <tbody>
