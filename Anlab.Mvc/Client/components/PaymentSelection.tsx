@@ -1,4 +1,4 @@
-﻿import "isomorphic-fetch";
+import "isomorphic-fetch";
 import * as React from "react";
 import Input from "./ui/input/input";
 
@@ -10,6 +10,7 @@ export interface IPayment {
 interface IPaymentSelectionProps {
     payment: IPayment;
     onPaymentSelected: (payment: IPayment) => void;
+    ucAccountRef: (element: HTMLInputElement) => void;
 }
 
 interface IPaymentSelectionState {
@@ -42,8 +43,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
         const isUcClient = this.props.payment.clientType === "uc";
 
         return (
-            <div className="form_wrap">
-                <h2 className="form_header">How will you pay for your order?</h2>
+            <div>
                 <div className="row">
                     <div
                       className={!isUcClient ? activeDiv : inactiveDiv}
@@ -77,6 +77,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
                       maxLength={50}
                       onChange={this._handleAccountChange}
                       onBlur={this._lookupAccount}
+                      inputRef={this.props.ucAccountRef}
                     />
                     {this.state.accountName}
                 </div>

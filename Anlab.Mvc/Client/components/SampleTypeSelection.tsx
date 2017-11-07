@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import PlantSvg from "../media/plant.svg";
 import SoilSvg from "../media/soil.svg";
 import WaterSvg from "../media/water.svg";
@@ -14,8 +14,7 @@ export class SampleTypeSelection extends React.Component<ISampleTypeProps, {}> {
         const activeDiv = "anlab_form_style anlab_form_samplebtn active-bg flexcol active-border active-svg active-text";
         const inactiveDiv = "anlab_form_style anlab_form_samplebtn flexcol";
         return (
-            <div className="form_wrap">
-                <h2 className="form_header">What type of samples?</h2>
+            <div>
                 <div className="flexrow">
                     <div
                         className={this.props.sampleType === "Soil" ? activeDiv : inactiveDiv}

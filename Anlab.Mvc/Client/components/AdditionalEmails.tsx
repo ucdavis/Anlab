@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 
 // ui
 import { Button, IconButton } from "react-toolbox/lib/button";
@@ -33,8 +33,7 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
 
     public render() {
         return (
-            <div className="form_wrap">
-                <label className="form_header">Who should be notified for this test?</label>
+            <div>
                 <div>
                     <Chip>{this.props.defaultEmail}</Chip>
                     {this._renderEmails()}

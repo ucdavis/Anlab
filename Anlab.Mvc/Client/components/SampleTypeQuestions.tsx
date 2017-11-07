@@ -1,6 +1,6 @@
-﻿import * as React from 'react';
-import { SampleSoilQuestions } from './SampleSoilQuestions';
-import { SampleWaterQuestions } from './SampleWaterQuestions';
+import * as React from "react";
+import { SampleSoilQuestions } from "./SampleSoilQuestions";
+import { SampleWaterQuestions } from "./SampleWaterQuestions";
 import { SamplePlantQuestions } from "./SamplePlantQuestions";
 
 export interface ISampleTypeQuestions {
@@ -15,7 +15,7 @@ interface ISampleTypeQuestionsProps {
     waterPreservativeRef: any;
     sampleType: string;
     questions: ISampleTypeQuestions;
-    handleChange: Function;
+    handleChange: (key: string, value: any) => void;
 }
 
 export class SampleTypeQuestions extends React.Component<ISampleTypeQuestionsProps, {}> {

@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Button } from "react-toolbox/lib/button";
 import Dialog from "react-toolbox/lib/dialog";
@@ -56,6 +56,8 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
     private quantityRef: any;
     private projectRef: any;
     private waterPreservativeRef: any;
+    private clientIdRef: any;
+    private ucAccountRef: any;
 
     constructor(props) {
         super(props);
@@ -64,7 +66,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             additionalEmails: [],
             additionalInfo: "",
             additionalInfoList: {},
-            clientId: this.props.defaultClientId,
+            clientId: (this.props.defaultClientId ? this.props.defaultClientId : ""),
             commodity: "",
             errorMessage: "",
             filteredTests: this.props.testItems.filter((item) => item.categories.indexOf("Soil") !== -1),
@@ -129,6 +131,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                 phoneNumber: orderInfo.NewClientInfo.PhoneNumber,
             };
             initialState.additionalInfoList = orderInfo.AdditionalInfoList;
+            initialState.filteredTests = this.props.testItems.filter((item) => item.categories.indexOf(orderInfo.SampleType) !== -1);
 
             orderInfo.SelectedTests.forEach((test) => { initialState.selectedCodes[test.Id] = true; });
             initialState.selectedTests = initialState.filteredTests.filter((t) => !!initialState.selectedCodes[t.id]);
@@ -151,10 +154,23 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         return (
             <div>
                 <div>
-                    <ClientIdModal clientInfo={newClientInfo} updateClient={this._updateNewClientInfo} />
-                    <ClientId clientId={clientId} handleChange={this._handleChange} />
+                    <div className="form_wrap">
+                        <label className="form_header">Do you have a Client ID?</label>
+                        <ClientId
+                            clientId={clientId}
+                            handleChange={this._handleChange}
+                            clientIdRef={(inputRef) => { this.clientIdRef = inputRef; }}
+                            newClientInfo={newClientInfo}
+                            updateNewClientInfo={this._updateNewClientInfo} />
+                    </div>
 
-                    <PaymentSelection payment={payment} onPaymentSelected={this._onPaymentSelected} />
+                    <div className="form_wrap">
+                        <label className="form_header">How will you pay for your order?</label>
+                        <PaymentSelection
+                            payment={payment}
+                            onPaymentSelected={this._onPaymentSelected}
+                            ucAccountRef={(inputRef) => { this.ucAccountRef = inputRef; }} />
+                    </div>
 
                     <div className="form_wrap">
                         <label className="form_header">What is the project title for this order?</label>
@@ -166,12 +182,15 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                         <Commodity commodity={commodity} handleChange={this._handleChange} />
                     </div>
 
-                    <AdditionalEmails
-                        addedEmails={additionalEmails}
-                        defaultEmail={defaultEmail}
-                        onEmailAdded={this._onEmailAdded}
-                        onDeleteEmail={this._onDeleteEmail}
-                    />
+                    <div className="form_wrap">
+                        <label className="form_header">Who should be notified for this test?</label>
+                        <AdditionalEmails
+                            addedEmails={additionalEmails}
+                            defaultEmail={defaultEmail}
+                            onEmailAdded={this._onEmailAdded}
+                            onDeleteEmail={this._onDeleteEmail}
+                        />
+                    </div>
 
                     <div className="form_wrap">
                         <label className="form_header">How many samples will you require?</label>
@@ -182,25 +201,31 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                         />
                     </div>
 
-                    <SampleTypeSelection sampleType={sampleType} onSampleSelected={this._onSampleSelected} />
-                    <SampleTypeQuestions
-                        waterPreservativeRef={(inputRef) => { this.waterPreservativeRef = inputRef; }}
-                        sampleType={sampleType}
-                        questions={sampleTypeQuestions}
-                        handleChange={this._onSampleQuestionChanged}
-                    />
+                    <div className="form_wrap">
+                        <label className="form_header">What type of samples?</label>
+                        <SampleTypeSelection sampleType={sampleType} onSampleSelected={this._onSampleSelected} />
+                        <SampleTypeQuestions
+                            waterPreservativeRef={(inputRef) => { this.waterPreservativeRef = inputRef; }}
+                            sampleType={sampleType}
+                            questions={sampleTypeQuestions}
+                            handleChange={this._onSampleQuestionChanged}
+                        />
+                        <AdditionalInfo value={additionalInfo} name="additionalInfo" handleChange={this._handleChange} />
+                    </div>
 
-
-                    <AdditionalInfo value={additionalInfo} name="additionalInfo" handleChange={this._handleChange} />
-                    <TestList
-                        items={filteredTests}
-                        selectedCodes={selectedCodes}
-                        clientType={payment.clientType}
-                        onTestSelectionChanged={this._onTestSelectionChanged}
-                        additionalInfoList={additionalInfoList}
-                        updateAdditionalInfo={this._updateAdditionalInfo}
-                    />
+                    <div className="form_wrap">
+                        <label className="form_header margin-bottom-zero">Which tests would you like to run?</label>
+                        <TestList
+                            items={filteredTests}
+                            selectedCodes={selectedCodes}
+                            clientType={payment.clientType}
+                            onTestSelectionChanged={this._onTestSelectionChanged}
+                            additionalInfoList={additionalInfoList}
+                            updateAdditionalInfo={this._updateAdditionalInfo}
+                        />
+                    </div>
                 </div>
+
                 <div className="stickyfoot shadowed" data-spy="affix" data-offset-bottom="0">
                     <Summary
                         isCreate={this.props.orderId === null}
@@ -212,14 +237,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                         onSubmit={this._onSubmit}
                         status={status}
                         processingFee={processingFee}
-                        project={this.state.project}
-                        focusInput={this._focusInput}
-                        quantityRef={this.quantityRef}
-                        projectRef={this.projectRef}
-                        sampleType={this.state.sampleType}
-                        waterPreservativeAdded={this.state.sampleTypeQuestions.waterPreservativeAdded}
-                        waterPreservativeInfo={this.state.sampleTypeQuestions.waterPreservativeInfo}
-                        waterPreservativeRef={this.waterPreservativeRef}
+                        handleErrors={this._handleErrors}
                     />
                 </div>
 
@@ -240,13 +258,20 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         // default valid
         let valid = true;
 
+        //check either client id or new client info
+        if ((!this.state.clientId || !this.state.clientId.trim())
+            && (!this.state.newClientInfo.name || !this.state.newClientInfo.name.trim()))
+        {
+            valid = false;
+        }
+
         // check quantity
         if (this.state.quantity <= 0 || this.state.quantity > 100) {
             valid = false;
         }
 
         // check project name
-        if (!this.state.project.trim()) {
+        if (!this.state.project || !this.state.project.trim()) {
             valid = false;
         }
 
@@ -260,7 +285,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
 
         // check uc account requirements
         if (this.state.payment.clientType === "uc"
-            && (this.state.payment.account || this.state.payment.account.trim())) {
+            && (!this.state.payment.account || !this.state.payment.account.trim())) {
             valid = false;
         }
 
@@ -302,7 +327,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
     private _updateNewClientInfo = (info: INewClientInfo) => {
         this.setState({
             newClientInfo: { ...info },
-        });
+        }, this._validate);
     }
 
     private _onEmailAdded = (additionalEmail: string) => {
@@ -320,6 +345,29 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             const shallowCopy = [...this.state.additionalEmails];
             shallowCopy.splice(index, 1);
             this.setState({ additionalEmails: shallowCopy });
+        }
+    }
+
+    private _handleErrors = () => {
+        if (this.state.isValid || this.state.isSubmitting) {
+            return;
+        }
+        if((!this.state.clientId || !this.state.clientId.trim())
+            && (!this.state.newClientInfo.name || !this.state.newClientInfo.name.trim())){
+            this._focusInput(this.clientIdRef);
+        } else if (this.state.payment.clientType === "uc"
+            && (!this.state.payment.account || !this.state.payment.account.trim())) {
+            this._focusInput(this.ucAccountRef);
+        }
+        else if (!this.state.project || !this.state.project.trim()) {
+            this._focusInput(this.projectRef);
+        } else if (this.state.quantity <= 0 || this.state.quantity > 100) {
+            this._focusInput(this.quantityRef);
+        } else if (this.state.sampleType === "Water"
+            && this.state.sampleTypeQuestions.waterPreservativeAdded
+            && (!this.state.sampleTypeQuestions.waterPreservativeInfo
+                || !this.state.sampleTypeQuestions.waterPreservativeInfo.trim())) {
+            this._focusInput(this.waterPreservativeRef);
         }
     }
 
@@ -360,9 +408,6 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         // find selected tests and associated additional info, map to dictionary array
         const selectedCodes = Object.keys(this.state.selectedCodes).filter((k) => !!k);
 
-        const selectedTests = this.state.filteredTests
-            .filter((t) => selectedCodes.indexOf(t.id) > -1);
-
         // return in dictionary format
         const additionalInfoList = Object.keys(this.state.additionalInfoList)
             .filter((k) => selectedCodes.indexOf(k) > -1)
@@ -384,7 +429,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             quantity: this.state.quantity,
             sampleType: this.state.sampleType,
             sampleTypeQuestions: this.state.sampleTypeQuestions,
-            selectedTests,
+            selectedTests: this.state.selectedTests,
         };
 
         // submit request to server

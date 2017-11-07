@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import NumberFormat from "react-number-format";
 import {Button} from "react-toolbox/lib/button";
 import { IPayment } from "./PaymentSelection";
@@ -14,15 +14,7 @@ export interface ISummaryProps {
     hideError: boolean;
     status: string;
     processingFee: number;
-    project: string;
-    focusInput: Function;
-    quantityRef: any;
-    projectRef: any;
-
-    sampleType: string;
-    waterPreservativeAdded: boolean;
-    waterPreservativeInfo: string;
-    waterPreservativeRef: any;
+    handleErrors: Function;
 }
 
 const numberFormatOptions = {
@@ -114,7 +106,7 @@ export default class Summary extends React.PureComponent<ISummaryProps, {}> {
       };
 
       return (
-        <a onClick={this._handleErrors}>
+          <a onClick={this._handleErrors}>
           Fix Errors <i className="fa fa-exclamation" style={errorIconStyle} />
         </a>
       );
@@ -154,18 +146,7 @@ export default class Summary extends React.PureComponent<ISummaryProps, {}> {
     }
 
     private _handleErrors = () => {
-        if (this.props.hideError) {
-          return;
-        }
-        if (this.props.sampleType === "Water"
-            && this.props.waterPreservativeAdded
-            && !this.props.waterPreservativeInfo.trim()) {
-            this.props.focusInput(this.props.waterPreservativeRef);
-        } else if (this.props.quantity < 1) {
-            this.props.focusInput(this.props.quantityRef);
-        } else if (!this.props.project) {
-            this.props.focusInput(this.props.projectRef);
-        }
+        this.props.handleErrors();
     }
 
     private _totalCost = () => {

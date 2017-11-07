@@ -1,11 +1,11 @@
-﻿import * as React from 'react';
-import Checkbox from 'react-toolbox/lib/checkbox';
+import * as React from "react";
+import Checkbox from "react-toolbox/lib/checkbox";
 import { ISampleTypeQuestions } from "./SampleTypeQuestions";
-import { Input } from "react-toolbox/lib/input";
+import Input from "./ui/input/input";
 
 interface IWaterQuestionsProps {
-    waterPreservativeRef: any;
-    handleChange: Function;
+    waterPreservativeRef: (element: HTMLInputElement) => void;
+    handleChange: (key: string, value: any) => void;
     sampleType: string;
     questions: ISampleTypeQuestions;
 }
@@ -34,14 +34,15 @@ export class SampleWaterQuestions extends React.Component<IWaterQuestionsProps, 
         this.props.handleChange("waterPreservativeAdded", !this.props.questions.waterPreservativeAdded);
     }
 
-    private _onChangePreservativeText = (v: string) => {
-        this.setState({ waterPreservativeInfo: v });
-        this.validate(v);
+    private _onChangePreservativeText = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        this.setState({ waterPreservativeInfo: value });
+        this._validate(value);
     }
 
     private _onBlurPreservativeText = () => {
-        let waterPreservativeInfo = this.state.waterPreservativeInfo;
-        this.validate(waterPreservativeInfo);
+        const waterPreservativeInfo = this.state.waterPreservativeInfo;
+        this._validate(waterPreservativeInfo);
         this.props.handleChange("waterPreservativeInfo", this.state.waterPreservativeInfo);
     }
 
@@ -49,9 +50,9 @@ export class SampleWaterQuestions extends React.Component<IWaterQuestionsProps, 
         this.props.handleChange("waterReportedInMgL", !this.props.questions.waterReportedInMgL)
     }
 
-    private validate = (v: string) => {
+    private _validate = (v: string) => {
         let error = null;
-        if (v.trim() == "") {
+        if (!v || v.trim() === "") {
             error = "This information is required";
         }
 
@@ -96,15 +97,15 @@ export class SampleWaterQuestions extends React.Component<IWaterQuestionsProps, 
                             <tr>
                             <td colSpan={2}>
                                 <Input
-                                    ref={this.props.waterPreservativeRef}
-                                    type="text"
+                                    inputRef={this.props.waterPreservativeRef}
                                     error={this.state.error}
                                     required={true}
                                     maxLength={256}
                                     value={this.state.waterPreservativeInfo}
                                     onChange={this._onChangePreservativeText}
                                     onBlur={this._onBlurPreservativeText}
-                                    label="Provide more information about your preservative"/>
+                                    label="Provide more information about your preservative"
+                                />
                                 </td>
                             </tr>
                         }
