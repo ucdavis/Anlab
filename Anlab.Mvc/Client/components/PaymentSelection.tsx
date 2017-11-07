@@ -108,6 +108,8 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
             .then((accountName) => this.setState({ accountName }))
             .catch((error: Error) => {
                 this.setState({ accountName: null, error: error.message });
+ 
+                this.props.onPaymentSelected({ ...this.props.payment, account: null });
             });
     }
 
@@ -128,7 +130,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
             return;
         }
 
-        if (account) {
+        if (account && account.trim()) {
           this.setState({ error: "" });
           return;
         }
