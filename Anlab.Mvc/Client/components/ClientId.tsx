@@ -64,8 +64,8 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
 
     private _validate = (v: string) => {
         if (v) {
-            if (v.length != 7)
-                this.setState({ error: "Client IDs must be 7 characters long" });
+            if (v.length < 4)
+                this.setState({ error: "Client IDs must be at least 4 characters long" });
             else
                 this.setState({ error: "" });
             return;
@@ -79,7 +79,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     }
 
     private _lookupClientId = (value) => {
-        if (!value || !value.trim() || value.length != 7) {
+        if (!value || !value.trim() || value.length < 4) {
             this.props.handleChange("clientName", null);
             return;
         }
