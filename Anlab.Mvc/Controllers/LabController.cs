@@ -360,19 +360,16 @@ namespace AnlabMvc.Controllers
             orderToUpdate.Paid = order.Paid;
             orderToUpdate.Status = order.Status;
             orderToUpdate.IsDeleted = order.IsDeleted;
+
+            await _dbContext.SaveChangesAsync();
+            
             if (order.IsDeleted)
             {
                 ErrorMessage = "Order deleted!!!";
-            }
-
-            await _dbContext.SaveChangesAsync();
-
-            Message = "Order Updated";
-            if (order.IsDeleted)
-            {
                 return RedirectToAction("Orders");
             }
-            
+            Message = "Order Updated";
+
             return RedirectToAction("Details", new{id});
         }
 
