@@ -9,22 +9,26 @@
     <table class="table">
         <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model[0].Category)</th>
-            <th>@Html.DisplayNameFor(model => model[0].Group)</th>
-            
-            <th>@Html.DisplayNameFor(model => model[0].Analysis)</th>
+            <th rowspan="2">@Html.DisplayNameFor(model => model[0].Category)</th>
+            <th rowspan="2">@Html.DisplayNameFor(model => model[0].Group)</th>
+
+            <th rowspan="2">@Html.DisplayNameFor(model => model[0].Analysis)</th>
+            <th colspan="2">UC Clients</th><th colspan="2">Non-UC Clients</th>
+        </tr>
+        <tr>
+
             @*<th>@Html.DisplayNameFor(model => model[0].Id)</th>*@
-            <th>@Html.DisplayNameFor(model => model[0].InternalCost).Humanize()</th>
-            <th>@Html.DisplayNameFor(model => model[0].InternalSetupCost).Humanize()</th>
-            <th>@Html.DisplayNameFor(model => model[0].ExternalCost).Humanize()</th>
-            <th>@Html.DisplayNameFor(model => model[0].ExternalSetupCost).Humanize()</th>
+            <th>Cost</th>
+            <th>Setup cost</th>
+            <th>Cost</th>
+            <th>Setup cost</th>
         </tr>
         </thead>
         <tbody>
         @foreach (var item in Model.OrderBy(a => a.RequestOrder))
         {
             <tr>
-                
+
                 <td>@Html.DisplayFor(modelItem => item.Category)</td>
                 <td>@Html.DisplayFor(modelItem => item.Group)</td>
                 <td>@Html.DisplayFor(modelItem => item.Analysis)</td>
@@ -34,7 +38,7 @@
                 <td>@Html.DisplayFor(modelItem => item.ExternalCost)</td>
                 <td>@Html.DisplayFor(modelItem => item.ExternalSetupCost)</td>
             </tr>
-           
+
         }
         </tbody>
     </table>
@@ -53,7 +57,8 @@
     <script type="text/javascript">
         $(function () {
             $(".table").dataTable({
-                "lengthMenu": [[-1, 10, 25, 50], ["All", 10, 25, 50]]
+                "lengthMenu": [[-1, 10, 25, 50], ["All", 10, 25, 50]],
+                "sort": false
             });
         });
     </script>
