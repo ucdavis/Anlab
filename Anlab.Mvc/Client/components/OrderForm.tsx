@@ -48,6 +48,7 @@ interface IOrderFormState {
     errorMessage: string;
     status: string;
     clientId: string;
+    clientName: string;
     newClientInfo: INewClientInfo;
     additionalInfoList: object;
 }
@@ -80,6 +81,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                 name: "",
                 phoneNumber: "",
             },
+            clientName: null,
             payment: { clientType: "uc", account: "" },
             project: "",
             quantity: null,
@@ -145,7 +147,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         const { defaultEmail, internalProcessingFee, externalProcessingFee } = this.props;
         const {
             payment, selectedTests, sampleType, sampleTypeQuestions, quantity, additionalInfo, project,
-            commodity, additionalEmails, status, clientId, newClientInfo,
+            commodity, additionalEmails, status, clientId, newClientInfo, clientName,
             additionalInfoList, filteredTests, selectedCodes,
         } = this.state;
 
@@ -159,13 +161,14 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                         <label className="form_header">Do you have a Client ID?</label>
                         <ClientId
                             clientId={clientId}
+                            clientName={clientName}
                             handleChange={this._handleChange}
                             clientIdRef={(inputRef) => { this.clientIdRef = inputRef; }}
                             newClientInfo={newClientInfo}
                             updateNewClientInfo={this._updateNewClientInfo} />
                     </div>
-                    <Collapse in={(this.state.clientId != null && !!this.state.clientId.trim()) || (this.state.newClientInfo.name != null && !!this.state.newClientInfo.name.trim())
-                        || (this.state.payment.clientType != null && !!this.state.payment.clientType.trim())}>
+                    <Collapse in={(this.state.clientName != null) || (!!this.state.newClientInfo.name.trim())
+                        ||  (!!this.state.payment.clientType.trim())}>
                     <div className="form_wrap">
                         <label className="form_header">How will you pay for your order?</label>
                         <PaymentSelection
@@ -279,8 +282,8 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         // default valid
         let valid = true;
 
-        //check either client id or new client info
-        if ((!this.state.clientId || !this.state.clientId.trim())
+        //check either client name or new client info
+        if (!this.state.clientName
             && (!this.state.newClientInfo.name || !this.state.newClientInfo.name.trim()))
         {
             valid = false;
@@ -373,7 +376,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         if (this.state.isValid || this.state.isSubmitting) {
             return;
         }
-        if((!this.state.clientId || !this.state.clientId.trim())
+        if ((!this.state.clientName)
             && (!this.state.newClientInfo.name || !this.state.newClientInfo.name.trim())){
             this._focusInput(this.clientIdRef);
         } else if (this.state.payment.clientType === "uc"
