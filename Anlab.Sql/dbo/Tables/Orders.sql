@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[Orders] (
+CREATE TABLE [dbo].[Orders] (
     [Id]                            INT              IDENTITY (1, 1) NOT NULL,
     [AdditionalEmails]              NVARCHAR (MAX)   NULL,
     [ApprovedPaymentTransaction_Id] NVARCHAR (450)   NULL,
@@ -18,6 +18,7 @@
     [SlothTransactionId]            UNIQUEIDENTIFIER   NULL,
     [Status]                        NVARCHAR (50)   NULL,
     [Updated]                       DATETIME2 (7)    NOT NULL,
+    [IsDeleted] BIT NOT NULL DEFAULT 0, 
     CONSTRAINT [PK_Orders] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Orders_AspNetUsers_CreatorId] FOREIGN KEY ([CreatorId]) REFERENCES [dbo].[AspNetUsers] ([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK_Orders_PaymentEvents_ApprovedPaymentTransaction_Id] FOREIGN KEY ([ApprovedPaymentTransaction_Id]) REFERENCES [dbo].[PaymentEvents] ([Transaction_Id])

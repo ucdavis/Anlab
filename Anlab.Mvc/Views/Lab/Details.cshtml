@@ -5,21 +5,22 @@
     ViewData["Title"] = "Details";
 }
 
-
-@Html.Partial("_OrderDetails")
+<div class="col">
+    @Html.Partial("_OrderDetails")
+</div>
 
 @section AdditionalStyles
-{
+    {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
 }
 
 @section Scripts
-{
+    {
     @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
 
 
     <script type="text/javascript">
-        $(function() {
+        $(function () {
             $("#table").dataTable();
         });
     </script>
