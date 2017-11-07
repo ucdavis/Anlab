@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -58,6 +58,8 @@ namespace Anlab.Core.Domain
         public Guid? SlothTransactionId { get; set; } 
 
         public bool Paid { get; set; } = false;
+
+        public bool IsDeleted { get; set; } = false;
 
         [StringLength(50)]
         public string PaymentType { get; set; }

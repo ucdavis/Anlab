@@ -328,6 +328,52 @@ namespace AnlabMvc.Controllers
         }
 
         [Authorize(Roles = RoleCodes.Admin)]
+        [HttpGet]
+        public async Task<ActionResult> OverrideOrder(int id)
+        {
+            var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+            model.HideLabDetails = false;
+
+            return View(model);
+        }
+
+        [Authorize(Roles = RoleCodes.Admin)]
+        [HttpPost]
+        public async Task<ActionResult> OverrideOrder(int id, Order order)
+        {
+            var orderToUpdate = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (orderToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            orderToUpdate.Paid = order.Paid;
+            orderToUpdate.Status = order.Status;
+            orderToUpdate.IsDeleted = order.IsDeleted;
+
+            await _dbContext.SaveChangesAsync();
+            
+            if (order.IsDeleted)
+            {
+                ErrorMessage = "Order deleted!!!";
+                return RedirectToAction("Orders");
+            }
+            Message = "Order Updated";
+
+            return RedirectToAction("Details", new{id});
+        }
+
+        [Authorize(Roles = RoleCodes.Admin)]
         public async Task<ActionResult> JsonDetails(int id)
         {
             var order = await _dbContext.Orders.SingleOrDefaultAsync(o => o.Id == id);

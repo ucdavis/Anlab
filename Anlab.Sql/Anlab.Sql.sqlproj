@@ -80,4 +80,7 @@
   <ItemGroup>
     <None Include="Compare\SqlExpressToProject.scmp" />
   </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="Anlab.Sql.refactorlog" />
+  </ItemGroup>
 </Project>
