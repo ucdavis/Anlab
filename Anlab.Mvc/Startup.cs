@@ -63,15 +63,24 @@ namespace AnlabMvc
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<ConnectionSettings>(Configuration.GetSection("ConnectionSettings"));
             services.Configure<CyberSourceSettings>(Configuration.GetSection("CyberSourceSettings"));
-            services.Configure<FinancialSettings>(Configuration.GetSection("Financial"));
+            services.Configure<FinancialSettings>(Configuration.GetSection("Financial"));            
 
             // Add framework services.
             if (_environment.IsDevelopment())
             {
-                services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlite("Data Source=anlab.db")
-                );
-            }
+                if (Configuration.GetSection("Dev:UseSql").Value == "Yes")
+                {
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+                    );
+                }
+                else
+                {
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseSqlite("Data Source=anlab.db")
+                    );
+                }
+                }
             else
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
