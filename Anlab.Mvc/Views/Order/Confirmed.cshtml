@@ -63,12 +63,13 @@
     <table id="t">
         <thead>
             <tr>
+                <th>Analysis</th>
+                <th>Sop</th>
                 <th>Per Test</th>
                 <th>Quantity</th>
                 <th>SubTotal</th>
                 <th>Setup Cost</th>
                 <th>Test Total</th>
-                <th>Analysis</th>
             </tr>
         </thead>
         <tbody>
@@ -80,17 +81,19 @@
                     continue;
                 }
                 <tr>
+                    <td>@test.Analysis</td>
+                    <td>@temp.Sop</td>
                     <td>@test.Cost.ToString("C")</td>
                     <td>x @Model.OrderDetails.Quantity</td>
                     <td>@test.SubTotal.ToString("C")</td>
                     <td>@test.SetupCost.ToString("C")</td>
                     <td>@test.Total.ToString("C")</td>
-                    <td>@test.Analysis</td>
                 </tr>
             }
         </tbody>
         <tfoot>
             <tr>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -108,6 +111,7 @@
                 <td>Processing Fee</td>
             </tr>
             <tr>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Anlab.Core.Domain;
@@ -36,6 +36,8 @@ namespace Anlab.Core.Models
         public NewClientInfo NewClientInfo { get; set; }
         public decimal InternalProcessingFee { get; set; }
         public decimal ExternalProcessingFee { get; set; }
+
+        public decimal? RushMultiplier { get; set; }
     }
 
 }

@@ -9,7 +9,6 @@ interface IClientIdModalInputProps {
 }
 
 interface IClientIdModalInputState {
-    internalValue: string;
     error: string;
 }
 
@@ -18,7 +17,6 @@ export class ClientIdModalInput extends React.Component<IClientIdModalInputProps
         super(props);
 
         this.state = {
-            internalValue: this.props.value,
             error: null
         };
     }
@@ -44,13 +42,8 @@ export class ClientIdModalInput extends React.Component<IClientIdModalInputProps
 
     onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        this.setState({ internalValue: value });
-    }
-
-    onBlur = () => {
-        let internalValue = this.state.internalValue;
-        this._validate(internalValue);
-        this.props.handleChange(this.props.property, internalValue);
+        this._validate(value);
+        this.props.handleChange(this.props.property, value);
     }
 
     render() {
@@ -58,9 +51,8 @@ export class ClientIdModalInput extends React.Component<IClientIdModalInputProps
             <Input
                 required={true}
                 error={this.state.error}
-                value={this.state.internalValue}
+                value={this.props.value}
                 onChange={this.onChange}
-                onBlur={this.onBlur}
                 label={this.props.label}
             />
         );

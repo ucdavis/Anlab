@@ -1,0 +1,74 @@
+@using Anlab.Core.Models
+@using Humanizer
+@model AnlabMvc.Models.Order.OrderReviewModel
+@{
+    ViewData["Title"] = "Override Order";
+}
+<div class="col">
+    @Html.Partial("_OrderDetails")
+    
+    <form asp-controller="Lab" asp-action="OverrideOrder" asp-route-id="@Model.Order.Id" method="post">
+        <div class="form-horizontal">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Order.IsDeleted" class="col-md-2 control-label">Delete Order</label>
+                <div class="col-md-10">
+                    <select asp-for="Order.IsDeleted" class="form-control">
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                    <span asp-validation-for="Order.IsDeleted" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.Paid" class="col-md-2 control-label">Paid</label>
+                <div class="col-md-10">
+                    <select asp-for="Order.Paid" class="form-control">
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                    <span asp-validation-for="Order.Paid" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.Status" class="col-md-2 control-label">Status</label>
+                <div class="col-md-10">
+                    <select asp-for="Order.Status" class="form-control">
+                        @foreach (var status in OrderStatusCodes.All)
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Order.Paid" class="text-danger"></span>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-danger"><i class="fa fa-warning" aria-hidden="true"></i> Override Order</button>
+        </div>
+    </form>
+</div>
+@section AdditionalStyles
+    {
+    @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+}
+@section Scripts
+    {
+    @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+    <script type="text/javascript">
+        $(function() {
+            $("#table").dataTable();
+        });
+    </script>
+    <script type="text/javascript">
+        $('#GrandTotal').on('keyup', function () {
+            var prevTotal = $('#prevTotal').val();
+            var grandTotal = $(this).val();
+            if (grandTotal)
+                var adjustAmt = parseFloat(grandTotal) - parseFloat(prevTotal);
+            else
+                var adjustAmt = 0;
+            $('#adjustmentAmount').val(adjustAmt);
+            $('#adjustAmt').html(adjustAmt);
+        });
+    </script>
+    @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
+}

@@ -36,7 +36,8 @@ namespace AnlabMvc.Controllers
             var analysis = await _dbContext.AnalysisMethods.SingleOrDefaultAsync(x => x.Id == id);
 
             if (analysis == null) return NotFound();
-            var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+            var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().UseBootstrap().Build();
+            
             var content = Markdown.ToHtml(analysis.Content, pipeline);
             
             // get everything else in that category
