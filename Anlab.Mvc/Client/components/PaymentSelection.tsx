@@ -106,7 +106,9 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
             .then((response) => response.json())
             .then((accountName) => this.setState({ accountName }))
             .catch((error: Error) => {
-                this.setState({ accountName: null, error: error.message });
+                this.setState({ accountName: null, error: error.message, });
+                const account = null;
+                this.props.onPaymentSelected({ ...this.props.payment, account });
             });
     }
 
