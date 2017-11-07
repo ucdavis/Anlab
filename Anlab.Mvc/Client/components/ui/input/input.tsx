@@ -22,8 +22,14 @@ export default class Input extends React.PureComponent<IInputProps, {}> {
     };
 
     public render() {
+        let classN = "form-group";
+        const { error } = this.props;
+        if (error) {            
+            classN = "form-group has-error";
+        }
+        
         return (
-            <div className="form-group">
+            <div className={classN} >
                 {this.renderLabel()}
                 <input
                     type="text"
@@ -61,7 +67,7 @@ export default class Input extends React.PureComponent<IInputProps, {}> {
         }
 
         return (
-            <small className="form-text text-error">{error}</small>
+            <span className="form-text text-error help-block">{error}</span>
         );
     }
 }
