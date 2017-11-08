@@ -81,7 +81,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                 name: "",
                 phoneNumber: "",
             },
-            clientName: null,
+            clientName: "",
             payment: { clientType: "uc", account: "" },
             project: "",
             quantity: null,
@@ -167,7 +167,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                             newClientInfo={newClientInfo}
                             updateNewClientInfo={this._updateNewClientInfo} />
                     </div>
-                    <Collapse in={(this.state.clientName != null) || (!!this.state.newClientInfo.name.trim())
+                    <Collapse in={(this.state.clientName != null) || (this.state.newClientInfo.name != null && !!this.state.newClientInfo.name.trim())
                         ||  (!!this.state.payment.clientType.trim())}>
                     <div className="form_wrap">
                         <label className="form_header">How will you pay for your order?</label>
@@ -283,7 +283,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         let valid = true;
 
         //check either client name or new client info
-        if (!this.state.clientName
+        if (this.state.clientName == null
             && (!this.state.newClientInfo.name || !this.state.newClientInfo.name.trim()))
         {
             valid = false;
