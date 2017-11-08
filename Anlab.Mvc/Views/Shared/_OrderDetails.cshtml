@@ -74,6 +74,10 @@
     @if(Model.Order.PaymentType != PaymentTypeCodes.CreditCard)
     {
         <span>UC Account: @Model.OrderDetails.Payment.Account</span>
+        @if(!string.IsNullOrWhiteSpace(Model.OrderDetails.Payment.AccountName))
+         {
+             <span> (@Model.OrderDetails.Payment.AccountName)</span>
+         }
     }
     else
     {

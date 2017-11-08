@@ -123,6 +123,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             initialState.isValid = true;
             initialState.payment.clientType = orderInfo.Payment.ClientType;
             initialState.payment.account = orderInfo.Payment.Account;
+            initialState.payment.accountName = orderInfo.Payment.AccountName;
             initialState.clientId = orderInfo.ClientId;
             initialState.newClientInfo = {
                 email: orderInfo.NewClientInfo.Email,
