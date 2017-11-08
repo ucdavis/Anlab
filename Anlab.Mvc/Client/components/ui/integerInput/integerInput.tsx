@@ -52,6 +52,7 @@ export class IntegerInput extends React.Component<IIntegerInputProps, IIntegerIn
 
         if (isNaN(value)) {
             error = "Must be a number.";
+            this.props.onChange(null);
         }
         // check min range or early return
         else if (!isNaN(this.props.min) && this.props.min > value) {
@@ -67,8 +68,8 @@ export class IntegerInput extends React.Component<IIntegerInputProps, IIntegerIn
 
     private onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        this.validate(value);
         this.props.onChange(Number(value));
+        this.validate(value);
     }
 
 }
