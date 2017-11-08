@@ -355,7 +355,8 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
     }
 
     private _onQuantityChanged = (quantity?: number) => {
-        this.setState({ quantity }, this._validate);
+        if (quantity >= 0)
+            this.setState({ quantity }, this._validate);
     }
 
     private _updateNewClientInfo = (info: INewClientInfo) => {
