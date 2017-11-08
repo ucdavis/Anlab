@@ -5,6 +5,7 @@ import Input from "./ui/input/input";
 export interface IPayment {
     clientType: string;
     account?: string;
+    accountName?: string;
 }
 
 interface IPaymentSelectionProps {
@@ -22,7 +23,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
     constructor(props) {
         super(props);
         this.state = {
-            accountName: null,
+            accountName: props.payment.accountName,
             error: "",
         };
     }
@@ -93,7 +94,8 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
         if (this.state.error
           || !this.props.payment.account
           || !this._checkChart(this.props.payment.account.charAt(0))) {
-          this.setState({ accountName: null });
+            this.setState({ accountName: null });
+            this.props.onPaymentSelected({ ...this.props.payment, accountName: null });
           return;
         }
 
@@ -105,11 +107,14 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
                 return response;
             })
             .then((response) => response.json())
-            .then((accountName) => this.setState({ accountName }))
+            .then((accountName) => {
+                this.setState({ accountName });
+                this.props.onPaymentSelected({ ...this.props.payment, accountName: accountName });
+            })
             .catch((error: Error) => {
                 this.setState({ accountName: null, error: error.message });
  
-                this.props.onPaymentSelected({ ...this.props.payment, account: null });
+                this.props.onPaymentSelected({ ...this.props.payment, account: null, accountName: null });
             });
     }
 
