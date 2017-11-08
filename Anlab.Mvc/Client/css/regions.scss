@@ -25,15 +25,19 @@
   z-index:99;
 }
 .stickyfoot {
-  @include boundary
-  border-top-left-radius: 2px;
-  border-top-right-radius: 2px;
-  .well {
-    background-color:#fff;
-    border-radius:0px;
-    border-bottom-left-radius: 2px;
-    border-bottom-right-radius: 2px;
-  }
+    left: 0;
+    width: 100%;
+}
++ .summary-container {
+    @include boundary border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+
+    .well {
+        background-color: #fff;
+        border-radius: 0px;
+        border-bottom-left-radius: 2px;
+        border-bottom-right-radius: 2px;
+    }
 }
 .ordersum {
   background-color:$primary-color;
