@@ -81,7 +81,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                 name: "",
                 phoneNumber: "",
             },
-            clientName: "",
+            clientName: null,
             payment: { clientType: "uc", account: "" },
             project: "",
             quantity: null,
@@ -133,6 +133,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                 name: orderInfo.NewClientInfo.Name,
                 phoneNumber: orderInfo.NewClientInfo.PhoneNumber,
             };
+            initialState.clientName = "";
             initialState.additionalInfoList = orderInfo.AdditionalInfoList;
             initialState.filteredTests = this.props.testItems.filter((item) => item.categories.indexOf(orderInfo.SampleType) !== -1);
 
