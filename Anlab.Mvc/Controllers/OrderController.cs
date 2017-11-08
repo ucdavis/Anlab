@@ -147,7 +147,7 @@ namespace AnlabMvc.Controllers
                 var allTests = await _orderService.PopulateTestItemModel();
                 orderToUpdate.SaveTestDetails(allTests);
 
-                _orderService.PopulateOrder(model, orderToUpdate);
+                await _orderService.PopulateOrder(model, orderToUpdate);
 
                 idForRedirection = model.OrderId.Value;
                 await _context.SaveChangesAsync();
@@ -164,7 +164,7 @@ namespace AnlabMvc.Controllers
                 var allTests = await _orderService.PopulateTestItemModel();
                 order.SaveTestDetails(allTests);
 
-                _orderService.PopulateOrder(model, order);
+                await _orderService.PopulateOrder(model, order);
 
                 _context.Add(order);
                 await _context.SaveChangesAsync();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,7 +15,7 @@ namespace AnlabMvc.Services
 {
     public interface IOrderService
     {
-        void PopulateOrder(OrderSaveModel model, Order orderToUpdate);
+        Task PopulateOrder(OrderSaveModel model, Order orderToUpdate);
         Task SendOrderToAnlab(Order order);
 
         Task<List<TestItemModel>> PopulateTestItemModel(bool showAll = false);
@@ -29,12 +29,14 @@ namespace AnlabMvc.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly ILabworksService _labworksService;
+        private readonly IFinancialService _financialService;
         private readonly AppSettings _appSettings;
 
-        public OrderService(ApplicationDbContext context, ILabworksService labworksService, IOptions<AppSettings> appSettings)
+        public OrderService(ApplicationDbContext context, ILabworksService labworksService, IFinancialService financialService, IOptions<AppSettings> appSettings)
         {
             _context = context;
-            _labworksService = labworksService;            
+            _labworksService = labworksService;
+            _financialService = financialService;
             _appSettings = appSettings.Value;
         }
 
@@ -195,7 +197,7 @@ namespace AnlabMvc.Services
             });
         }
 
-        public void PopulateOrder(OrderSaveModel model, Order orderToUpdate)
+        public async Task PopulateOrder(OrderSaveModel model, Order orderToUpdate)
         {
             orderToUpdate.Project = model.Project;
             orderToUpdate.ClientId = model.ClientId;
@@ -218,12 +220,41 @@ namespace AnlabMvc.Services
                 if (account.Chart == "3" || account.Chart == "L")
                 {
                     orderToUpdate.PaymentType = PaymentTypeCodes.UcDavisAccount;
+                    var accountModel = new AccountModel(orderDetails.Payment.Account);
+                    string result;
+                    try
+                    {
+                        if (!String.IsNullOrWhiteSpace(accountModel.SubAccount))
+                        {
+                            result = await _financialService.GetSubAccountInfo(accountModel.Chart, accountModel.Account,
+                                accountModel.SubAccount);
+                        }
+                        else
+                        {
+                            result = await _financialService.GetAccountInfo(accountModel.Chart, accountModel.Account);
+                        }
+
+                    }
+                    catch 
+                    {
+                        result = "!!! Unable to Validate Account !!!";
+                    }
+                    if (string.IsNullOrWhiteSpace(result))
+                    {
+                        orderDetails.Payment.AccountName = "!!! Unable to Validate Account !!!";
+                    }
+                    else
+                    {
+                        orderDetails.Payment.AccountName = result;
+                    }
+                    orderToUpdate.SaveDetails(orderDetails);
                 }
                 else
                 {
                     orderToUpdate.PaymentType = PaymentTypeCodes.UcOtherAccount;
                 }
             }
+
         }
 
         public async Task SendOrderToAnlab(Order order)
