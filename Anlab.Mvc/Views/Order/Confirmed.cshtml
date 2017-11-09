@@ -1,4 +1,4 @@
-﻿@using Humanizer
+@using Humanizer
 @model AnlabMvc.Models.Order.OrderReviewModel
 
 @{
@@ -48,6 +48,10 @@
         @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
         {
             <span>UC Account: @Model.OrderDetails.Payment.Account</span>
+            @if(!string.IsNullOrWhiteSpace(Model.OrderDetails.Payment.AccountName))
+             {
+                 <span> (@Model.OrderDetails.Payment.AccountName)</span>
+             }
         }
         else
         {

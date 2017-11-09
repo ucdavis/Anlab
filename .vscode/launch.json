@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}/Anlab.Mvc/bin/Debug/netcoreapp1.1/AnlabMvc.dll",
+            "program": "${workspaceRoot}/Anlab.Mvc/bin/Debug/netcoreapp2.0/AnlabMvc.dll",
             "args": [],
             "cwd": "${workspaceRoot}/Anlab.Mvc",
             "stopAtEntry": false,

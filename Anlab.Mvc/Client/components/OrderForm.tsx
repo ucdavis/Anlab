@@ -126,6 +126,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             initialState.isValid = true;
             initialState.payment.clientType = orderInfo.Payment.ClientType;
             initialState.payment.account = orderInfo.Payment.Account;
+            initialState.payment.accountName = orderInfo.Payment.AccountName;
             initialState.clientId = orderInfo.ClientId;
             initialState.newClientInfo = {
                 email: orderInfo.NewClientInfo.Email,
@@ -246,22 +247,25 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                         />
                     </div>
 
-                    <div className="stickyfoot shadowed" data-spy="affix" data-offset-bottom="0">
-                        <Summary
-                            isCreate={this.props.orderId === null}
-                            canSubmit={this.state.isValid && !this.state.isSubmitting}
-                            hideError={this.state.isValid || this.state.isSubmitting}
-                            selectedTests={selectedTests}
-                            quantity={quantity}
-                            clientType={payment.clientType}
-                            onSubmit={this._onSubmit}
-                            status={status}
-                            processingFee={processingFee}
-                            handleErrors={this._handleErrors}
-                        />
+                    <div className="stickyfoot" data-spy="affix" data-offset-bottom="0">
+                        <div className="summary-container shadowed" >
+                            <Summary
+                                isCreate={this.props.orderId === null}
+                                canSubmit={this.state.isValid && !this.state.isSubmitting}
+                                hideError={this.state.isValid || this.state.isSubmitting}
+                                selectedTests={selectedTests}
+                                quantity={quantity}
+                                clientType={payment.clientType}
+                                onSubmit={this._onSubmit}
+                                status={status}
+                                processingFee={processingFee}
+                                handleErrors={this._handleErrors}
+                            />
+                        </div>
                     </div>
-                            </div>
-                    </Collapse>
+                </div>
+                </Collapse>
+
                 </div>
 
 
