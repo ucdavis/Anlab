@@ -10,7 +10,8 @@ describe("<IntegerInput />", () => {
     });
 
     it("should clear error on good value", () => {
-        const target = mount(<IntegerInput min={10} max={20} />);
+        const onChange = jasmine.createSpy('onChange');
+        const target = mount(<IntegerInput min={10} max={20} onChange={onChange} />);
         const internal = target.instance();
 
         const inp = target.find('input');
@@ -21,7 +22,8 @@ describe("<IntegerInput />", () => {
     });
 
     it("should set error on non-number value", () => {
-        const target = mount(<IntegerInput />);
+        const onChange = jasmine.createSpy('onChange');
+        const target = mount(<IntegerInput onChange={onChange}/>);
         const internal = target.instance();
 
         const inp = target.find('input');
@@ -33,7 +35,8 @@ describe("<IntegerInput />", () => {
     });
 
     it("should set error on less than min value", () => {
-        const target = mount(<IntegerInput min={10} />);
+        const onChange = jasmine.createSpy('onChange');
+        const target = mount(<IntegerInput min={10} onChange={onChange}/>);
         const internal = target.instance();
 
         const inp = target.find('input');
@@ -45,7 +48,8 @@ describe("<IntegerInput />", () => {
     });
 
     it("should set error on more than max value", () => {
-        const target = mount(<IntegerInput max={10} />);
+        const onChange = jasmine.createSpy('onChange');
+        const target = mount(<IntegerInput max={10} onChange={onChange}/>);
         const internal = target.instance();
 
         const inp = target.find('input');
