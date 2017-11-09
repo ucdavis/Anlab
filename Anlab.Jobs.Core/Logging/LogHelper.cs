@@ -1,3 +1,4 @@
+using System;
 using Serilog;
 
 namespace Anlab.Jobs.Core.Logging
@@ -16,6 +17,8 @@ namespace Anlab.Jobs.Core.Logging
 
             Log.Logger = LogConfiguration.CreateLogger();
 
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) => Log.Fatal(e.ExceptionObject as Exception, e.ExceptionObject.ToString());
+            
             _loggingSetup = true;
         }
     }

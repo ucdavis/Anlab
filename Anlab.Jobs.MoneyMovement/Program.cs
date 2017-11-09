@@ -8,6 +8,8 @@ using System.IO;
 using System.Threading.Tasks;
 using Anlab.Core.Models;
 using Microsoft.Extensions.Options;
+using Anlab.Jobs.Core.Logging;
+using Serilog;
 
 namespace Anlab.Jobs.MoneyMovement
 {
@@ -20,6 +22,11 @@ namespace Anlab.Jobs.MoneyMovement
 
         static void Main(string[] args)
         {
+            LogHelper.ConfigureLogging();
+
+            var assembyName = typeof(Program).Assembly.GetName();
+            Log.Information("Running {job} build {build}", assembyName.Name, assembyName.Version);
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json");
@@ -58,7 +65,7 @@ namespace Anlab.Jobs.MoneyMovement
             SlothService.ProcessCreditCards(financialSettings).GetAwaiter().GetResult();
             SlothService.MoneyHasMoved(financialSettings).GetAwaiter().GetResult();
 
-            Console.WriteLine("Job Done");
+            Log.Information("Job Done");
         }
     }
 }
