@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { Collapse, Fade } from "react-bootstrap";
 import { Button } from "react-toolbox/lib/button";
 import Dialog from "react-toolbox/lib/dialog";
 import { Input } from "react-toolbox/lib/input";
@@ -47,6 +48,7 @@ interface IOrderFormState {
     errorMessage: string;
     status: string;
     clientId: string;
+    clientName: string;
     newClientInfo: INewClientInfo;
     additionalInfoList: object;
 }
@@ -69,7 +71,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             clientId: (this.props.defaultClientId ? this.props.defaultClientId : ""),
             commodity: "",
             errorMessage: "",
-            filteredTests: this.props.testItems.filter((item) => item.categories.indexOf("Soil") !== -1),
+            filteredTests: [],
             isErrorActive: false,
             isSubmitting: false,
             isValid: false,
@@ -79,10 +81,11 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                 name: "",
                 phoneNumber: "",
             },
+            clientName: null,
             payment: { clientType: "uc", account: "" },
             project: "",
             quantity: null,
-            sampleType: "Soil",
+            sampleType: "",
             sampleTypeQuestions: {
                 plantReportingBasis: "Report results on 100% dry weight basis, based on an average of 10% of the samples.",
                 soilImported: false,
@@ -100,7 +103,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             initialState.payment.account = this.props.defaultAccount;
             initialState.payment.clientType = "uc";
         } else {
-            initialState.payment.clientType = "other";
+            initialState.payment.clientType = "";
         }
 
         const { orderInfo } = this.props;
@@ -131,6 +134,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                 name: orderInfo.NewClientInfo.Name,
                 phoneNumber: orderInfo.NewClientInfo.PhoneNumber,
             };
+            initialState.clientName = "";
             initialState.additionalInfoList = orderInfo.AdditionalInfoList;
             initialState.filteredTests = this.props.testItems.filter((item) => item.categories.indexOf(orderInfo.SampleType) !== -1);
 
@@ -145,7 +149,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         const { defaultEmail, internalProcessingFee, externalProcessingFee } = this.props;
         const {
             payment, selectedTests, sampleType, sampleTypeQuestions, quantity, additionalInfo, project,
-            commodity, additionalEmails, status, clientId, newClientInfo,
+            commodity, additionalEmails, status, clientId, newClientInfo, clientName,
             additionalInfoList, filteredTests, selectedCodes,
         } = this.state;
 
@@ -159,12 +163,14 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                         <label className="form_header">Do you have a Client ID?</label>
                         <ClientId
                             clientId={clientId}
+                            clientName={clientName}
                             handleChange={this._handleChange}
                             clientIdRef={(inputRef) => { this.clientIdRef = inputRef; }}
                             newClientInfo={newClientInfo}
                             updateNewClientInfo={this._updateNewClientInfo} />
                     </div>
-
+                    <Collapse in={(this.state.clientName != null) || (this.state.newClientInfo.name != null && !!this.state.newClientInfo.name.trim())
+                        ||  (!!this.state.payment.clientType.trim())}>
                     <div className="form_wrap">
                         <label className="form_header">How will you pay for your order?</label>
                         <PaymentSelection
@@ -172,7 +178,9 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                             onPaymentSelected={this._onPaymentSelected}
                             ucAccountRef={(inputRef) => { this.ucAccountRef = inputRef; }} />
                     </div>
+                    </Collapse>
 
+                    <Collapse in={!!this.state.payment.clientType.trim() || !!this.state.project.trim()}>
                     <div className="form_wrap">
                         <label className="form_header">What is the project title for this order?</label>
                         <Project
@@ -182,7 +190,10 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                         />
                         <Commodity commodity={commodity} handleChange={this._handleChange} />
                     </div>
+                    </Collapse>
 
+                    <Collapse in={!!this.state.project.trim() || this.state.quantity > 0 || !!this.state.sampleType.trim()}>
+                        <div>
                     <div className="form_wrap">
                         <label className="form_header">Who should be notified for this test?</label>
                         <AdditionalEmails
@@ -192,7 +203,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                             onDeleteEmail={this._onDeleteEmail}
                         />
                     </div>
-
+                    
                     <div className="form_wrap">
                         <label className="form_header">How many samples will you require?</label>
                         <Quantity
@@ -201,7 +212,10 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                             quantityRef={(numberRef) => { this.quantityRef = numberRef; }}
                         />
                     </div>
+                            </div>
+                    </Collapse>
 
+                    <Collapse in={this.state.quantity > 0 || this.state.sampleType !== ""}>
                     <div className="form_wrap">
                         <label className="form_header">What type of samples?</label>
                         <SampleTypeSelection sampleType={sampleType} onSampleSelected={this._onSampleSelected} />
@@ -211,8 +225,15 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                             questions={sampleTypeQuestions}
                             handleChange={this._onSampleQuestionChanged}
                         />
-                        <AdditionalInfo value={additionalInfo} name="additionalInfo" handleChange={this._handleChange} />
                     </div>
+                        </Collapse>
+
+                    <Collapse in={this.state.sampleType !== ""}>
+                        <div>
+                            <div className="form_wrap">
+                                <label className="form_header">Do you have any other information to provide?</label>
+                                <AdditionalInfo value={additionalInfo} name="additionalInfo" handleChange={this._handleChange} />
+                            </div>
 
                     <div className="form_wrap">
                         <label className="form_header margin-bottom-zero">Which tests would you like to run?</label>
@@ -225,24 +246,29 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                             updateAdditionalInfo={this._updateAdditionalInfo}
                         />
                     </div>
-                </div>
 
-                <div className="stickyfoot" data-spy="affix" data-offset-bottom="0">
-                    <div className="summary-container shadowed" >
-                        <Summary
-                            isCreate={this.props.orderId === null}
-                            canSubmit={this.state.isValid && !this.state.isSubmitting}
-                            hideError={this.state.isValid || this.state.isSubmitting}
-                            selectedTests={selectedTests}
-                            quantity={quantity}
-                            clientType={payment.clientType}
-                            onSubmit={this._onSubmit}
-                            status={status}
-                            processingFee={processingFee}
-                            handleErrors={this._handleErrors}
-                        />
+                    <div className="stickyfoot" data-spy="affix" data-offset-bottom="0">
+                        <div className="summary-container shadowed" >
+                            <Summary
+                                isCreate={this.props.orderId === null}
+                                canSubmit={this.state.isValid && !this.state.isSubmitting}
+                                hideError={this.state.isValid || this.state.isSubmitting}
+                                selectedTests={selectedTests}
+                                quantity={quantity}
+                                clientType={payment.clientType}
+                                onSubmit={this._onSubmit}
+                                status={status}
+                                processingFee={processingFee}
+                                handleErrors={this._handleErrors}
+                            />
+                        </div>
                     </div>
                 </div>
+                </Collapse>
+
+                </div>
+
+
 
                 <Dialog
                     actions={this._dialogActions}
@@ -261,8 +287,8 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         // default valid
         let valid = true;
 
-        //check either client id or new client info
-        if ((!this.state.clientId || !this.state.clientId.trim())
+        //check either client name or new client info
+        if (this.state.clientName == null
             && (!this.state.newClientInfo.name || !this.state.newClientInfo.name.trim()))
         {
             valid = false;
@@ -333,7 +359,8 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
     }
 
     private _onQuantityChanged = (quantity?: number) => {
-        this.setState({ quantity }, this._validate);
+
+       this.setState({ quantity }, this._validate);
     }
 
     private _updateNewClientInfo = (info: INewClientInfo) => {
@@ -364,7 +391,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         if (this.state.isValid || this.state.isSubmitting) {
             return;
         }
-        if((!this.state.clientId || !this.state.clientId.trim())
+        if ((!this.state.clientName)
             && (!this.state.newClientInfo.name || !this.state.newClientInfo.name.trim())){
             this._focusInput(this.clientIdRef);
         } else if (this.state.payment.clientType === "uc"

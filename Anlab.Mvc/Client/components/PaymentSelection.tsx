@@ -42,12 +42,13 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
         const activeDiv = "anlab_form_style col-5 active-border active-text active-bg";
         const inactiveDiv = "anlab_form_style col-5";
         const isUcClient = this.props.payment.clientType === "uc";
+        const isNonUc = this.props.payment.clientType === "creditcard";
 
         return (
             <div>
                 <div className="row">
                     <div
-                      className={!isUcClient ? activeDiv : inactiveDiv}
+                        className={isNonUc ? activeDiv : inactiveDiv}
                       onClick={() => this._handleChange("creditcard")}
                     >
                         <h3>Credit Card</h3>
