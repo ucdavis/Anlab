@@ -1,7 +1,6 @@
 import * as React from "react";
 import Input from "react-toolbox/lib/input";
 import { Dialog } from "react-toolbox/lib/dialog";
-import { Button } from "react-toolbox/lib/button";
 import { ClientIdModalInput } from "./ClientIdModalInput";
 
 export interface INewClientInfo {
@@ -93,7 +92,10 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
 
         return (
             <span>
-                <Button className="btn btn-order" onClick={this.toggleModal} >New Client</Button>
+                <div>
+                    <label>Need a new Client ID</label>
+                </div>
+                <button className="btn" onClick={this.toggleModal} >New Client</button>
                 <Dialog
                     actions={this.actions}
                     active={this.state.active}

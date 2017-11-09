@@ -30,18 +30,21 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
 
     public render() {
         return (
-                <div className="row">
-                    <div className="col-4">
+            <div className="row">
+                <div className="col-3">
                         <Input
                             inputRef={this.props.clientIdRef}
                             error={this.state.error}
                             value={this.props.clientId}
                             onChange={this._onChange}
+                            placeholder={"Client ID"}
+                            label={"Already have Client ID"}
                         />
                         {this.props.clientName}
 
                     </div>
-                    <div>
+                    <span className="col-2 t-center align-middle"></span>
+                    <div className="col-3">
                     <ClientIdModal clientInfo={this.props.newClientInfo} updateClient={this._updateNewClientInfo} />
                     {(this.state.newClientInfoAdded || (this.props.newClientInfo.name != null && !!this.props.newClientInfo.name.trim())) &&
                             <i className="fa fa-check" aria-hidden="true"></i>}
