@@ -1,5 +1,7 @@
 using System;
+using Microsoft.Extensions.Configuration;
 using Serilog;
+using StackifyLib;
 
 namespace Anlab.Jobs.Core.Logging
 {
@@ -8,8 +10,10 @@ namespace Anlab.Jobs.Core.Logging
 
         public static bool _loggingSetup = false;
 
-        public static void ConfigureLogging() {
+        public static void ConfigureLogging(IConfigurationRoot configuration) {
             if (_loggingSetup) return;
+
+            configuration.ConfigureStackifyLogging(); // use the config setting keys
 
             LogConfiguration = new LoggerConfiguration()
                 .WriteTo.Stackify()

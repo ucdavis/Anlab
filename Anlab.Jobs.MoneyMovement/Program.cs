@@ -22,15 +22,9 @@ namespace Anlab.Jobs.MoneyMovement
 
         static void Main(string[] args)
         {
-            LogHelper.ConfigureLogging();
-
-            var assembyName = typeof(Program).Assembly.GetName();
-            Log.Information("Running {job} build {build}", assembyName.Name, assembyName.Version);
-
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json");
-
 
             var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
@@ -39,10 +33,14 @@ namespace Anlab.Jobs.MoneyMovement
                 builder.AddUserSecrets<Program>();
             }
 
-
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
             
+            LogHelper.ConfigureLogging(Configuration);
+
+            var assembyName = typeof(Program).Assembly.GetName();
+            Log.Information("Running {job} build {build}", assembyName.Name, assembyName.Version);
+
 
             IServiceCollection services = new ServiceCollection();
             services.AddDbContext<ApplicationDbContext>(options =>

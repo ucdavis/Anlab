@@ -15,14 +15,14 @@ namespace Anlab.Jobs.SendMail
     {
         static void Main(string[] args)
         {
-            LogHelper.ConfigureLogging();
+            // Use this to get configuration info, environmental comes in from azure
+            var builder = new ConfigurationBuilder().AddEnvironmentVariables();
+            var config = builder.Build();
+
+            LogHelper.ConfigureLogging(config);
 
             var assembyName = typeof(Program).Assembly.GetName();
             Log.Information("Running {job} build {build}", assembyName.Name, assembyName.Version);
-
-            // Use this to get configuration info, environmental comes in from azure
-            //var builder = new ConfigurationBuilder().AddEnvironmentVariables();
-            //var config = builder.Build();
 
             IServiceCollection services = new ServiceCollection();
             services.AddDbContext<ApplicationDbContext>(options =>
