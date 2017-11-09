@@ -143,9 +143,6 @@ namespace AnlabMvc
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             _directorySearchService = app.ApplicationServices.GetService<IDirectorySearchService>();
-            app.ConfigureStackifyLogging(Configuration);
-
-            Log.Logger = new LoggerConfiguration().WriteTo.Stackify().CreateLogger();
 
             if (env.IsDevelopment())
             {
