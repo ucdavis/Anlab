@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Collapse, Fade } from "react-bootstrap";
-import Dialog from "react-toolbox/lib/dialog";
+import { Modal, Button } from "react-bootstrap";
 import { AdditionalEmails } from "./AdditionalEmails";
 import { AdditionalInfo } from "./AdditionalInfo";
 import { ClientId } from "./ClientId";
@@ -266,17 +266,17 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
 
                 </div>
 
-
-
-                <Dialog
-                    actions={this._dialogActions}
-                    active={this.state.isErrorActive}
-                    onEscKeyDown={this._handleDialogToggle}
-                    onOverlayClick={this._handleDialogToggle}
-                    title="Errors Detected"
-                >
-                    <p>{this.state.errorMessage}</p>
-                </Dialog>
+                <Modal show={this.state.isErrorActive}>
+                    <Modal.Header>
+                        <Modal.Title>Errors Detected</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {this.state.errorMessage}
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={this._handleDialogToggle}>Got it!</Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         );
     }
@@ -430,10 +430,6 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
     private _handleDialogToggle = () => {
         this.setState({ isErrorActive: !this.state.isErrorActive});
     }
-
-    private _dialogActions = [
-        { label: "Got It!", onClick: this._handleDialogToggle },
-    ];
 
     private _onSubmit = () => {
         // lock for duplicate submits
