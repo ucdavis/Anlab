@@ -79,12 +79,6 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
         this.props.updateClient(clearInfo);
     }
 
-    actions = [
-        { label: "Cancel", onClick: this.cancelAction },
-        { label: "Clear", onClick: this.clearAction },
-        { label: "Save", onClick: this.saveAction }
-    ];
-
     render() {
         let title = "Please input the following information";
         const errorText = "Please correct any errors and complete any required fields before you proceed";

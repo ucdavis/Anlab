@@ -28,10 +28,6 @@ export class TestInfo extends React.PureComponent<ITestInfoProps, ITestInfoState
     }
 
     public render() {
-        const actions = [
-            { label: "Cancel", onClick: this._cancelAction },
-            { label: "Save", onClick: this._saveAction },
-        ];
 
         return (
             <div>
