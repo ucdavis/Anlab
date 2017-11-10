@@ -1,7 +1,7 @@
-﻿import * as React from "react";
-import { Checkbox } from "react-toolbox/lib/checkbox";
+import * as React from "react";
+import { Checkbox } from "react-bootstrap";
 import { Dialog } from "react-toolbox/lib/dialog";
-import Input from "react-toolbox/lib/input";
+import Input from "./ui/input/input";
 import { ITestItem } from "./TestList";
 
 interface ITestInfoProps {
@@ -24,7 +24,7 @@ export class TestInfo extends React.PureComponent<ITestInfoProps, ITestInfoState
 
         this.state = {
             active: false,
-            internalValue: this.props.value,
+            internalValue: ""
         };
     }
 
@@ -36,7 +36,7 @@ export class TestInfo extends React.PureComponent<ITestInfoProps, ITestInfoState
 
         return (
             <div>
-                <Checkbox checked={this.props.selected} onChange={(e) => this._onSelection(this.props.test, e)} />
+                <Checkbox checked={this.props.selected} onChange={(e) => this._onSelection(this.props.test)} />
 
                 <Dialog
                     actions={actions}
@@ -44,7 +44,6 @@ export class TestInfo extends React.PureComponent<ITestInfoProps, ITestInfoState
                     title={this.props.test.additionalInfoPrompt}
                 >
                     <Input
-                        type="text"
                         value={this.state.internalValue}
                         onChange={this._onChange}
                         label="Additional Info Required"
@@ -54,15 +53,16 @@ export class TestInfo extends React.PureComponent<ITestInfoProps, ITestInfoState
         );
     }
 
-    private _onSelection = (test: ITestItem, selected: boolean) => {
+    private _onSelection = (test: ITestItem) => {
         if (test.additionalInfoPrompt) {
-            this.setState({ active: selected });
+            this.setState({ active: !this.props.selected });
         }
 
-        this.props.onSelection(test, selected);
+        this.props.onSelection(test, !this.props.selected);
     }
 
-    private _onChange = (v: string) => {
+    private _onChange = (e) => {
+        const v = e.target.value;
         this.setState({ internalValue: v });
     }
 
