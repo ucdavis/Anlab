@@ -1,6 +1,5 @@
 import * as React from "react";
-import { Checkbox } from "react-bootstrap";
-import { Dialog } from "react-toolbox/lib/dialog";
+import { Checkbox, Modal, Button } from "react-bootstrap";
 import Input from "./ui/input/input";
 import { ITestItem } from "./TestList";
 
@@ -38,17 +37,22 @@ export class TestInfo extends React.PureComponent<ITestInfoProps, ITestInfoState
             <div>
                 <Checkbox checked={this.props.selected} onChange={(e) => this._onSelection(this.props.test)} />
 
-                <Dialog
-                    actions={actions}
-                    active={this.state.active}
-                    title={this.props.test.additionalInfoPrompt}
-                >
-                    <Input
-                        value={this.state.internalValue}
-                        onChange={this._onChange}
-                        label="Additional Info Required"
-                    />
-                </Dialog>
+                <Modal show={this.state.active}>
+                    <Modal.Header>
+                        <Modal.Title>{this.props.test.additionalInfoPrompt}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Input
+                            value={this.state.internalValue}
+                            onChange={this._onChange}
+                            label="Additional Info Required"
+                        />
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={this._cancelAction}>Cancel</Button>
+                        <Button onClick={this._saveAction}>Save</Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         );
     }
