@@ -62,7 +62,7 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
       if (!this.state.toggle) {
         return (
           <Badge onClick={this._toggleAddEmail}>
-            <i className="fa fa-plus" aria-hidden="true" />
+                <i className="emailPlusIconStyle fa fa-plus" aria-hidden="true" />
           </Badge>
         );
       }
