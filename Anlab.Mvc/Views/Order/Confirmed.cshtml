@@ -177,7 +177,7 @@
 {
     <style media="print">
         .noprint {
-            display: none;
+            display: none !important;
         }
 
         th {
@@ -191,18 +191,28 @@
             content: " (" attr(href) ")";
         }
 
-        .footer_contents, .navbar, .head_bleed, footer, header{
-            display: none;
+        .footer_contents, .navbar, .head_bleed, footer, header, .title-right{
+            display: none !important;
         }
 
         .pagetitle_banner {
             margin-bottom: 5px !important;
+            padding: 0 0 0 0 !important;
+        }
+        .pagetitle_banner_contents {
+            height: auto !important;
         }
 
-        body {
-            margin-bottom: 0 !important;
-            padding-bottom: 0 !important;
-            padding-top: 0 !important;
+        body, .whiteblock, .row {
+            margin: 0 0 0 0 !important;
+            padding: 0 0 0 0 !important;
+        }
+        .col-8, .boundary, .pagetitle_banner_contents {
+            margin: 0 0 0 0 !important;
+            padding: 0 0 0 0 !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            -webkit-flex: 100% !important;
         }
         * {
             line-height: 1.3em !important;
@@ -218,9 +228,6 @@
         }
         td {
             padding: 5px;
-        }
-        #print {
-            width: 50%;
         }
     </style>
 }
