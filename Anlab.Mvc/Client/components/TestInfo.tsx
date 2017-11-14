@@ -73,6 +73,7 @@ export class TestInfo extends React.PureComponent<ITestInfoProps, ITestInfoState
 
     private _cancelAction = () => {
         this.setState({ active: false });
+        this.props.updateAdditionalInfo(this.props.test.id, null);
         this.props.onSelection(this.props.test, false);
     }
 }
