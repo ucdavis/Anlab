@@ -1,4 +1,4 @@
-﻿import { mount, render, shallow } from "enzyme";
+import { mount, render, shallow } from "enzyme";
 import * as React from "react";
 import { Badge } from "react-bootstrap";
 import { AdditionalEmails, IAdditionalEmailsProps } from "../AdditionalEmails";
@@ -21,16 +21,19 @@ describe("<AdditionalEmails />", () => {
         expect(target).toContainReact(<Badge>default@example.com</Badge>);
     });
 
-    xit("should render existing emails", () => {
+    it("should render existing emails", () => {
         const target = mount(
             <AdditionalEmails
                 {...defaultProps}
                 addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]}
             />);
 
-        expect(target).toContainReact(<Badge>test1@testy.com</Badge>);
-        expect(target).toContainReact(<Badge>test2@testy.com</Badge>);
-        expect(target).toContainReact(<Badge>test3@testy.com</Badge>);
+        expect(target.find('.badge').at(1)).toHaveText("test1@testy.com");
+        expect(target.find('.badge').at(2)).toHaveText("test2@testy.com");
+        expect(target.find('.badge').at(3)).toHaveText("test3@testy.com");
+        //expect(target).toContainReact(<Badge>test1@testy.com</Badge>);
+        //expect(target).toContainReact(<Badge>test2@testy.com</Badge>);
+        //expect(target).toContainReact(<Badge>test3@testy.com</Badge>);
     });
 
     it("should set state email value on change", () => {
