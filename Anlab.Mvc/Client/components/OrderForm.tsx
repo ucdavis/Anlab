@@ -389,7 +389,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         if (this.state.isValid || this.state.isSubmitting) {
             return;
         }
-        if ((!this.state.clientName)
+        if ((this.state.clientName == null)
             && (!this.state.newClientInfo.name || !this.state.newClientInfo.name.trim())){
             this._focusInput(this.clientIdRef);
         } else if (this.state.payment.clientType === "uc"
