@@ -20,6 +20,23 @@
             <span>@Model.Order.ClientId</span>
         </div>
     }
+    else
+    {
+        <div class="form-group">
+            <h4>New Client Info</h4>
+            <strong>Client Name</strong>
+            <span>@Model.OrderDetails.NewClientInfo.Name</span>
+            <br />
+            <strong>Employer</strong>
+            <span>@Model.OrderDetails.NewClientInfo.Employer</span>
+            <br />
+            <strong>Email</strong>
+            <span>@Model.OrderDetails.NewClientInfo.Email</span>
+            <br />
+            <strong>Phone Number</strong>
+            <span>@Model.OrderDetails.NewClientInfo.PhoneNumber</span>
+        </div>
+    }
 
     <div class="form-group">
         <strong>Project</strong>
@@ -40,7 +57,7 @@
     {
     <div class="form-group">
         <strong>Additional Info</strong>
-        <pre>@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</pre>
+        <div class="well well-sm" style="white-space: pre-wrap">@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</div>
     </div>}
 
     <div class="form-group">
