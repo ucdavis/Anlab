@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
@@ -24,6 +24,9 @@ namespace Anlab.Jobs.SendMail
             var assembyName = typeof(Program).Assembly.GetName();
             Log.Information("Running {job} build {build}", assembyName.Name, assembyName.Version);
 
+
+            return; //Log debugging
+            
             IServiceCollection services = new ServiceCollection();
             services.AddDbContext<ApplicationDbContext>(options =>
                   options.UseSqlite("Data Source=anlab.db")
