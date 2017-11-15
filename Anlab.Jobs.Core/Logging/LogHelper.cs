@@ -23,6 +23,8 @@ namespace Anlab.Jobs.Core.Logging
 
             AppDomain.CurrentDomain.UnhandledException += (sender, e) => Log.Fatal(e.ExceptionObject as Exception, e.ExceptionObject.ToString());
             
+            AppDomain.CurrentDomain.ProcessExit += (sender, e) => Log.CloseAndFlush();
+
             _loggingSetup = true;
         }
     }
