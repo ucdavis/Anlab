@@ -1,4 +1,4 @@
-﻿using Anlab.Core.Data;
+using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using Anlab.Jobs.MoneyMovement;
@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace Anlab.Core.Services
 {
@@ -56,11 +57,11 @@ namespace Anlab.Core.Services
                 var response = await client.PostAsync("Transactions", new StringContent(JsonConvert.SerializeObject(model), System.Text.Encoding.UTF8, "application/json"));
                 if (response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    //Console.WriteLine("No tFound");
+                    //Log.Information("No tFound");
                 }
                 if (response.StatusCode == HttpStatusCode.NoContent)
                 {
-                    //Console.WriteLine("No Content");
+                    //Log.Information("No Content");
                 }
 
                 //TODO: Capture errors?
@@ -82,12 +83,12 @@ namespace Anlab.Core.Services
 
         public async Task MoneyHasMoved(FinancialSettings financialSettings)
         {
-            Console.WriteLine("Beginning UCD money has moved");
+            Log.Information("Beginning UCD money has moved");
             var orders = _dbContext.Orders.Where(a =>
                 a.PaymentType == PaymentTypeCodes.UcDavisAccount && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
             if (orders.Count == 0)
             {
-                Console.WriteLine("No UC Davis accounts orders to process");
+                Log.Information("No UC Davis accounts orders to process");
                 return ;
             }
             using (var client = new HttpClient())
@@ -95,14 +96,14 @@ namespace Anlab.Core.Services
                 client.BaseAddress = new Uri($"{financialSettings.SlothApiUrl}Transactions/");
                 client.DefaultRequestHeaders.Add("X-Auth-Token", financialSettings.SlothApiKey);
 
-                Console.WriteLine($"Processing {orders.Count} orders");
+                Log.Information($"Processing {orders.Count} orders");
                 var updatedCount = 0;
                 var roledBackCount = 0;
                 foreach (var order in orders)
                 {
                     if (!order.SlothTransactionId.HasValue)
                     {
-                        Console.WriteLine($"Order {order.Id} missing SlothTransactionId"); //TODO: Log it
+                        Log.Information($"Order {order.Id} missing SlothTransactionId"); //TODO: Log it
                         continue;
                     }
                     var response = await client.GetAsync(order.SlothTransactionId.ToString());
@@ -126,7 +127,7 @@ namespace Anlab.Core.Services
                         if (slothResponse.Status == "Cancelled")
                         {
                             order.Paid = false;
-                            Console.WriteLine($"Order {order.Id} was cancelled. Setting back to unpaid");
+                            Log.Information($"Order {order.Id} was cancelled. Setting back to unpaid");
                             roledBackCount++;
                             //TODO: Write to the notes field? Trigger off an email?
                         }
@@ -135,19 +136,19 @@ namespace Anlab.Core.Services
                 }
 
                 await _dbContext.SaveChangesAsync();
-                Console.WriteLine($"Updated {updatedCount} orders. Rolled back {roledBackCount} orders.");
+                Log.Information($"Updated {updatedCount} orders. Rolled back {roledBackCount} orders.");
             }
             return;
         }
 
         public async Task ProcessCreditCards(FinancialSettings financialSettings) //Have to pass here, can't get DI working for the job
         {
-            Console.WriteLine("Staring Credit Card process");
+            Log.Information("Staring Credit Card process");
             var orders = _dbContext.Orders.Include(i => i.ApprovedPayment).Where(a =>
                 a.PaymentType == PaymentTypeCodes.CreditCard && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
             if (orders.Count == 0)
             {
-                Console.WriteLine("No Credit Card orders to process.");
+                Log.Information("No Credit Card orders to process.");
                 return;
             }
 
@@ -156,7 +157,7 @@ namespace Anlab.Core.Services
                 client.BaseAddress = new Uri($"{financialSettings.SlothApiUrl}Transactions/processor/");
                 client.DefaultRequestHeaders.Add("X-Auth-Token", financialSettings.SlothApiKey);
 
-                Console.WriteLine($"Processing Credit Card {orders.Count} orders");
+                Log.Information($"Processing Credit Card {orders.Count} orders");
                 var updatedCount = 0;
                 foreach (var order in orders)
                 {
@@ -182,9 +183,9 @@ namespace Anlab.Core.Services
                 }
 
                 await _dbContext.SaveChangesAsync();
-                Console.WriteLine($"Updated {updatedCount} orders");
+                Log.Information($"Updated {updatedCount} orders");
             }
-            Console.WriteLine("Done Credit Card process");
+            Log.Information("Done Credit Card process");
         }
 
     }
