@@ -64,7 +64,7 @@ describe('<PaymentSelection/>', () => {
     });
     describe('Other Selection div', () => {
         it('should render with basic classes 1', () => {
-            const payment = { clientType: 'creditcard', account: '' };
+            const payment = { clientType: 'other', account: '' };
             const target = mount(<PaymentSelection payment={payment} onPaymentSelected={null} ucAccountRef={null} />);
 
             var div = target.find('div').at(2);
@@ -80,7 +80,7 @@ describe('<PaymentSelection/>', () => {
             expect(div.hasClass('col-5')).toBe(true);
         });
         it('should render with actice classes when clientType is not uc', () => {
-            const payment = { clientType: 'creditcard', account: '' };
+            const payment = { clientType: 'other', account: '' };
             const target = mount(<PaymentSelection payment={payment} onPaymentSelected={null} ucAccountRef={null} />);
 
             var div = target.find('div').at(2);
@@ -145,7 +145,7 @@ describe('<PaymentSelection/>', () => {
             expect(div.hasClass('col-5')).toBe(true);
         });
         it('should render with basic classes 2', () => {
-            const payment = { clientType: 'creditcard', account: '' };
+            const payment = { clientType: 'other', account: '' };
             const target = mount(<PaymentSelection payment={payment} onPaymentSelected={null} ucAccountRef={null} />);
 
             var div = target.find('div').at(3);
@@ -162,7 +162,7 @@ describe('<PaymentSelection/>', () => {
             expect(div.hasClass('active-bg')).toBe(true);
         });
         it('should render without actice classes when clientType is not uc', () => {
-            const payment = { clientType: 'creditcard', account: '' };
+            const payment = { clientType: 'other', account: '' };
             const target = mount(<PaymentSelection payment={payment} onPaymentSelected={null} ucAccountRef={null} />);
 
             var div = target.find('div').at(3);
@@ -203,10 +203,10 @@ describe('<PaymentSelection/>', () => {
         expect(target.find('Input').length).toEqual(1);
 
         const internal = target.instance();
-        internal._handleChange('creditcard');
+        internal._handleChange('other');
 
         expect(onPaymentSelected).toHaveBeenCalled();
-        expect(onPaymentSelected).toHaveBeenCalledWith({ clientType: 'creditcard', account: '123' });
+        expect(onPaymentSelected).toHaveBeenCalledWith({ clientType: 'other', account: '123' });
     });
 
 });

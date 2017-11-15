@@ -23,18 +23,16 @@ namespace AnlabMvc.Controllers
         private readonly IOrderService _orderService;
         private readonly IOrderMessageService _orderMessageService;
         private readonly ILabworksService _labworksService;
-        private readonly IFinancialService _financialService;
         private readonly AppSettings _appSettings;
 
         private const string processingCode = "PROC";
 
-        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ILabworksService labworksService, IFinancialService financialService, IOptions<AppSettings> appSettings)
+        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ILabworksService labworksService, IOptions<AppSettings> appSettings)
         {
             _context = context;
             _orderService = orderService;
             _orderMessageService = orderMessageService;
             _labworksService = labworksService;
-            _financialService = financialService;
             _appSettings = appSettings.Value;
         }
 
@@ -249,26 +247,6 @@ namespace AnlabMvc.Controllers
             {
                 ErrorMessage = "Already confirmed";
                 return RedirectToAction("Index");
-            }
-
-            if (order.PaymentType == PaymentTypeCodes.UcDavisAccount)
-            {
-                var orderDetails = order.GetOrderDetails();
-                try
-                {
-                    orderDetails.Payment.AccountName = await _financialService.GetAccountName(orderDetails.Payment.Account);
-                }
-                catch
-                {
-                    orderDetails.Payment.AccountName = string.Empty;
-                }
-                order.SaveDetails(orderDetails);
-                if (string.IsNullOrWhiteSpace(orderDetails.Payment.AccountName))
-                {
-                    await _context.SaveChangesAsync();
-                    ErrorMessage = "Unable to verify UC Account number. Please edit your order and re-enter the UC account number. Then try again.";
-                    return RedirectToAction("Confirmation", new {id = order.Id});
-                }
             }
 
             await _orderService.UpdateTestsAndPrices(order);

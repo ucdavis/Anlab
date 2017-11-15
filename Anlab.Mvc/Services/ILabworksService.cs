@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -279,7 +279,7 @@ namespace AnlabMvc.Services
         {
             var rtValue =
                 new ClientDetailsLookupModel {ClientId = "Fake", Name = "Fake, Name", DefaultAccount = "X-1234567"};
-            if (clientId == "1234567")
+            if (clientId == "fail")
             {
                 rtValue = null;
             }

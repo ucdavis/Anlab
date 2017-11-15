@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +22,15 @@ namespace AnlabMvc.Controllers
 
         [HttpGet("financial/info")]
         public async Task<string> GetAccountInfo(string account)
-        {           
-            var result = await _financialService.GetAccountName(account);
-
+        {
+            var accountModel = new AccountModel(account);
+            string result; 
+            if(!String.IsNullOrWhiteSpace(accountModel.SubAccount))
+            {
+                result = await _financialService.GetSubAccountInfo(accountModel.Chart, accountModel.Account, accountModel.SubAccount);
+            }
+            else
+                result = await _financialService.GetAccountInfo(accountModel.Chart, accountModel.Account);
             return result;
         }
     }

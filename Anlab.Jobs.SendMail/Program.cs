@@ -1,11 +1,13 @@
-﻿using System;
+using System;
 using System.Linq;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Services;
+using Anlab.Jobs.Core.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace Anlab.Jobs.SendMail
 {
@@ -14,9 +16,17 @@ namespace Anlab.Jobs.SendMail
         static void Main(string[] args)
         {
             // Use this to get configuration info, environmental comes in from azure
-            //var builder = new ConfigurationBuilder().AddEnvironmentVariables();
-            //var config = builder.Build();
+            var builder = new ConfigurationBuilder().AddEnvironmentVariables();
+            var config = builder.Build();
 
+            LogHelper.ConfigureLogging(config);
+
+            var assembyName = typeof(Program).Assembly.GetName();
+            Log.Information("Running {job} build {build}", assembyName.Name, assembyName.Version);
+
+
+            return; //Log debugging
+            
             IServiceCollection services = new ServiceCollection();
             services.AddDbContext<ApplicationDbContext>(options =>
                   options.UseSqlite("Data Source=anlab.db")
@@ -65,9 +75,7 @@ namespace Anlab.Jobs.SendMail
                 dbContext.SaveChanges();
             }
 
-            Console.WriteLine("Hello World!");
-
-            Console.ReadKey();
+            Log.Information("Job completed");
         }
     }
 }

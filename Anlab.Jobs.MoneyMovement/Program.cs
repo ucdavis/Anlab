@@ -1,4 +1,4 @@
-﻿using Anlab.Core.Data;
+using Anlab.Core.Data;
 using Anlab.Core.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +8,8 @@ using System.IO;
 using System.Threading.Tasks;
 using Anlab.Core.Models;
 using Microsoft.Extensions.Options;
+using Anlab.Jobs.Core.Logging;
+using Serilog;
 
 namespace Anlab.Jobs.MoneyMovement
 {
@@ -24,7 +26,6 @@ namespace Anlab.Jobs.MoneyMovement
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json");
 
-
             var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
             if (string.Equals(environmentName, "development", StringComparison.OrdinalIgnoreCase))
@@ -32,15 +33,19 @@ namespace Anlab.Jobs.MoneyMovement
                 builder.AddUserSecrets<Program>();
             }
 
-
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
             
+            LogHelper.ConfigureLogging(Configuration);
+
+            var assembyName = typeof(Program).Assembly.GetName();
+            Log.Information("Running {job} build {build}", assembyName.Name, assembyName.Version);
+
 
             IServiceCollection services = new ServiceCollection();
             services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlite("Data Source=..\\Anlab.Mvc\\anlab.db")
-                // options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+                    //options.UseSqlite("Data Source=..\\Anlab.Mvc\\anlab.db")
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
             services.AddTransient<ISlothService, SlothService>();           
             Provider = services.BuildServiceProvider();
@@ -58,7 +63,7 @@ namespace Anlab.Jobs.MoneyMovement
             SlothService.ProcessCreditCards(financialSettings).GetAwaiter().GetResult();
             SlothService.MoneyHasMoved(financialSettings).GetAwaiter().GetResult();
 
-            Console.WriteLine("Job Done");
+            Log.Information("Job Done");
         }
     }
 }
