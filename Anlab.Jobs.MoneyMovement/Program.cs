@@ -49,9 +49,9 @@ namespace Anlab.Jobs.MoneyMovement
             services.AddTransient<ISlothService, SlothService>();           
             Provider = services.BuildServiceProvider();
             
-            SlothService = Provider.GetService<ISlothService>();           
+            SlothService = Provider.GetService<ISlothService>();
 
-            Console.WriteLine("Job Starting");
+            Log.Information("Job Starting");
             var financialSettings = new FinancialSettings
             {
                 SlothApiKey = Configuration.GetSection("Financial:SlothApiKey").Value,

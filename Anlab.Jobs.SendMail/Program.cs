@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
@@ -23,6 +23,8 @@ namespace Anlab.Jobs.SendMail
 
             var assembyName = typeof(Program).Assembly.GetName();
             Log.Information("Running {job} build {build}", assembyName.Name, assembyName.Version);
+
+            return; //TODO: Remove-- Early return for testing logging
 
             IServiceCollection services = new ServiceCollection();
             services.AddDbContext<ApplicationDbContext>(options =>
