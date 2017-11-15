@@ -358,18 +358,9 @@ namespace AnlabMvc.Controllers
                 sb.AppendLine(orderDetails.AdditionalInfo);
             }
 
-            //TODO, remove from here and just show on admin receive
-            if (orderDetails.ClientId == null)
-            {
-                sb.AppendFormat("{0}: {1}{2}", "Name", orderDetails.NewClientInfo.Name, Environment.NewLine);
-                sb.AppendFormat("{0}: {1}{2}", "Employer", orderDetails.NewClientInfo.Employer, Environment.NewLine);
-                sb.AppendFormat("{0}: {1}{2}", "Email", orderDetails.NewClientInfo.Email, Environment.NewLine);
-                sb.AppendFormat("{0}: {1}{2}", "Phone Number", orderDetails.NewClientInfo.PhoneNumber, Environment.NewLine);
-            }
-
             if (orderDetails.SampleType == TestCategories.Plant)
             {
-                sb.AppendFormat("{0}{1}: {2}", "Plant reporting basis", orderDetails.SampleTypeQuestions.PlantReportingBasis, Environment.NewLine);
+                sb.AppendFormat("{0}: {1}{2}", "Plant reporting basis", orderDetails.SampleTypeQuestions.PlantReportingBasis, Environment.NewLine);
             }
 
             if (orderDetails.SampleType == TestCategories.Soil)

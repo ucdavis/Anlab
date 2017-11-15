@@ -1,6 +1,5 @@
 import * as React from "react";
-import Input from "react-toolbox/lib/input";
-import { Dialog } from "react-toolbox/lib/dialog";
+import { Button, Modal } from "react-bootstrap";
 import { ClientIdModalInput } from "./ClientIdModalInput";
 
 export interface INewClientInfo {
@@ -80,12 +79,6 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
         this.props.updateClient(clearInfo);
     }
 
-    actions = [
-        { label: "Cancel", onClick: this.cancelAction },
-        { label: "Clear", onClick: this.clearAction },
-        { label: "Save", onClick: this.saveAction }
-    ];
-
     render() {
         let title = "Please input the following information";
         const errorText = "Please correct any errors and complete any required fields before you proceed";
@@ -95,19 +88,25 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
                 <div>
                     <label>Need a new Client ID</label>
                 </div>
-                <button className="btn" onClick={this.toggleModal} >New Client</button>
-                <Dialog
-                    actions={this.actions}
-                    active={this.state.active}
-                    title={title}
-                    onEscKeyDown={this.cancelAction}
-                >
-                    <ClientIdModalInput property="name" value={this.state.newClientInfo.name} label="Name" handleChange={this.handleChange} />
-                    <ClientIdModalInput property="employer" value={this.state.newClientInfo.employer} label="Employer" handleChange={this.handleChange} />
-                    <ClientIdModalInput property="email" value={this.state.newClientInfo.email} label="Email" handleChange={this.handleChange} />
-                    <ClientIdModalInput property="phoneNumber" value={this.state.newClientInfo.phoneNumber} label="Phone Number" handleChange={this.handleChange} />
-                    {!this.state.isValid ? <div className="alert alert-danger">{errorText}</div> : null}
-                </Dialog>
+                <Button className="btn" onClick={this.toggleModal} >New Client</Button>
+
+                <Modal show={this.state.active}>
+                    <Modal.Header>
+                        <Modal.Title>{title}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                            <ClientIdModalInput property="name" value={this.state.newClientInfo.name} label="Name" handleChange={this.handleChange} />
+                            <ClientIdModalInput property="employer" value={this.state.newClientInfo.employer} label="Employer" handleChange={this.handleChange} />
+                            <ClientIdModalInput property="email" value={this.state.newClientInfo.email} label="Email" handleChange={this.handleChange} />
+                            <ClientIdModalInput property="phoneNumber" value={this.state.newClientInfo.phoneNumber} label="Phone Number" handleChange={this.handleChange} />
+                            {!this.state.isValid ? <div className="alert alert-danger">{errorText}</div> : null}
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={this.clearAction}>Clear</Button>
+                        <Button onClick={this.cancelAction}>Cancel</Button>
+                        <Button onClick={this.saveAction}>Save</Button>
+                    </Modal.Footer>
+                </Modal>
             </span>
         );
     }

@@ -1,5 +1,4 @@
 import * as React from "react";
-import Checkbox from "react-toolbox/lib/checkbox";
 import { ISampleTypeQuestions } from "./SampleTypeQuestions";
 
 interface ISampleSoilQuestions {
