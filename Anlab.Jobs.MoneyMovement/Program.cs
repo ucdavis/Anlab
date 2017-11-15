@@ -1,4 +1,4 @@
-﻿using Anlab.Core.Data;
+using Anlab.Core.Data;
 using Anlab.Core.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -44,8 +44,7 @@ namespace Anlab.Jobs.MoneyMovement
 
             IServiceCollection services = new ServiceCollection();
             services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlite("Data Source=..\\Anlab.Mvc\\anlab.db")
-                // options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
             services.AddTransient<ISlothService, SlothService>();           
             Provider = services.BuildServiceProvider();
