@@ -1,10 +1,28 @@
-﻿@using Humanizer
+@using Humanizer
 @model AnlabMvc.Models.Order.OrderReviewModel
 
 @{
     ViewData["Title"] = "Confirmation";
 }
 <div class="col">
+    @if (Model.Order.ClientId == null)
+    {
+        <div class="form-group">
+            <h4>New Client Info</h4>
+            <strong>Client Name</strong>
+            <span>@Model.OrderDetails.NewClientInfo.Name</span>
+            <br />
+            <strong>Employer</strong>
+            <span>@Model.OrderDetails.NewClientInfo.Employer</span>
+            <br />
+            <strong>Email</strong>
+            <span>@Model.OrderDetails.NewClientInfo.Email</span>
+            <br />
+            <strong>Phone Number</strong>
+            <span>@Model.OrderDetails.NewClientInfo.PhoneNumber</span>
+            <br />
+        </div>
+    }
 <form asp-controller="Lab" asp-action="AddRequestNumber" asp-route-id="@Model.Order.Id" method="post">
     @Html.Hidden("confirm", true)
     <div class="form-group">

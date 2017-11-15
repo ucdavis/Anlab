@@ -273,3 +273,26 @@ table.table {
     }
   }
 }
+
+.badge {
+    background-color: $primary-color !important;
+    line-height: 20px;
+    font-size: 16px;
+    margin-right: 3px;
+    font: $primary-font !important;
+    font-weight: 400;
+
+    input {
+        height: 20px;
+        color: $primary-color;
+    }
+
+    .emailIconStyle {
+        margin-left: 3px;
+        cursor: pointer;
+    }
+    .emailPlusIconStyle {
+        cursor: pointer;
+    }
+
+}

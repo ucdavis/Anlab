@@ -1,8 +1,7 @@
 import * as React from "react";
 
 // ui
-import { Button, IconButton } from "react-toolbox/lib/button";
-import Chip from "react-toolbox/lib/chip";
+import { Badge } from "react-bootstrap";
 
 import { validateEmail } from "../util/email";
 
@@ -35,7 +34,7 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
         return (
             <div>
                 <div>
-                    <Chip>{this.props.defaultEmail}</Chip>
+                    <Badge>{this.props.defaultEmail}</Badge>
                     {this._renderEmails()}
                     {this._renderInput()}
                 </div>
@@ -51,9 +50,10 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
 
         return this.props.addedEmails.map((item) => {
             return (
-                <Chip key={item} deletable={true} onDeleteClick={() => this._onDelete(item)}>
-                  {item}
-                </Chip>
+                <Badge key={item}>
+                    {item}
+                    <i className="emailIconStyle fa fa-times-circle" aria-hidden="true" onClick={() => this._onDelete(item)} />
+                </Badge>
             );
         });
     }
@@ -61,9 +61,9 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
     private _renderInput = () => {
       if (!this.state.toggle) {
         return (
-          <Chip onClick={this._toggleAddEmail}>
-            <i className="emailAddIconStyle fa fa-plus" aria-hidden="true" />
-          </Chip>
+          <Badge onClick={this._toggleAddEmail}>
+                <i className="emailPlusIconStyle fa fa-plus" aria-hidden="true" />
+          </Badge>
         );
       }
 
@@ -75,7 +75,7 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
       }
 
       return (
-        <Chip>
+        <Badge>
           <input
             className="emailInput"
             value={this.state.email}
@@ -90,7 +90,7 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
             aria-hidden="true"
             onClick={this._addEmailAddress}
           />
-        </Chip>
+        </Badge>
       );
     }
 

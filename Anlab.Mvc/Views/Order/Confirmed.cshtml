@@ -20,6 +20,23 @@
             <span>@Model.Order.ClientId</span>
         </div>
     }
+    else
+    {
+        <div class="form-group">
+            <h4>New Client Info</h4>
+            <strong>Client Name</strong>
+            <span>@Model.OrderDetails.NewClientInfo.Name</span>
+            <br />
+            <strong>Employer</strong>
+            <span>@Model.OrderDetails.NewClientInfo.Employer</span>
+            <br />
+            <strong>Email</strong>
+            <span>@Model.OrderDetails.NewClientInfo.Email</span>
+            <br />
+            <strong>Phone Number</strong>
+            <span>@Model.OrderDetails.NewClientInfo.PhoneNumber</span>
+        </div>
+    }
 
     <div class="form-group">
         <strong>Project</strong>
@@ -40,7 +57,7 @@
     {
     <div class="form-group">
         <strong>Additional Info</strong>
-        <pre>@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</pre>
+        <div class="well well-sm" style="white-space: pre-wrap">@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</div>
     </div>}
 
     <div class="form-group">
@@ -160,7 +177,7 @@
 {
     <style media="print">
         .noprint {
-            display: none;
+            display: none !important;
         }
 
         th {
@@ -174,18 +191,28 @@
             content: " (" attr(href) ")";
         }
 
-        .footer_contents, .navbar, .head_bleed, footer, header{
-            display: none;
+        .footer_contents, .navbar, .head_bleed, footer, header, .title-right{
+            display: none !important;
         }
 
         .pagetitle_banner {
             margin-bottom: 5px !important;
+            padding: 0 0 0 0 !important;
+        }
+        .pagetitle_banner_contents {
+            height: auto !important;
         }
 
-        body {
-            margin-bottom: 0 !important;
-            padding-bottom: 0 !important;
-            padding-top: 0 !important;
+        body, .whiteblock, .row {
+            margin: 0 0 0 0 !important;
+            padding: 0 0 0 0 !important;
+        }
+        .col-8, .boundary, .pagetitle_banner_contents {
+            margin: 0 0 0 0 !important;
+            padding: 0 0 0 0 !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            -webkit-flex: 100% !important;
         }
         * {
             line-height: 1.3em !important;
@@ -201,9 +228,6 @@
         }
         td {
             padding: 5px;
-        }
-        #print {
-            width: 50%;
         }
     </style>
 }

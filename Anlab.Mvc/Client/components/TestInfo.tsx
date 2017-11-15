@@ -1,7 +1,6 @@
-﻿import * as React from "react";
-import { Checkbox } from "react-toolbox/lib/checkbox";
-import { Dialog } from "react-toolbox/lib/dialog";
-import Input from "react-toolbox/lib/input";
+import * as React from "react";
+import { Checkbox, Modal, Button } from "react-bootstrap";
+import Input from "./ui/input/input";
 import { ITestItem } from "./TestList";
 
 interface ITestInfoProps {
@@ -24,45 +23,46 @@ export class TestInfo extends React.PureComponent<ITestInfoProps, ITestInfoState
 
         this.state = {
             active: false,
-            internalValue: this.props.value,
+            internalValue: ""
         };
     }
 
     public render() {
-        const actions = [
-            { label: "Cancel", onClick: this._cancelAction },
-            { label: "Save", onClick: this._saveAction },
-        ];
 
         return (
             <div>
-                <Checkbox checked={this.props.selected} onChange={(e) => this._onSelection(this.props.test, e)} />
+                <Checkbox checked={this.props.selected} onChange={(e) => this._onSelection(this.props.test)} />
 
-                <Dialog
-                    actions={actions}
-                    active={this.state.active}
-                    title={this.props.test.additionalInfoPrompt}
-                >
-                    <Input
-                        type="text"
-                        value={this.state.internalValue}
-                        onChange={this._onChange}
-                        label="Additional Info Required"
-                    />
-                </Dialog>
+                <Modal show={this.state.active}>
+                    <Modal.Header>
+                        <Modal.Title>{this.props.test.additionalInfoPrompt}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Input
+                            value={this.state.internalValue}
+                            onChange={this._onChange}
+                            label="Additional Info Required"
+                        />
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={this._cancelAction}>Cancel</Button>
+                        <Button onClick={this._saveAction}>Save</Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         );
     }
 
-    private _onSelection = (test: ITestItem, selected: boolean) => {
+    private _onSelection = (test: ITestItem) => {
         if (test.additionalInfoPrompt) {
-            this.setState({ active: selected });
+            this.setState({ active: !this.props.selected });
         }
 
-        this.props.onSelection(test, selected);
+        this.props.onSelection(test, !this.props.selected);
     }
 
-    private _onChange = (v: string) => {
+    private _onChange = (e) => {
+        const v = e.target.value;
         this.setState({ internalValue: v });
     }
 
@@ -73,6 +73,7 @@ export class TestInfo extends React.PureComponent<ITestInfoProps, ITestInfoState
 
     private _cancelAction = () => {
         this.setState({ active: false });
+        this.props.updateAdditionalInfo(this.props.test.id, null);
         this.props.onSelection(this.props.test, false);
     }
 }

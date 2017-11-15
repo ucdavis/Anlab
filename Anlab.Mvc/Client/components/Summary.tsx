@@ -1,6 +1,6 @@
 import * as React from "react";
 import NumberFormat from "react-number-format";
-import {Button} from "react-toolbox/lib/button";
+import {Button} from "react-bootstrap";
 import { IPayment } from "./PaymentSelection";
 import { ITestItem } from "./TestList";
 
@@ -82,8 +82,6 @@ export default class Summary extends React.PureComponent<ISummaryProps, {}> {
                         {this.props.canSubmit ? <div className="alert alert-info">{infoText}</div> : null}
                         {!this.props.hideError ? <div className="alert alert-danger">{errorText}</div> : null}
                         <Button
-                            raised={true}
-                            primary={true}
                             disabled={!this.props.canSubmit}
                             onClick={this.props.onSubmit}
                         >

@@ -5,7 +5,6 @@ import NumberFormat from "react-number-format";
 import { groupBy } from "../util/arrayHelpers";
 import { IPayment } from "./PaymentSelection";
 
-import { Dialog } from "react-toolbox/lib/dialog";
 import showdown from "showdown";
 import { TestInfo } from "./TestInfo";
 

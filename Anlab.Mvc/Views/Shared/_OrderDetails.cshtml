@@ -61,7 +61,7 @@
 @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.AdditionalInfo)) {
     <div class="form-group">
         <strong>Additional Info</strong>
-        <div class="well well-sm" style="white-space: pre;">@Model.OrderDetails.AdditionalInfo</div>
+        <div class="well well-sm" style="white-space: pre-wrap">@Model.OrderDetails.AdditionalInfo</div>
     </div>
 }
 <div class="form-group">
@@ -89,7 +89,7 @@
 {
     <div class="form-group">
         <strong>Lab Comments</strong>
-        <div class="well well-sm" style="white-space: pre">@Model.OrderDetails.LabComments</div>
+        <div class="well well-sm" style="white-space: pre-wrap">@Model.OrderDetails.LabComments</div>
     </div>
 }
 

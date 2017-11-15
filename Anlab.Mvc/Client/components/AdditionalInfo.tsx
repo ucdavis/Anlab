@@ -1,5 +1,4 @@
 import * as React from "react";
-import Input from "react-toolbox/lib/input";
 
 export interface IAdditionalInfoProps {
     handleChange: (key: string, value: string) => void;

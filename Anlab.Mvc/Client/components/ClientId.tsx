@@ -5,6 +5,7 @@ import { ClientIdModal, INewClientInfo } from "./ClientIdModal";
 
 interface IClientIdProps {
     clientId: string;
+    clientName: string;
     handleChange: (key: string, value: string) => void;
     clientIdRef: (element: HTMLInputElement) => void;
     newClientInfo: INewClientInfo;
@@ -12,8 +13,6 @@ interface IClientIdProps {
 }
 
 interface IClientIdInputState {
-    internalValue: string;
-    clientName: string;
     error: string;
     newClientInfoAdded: boolean;
 }
@@ -24,28 +23,28 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
         super(props);
 
         this.state = {
-            clientName: null,
             error: null,
-            internalValue: this.props.clientId,
             newClientInfoAdded: false,
         };
     }
 
     public render() {
         return (
-                <div className="row">
-                    <div className="col-4">
+            <div className="row">
+                <div className="col-3">
                         <Input
                             inputRef={this.props.clientIdRef}
-                            onBlur={this._onBlur}
                             error={this.state.error}
-                            value={this.state.internalValue}
+                            value={this.props.clientId}
                             onChange={this._onChange}
+                            placeholder={"Client ID"}
+                            label={"Already have Client ID"}
                         />
-                        {this.state.clientName}
+                        {this.props.clientName}
 
                     </div>
-                    <div>
+                    <span className="col-2 t-center align-middle"></span>
+                    <div className="col-3">
                     <ClientIdModal clientInfo={this.props.newClientInfo} updateClient={this._updateNewClientInfo} />
                     {(this.state.newClientInfoAdded || (this.props.newClientInfo.name != null && !!this.props.newClientInfo.name.trim())) &&
                             <i className="fa fa-check" aria-hidden="true"></i>}
@@ -69,19 +68,16 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     private _onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         this._validate(value);
-        this.setState({ internalValue: value });
-    }
-
-    private _onBlur = () => {
-        const internalValue = this.state.internalValue;
-        this._validate(internalValue);
-        this.props.handleChange("clientId", internalValue);
-        this._lookupClientId();
+        this.props.handleChange("clientId", value);
+        this._lookupClientId(value);
     }
 
     private _validate = (v: string) => {
-        if (v) {
-            this.setState({ error: "" });
+        if (v && !!v.trim()) {
+            if (v.length < 4)
+                this.setState({ error: "Client IDs must be at least 4 characters long" });
+            else
+                this.setState({ error: "" });
             return;
         }
         if (this.state.newClientInfoAdded) {
@@ -92,13 +88,13 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
         this.setState({ error: "Either a Client ID or New Client Info is required" });
     }
 
-    private _lookupClientId = () => {
-        if (!this.state.internalValue || !this.state.internalValue.trim()) {
-            this.setState({ clientName: null });
+    private _lookupClientId = (value) => {
+        if (!value || !value.trim() || value.length < 4) {
+            this.props.handleChange("clientName", null);
             return;
         }
 
-        fetch(`/order/LookupClientId?id=${this.state.internalValue}`, { credentials: "same-origin" })
+        fetch(`/order/LookupClientId?id=${value.trim()}`, { credentials: "same-origin" })
             .then((response) => {
                 if (response === null || response.status !== 200) {
                   throw new Error("The client id you entered could not be found");
@@ -107,10 +103,12 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
             })
             .then((response) => response.json())
             .then((response) => {
-                this.setState({ clientName: response.name, error: null });
+                this.setState({ error: null });
+                this.props.handleChange("clientName", response.name);
             })
             .catch((error: Error) => {
-                this.setState({ clientName: null, error: error.message });
+                this.setState({ error: error.message });
+                this.props.handleChange("clientName", null);
             });
     }
 }

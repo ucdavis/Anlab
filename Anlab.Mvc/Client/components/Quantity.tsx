@@ -1,5 +1,5 @@
-﻿import * as React from "react";
-import { NumberInput } from "./ui/numberInput/numberInput";
+import * as React from "react";
+import { IntegerInput } from "./ui/integerInput/integerInput";
 
 interface IQuantityProps {
     quantity?: number;
@@ -10,12 +10,11 @@ interface IQuantityProps {
 export class Quantity extends React.Component<IQuantityProps, {}> {
     public render() {
         return (
-            <NumberInput
+            <IntegerInput
                 name="quantity"
                 label="Quantity"
                 value={this.props.quantity}
                 onChange={this.props.onQuantityChanged}
-                integer={true}
                 min={1}
                 max={100}
                 required={true}

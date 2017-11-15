@@ -23,16 +23,18 @@ namespace AnlabMvc.Controllers
         private readonly IOrderService _orderService;
         private readonly IOrderMessageService _orderMessageService;
         private readonly ILabworksService _labworksService;
+        private readonly IFinancialService _financialService;
         private readonly AppSettings _appSettings;
 
         private const string processingCode = "PROC";
 
-        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ILabworksService labworksService, IOptions<AppSettings> appSettings)
+        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ILabworksService labworksService, IFinancialService financialService, IOptions<AppSettings> appSettings)
         {
             _context = context;
             _orderService = orderService;
             _orderMessageService = orderMessageService;
             _labworksService = labworksService;
+            _financialService = financialService;
             _appSettings = appSettings.Value;
         }
 
@@ -249,6 +251,26 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index");
             }
 
+            if (order.PaymentType == PaymentTypeCodes.UcDavisAccount)
+            {
+                var orderDetails = order.GetOrderDetails();
+                try
+                {
+                    orderDetails.Payment.AccountName = await _financialService.GetAccountName(orderDetails.Payment.Account);
+                }
+                catch
+                {
+                    orderDetails.Payment.AccountName = string.Empty;
+                }
+                order.SaveDetails(orderDetails);
+                if (string.IsNullOrWhiteSpace(orderDetails.Payment.AccountName))
+                {
+                    await _context.SaveChangesAsync();
+                    ErrorMessage = "Unable to verify UC Account number. Please edit your order and re-enter the UC account number. Then try again.";
+                    return RedirectToAction("Confirmation", new {id = order.Id});
+                }
+            }
+
             await _orderService.UpdateTestsAndPrices(order);
 
             UpdateAdditionalInfo(order);
@@ -336,18 +358,9 @@ namespace AnlabMvc.Controllers
                 sb.AppendLine(orderDetails.AdditionalInfo);
             }
 
-            //TODO, remove from here and just show on admin receive
-            if (orderDetails.ClientId == null)
-            {
-                sb.AppendFormat("{0}: {1}{2}", "Name", orderDetails.NewClientInfo.Name, Environment.NewLine);
-                sb.AppendFormat("{0}: {1}{2}", "Employer", orderDetails.NewClientInfo.Employer, Environment.NewLine);
-                sb.AppendFormat("{0}: {1}{2}", "Email", orderDetails.NewClientInfo.Email, Environment.NewLine);
-                sb.AppendFormat("{0}: {1}{2}", "Phone Number", orderDetails.NewClientInfo.PhoneNumber, Environment.NewLine);
-            }
-
             if (orderDetails.SampleType == TestCategories.Plant)
             {
-                sb.AppendFormat("{0}{1}: {2}", "Plant reporting basis", orderDetails.SampleTypeQuestions.PlantReportingBasis, Environment.NewLine);
+                sb.AppendFormat("{0}: {1}{2}", "Plant reporting basis", orderDetails.SampleTypeQuestions.PlantReportingBasis, Environment.NewLine);
             }
 
             if (orderDetails.SampleType == TestCategories.Soil)
