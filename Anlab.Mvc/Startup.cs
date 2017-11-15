@@ -142,10 +142,9 @@ namespace AnlabMvc
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            _directorySearchService = app.ApplicationServices.GetService<IDirectorySearchService>();
             app.ConfigureStackifyLogging(Configuration);
 
-            Log.Logger = new LoggerConfiguration().WriteTo.Stackify().CreateLogger();
+            _directorySearchService = app.ApplicationServices.GetService<IDirectorySearchService>();
 
             if (env.IsDevelopment())
             {
