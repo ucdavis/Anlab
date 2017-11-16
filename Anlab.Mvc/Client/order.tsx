@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import * as ReactDOM from "react-dom";
 import OrderForm, { IOrderFormProps } from "./components/OrderForm";
 
@@ -8,6 +8,7 @@ declare var window: any;
 const props = {
     defaultAccount: window.App.defaultAccount,
     defaultClientId: window.App.defaultClientId,
+    defaultClientIdName: window.App.defaultClientIdName,
     defaultEmail: window.App.defaultEmail,
     testItems: window.App.orderData.testItems,
     internalProcessingFee: window.App.orderData.internalProcessingFee,

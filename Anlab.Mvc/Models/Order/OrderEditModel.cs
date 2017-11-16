@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,5 +20,7 @@ namespace AnlabMvc.Models.Order
         public string DefaultEmail { get; set; }
         
         public string DefaultClientId { get; set; }
+
+        public string DefaultClientIdName { get; set; }
     }
 }
