@@ -1,4 +1,4 @@
-﻿using Anlab.Core.Domain;
+using Anlab.Core.Domain;
 using AnlabMvc.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -168,9 +168,10 @@ namespace Test.TestsController
             savedResult.Name.ShouldBe("FirstName7 LastName7");
             savedResult.Account.ShouldBe("ACCOUNT7");
             savedResult.Phone.ShouldBe("Phone7");
+            savedResult.ClientId.ShouldBe("ClientId7");
             //Unchanged Values
 
-            savedResult.ClientId.ShouldBe("ClientId3");
+
             savedResult.Id.ShouldBe("3");
         }
 

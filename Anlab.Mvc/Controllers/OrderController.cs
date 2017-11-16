@@ -68,6 +68,7 @@ namespace AnlabMvc.Controllers
                 {
                     model.DefaultAccount = model.DefaultAccount ?? defaults.DefaultAccount;
                     model.DefaultClientId = defaults.ClientId;
+                    model.DefaultClientIdName = defaults.Name;
 
                 }
             }

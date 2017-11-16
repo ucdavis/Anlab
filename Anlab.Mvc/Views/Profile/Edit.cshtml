@@ -1,4 +1,4 @@
-﻿@model Anlab.Core.Domain.User
+@model Anlab.Core.Domain.User
 
 @{
     ViewBag.Title = "Edit profile";
@@ -31,6 +31,13 @@
             <div class="col-md-10">
                 <input asp-for="Phone" class="form-control" />
                 <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="ClientId" class="col-md-2 control-label">Client Id</label>
+            <div class="col-md-10">
+                <input asp-for="ClientId" class="form-control" />
+                <span asp-validation-for="ClientId" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">

@@ -22,6 +22,7 @@ export interface IOrderFormProps {
     defaultAccount: string;
     defaultEmail: string;
     defaultClientId: string;
+    defaultClientIdName: string;
     orderInfo: any;
     internalProcessingFee: number;
     externalProcessingFee: number;
@@ -79,7 +80,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                 name: "",
                 phoneNumber: "",
             },
-            clientName: null,
+            clientName: (this.props.defaultClientIdName ? this.props.defaultClientIdName : null),
             payment: { clientType: "uc", account: "" },
             project: "",
             quantity: null,
