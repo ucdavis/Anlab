@@ -17,9 +17,6 @@
                 <input type="hidden" name="signature" value="@ViewBag.Signature"/>
                 <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-credit-card" aria-hidden="true"></i> @(String.Format("{0:C}", Model.OrderReviewModel.OrderDetails.GrandTotal)) Pay Now</button>
             </form>
-            <a class="btn" href="#">
-                <i class="fa fa-money" aria-hidden="true"></i> Pay Another Way
-            </a>
         }
         else
         {
