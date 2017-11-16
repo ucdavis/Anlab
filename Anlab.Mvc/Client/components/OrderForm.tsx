@@ -14,6 +14,7 @@ import { ISampleTypeQuestions, SampleTypeQuestions } from "./SampleTypeQuestions
 import { SampleTypeSelection } from "./SampleTypeSelection";
 import Summary from "./Summary";
 import { ITestItem, TestList } from "./TestList";
+import { ViewMode } from "./ViewMode";
 
 declare var $: any;
 
@@ -29,6 +30,7 @@ export interface IOrderFormProps {
 }
 
 interface IOrderFormState {
+    placingOrder: boolean;
     additionalInfo: string;
     project: string;
     filteredTests: ITestItem[];
@@ -63,6 +65,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         super(props);
 
         const initialState: IOrderFormState = {
+            placingOrder: true,
             additionalEmails: [],
             additionalInfo: "",
             additionalInfoList: {},
@@ -148,7 +151,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         const {
             payment, selectedTests, sampleType, sampleTypeQuestions, quantity, additionalInfo, project,
             commodity, additionalEmails, status, clientId, newClientInfo, clientName,
-            additionalInfoList, filteredTests, selectedCodes,
+            additionalInfoList, filteredTests, selectedCodes, placingOrder,
         } = this.state;
 
         const isUcClient = this.state.payment.clientType === "uc";
@@ -158,15 +161,22 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             <div>
                 <div>
                     <div className="form_wrap">
-                        <label className="form_header">Do you have a Client ID?</label>
-                        <ClientId
-                            clientId={clientId}
-                            clientName={clientName}
-                            handleChange={this._handleChange}
-                            clientIdRef={(inputRef) => { this.clientIdRef = inputRef; }}
-                            newClientInfo={newClientInfo}
-                            updateNewClientInfo={this._updateNewClientInfo} />
+                        <ViewMode
+                            placingOrder={placingOrder}
+                            handleChange={this._handleChange}/>
                     </div>
+                    <Collapse in={placingOrder}>
+                        <div className="form_wrap">
+                            <label className="form_header">Do you have a Client ID?</label>
+                            <ClientId
+                                clientId={clientId}
+                                clientName={clientName}
+                                handleChange={this._handleChange}
+                                clientIdRef={(inputRef) => { this.clientIdRef = inputRef; }}
+                                newClientInfo={newClientInfo}
+                                updateNewClientInfo={this._updateNewClientInfo} />
+                        </div>
+                    </Collapse>
                     <Collapse in={(this.state.clientName != null) || (this.state.newClientInfo.name != null && !!this.state.newClientInfo.name.trim())
                         ||  (!!this.state.payment.clientType.trim())}>
                     <div className="form_wrap">
