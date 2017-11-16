@@ -165,6 +165,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                             placingOrder={placingOrder}
                             handleChange={this._handleChange}/>
                     </div>
+
                     <Collapse in={placingOrder}>
                         <div className="form_wrap">
                             <label className="form_header">Do you have a Client ID?</label>
@@ -177,8 +178,9 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                                 updateNewClientInfo={this._updateNewClientInfo} />
                         </div>
                     </Collapse>
-                    <Collapse in={(this.state.clientName != null) || (this.state.newClientInfo.name != null && !!this.state.newClientInfo.name.trim())
-                        ||  (!!this.state.payment.clientType.trim())}>
+
+                    <Collapse in={placingOrder && ((this.state.clientName != null) || (this.state.newClientInfo.name != null && !!this.state.newClientInfo.name.trim())
+                        ||  (!!this.state.payment.clientType.trim()))}>
                     <div className="form_wrap">
                         <label className="form_header">How will you pay for your order?</label>
                         <PaymentSelection
@@ -188,7 +190,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                     </div>
                     </Collapse>
 
-                    <Collapse in={!!this.state.payment.clientType.trim() || !!this.state.project.trim()}>
+                    <Collapse in={placingOrder && (!!this.state.payment.clientType.trim() || !!this.state.project.trim())}>
                     <div className="form_wrap">
                         <label className="form_header">What is the project title for this order?</label>
                         <Project
@@ -200,7 +202,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                     </div>
                     </Collapse>
 
-                    <Collapse in={!!this.state.project.trim() || this.state.quantity > 0 || !!this.state.sampleType.trim()}>
+                    <Collapse in={!placingOrder || (!!this.state.project.trim() || this.state.quantity > 0 || !!this.state.sampleType.trim())}>
                         <div>
                     <div className="form_wrap">
                         <label className="form_header">Who should be notified for this test?</label>
