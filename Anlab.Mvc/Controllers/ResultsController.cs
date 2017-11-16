@@ -21,20 +21,17 @@ namespace AnlabMvc.Controllers
         private readonly IFileStorageService _fileStorageService;
         private readonly CyberSourceSettings _cyberSourceSettings;
         private readonly IDataSigningService _dataSigningService;
-        private readonly ISlothService _slothService;
         private readonly AppSettings _appSettings;
 
         public ResultsController(ApplicationDbContext context,
             IFileStorageService fileStorageService,
             IDataSigningService dataSigningService,
             IOptions<CyberSourceSettings> cyberSourceSettings,
-            IOptions<AppSettings> appSettings,
-            ISlothService slothService)
+            IOptions<AppSettings> appSettings)
         {
             _context = context;
             _fileStorageService = fileStorageService;
             _dataSigningService = dataSigningService;
-            _slothService = slothService;
             _appSettings = appSettings.Value;
             _cyberSourceSettings = cyberSourceSettings.Value;
         }
@@ -95,23 +92,7 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Link", new { id = id });
             }
 
-            if (order.PaymentType == PaymentTypeCodes.UcDavisAccount)
-            {
-                var slothResult = await _slothService.MoveMoney(order);
-                if (slothResult.Success)
-                {
-                    order.KfsTrackingNumber = slothResult.KfsTrackingNumber;
-                    order.SlothTransactionId = slothResult.Id;
-                    order.Paid = true;
-                    Message = "UC Davis account marked as paid";
-                }
-                else
-                {
-                    ErrorMessage = "There was a problem processing the payment for this account.";
-                    return RedirectToAction("Link", new { id = id });
-                }
-            }
-            else
+            if (order.PaymentType == PaymentTypeCodes.UcOtherAccount)
             {
                 order.Paid = true;
                 Message = "UC account marked as paid";
