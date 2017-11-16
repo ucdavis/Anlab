@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Anlab.Core.Data;
 using Anlab.Core.Models;
+using Anlab.Core.Services;
 using AnlabMvc.Models.Configuration;
 using Microsoft.EntityFrameworkCore;
 using AnlabMvc.Models.Order;
@@ -20,13 +21,20 @@ namespace AnlabMvc.Controllers
         private readonly IFileStorageService _fileStorageService;
         private readonly CyberSourceSettings _cyberSourceSettings;
         private readonly IDataSigningService _dataSigningService;
+        private readonly ISlothService _slothService;
         private readonly AppSettings _appSettings;
 
-        public ResultsController(ApplicationDbContext context, IFileStorageService fileStorageService, IDataSigningService dataSigningService, IOptions<CyberSourceSettings> cyberSourceSettings, IOptions<AppSettings> appSettings)
+        public ResultsController(ApplicationDbContext context,
+            IFileStorageService fileStorageService,
+            IDataSigningService dataSigningService,
+            IOptions<CyberSourceSettings> cyberSourceSettings,
+            IOptions<AppSettings> appSettings,
+            ISlothService slothService)
         {
             _context = context;
             _fileStorageService = fileStorageService;
             _dataSigningService = dataSigningService;
+            _slothService = slothService;
             _appSettings = appSettings.Value;
             _cyberSourceSettings = cyberSourceSettings.Value;
         }
@@ -69,6 +77,50 @@ namespace AnlabMvc.Controllers
 
             var result = await _fileStorageService.GetSharedAccessSignature(order.ResultsFileIdentifier);
             return Redirect(result.AccessUrl);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmPayment(Guid id)
+        {
+            var order = await _context.Orders.SingleOrDefaultAsync(o => o.ShareIdentifier == id);
+            if (order.Paid)
+            {
+                ErrorMessage = "Payment has already been confirmed";
+                return RedirectToAction("Link", new {id = id});
+            }
+
+            if (order.PaymentType == PaymentTypeCodes.CreditCard)
+            {
+                ErrorMessage = "Order requires Credit Card or Other Payment type, not a UC Account payment";
+                return RedirectToAction("Link", new { id = id });
+            }
+
+            if (order.PaymentType == PaymentTypeCodes.UcDavisAccount)
+            {
+                var slothResult = await _slothService.MoveMoney(order);
+                if (slothResult.Success)
+                {
+                    order.KfsTrackingNumber = slothResult.KfsTrackingNumber;
+                    order.SlothTransactionId = slothResult.Id;
+                    order.Paid = true;
+                    Message = "UC Davis account marked as paid";
+                }
+                else
+                {
+                    ErrorMessage = "There was a problem processing the payment for this account.";
+                    return RedirectToAction("Link", new { id = id });
+                }
+            }
+            else
+            {
+                order.Paid = true;
+                Message = "UC account marked as paid";
+            }
+
+            await _context.SaveChangesAsync();
+
+
+            return RedirectToAction("Link", new { id = id });
         }
 
         private Dictionary<string, string> SetDictionaryValues(Anlab.Core.Domain.Order order, Anlab.Core.Domain.User user)
