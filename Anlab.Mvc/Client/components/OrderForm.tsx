@@ -184,6 +184,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                     <div className="form_wrap">
                         <label className="form_header">How will you pay for your order?</label>
                         <PaymentSelection
+                            placingOrder={placingOrder}
                             payment={payment}
                             onPaymentSelected={this._onPaymentSelected}
                             ucAccountRef={(inputRef) => { this.ucAccountRef = inputRef; }} />
@@ -341,7 +342,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
 
     private _onSampleSelected = (sampleType: string) => {
         var agree = true;
-        if (this.state.selectedTests.length > 0)
+        if (this.state.placingOrder && this.state.selectedTests.length > 0)
         {
             agree = confirm("You may only choose tests from one category. Your previous progress will not be saved on submit.");
         }
