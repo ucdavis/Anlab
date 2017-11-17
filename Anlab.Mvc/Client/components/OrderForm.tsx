@@ -179,7 +179,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                         </div>
                     </Collapse>
 
-                    <Collapse in={placingOrder && ((this.state.clientName != null) || (this.state.newClientInfo.name != null && !!this.state.newClientInfo.name.trim())
+                    <Collapse in={!placingOrder || ((this.state.clientName != null) || (this.state.newClientInfo.name != null && !!this.state.newClientInfo.name.trim())
                         ||  (!!this.state.payment.clientType.trim()))}>
                     <div className="form_wrap">
                         <label className="form_header">How will you pay for your order?</label>
@@ -225,7 +225,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                             </div>
                     </Collapse>
 
-                    <Collapse in={this.state.quantity > 0 || this.state.sampleType !== ""}>
+                    <Collapse in={!placingOrder ||  this.state.quantity > 0 || this.state.sampleType !== ""}>
                     <div className="form_wrap">
                         <label className="form_header">What type of samples?</label>
                         <SampleTypeSelection sampleType={sampleType} onSampleSelected={this._onSampleSelected} />
