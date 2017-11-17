@@ -163,7 +163,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                     <div className="form_wrap">
                         <ViewMode
                             placingOrder={placingOrder}
-                            handleChange={this._handleChange}/>
+                            switchView={this._switchViews} />
                     </div>
 
                     <Collapse in={placingOrder}>
@@ -266,7 +266,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                             <Summary
                                 isCreate={this.props.orderId === null}
                                 canSubmit={this.state.isValid && !this.state.isSubmitting}
-                                hideError={this.state.isValid || this.state.isSubmitting}
+                                hideError={!placingOrder || this.state.isValid || this.state.isSubmitting}
                                 selectedTests={selectedTests}
                                 quantity={quantity}
                                 clientType={payment.clientType}
@@ -274,6 +274,8 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                                 status={status}
                                 processingFee={processingFee}
                                 handleErrors={this._handleErrors}
+                                placingOrder={placingOrder}
+                                switchViews={this._switchViews}
                             />
                         </div>
                     </div>
@@ -441,6 +443,10 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
 
     private _handleChange = (name, value) => {
         this.setState({ [name]: value }, this._validate);
+    }
+
+    private _switchViews = (b: boolean) => {
+        this.setState({ placingOrder: b });
     }
 
     private _handleDialogToggle = () => {

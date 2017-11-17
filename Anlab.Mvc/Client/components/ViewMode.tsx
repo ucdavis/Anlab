@@ -2,7 +2,7 @@ import * as React from "react";
 
 interface IViewModeProps {
     placingOrder: boolean;
-    handleChange: (key: string, value: boolean) => void;
+    switchView: (b: boolean) => void;
 }
 
 export class ViewMode extends React.Component<IViewModeProps, any> {
@@ -33,7 +33,7 @@ export class ViewMode extends React.Component<IViewModeProps, any> {
     }
 
     private _handleChange = () => {
-        this.props.handleChange("placingOrder", !this.props.placingOrder);
+        this.props.switchView(!this.props.placingOrder);
     }
 
 }

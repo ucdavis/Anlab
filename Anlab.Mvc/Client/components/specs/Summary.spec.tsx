@@ -1,4 +1,4 @@
-﻿import { mount, render, shallow } from "enzyme";
+import { mount, render, shallow } from "enzyme";
 import * as React from "react";
 import Summary, { ISummaryProps } from "../Summary";
 import { ITestItem } from "../TestList";
@@ -39,6 +39,8 @@ describe("<Summary />", () => {
         quantity: 0,
         selectedTests,
         status: "",
+        placingOrder: true,
+        switchViews: null,
     };
 
     describe("Rendering", () => {
