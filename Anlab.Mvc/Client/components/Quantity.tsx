@@ -12,7 +12,7 @@ export class Quantity extends React.Component<IQuantityProps, {}> {
         return (
             <IntegerInput
                 name="quantity"
-                label="Quantity"
+                label="Quantity *"
                 value={this.props.quantity}
                 onChange={this.props.onQuantityChanged}
                 min={1}

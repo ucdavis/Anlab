@@ -24,12 +24,11 @@ export class Project extends React.Component<IProjectInputProps, IProjectInputSt
         return (
             <div>
                 <Input
-                    label="Project Title"
+                    label="Project Title *"
                     value={this.props.project}
                     error={this.state.error}
                     required={true}
                     maxLength={256}
-                    //onBlur={this._onBlur}
                     onChange={this._onChange}
                     inputRef={this.props.projectRef}
                 />
@@ -43,11 +42,6 @@ export class Project extends React.Component<IProjectInputProps, IProjectInputSt
         this.props.handleChange("project", value);
     }
 
-    //private _onBlur = () => {
-    //    const internalValue = this.state.internalValue;
-    //    this._validate(internalValue);
-    //    this.props.handleChange("project", internalValue);
-    //}
 
     private _validate = (v: string) => {
         let error = null;
