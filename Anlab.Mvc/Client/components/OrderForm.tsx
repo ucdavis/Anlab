@@ -204,15 +204,16 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
 
                     <Collapse in={!placingOrder || (!!this.state.project.trim() || this.state.quantity > 0 || !!this.state.sampleType.trim())}>
                         <div>
-                    <div className="form_wrap">
-                        <label className="form_header">Who should be notified for this test?</label>
-                        <AdditionalEmails
-                            addedEmails={additionalEmails}
-                            defaultEmail={defaultEmail}
-                            onEmailAdded={this._onEmailAdded}
-                            onDeleteEmail={this._onDeleteEmail}
-                        />
-                    </div>
+                            {placingOrder &&
+                                <div className="form_wrap">
+                                    <label className="form_header">Who should be notified for this test?</label>
+                                    <AdditionalEmails
+                                        addedEmails={additionalEmails}
+                                        defaultEmail={defaultEmail}
+                                        onEmailAdded={this._onEmailAdded}
+                                        onDeleteEmail={this._onDeleteEmail}
+                                    />
+                                </div>}
                     
                     <div className="form_wrap">
                         <label className="form_header">How many samples will you require?</label>
@@ -229,21 +230,23 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                     <div className="form_wrap">
                         <label className="form_header">What type of samples?</label>
                         <SampleTypeSelection sampleType={sampleType} onSampleSelected={this._onSampleSelected} />
-                        <SampleTypeQuestions
-                            waterPreservativeRef={(inputRef) => { this.waterPreservativeRef = inputRef; }}
-                            sampleType={sampleType}
-                            questions={sampleTypeQuestions}
-                            handleChange={this._onSampleQuestionChanged}
-                        />
+                        {placingOrder &&
+                            <SampleTypeQuestions
+                                waterPreservativeRef={(inputRef) => { this.waterPreservativeRef = inputRef; }}
+                                sampleType={sampleType}
+                                questions={sampleTypeQuestions}
+                                handleChange={this._onSampleQuestionChanged}
+                            />}
                     </div>
                         </Collapse>
 
                     <Collapse in={this.state.sampleType !== ""}>
                         <div>
-                            <div className="form_wrap">
-                                <label className="form_header">Do you have any other information to provide?</label>
-                                <AdditionalInfo value={additionalInfo} name="additionalInfo" handleChange={this._handleChange} />
-                            </div>
+                            {placingOrder &&
+                                <div className="form_wrap">
+                                    <label className="form_header">Do you have any other information to provide?</label>
+                                    <AdditionalInfo value={additionalInfo} name="additionalInfo" handleChange={this._handleChange} />
+                                </div>}
 
                     <div className="form_wrap">
                         <label className="form_header margin-bottom-zero">Which tests would you like to run?</label>
