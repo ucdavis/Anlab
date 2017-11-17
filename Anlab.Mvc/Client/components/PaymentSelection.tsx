@@ -31,6 +31,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
 
     public shouldComponentUpdate(nextProps: IPaymentSelectionProps, nextState: IPaymentSelectionState) {
         return (
+            nextProps.placingOrder !== this.props.placingOrder ||
             nextProps.payment.clientType !== this.props.payment.clientType ||
             nextProps.payment.account !== this.props.payment.account ||
             nextProps.onPaymentSelected !== this.props.onPaymentSelected ||
