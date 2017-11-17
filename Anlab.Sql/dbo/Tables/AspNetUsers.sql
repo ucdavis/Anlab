@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[AspNetUsers] (
+CREATE TABLE [dbo].[AspNetUsers] (
     [Id]                   NVARCHAR (450)     NOT NULL,
     [AccessFailedCount]    INT                NOT NULL,
     [Account]              NVARCHAR (50)      NULL,
@@ -20,6 +20,11 @@
     [SecurityStamp]        NVARCHAR (MAX)     NULL,
     [TwoFactorEnabled]     BIT                NOT NULL,
     [UserName]             NVARCHAR (256)     NULL,
+    [CompanyName] NVARCHAR(1000) NULL, 
+    [BillingContactName] NVARCHAR(250) NULL, 
+    [BillingContactAddress] NVARCHAR(2000) NULL, 
+    [BillingContactPhone] NVARCHAR(50) NULL, 
+    [BillingContactEmail] NVARCHAR(250) NULL, 
     CONSTRAINT [PK_AspNetUsers] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
