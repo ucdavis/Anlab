@@ -70,7 +70,7 @@ namespace AnlabMvc.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditUser(string id, [Bind("FirstName,LastName,Name,Phone,Account,ClientId")]User user)
+        public IActionResult EditUser(string id, User user)
         {
             var userToUpdate = _dbContext.Users.SingleOrDefault(a => a.Id == id);
             if (userToUpdate == null)
@@ -86,6 +86,11 @@ namespace AnlabMvc.Controllers
                 userToUpdate.Phone = user.Phone;
                 userToUpdate.Account = user.Account?.ToUpper();
                 userToUpdate.ClientId = user.ClientId;
+                userToUpdate.CompanyName = user.CompanyName;
+                userToUpdate.BillingContactName = user.BillingContactName;
+                userToUpdate.BillingContactAddress = user.BillingContactAddress;
+                userToUpdate.BillingContactEmail = user.BillingContactEmail;
+                userToUpdate.BillingContactPhone = user.BillingContactPhone;
 
                 _dbContext.Update(userToUpdate);
                 _dbContext.SaveChanges();

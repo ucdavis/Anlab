@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
@@ -30,6 +30,22 @@ namespace Anlab.Core.Domain
 
         [StringLength(50)]       
         public string Account { get; set; }
+
+        [StringLength(1000)]
+        [Display(Name = "Company Name")]
+        public string CompanyName { get; set; }
+        [StringLength(250)]
+        [Display(Name = "Billing Contact Name")]
+        public string BillingContactName { get; set; }
+        [StringLength(2000)]
+        [Display(Name = "Billing Contact Address")]
+        public string BillingContactAddress { get; set; }
+        [Phone]
+        [Display(Name = "Billing Contact Phone")]
+        public string BillingContactPhone { get; set; }
+        [EmailAddress]
+        [Display(Name = "Billing Contact Email")]
+        public string BillingContactEmail { get; set; }
 
         public ICollection<MailMessage> MailMessages { get; set; }
 

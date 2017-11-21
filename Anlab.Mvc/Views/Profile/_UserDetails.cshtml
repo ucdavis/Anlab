@@ -1,27 +1,63 @@
 @model Anlab.Core.Domain.User
 
+<div class="col">
+    @*<div class="form-group">
+        <strong>First Name</strong>
+        <span>@Model.FirstName</span>
+    </div>
+    <div class="form-group">
+        <strong>Last Name</strong>
+        <span>@Model.LastName</span>
+    </div>
+    <div class="form-group">
+        <strong>Display Name</strong>
+        <span>@Model.Name</span>
+    </div>
+    <div class="form-group">
+        <strong>Phone Number</strong>
+        <span>@Model.Phone</span>
+    </div>
+    <div class="form-group">
+        <strong>Client Id</strong>
+        <span>@Model.ClientId</span>
+    </div>
+    <div class="form-group">
+        <strong>UC Account (if applicable)</strong>
+        <span>@Model.Account</span>
+    </div>*@
 
-<div class="form-group">
-    <strong>First Name</strong>
-    <span>@Model.FirstName</span>
-</div>
-<div class="form-group">
-    <strong>Last Name</strong>
-    <span>@Model.LastName</span>
-</div>
-<div class="form-group">
-    <strong>Display Name</strong>
-    <span>@Model.Name</span>
-</div>
-<div class="form-group">
-    <strong>Phone Number</strong>
-    <span>@Model.Phone</span>
-</div>
-<div class="form-group">
-    <strong>Client Id</strong>
-    <span>@Model.ClientId</span>
-</div>
-<div class="form-group">
-    <strong>UC Account (if applicable)</strong>
-    <span>@Model.Account</span>
+    <dl class="dl-horizontal">
+        <dt>@Html.DisplayNameFor(a => a.FirstName)</dt>
+        <dd>@Html.DisplayFor(a => a.FirstName)</dd>
+
+        <dt>@Html.DisplayNameFor(a => a.LastName)</dt>
+        <dd>@Html.DisplayFor(a => a.LastName)</dd>
+
+        <dt>@Html.DisplayNameFor(a => a.Name)</dt>
+        <dd>@Html.DisplayFor(a => a.Name)</dd>
+
+        <dt>@Html.DisplayNameFor(a => a.Phone)</dt>
+        <dd>@Html.DisplayFor(a => a.Phone)</dd>
+
+        <dt>@Html.DisplayNameFor(a => a.ClientId)</dt>
+        <dd>@Html.DisplayFor(a => a.ClientId)</dd>
+
+        <dt>@Html.DisplayNameFor(a => a.Account)</dt>
+        <dd>@Html.DisplayFor(a => a.Account)</dd>
+
+        <dt>@Html.DisplayNameFor(a => a.CompanyName)</dt>
+        <dd>@Html.DisplayFor(a => a.CompanyName)</dd>
+
+        <dt>@Html.DisplayNameFor(a => a.BillingContactName)</dt>
+        <dd>@Html.DisplayFor(a => a.BillingContactName)</dd>
+
+        <dt>@Html.DisplayNameFor(a => a.BillingContactAddress)</dt>
+        <dd>@Html.DisplayFor(a => a.BillingContactAddress)</dd>
+
+        <dt>@Html.DisplayNameFor(a => a.BillingContactEmail)</dt>
+        <dd>@Html.DisplayFor(a => a.BillingContactEmail)</dd>
+
+        <dt>@Html.DisplayNameFor(a => a.BillingContactPhone)</dt>
+        <dd>@Html.DisplayFor(a => a.BillingContactPhone)</dd>
+    </dl>
 </div>
