@@ -27,7 +27,7 @@ export default class Input extends React.PureComponent<IInputProps, {}> {
         if (error) {            
             classN = "form-group has-error";
         }
-        
+
         return (
             <div className={classN} >
                 {this.renderLabel()}
@@ -50,10 +50,12 @@ export default class Input extends React.PureComponent<IInputProps, {}> {
     }
 
     private renderLabel() {
-        const { label } = this.props;
+        let { label } = this.props;
         if (!label) {
             return null;
         }
+        if (this.props.required)
+            label += "*";
 
         return (
             <label className="control-label">{label}</label>
