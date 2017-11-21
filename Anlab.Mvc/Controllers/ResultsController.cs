@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Anlab.Core.Data;
 using Anlab.Core.Models;
+using Anlab.Core.Services;
 using AnlabMvc.Models.Configuration;
 using Microsoft.EntityFrameworkCore;
 using AnlabMvc.Models.Order;
@@ -22,7 +23,11 @@ namespace AnlabMvc.Controllers
         private readonly IDataSigningService _dataSigningService;
         private readonly AppSettings _appSettings;
 
-        public ResultsController(ApplicationDbContext context, IFileStorageService fileStorageService, IDataSigningService dataSigningService, IOptions<CyberSourceSettings> cyberSourceSettings, IOptions<AppSettings> appSettings)
+        public ResultsController(ApplicationDbContext context,
+            IFileStorageService fileStorageService,
+            IDataSigningService dataSigningService,
+            IOptions<CyberSourceSettings> cyberSourceSettings,
+            IOptions<AppSettings> appSettings)
         {
             _context = context;
             _fileStorageService = fileStorageService;
@@ -69,6 +74,34 @@ namespace AnlabMvc.Controllers
 
             var result = await _fileStorageService.GetSharedAccessSignature(order.ResultsFileIdentifier);
             return Redirect(result.AccessUrl);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmPayment(Guid id)
+        {
+            var order = await _context.Orders.SingleOrDefaultAsync(o => o.ShareIdentifier == id);
+            if (order.Paid)
+            {
+                ErrorMessage = "Payment has already been confirmed";
+                return RedirectToAction("Link", new {id = id});
+            }
+
+            if (order.PaymentType == PaymentTypeCodes.CreditCard)
+            {
+                ErrorMessage = "Order requires Credit Card or Other Payment type, not a UC Account payment";
+                return RedirectToAction("Link", new { id = id });
+            }
+
+            if (order.PaymentType == PaymentTypeCodes.UcOtherAccount)
+            {
+                order.Paid = true;
+                Message = "UC account marked as paid";
+            }
+
+            await _context.SaveChangesAsync();
+
+
+            return RedirectToAction("Link", new { id = id });
         }
 
         private Dictionary<string, string> SetDictionaryValues(Anlab.Core.Domain.Order order, Anlab.Core.Domain.User user)
