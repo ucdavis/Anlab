@@ -29,6 +29,7 @@ export class OtherPaymentInput extends React.Component<IOtherPaymentInputProps, 
                 error={this.state.error}
                 value={this.props.value}
                 onChange={this._handleChange}
+                onBlur={this._onBlur}
                 label={this.props.label}
             />
         );
@@ -37,6 +38,27 @@ export class OtherPaymentInput extends React.Component<IOtherPaymentInputProps, 
     private _handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         this.props.handleChange(this.props.property, value);
+        this._validate(value);
     }
 
+    private _onBlur = () => {
+        this._validate(this.props.value);
+    }
+
+    private _validate = (v: string) => {
+        let error = null;
+        const emailRe = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const phoneRe = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+
+        if (!v || v.trim() === "") {
+            error = "This field is required";
+        }
+        else if (this.props.property == "acEmail" && !emailRe.test(v)) {
+            error = "Invalid email";
+        }
+        else if (this.props.property == "acPhone" && !phoneRe.test(v)) {
+            error = "Invalid phone number";
+        }
+        this.setState({ ...this.state, error: error });
+    }
 }
