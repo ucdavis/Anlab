@@ -51,6 +51,7 @@ namespace AnlabMvc.Services
             // create roles
             await _roleManager.CreateAsync(new IdentityRole(RoleCodes.Admin));
             await _roleManager.CreateAsync(new IdentityRole(RoleCodes.User));
+            await _roleManager.CreateAsync(new IdentityRole(RoleCodes.Reports));
 
             var scottUser = new User
             {
