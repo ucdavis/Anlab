@@ -155,7 +155,7 @@ HAVING (LOGBATCH = @RequestNum)</value>
     <value>SELECT DISTINCT [ACODE] as Id
 FROM            [SAMPLE] INNER JOIN
                          [ANALYSIS] ON [SAMPLE].[SAMPNO] = [ANALYSIS].[SAMPNO]
-WHERE        [ACODE] != '()' and [SAMPLE].[LOGBATCH] = @RequestNum</value>
+WHERE        [ACODE] != '()' and SUBSTRING(ACODE, 1, 1) != '-'  and [SAMPLE].[LOGBATCH] = @RequestNum</value>
     <comment>List of codes </comment>
   </data>
 </root>
