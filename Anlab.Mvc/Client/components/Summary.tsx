@@ -81,12 +81,7 @@ export default class Summary extends React.PureComponent<ISummaryProps, {}> {
                         </table>
                         {this.props.canSubmit ? <div className="alert alert-info">{infoText}</div> : null}
                         {!this.props.hideError ? <div className="alert alert-danger">{errorText}</div> : null}
-                        <Button
-                            disabled={!this.props.canSubmit}
-                            onClick={this.props.onSubmit}
-                        >
-                            {saveText}
-                        </Button>
+
                   </div>
               </div>
           </div>
