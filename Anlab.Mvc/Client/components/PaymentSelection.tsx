@@ -1,6 +1,7 @@
 import "isomorphic-fetch";
 import * as React from "react";
 import Input from "./ui/input/input";
+import { OtherPaymentInfo, IOtherPaymentInfo } from "./OtherPaymentQuestions";
 
 export interface IPayment {
     clientType: string;
@@ -11,6 +12,8 @@ export interface IPayment {
 interface IPaymentSelectionProps {
     payment: IPayment;
     onPaymentSelected: (payment: IPayment) => void;
+    otherPaymentInfo: IOtherPaymentInfo;
+    updateOtherPaymentInfo: (property, value) => void;
     ucAccountRef: (element: HTMLInputElement) => void;
     placingOrder: boolean;
 }
@@ -35,37 +38,48 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
             nextProps.payment.clientType !== this.props.payment.clientType ||
             nextProps.payment.account !== this.props.payment.account ||
             nextProps.onPaymentSelected !== this.props.onPaymentSelected ||
+            nextProps.otherPaymentInfo !== this.props.otherPaymentInfo || 
             nextState.accountName !== this.state.accountName ||
-            nextState.error !== this.state.error
+            nextState.error !== this.state.error 
         );
     }
 
     public render() {
-        const activeDiv = "anlab_form_style col-5 active-border active-text active-bg";
-        const inactiveDiv = "anlab_form_style col-5";
+        const activeDiv = "anlab_form_style anlab_form_samplebtn active-bg flexcol active-border active-svg active-text";
+        const inactiveDiv = "anlab_form_style anlab_form_samplebtn flexcol";
         const isUcClient = this.props.payment.clientType === "uc";
-        const isNonUc = this.props.payment.clientType === "creditcard";
+        const isCC = this.props.payment.clientType === "creditcard";
+        const isOther = this.props.payment.clientType === "other";
 
         return (
             <div>
-                <div className="row">
+
+                <div className="flexrow">
                     <div
-                        className={isNonUc ? activeDiv : inactiveDiv}
-                      onClick={() => this._handleChange("creditcard")}
+                        className={isCC ? activeDiv : inactiveDiv}
+                        onClick={() => this._handleChange("creditcard")}
                     >
                         <h3>Credit Card</h3>
                         <p>It's amazing what you can do with a little love in your heart.</p>
                     </div>
-                    <span className="dividing_span col-2 t-center align-middle">or</span>
                     <div
-                      className={isUcClient ? activeDiv : inactiveDiv}
-                      onClick={() => this._handleChange("uc")}
+                        className={isUcClient ? activeDiv : inactiveDiv}
+                        onClick={() => this._handleChange("uc")}
                     >
                         <h3>UC Funds</h3>
                         <p>It's amazing what you can do with a little love in your heart</p>
                     </div>
+                    <div
+                        className={isOther ? activeDiv : inactiveDiv}
+                        onClick={() => this._handleChange("other")}
+                    >
+                        <h3>Other</h3>
+                        <p>It's amazing what you can do with a little love in your heart</p>
+                    </div>
                 </div>
                 {this.props.placingOrder && this._renderUcAccount()}
+                {this.props.placingOrder && this._renderOtherInfo()}
+
             </div>
         );
     }
@@ -88,6 +102,16 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
             );
         }
     }
+
+    private _renderOtherInfo = () => {
+        if (this.props.payment.clientType === "other") {
+            return (
+                <OtherPaymentInfo otherPaymentInfo={this.props.otherPaymentInfo} updateOtherPaymentInfo={this.props.updateOtherPaymentInfo} />
+                );
+        }
+    }
+
+
 
     private _checkChart = (chart: string) => {
         return (chart === "L" || chart === "l" || chart === "3") ;
