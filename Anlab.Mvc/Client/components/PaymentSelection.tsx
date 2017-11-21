@@ -12,6 +12,7 @@ interface IPaymentSelectionProps {
     payment: IPayment;
     onPaymentSelected: (payment: IPayment) => void;
     ucAccountRef: (element: HTMLInputElement) => void;
+    placingOrder: boolean;
 }
 
 interface IPaymentSelectionState {
@@ -30,6 +31,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
 
     public shouldComponentUpdate(nextProps: IPaymentSelectionProps, nextState: IPaymentSelectionState) {
         return (
+            nextProps.placingOrder !== this.props.placingOrder ||
             nextProps.payment.clientType !== this.props.payment.clientType ||
             nextProps.payment.account !== this.props.payment.account ||
             nextProps.onPaymentSelected !== this.props.onPaymentSelected ||
@@ -63,7 +65,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
                         <p>It's amazing what you can do with a little love in your heart</p>
                     </div>
                 </div>
-                {this._renderUcAccount()}
+                {this.props.placingOrder && this._renderUcAccount()}
             </div>
         );
     }

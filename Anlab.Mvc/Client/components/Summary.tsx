@@ -15,6 +15,8 @@ export interface ISummaryProps {
     status: string;
     processingFee: number;
     handleErrors: Function;
+    placingOrder: boolean;
+    switchViews: Function;
 }
 
 const numberFormatOptions = {
@@ -46,9 +48,7 @@ export default class Summary extends React.PureComponent<ISummaryProps, {}> {
                   </div>
                   <div>
                       {this._renderErrorButton()}
-                      <Button className="btn btn-order" disabled={!this.props.canSubmit} onClick={this.props.onSubmit}>
-                        {saveText}
-                      </Button>
+                      {this._renderSubmitButton()}
                   </div>
               </div>
 
@@ -81,16 +81,34 @@ export default class Summary extends React.PureComponent<ISummaryProps, {}> {
                         </table>
                         {this.props.canSubmit ? <div className="alert alert-info">{infoText}</div> : null}
                         {!this.props.hideError ? <div className="alert alert-danger">{errorText}</div> : null}
-                        <Button
-                            disabled={!this.props.canSubmit}
-                            onClick={this.props.onSubmit}
-                        >
-                            {saveText}
-                        </Button>
+
                   </div>
               </div>
           </div>
       );
+    }
+
+    private _renderSubmitButton = () => {
+        if (this.props.placingOrder) {
+            return (
+                <Button className="btn btn-order" disabled={!this.props.canSubmit} onClick={this.props.onSubmit}>
+                    Save & Review
+                </Button>
+            )
+        }
+
+        else
+        {
+            return (
+                <Button className="btn btn-order" onClick={this._switchViews}>
+                    Use for order
+                </Button>
+                )
+        }
+    }
+
+    private _switchViews = () => {
+        this.props.switchViews(true);
     }
 
     private _renderErrorButton = () => {

@@ -14,6 +14,7 @@ import { ISampleTypeQuestions, SampleTypeQuestions } from "./SampleTypeQuestions
 import { SampleTypeSelection } from "./SampleTypeSelection";
 import Summary from "./Summary";
 import { ITestItem, TestList } from "./TestList";
+import { ViewMode } from "./ViewMode";
 
 declare var $: any;
 
@@ -30,6 +31,7 @@ export interface IOrderFormProps {
 }
 
 interface IOrderFormState {
+    placingOrder: boolean;
     additionalInfo: string;
     project: string;
     filteredTests: ITestItem[];
@@ -64,6 +66,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         super(props);
 
         const initialState: IOrderFormState = {
+            placingOrder: true,
             additionalEmails: [],
             additionalInfo: "",
             additionalInfoList: {},
@@ -149,7 +152,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         const {
             payment, selectedTests, sampleType, sampleTypeQuestions, quantity, additionalInfo, project,
             commodity, additionalEmails, status, clientId, newClientInfo, clientName,
-            additionalInfoList, filteredTests, selectedCodes,
+            additionalInfoList, filteredTests, selectedCodes, placingOrder,
         } = this.state;
 
         const isUcClient = this.state.payment.clientType === "uc";
@@ -159,27 +162,37 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             <div>
                 <div>
                     <div className="form_wrap">
-                        <label className="form_header">Do you have a Client ID?</label>
-                        <ClientId
-                            clientId={clientId}
-                            clientName={clientName}
-                            handleChange={this._handleChange}
-                            clientIdRef={(inputRef) => { this.clientIdRef = inputRef; }}
-                            newClientInfo={newClientInfo}
-                            updateNewClientInfo={this._updateNewClientInfo} />
+                        <ViewMode
+                            placingOrder={placingOrder}
+                            switchView={this._switchViews} />
                     </div>
-                    <Collapse in={(this.state.clientName != null) || (this.state.newClientInfo.name != null && !!this.state.newClientInfo.name.trim())
-                        ||  (!!this.state.payment.clientType.trim())}>
+
+                    <Collapse in={placingOrder}>
+                        <div className="form_wrap">
+                            <label className="form_header">Do you have a Client ID?</label>
+                            <ClientId
+                                clientId={clientId}
+                                clientName={clientName}
+                                handleChange={this._handleChange}
+                                clientIdRef={(inputRef) => { this.clientIdRef = inputRef; }}
+                                newClientInfo={newClientInfo}
+                                updateNewClientInfo={this._updateNewClientInfo} />
+                        </div>
+                    </Collapse>
+
+                    <Collapse in={!placingOrder || ((this.state.clientName != null) || (this.state.newClientInfo.name != null && !!this.state.newClientInfo.name.trim())
+                        ||  (!!this.state.payment.clientType.trim()))}>
                     <div className="form_wrap">
                         <label className="form_header">How will you pay for your order?</label>
                         <PaymentSelection
+                            placingOrder={placingOrder}
                             payment={payment}
                             onPaymentSelected={this._onPaymentSelected}
                             ucAccountRef={(inputRef) => { this.ucAccountRef = inputRef; }} />
                     </div>
                     </Collapse>
 
-                    <Collapse in={!!this.state.payment.clientType.trim() || !!this.state.project.trim()}>
+                    <Collapse in={placingOrder && (!!this.state.payment.clientType.trim() || !!this.state.project.trim())}>
                     <div className="form_wrap">
                         <label className="form_header">What is the project title for this order?</label>
                         <Project
@@ -191,17 +204,18 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                     </div>
                     </Collapse>
 
-                    <Collapse in={!!this.state.project.trim() || this.state.quantity > 0 || !!this.state.sampleType.trim()}>
+                    <Collapse in={!placingOrder || (!!this.state.project.trim() || this.state.quantity > 0 || !!this.state.sampleType.trim())}>
                         <div>
-                    <div className="form_wrap">
-                        <label className="form_header">Who should be notified for this test?</label>
-                        <AdditionalEmails
-                            addedEmails={additionalEmails}
-                            defaultEmail={defaultEmail}
-                            onEmailAdded={this._onEmailAdded}
-                            onDeleteEmail={this._onDeleteEmail}
-                        />
-                    </div>
+                            {placingOrder &&
+                                <div className="form_wrap">
+                                    <label className="form_header">Who should be notified for this test?</label>
+                                    <AdditionalEmails
+                                        addedEmails={additionalEmails}
+                                        defaultEmail={defaultEmail}
+                                        onEmailAdded={this._onEmailAdded}
+                                        onDeleteEmail={this._onDeleteEmail}
+                                    />
+                                </div>}
                     
                     <div className="form_wrap">
                         <label className="form_header">How many samples will you require?</label>
@@ -214,25 +228,27 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                             </div>
                     </Collapse>
 
-                    <Collapse in={this.state.quantity > 0 || this.state.sampleType !== ""}>
+                    <Collapse in={!placingOrder ||  this.state.quantity > 0 || this.state.sampleType !== ""}>
                     <div className="form_wrap">
                         <label className="form_header">What type of samples?</label>
                         <SampleTypeSelection sampleType={sampleType} onSampleSelected={this._onSampleSelected} />
-                        <SampleTypeQuestions
-                            waterPreservativeRef={(inputRef) => { this.waterPreservativeRef = inputRef; }}
-                            sampleType={sampleType}
-                            questions={sampleTypeQuestions}
-                            handleChange={this._onSampleQuestionChanged}
-                        />
+                        {placingOrder &&
+                            <SampleTypeQuestions
+                                waterPreservativeRef={(inputRef) => { this.waterPreservativeRef = inputRef; }}
+                                sampleType={sampleType}
+                                questions={sampleTypeQuestions}
+                                handleChange={this._onSampleQuestionChanged}
+                            />}
                     </div>
                         </Collapse>
 
                     <Collapse in={this.state.sampleType !== ""}>
                         <div>
-                            <div className="form_wrap">
-                                <label className="form_header">Do you have any other information to provide?</label>
-                                <AdditionalInfo value={additionalInfo} name="additionalInfo" handleChange={this._handleChange} />
-                            </div>
+                            {placingOrder &&
+                                <div className="form_wrap">
+                                    <label className="form_header">Do you have any other information to provide?</label>
+                                    <AdditionalInfo value={additionalInfo} name="additionalInfo" handleChange={this._handleChange} />
+                                </div>}
 
                     <div className="form_wrap">
                         <label className="form_header margin-bottom-zero">Which tests would you like to run?</label>
@@ -251,7 +267,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                             <Summary
                                 isCreate={this.props.orderId === null}
                                 canSubmit={this.state.isValid && !this.state.isSubmitting}
-                                hideError={this.state.isValid || this.state.isSubmitting}
+                                hideError={!placingOrder || this.state.isValid || this.state.isSubmitting}
                                 selectedTests={selectedTests}
                                 quantity={quantity}
                                 clientType={payment.clientType}
@@ -259,6 +275,8 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                                 status={status}
                                 processingFee={processingFee}
                                 handleErrors={this._handleErrors}
+                                placingOrder={placingOrder}
+                                switchViews={this._switchViews}
                             />
                         </div>
                     </div>
@@ -327,7 +345,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
 
     private _onSampleSelected = (sampleType: string) => {
         var agree = true;
-        if (this.state.selectedTests.length > 0)
+        if (this.state.placingOrder && this.state.selectedTests.length > 0)
         {
             agree = confirm("You may only choose tests from one category. Your previous progress will not be saved on submit.");
         }
@@ -426,6 +444,10 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
 
     private _handleChange = (name, value) => {
         this.setState({ [name]: value }, this._validate);
+    }
+
+    private _switchViews = (b: boolean) => {
+        this.setState({ placingOrder: b });
     }
 
     private _handleDialogToggle = () => {
