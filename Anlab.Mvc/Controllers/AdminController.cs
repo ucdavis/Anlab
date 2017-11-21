@@ -43,7 +43,7 @@ namespace AnlabMvc.Controllers
 
                 userRole.IsAdmin = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.Admin);
                 userRole.IsUser = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.User);
-
+                userRole.IsReports = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.Reports);
             }
 
             return View(usersInRoles);
@@ -121,6 +121,13 @@ namespace AnlabMvc.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        [Authorize(Roles =  RoleCodes.Admin)]
+        public async Task<IActionResult> CreateRole() //TODO: Remove after role created
+        {
+            await _roleManager.CreateAsync(new IdentityRole(RoleCodes.Reports));
+            return Content("Added Reports Role");
         }
 
         public async Task<IActionResult> MailQueue()
