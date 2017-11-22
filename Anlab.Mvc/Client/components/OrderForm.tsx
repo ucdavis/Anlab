@@ -479,7 +479,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                 ...this.state.otherPaymentInfo,
                 [property]: value
             }
-        });
+        }, this._validate);
     }
 
     private _checkOtherPaymentInfo = () => {
