@@ -104,7 +104,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
     }
 
     private _renderOtherInfo = () => {
-        if (this.props.payment.clientType === "other") {
+        if (this.props.payment.clientType === "other" || (this.props.payment.clientType === "uc" && !!this.props.payment.account.trim() && !this._checkChart(this.props.payment.account))) {
             return (
                 <OtherPaymentInfo otherPaymentInfo={this.props.otherPaymentInfo} updateOtherPaymentInfo={this.props.updateOtherPaymentInfo} />
                 );
