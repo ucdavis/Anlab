@@ -141,6 +141,15 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             initialState.payment.clientType = orderInfo.Payment.ClientType;
             initialState.payment.account = orderInfo.Payment.Account;
             initialState.payment.accountName = orderInfo.Payment.AccountName;
+            initialState.otherPaymentInfo = {
+                acAddr: orderInfo.OtherPaymentInfo.AcAddr,
+                acEmail: orderInfo.OtherPaymentInfo.AcEmail,
+                acName: orderInfo.OtherPaymentInfo.AcName,
+                acPhone: orderInfo.OtherPaymentInfo.AcPhone,
+                companyName: orderInfo.OtherPaymentInfo.CompanyName,
+                paymentType: orderInfo.OtherPaymentInfo.PaymentType,
+                poNum: orderInfo.OtherPaymentInfo.PoNum
+            },
             initialState.clientId = orderInfo.ClientId;
             initialState.newClientInfo = {
                 email: orderInfo.NewClientInfo.Email,
