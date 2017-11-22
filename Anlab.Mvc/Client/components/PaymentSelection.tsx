@@ -11,10 +11,12 @@ export interface IPayment {
 
 interface IPaymentSelectionProps {
     payment: IPayment;
+    checkChart: Function;
     onPaymentSelected: (payment: IPayment) => void;
     otherPaymentInfo: IOtherPaymentInfo;
     updateOtherPaymentInfo: (property, value) => void;
     ucAccountRef: (element: HTMLInputElement) => void;
+    otherPaymentInfoRef: (element: HTMLInputElement) => void;
     placingOrder: boolean;
 }
 
@@ -105,23 +107,18 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
 
     private _renderOtherInfo = () => {
         if (this.props.payment.clientType === "other" || (this.props.payment.clientType === "uc" && this.props.payment.account != null &&
-            !!this.props.payment.account.trim() && !this._checkChart(this.props.payment.account.charAt(0)))) {
+            !!this.props.payment.account.trim() && !this.props.checkChart(this.props.payment.account.charAt(0)))) {
             return (
-                <OtherPaymentInfo otherPaymentInfo={this.props.otherPaymentInfo} updateOtherPaymentInfo={this.props.updateOtherPaymentInfo} />
+                <OtherPaymentInfo otherPaymentInfo={this.props.otherPaymentInfo} updateOtherPaymentInfo={this.props.updateOtherPaymentInfo} otherPaymentInfoRef={this.props.otherPaymentInfoRef} />
                 );
         }
     }
 
 
-
-    private _checkChart = (chart: string) => {
-        return (chart === "L" || chart === "l" || chart === "3") ;
-    }
-
     private _lookupAccount = () => {
         if (this.state.error
           || !this.props.payment.account
-          || !this._checkChart(this.props.payment.account.charAt(0))) {
+          || !this.props.checkChart(this.props.payment.account.charAt(0))) {
             this.setState({ accountName: null });
             this.props.onPaymentSelected({ ...this.props.payment, accountName: null });
           return;

@@ -6,6 +6,7 @@ interface IOtherPaymentInputProps {
     value: string;
     label: string;
     handleChange: (key: string, value: string) => void;
+    inputRef?: any;
 }
 
 interface IOtherPaymentInputState {
@@ -31,6 +32,7 @@ export class OtherPaymentInput extends React.Component<IOtherPaymentInputProps, 
                 onChange={this._handleChange}
                 onBlur={this._onBlur}
                 label={this.props.label}
+                inputRef={this.props.inputRef}
             />
         );
     }

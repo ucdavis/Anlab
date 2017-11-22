@@ -63,6 +63,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
     private waterPreservativeRef: any;
     private clientIdRef: any;
     private ucAccountRef: any;
+    private otherPaymentInfoRef: any;
 
     constructor(props) {
         super(props);
@@ -198,9 +199,11 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                         <PaymentSelection
                             placingOrder={placingOrder}
                             payment={payment}
+                            checkChart={this._checkUcChart}
                             onPaymentSelected={this._onPaymentSelected}
                             otherPaymentInfo={otherPaymentInfo}
                             updateOtherPaymentInfo={this._updateOtherPaymentInfo}
+                            otherPaymentInfoRef={(inputRef) => { this.otherPaymentInfoRef = inputRef; }}
                             ucAccountRef={(inputRef) => { this.ucAccountRef = inputRef; }} />
                     </div>
                     </Collapse>
@@ -324,6 +327,15 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             valid = false;
         }
 
+        if (this.state.payment.clientType === "uc" && !this._checkUcChart(this.state.payment.account.charAt(0)) &&
+            !this._checkOtherPaymentInfo()) {
+            valid = false;
+        }
+
+        if (this.state.payment.clientType === "other" && !this._checkOtherPaymentInfo()){
+            valid = false;
+        }
+
         // check quantity
         if (this.state.quantity <= 0 || this.state.quantity > 100) {
             valid = false;
@@ -354,6 +366,10 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
 
     private _onPaymentSelected = (payment: any) => {
         this.setState({ payment }, this._validate);
+    }
+
+    private _checkUcChart = (chart: string) => {
+        return (chart === "L" || chart === "l" || chart === "3");
     }
 
     private _onSampleSelected = (sampleType: string) => {
@@ -427,8 +443,10 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         } else if (this.state.payment.clientType === "uc"
             && (!this.state.payment.account || !this.state.payment.account.trim())) {
             this._focusInput(this.ucAccountRef);
-        }
-        else if (!this.state.project || !this.state.project.trim()) {
+        } else if ((this.state.payment.clientType === "other" && !this._checkOtherPaymentInfo()) ||
+            (this.state.payment.clientType === "uc" && !this._checkUcChart(this.state.payment.account.charAt(0)) && !this._checkOtherPaymentInfo())) {
+            this._focusInput(this.otherPaymentInfoRef); //TODO, add input ref 
+        } else if (!this.state.project || !this.state.project.trim()) {
             this._focusInput(this.projectRef);
         } else if (this.state.quantity <= 0 || this.state.quantity > 100) {
             this._focusInput(this.quantityRef);
@@ -462,6 +480,14 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                 [property]: value
             }
         });
+    }
+
+    private _checkOtherPaymentInfo = () => {
+        console.log("test");
+        return (!!this.state.otherPaymentInfo.acAddr.trim() && !!this.state.otherPaymentInfo.acEmail.trim() &&
+            !!this.state.otherPaymentInfo.acName.trim() && !!this.state.otherPaymentInfo.acPhone.trim() &&
+            !!this.state.otherPaymentInfo.companyName.trim() && !!this.state.otherPaymentInfo.paymentType.trim() &&
+            !!this.state.otherPaymentInfo.poNum.trim());
     }
 
     private _handleChange = (name, value) => {

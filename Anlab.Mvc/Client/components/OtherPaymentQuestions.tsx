@@ -14,6 +14,7 @@ export interface IOtherPaymentInfo {
 interface IOtherPaymentInfoProps {
     otherPaymentInfo: IOtherPaymentInfo;
     updateOtherPaymentInfo: Function;
+    otherPaymentInfoRef: any;
 }
 
 export class OtherPaymentInfo extends React.Component<IOtherPaymentInfoProps, {}> {
@@ -23,8 +24,8 @@ export class OtherPaymentInfo extends React.Component<IOtherPaymentInfoProps, {}
         return (
             <div className="flexrow">
                 <div className="flexcol">
-                    
-                <OtherPaymentInput property="paymentType" value={this.props.otherPaymentInfo.paymentType} label="Payment Type" handleChange={this._onOtherInfoChange} />
+
+                <OtherPaymentInput property="paymentType" value={this.props.otherPaymentInfo.paymentType} label="Payment Type" handleChange={this._onOtherInfoChange} inputRef={this.props.otherPaymentInfoRef} />
                 <OtherPaymentInput property="companyName" value={this.props.otherPaymentInfo.companyName} label="Company Name" handleChange={this._onOtherInfoChange} />
                 <OtherPaymentInput property="acName" value={this.props.otherPaymentInfo.acName} label="Account Contact Name" handleChange={this._onOtherInfoChange} />
                 <OtherPaymentInput property="acAddr" value={this.props.otherPaymentInfo.acAddr} label="Account Contact Address" handleChange={this._onOtherInfoChange} />
