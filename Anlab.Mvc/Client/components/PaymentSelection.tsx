@@ -23,7 +23,6 @@ interface IPaymentSelectionProps {
 }
 
 interface IPaymentSelectionState {
-  accountName: string;
   error: string;
 }
 
@@ -31,7 +30,6 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
     constructor(props) {
         super(props);
         this.state = {
-            accountName: props.payment.accountName,
             error: "",
         };
     }
@@ -41,9 +39,9 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
             nextProps.placingOrder !== this.props.placingOrder ||
             nextProps.payment.clientType !== this.props.payment.clientType ||
             nextProps.payment.account !== this.props.payment.account ||
+            nextProps.payment.accountName !== this.props.payment.accountName ||
             nextProps.onPaymentSelected !== this.props.onPaymentSelected ||
             nextProps.otherPaymentInfo !== this.props.otherPaymentInfo || 
-            nextState.accountName !== this.state.accountName ||
             nextState.error !== this.state.error 
         );
     }
@@ -101,7 +99,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
                       onBlur={this._lookupAccount}
                       inputRef={this.props.ucAccountRef}
                     />
-                    {this.state.accountName}
+                    {this.props.payment.accountName}
                 </div>
             );
         }
@@ -132,7 +130,6 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
         if (this.state.error
           || !this.props.payment.account
           || !this.props.checkChart(this.props.payment.account.charAt(0))) {
-            this.setState({ accountName: null });
             this.props.onPaymentSelected({ ...this.props.payment, accountName: null });
           return;
         }
@@ -146,13 +143,11 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
             })
             .then((response) => response.json())
             .then((accountName) => {
-                this.setState({ accountName });
                 this.props.onPaymentSelected({ ...this.props.payment, accountName: accountName });
             })
             .catch((error: Error) => {
-                this.setState({ accountName: null, error: error.message });
- 
-                this.props.onPaymentSelected({ ...this.props.payment, account: null, accountName: null });
+                this.setState({ error: error.message });
+                this.props.onPaymentSelected({ ...this.props.payment, accountName: null });
             });
     }
 
@@ -164,7 +159,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
     private _handleAccountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const account = e.target.value;
         this._validateAccount(account, this.props.payment.clientType);
-        this.props.onPaymentSelected({ ...this.props.payment, account });
+        this.props.onPaymentSelected({ ...this.props.payment, account, accountName:null });
     }
 
     private _validateAccount = (account: string, clientType: string) => {
