@@ -15,7 +15,7 @@
         App = {};
         App.orderData = @Json.Serialize(Model);
         App.orderId = @Model.Order.Id;
-        App.defaultEmail = @Json.Serialize(Model.DefaultEmail);
+        App.defaults = @Json.Serialize(Model.Defaults);
     </script>
     
     <script src="~/dist/react.js" asp-append-version="true"></script>

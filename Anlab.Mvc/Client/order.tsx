@@ -6,10 +6,16 @@ declare var window: any;
 
 // build defaults and test list from window
 const props = {
-    defaultAccount: window.App.defaultAccount,
-    defaultClientId: window.App.defaultClientId,
-    defaultClientIdName: window.App.defaultClientIdName,
-    defaultEmail: window.App.defaultEmail,
+    defaultAccount: window.App.defaults.defaultAccount,
+    defaultClientId: window.App.defaults.defaultClientId,
+    defaultClientIdName: window.App.defaults.defaultClientIdName,
+    defaultEmail: window.App.defaults.defaultEmail,
+    defaultAcName: window.App.defaults.defaultAcName,
+    defaultAcAddr: window.App.defaults.defaultAcAddr,
+    defaultAcPhone: window.App.defaults.defaultAcPhone,
+    defaultAcEmail: window.App.defaults.defaultAcEmail,
+    defaultCompanyName: window.App.defaults.defaultCompanyName,
+
     testItems: window.App.orderData.testItems,
     internalProcessingFee: window.App.orderData.internalProcessingFee,
     externalProcessingFee: window.App.orderData.externalProcessingFee,
