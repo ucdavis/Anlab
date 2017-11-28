@@ -64,7 +64,7 @@ describe('<PaymentSelection/>', () => {
                 agreementRequired: false,
             };
             const target = mount(<PaymentSelection payment={payment} onPaymentSelected={onPaymentSelected} ucAccountRef={null} placingOrder={true} checkChart={checkChart} otherPaymentInfo={otherPaymentInfo} otherPaymentInfoRef={null} updateOtherPaymentInfo={null} updateOtherPaymentInfoType={null} />);
-            expect(target.find('Input').length).toEqual(8);
+            expect(target.find('Input').length).toEqual(7);
 
             const inp = target.find('input').at(0);
             inp.simulate('change', { target: { value: 'xxx'} });
@@ -224,7 +224,7 @@ describe('<PaymentSelection/>', () => {
             agreementRequired: false,
         };
         const target = mount(<PaymentSelection payment={payment} onPaymentSelected={onPaymentSelected} ucAccountRef={null} placingOrder={true} checkChart={checkChart} otherPaymentInfo={otherPaymentInfo} otherPaymentInfoRef={null} updateOtherPaymentInfo={null} updateOtherPaymentInfoType={null} />);
-        expect(target.find('Input').length).toEqual(8);
+        expect(target.find('Input').length).toEqual(7);
 
         const internal = target.instance();
         internal._handleChange('creditcard');
