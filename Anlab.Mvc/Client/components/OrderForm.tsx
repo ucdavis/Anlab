@@ -462,7 +462,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             && (!this.state.newClientInfo.name || !this.state.newClientInfo.name.trim())){
             this._focusInput(this.clientIdRef);
         } else if (this.state.payment.clientType === "uc"
-            && (!this.state.payment.account || !this.state.payment.account.trim())) {
+            && ((!this.state.payment.account || !this.state.payment.account.trim()) || (this._checkUcChart(this.state.payment.account.charAt(0)) && this.state.payment.accountName == null))) {
             this._focusInput(this.ucAccountRef);
         } else if ((this.state.payment.clientType === "other" && !this._checkOtherPaymentInfo()) ||
             (this.state.payment.clientType === "uc" && !this._checkUcChart(this.state.payment.account.charAt(0)) && !this._checkOtherPaymentInfo())) {
