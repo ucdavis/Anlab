@@ -516,14 +516,15 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                 ...this.state.otherPaymentInfo, agreementRequired: agreementRequired,
                 paymentType: paymentType,
             },
-        });
+        }, this._validate);
     }
 
     private _checkOtherPaymentInfo = () => {
         return (!!this.state.otherPaymentInfo.acAddr.trim() && !!this.state.otherPaymentInfo.acEmail.trim() &&
             !!this.state.otherPaymentInfo.acName.trim() && !!this.state.otherPaymentInfo.acPhone.trim() &&
             !!this.state.otherPaymentInfo.companyName.trim() && !!this.state.otherPaymentInfo.paymentType.trim() &&
-            !!this.state.otherPaymentInfo.poNum.trim());
+            (this.state.payment.clientType === "uc" || this.state.otherPaymentInfo.agreementRequired ||
+                !!this.state.otherPaymentInfo.poNum.trim()));
     }
 
     private _handleChange = (name, value) => {
