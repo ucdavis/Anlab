@@ -111,7 +111,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
         if (!this.props.placingOrder || this.props.payment.clientType !== "other")
             return;
         return (
-            <label><Checkbox checked={this.props.otherPaymentInfo.agreementRequired} onChange={this._changeAgreementReq} inline={true} />I require an agreement </label>
+            <Checkbox checked={this.props.otherPaymentInfo.agreementRequired} onChange={this._changeAgreementReq} inline={true}> I require an agreement </Checkbox>
             );
     }
 
