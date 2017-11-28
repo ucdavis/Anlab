@@ -59,6 +59,7 @@ namespace AnlabMvc.Controllers
                 Defaults = new OrderEditDefaults {
                     DefaultAccount = user.Account?.ToUpper(),
                     DefaultEmail = user.Email,
+                    DefaultCompanyName = user.CompanyName,
                     DefaultAcAddr = user.BillingContactAddress,
                     DefaultAcEmail = user.BillingContactEmail,
                     DefaultAcName = user.BillingContactName,
