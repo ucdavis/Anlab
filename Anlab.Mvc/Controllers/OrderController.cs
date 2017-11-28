@@ -67,7 +67,6 @@ namespace AnlabMvc.Controllers
                 },
             };
 
-
             if (!string.IsNullOrWhiteSpace(user.ClientId))
             {
                 //Has a default client id, so try to get defaults:
@@ -80,9 +79,6 @@ namespace AnlabMvc.Controllers
 
                 }
             }
-
-
-
 
             return View(model);
         }
@@ -116,7 +112,8 @@ namespace AnlabMvc.Controllers
                 Order = order,
                 InternalProcessingFee = Math.Ceiling(proc.Cost),
                 ExternalProcessingFee = Math.Ceiling(proc.Cost * _appSettings.NonUcRate),
-                Defaults = {
+                Defaults = new OrderEditDefaults
+                {
                     DefaultEmail = order.Creator.Email
                 }
             };
