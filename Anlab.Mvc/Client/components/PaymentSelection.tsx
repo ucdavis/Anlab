@@ -1,6 +1,7 @@
 import "isomorphic-fetch";
 import * as React from "react";
 import Input from "./ui/input/input";
+import { Checkbox } from "react-bootstrap";
 import { OtherPaymentInfo, IOtherPaymentInfo } from "./OtherPaymentQuestions";
 
 export interface IPayment {
@@ -15,6 +16,7 @@ interface IPaymentSelectionProps {
     onPaymentSelected: (payment: IPayment) => void;
     otherPaymentInfo: IOtherPaymentInfo;
     updateOtherPaymentInfo: (property, value) => void;
+    updateOtherPaymentInfoType: (clientType, agreementRequired) => void;
     ucAccountRef: (element: HTMLInputElement) => void;
     otherPaymentInfoRef: (element: HTMLInputElement) => void;
     placingOrder: boolean;
@@ -81,7 +83,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
                 </div>
                 {this.props.placingOrder && this._renderUcAccount()}
                 {this.props.placingOrder && this._renderOtherInfo()}
-
+                {this._renderAgreement()}
             </div>
         );
     }
@@ -105,6 +107,18 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
         }
     }
 
+    private _renderAgreement = () => {
+        if (!this.props.placingOrder || this.props.payment.clientType !== "other")
+            return;
+        return (
+            <label><Checkbox checked={this.props.otherPaymentInfo.agreementRequired} onChange={this._changeAgreementReq} inline={true} />I require an agreement </label>
+            );
+    }
+
+    private _changeAgreementReq = () => {
+        this.props.updateOtherPaymentInfoType(this.props.payment.clientType, !this.props.otherPaymentInfo.agreementRequired);
+    }
+
     private _renderOtherInfo = () => {
         if (this.props.payment.clientType === "other" || (this.props.payment.clientType === "uc" && this.props.payment.account != null &&
             !!this.props.payment.account.trim() && !this.props.checkChart(this.props.payment.account.charAt(0)))) {
@@ -113,7 +127,6 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
                 );
         }
     }
-
 
     private _lookupAccount = () => {
         if (this.state.error
