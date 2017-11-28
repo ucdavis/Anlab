@@ -70,7 +70,7 @@ describe('<PaymentSelection/>', () => {
             inp.simulate('change', { target: { value: 'xxx'} });
 
             expect(onPaymentSelected).toHaveBeenCalled();
-            expect(onPaymentSelected).toHaveBeenCalledWith({ clientType: 'uc', account: 'xxx' });
+            expect(onPaymentSelected).toHaveBeenCalledWith({ clientType: 'uc', account: 'xxx', accountName: null });
         });
     });
     describe('<div/> ', () => {
