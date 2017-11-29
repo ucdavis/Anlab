@@ -22,11 +22,14 @@
         {
             if (!Model.OrderReviewModel.Order.Paid)
             {
-                <form asp-controller="Results" asp-action="ConfirmPayment" method="post" autocomplete="off" style="margin-right: 3px">
+                @*<form asp-controller="Results" asp-action="ConfirmPayment" method="post" autocomplete="off" style="margin-right: 3px">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" value="@Model.OrderReviewModel.Order.ShareIdentifier"/>
                     <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-money" aria-hidden="true"></i> Confirm Payment</button>
-                </form>
+                </form>*@
+                <a class="btn btn-small" asp-action="ConfirmPayment" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier">
+                    <i class="fa fa-money" aria-hidden="true"></i> Confirm Payment
+                </a>
              }
         }
         @if (Model.OrderReviewModel.Order.Paid)

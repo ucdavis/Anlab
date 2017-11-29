@@ -1,0 +1,55 @@
+@model AnlabMvc.Models.Order.PaymentConfirmationModel
+@{
+    ViewData["Title"] = "Confirm Payment Details";
+}
+
+
+
+<div class="col">
+    <form asp-action="ConfirmPayment" method="post" asp-antiforgery="true">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label asp-for="OtherPaymentInfo.CompanyName" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="OtherPaymentInfo.CompanyName" class="form-control" />
+                    <span asp-validation-for="OtherPaymentInfo.CompanyName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="OtherPaymentInfo.AcName" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="OtherPaymentInfo.AcName" class="form-control" />
+                    <span asp-validation-for="OtherPaymentInfo.AcName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="OtherPaymentInfo.AcAddr" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="OtherPaymentInfo.AcAddr" class="form-control" />
+                    <span asp-validation-for="OtherPaymentInfo.AcAddr" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="OtherPaymentInfo.AcEmail" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="OtherPaymentInfo.AcEmail" class="form-control" />
+                    <span asp-validation-for="OtherPaymentInfo.AcEmail" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="OtherPaymentInfo.AcPhone" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="OtherPaymentInfo.AcPhone" class="form-control" />
+                    <span asp-validation-for="OtherPaymentInfo.AcPhone" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="OtherPaymentInfo.PoNum" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="OtherPaymentInfo.PoNum" class="form-control" />
+                    <span asp-validation-for="OtherPaymentInfo.PoNum" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

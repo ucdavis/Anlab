@@ -76,8 +76,33 @@ namespace AnlabMvc.Controllers
             return Redirect(result.AccessUrl);
         }
 
-        [HttpPost]
+        [HttpGet] //Maybe move to the Payment controller...
         public async Task<IActionResult> ConfirmPayment(Guid id)
+        {
+            var order = await _context.Orders.SingleOrDefaultAsync(o => o.ShareIdentifier == id);
+            if (order.Paid)
+            {
+                ErrorMessage = "Payment has already been confirmed";
+                return RedirectToAction("Link", new {id });
+            }
+
+            if (order.PaymentType == PaymentTypeCodes.CreditCard)
+            {
+                ErrorMessage = "Order requires Credit Card or Other Payment type, not a UC Account payment";
+                return RedirectToAction("Link", new { id });
+            }
+
+            var model = new PaymentConfirmationModel
+            {
+                Order = order,
+                OtherPaymentInfo = order.GetOrderDetails().OtherPaymentInfo
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmPayment(Guid id, OtherPaymentInfo billingDetails) //Put in model
         {
             var order = await _context.Orders.SingleOrDefaultAsync(o => o.ShareIdentifier == id);
             if (order.Paid)
@@ -91,7 +116,9 @@ namespace AnlabMvc.Controllers
                 ErrorMessage = "Order requires Credit Card or Other Payment type, not a UC Account payment";
                 return RedirectToAction("Link", new { id = id });
             }
+            //TODO: Validation, update json, send email, mark as paid and completed (yeah, completed)
 
+            
             if (order.PaymentType == PaymentTypeCodes.UcOtherAccount)
             {
                 order.Paid = true;
