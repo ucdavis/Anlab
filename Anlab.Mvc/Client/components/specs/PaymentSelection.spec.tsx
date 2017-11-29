@@ -64,7 +64,7 @@ describe('<PaymentSelection/>', () => {
                 agreementRequired: false,
             };
             const target = mount(<PaymentSelection payment={payment} onPaymentSelected={onPaymentSelected} ucAccountRef={null} placingOrder={true} checkChart={checkChart} otherPaymentInfo={otherPaymentInfo} otherPaymentInfoRef={null} updateOtherPaymentInfo={null} updateOtherPaymentInfoType={null} />);
-            expect(target.find('Input').length).toEqual(7);
+            expect(target.find('Input').length).toEqual(6); //TODO: Write one of these for "Other" which will have 7
 
             const inp = target.find('input').at(0);
             inp.simulate('change', { target: { value: 'xxx'} });
@@ -224,7 +224,7 @@ describe('<PaymentSelection/>', () => {
             agreementRequired: false,
         };
         const target = mount(<PaymentSelection payment={payment} onPaymentSelected={onPaymentSelected} ucAccountRef={null} placingOrder={true} checkChart={checkChart} otherPaymentInfo={otherPaymentInfo} otherPaymentInfoRef={null} updateOtherPaymentInfo={null} updateOtherPaymentInfoType={null} />);
-        expect(target.find('Input').length).toEqual(7);
+        expect(target.find('Input').length).toEqual(6);
 
         const internal = target.instance();
         internal._handleChange('creditcard');
