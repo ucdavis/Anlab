@@ -31,7 +31,7 @@ export class TestInfo extends React.PureComponent<ITestInfoProps, ITestInfoState
 
         return (
             <div>
-                <Checkbox checked={this.props.selected} onChange={(e) => this._onSelection(this.props.test)} />
+                <Checkbox checked={this.props.selected} onChange={(e) => this._onSelection(this.props.test)}> {this.props.test.analysis} </Checkbox>
 
                 <Modal show={this.state.active}>
                     <Modal.Header>
