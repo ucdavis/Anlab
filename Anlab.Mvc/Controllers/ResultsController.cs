@@ -133,8 +133,9 @@ namespace AnlabMvc.Controllers
             orderDetails.OtherPaymentInfo = otherPaymentInfo;
 
             order.SaveDetails(orderDetails);
-            //order.Paid = true;
-            
+            order.Paid = true;
+
+            //TODO: Email
 
             await _context.SaveChangesAsync();
 
