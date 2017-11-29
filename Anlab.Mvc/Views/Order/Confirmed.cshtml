@@ -13,6 +13,11 @@
 
     <p>You will be billed when the work has been completed.</p>
 
+    <div class="form-group">
+        <strong>Id</strong>
+        <span>@Model.Order.Id</span>
+    </div>
+
     @if (Model.Order.ClientId != null)
     {
         <div class="form-group">
