@@ -16,6 +16,7 @@ interface IOtherPaymentInfoProps {
     otherPaymentInfo: IOtherPaymentInfo;
     updateOtherPaymentInfo: Function;
     otherPaymentInfoRef: any;
+    clientType: string;
 }
 
 export class OtherPaymentInfo extends React.Component<IOtherPaymentInfoProps, {}> {
@@ -32,7 +33,7 @@ export class OtherPaymentInfo extends React.Component<IOtherPaymentInfoProps, {}
                 <div className="flexcol">
                     <OtherPaymentInput property="acEmail" value={this.props.otherPaymentInfo.acEmail} label="Account Contact Email" handleChange={this._onOtherInfoChange} required={true} />
                     <OtherPaymentInput property="acPhone" value={this.props.otherPaymentInfo.acPhone} label="Account Contact Phone Number" handleChange={this._onOtherInfoChange} required={true} />
-                    <OtherPaymentInput property="poNum" value={this.props.otherPaymentInfo.poNum} label="PO # (if applicable)" handleChange={this._onOtherInfoChange} required={this.props.otherPaymentInfo.paymentType === "PO"} />
+                    {this.props.clientType === "other" && < OtherPaymentInput property="poNum" value={this.props.otherPaymentInfo.poNum} label="PO #" handleChange={this._onOtherInfoChange} required={this.props.otherPaymentInfo.paymentType === "PO"} />}
                 </div>
             </div>);
     }
