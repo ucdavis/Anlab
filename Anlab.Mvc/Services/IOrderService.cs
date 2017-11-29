@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -211,7 +211,7 @@ namespace AnlabMvc.Services
             orderToUpdate.SaveDetails(orderDetails);
 
             orderToUpdate.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails);
-            orderToUpdate.PaymentType = PaymentTypeCodes.CreditCard;
+            
             if (orderDetails.Payment.IsInternalClient)
             {
                 var account = new AccountModel(orderDetails.Payment.Account);
@@ -222,6 +222,17 @@ namespace AnlabMvc.Services
                 else
                 {
                     orderToUpdate.PaymentType = PaymentTypeCodes.UcOtherAccount;
+                }
+            }
+            else
+            {
+                if (orderDetails.OtherPaymentInfo == null || string.IsNullOrWhiteSpace(orderDetails.OtherPaymentInfo.PaymentType))
+                {
+                    orderToUpdate.PaymentType = PaymentTypeCodes.CreditCard;
+                }
+                else
+                {
+                    orderToUpdate.PaymentType = PaymentTypeCodes.Other;
                 }
             }
         }
