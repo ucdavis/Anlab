@@ -102,7 +102,7 @@ namespace AnlabMvc.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ConfirmPayment(Guid id, OtherPaymentInfo billingDetails) //Put in model
+        public async Task<IActionResult> ConfirmPayment(Guid id, OtherPaymentInfo otherPaymentInfo) //Put in model
         {
             var order = await _context.Orders.SingleOrDefaultAsync(o => o.ShareIdentifier == id);
             if (order.Paid)
@@ -118,12 +118,23 @@ namespace AnlabMvc.Controllers
             }
             //TODO: Validation, update json, send email, mark as paid and completed (yeah, completed)
 
+            //if (!ModelState.IsValid) //Doesn't work if PO isn't displayed, but is required
+            //{
+            //    ErrorMessage = "There were errors trying to save that.";
+            //    var model = new PaymentConfirmationModel
+            //    {
+            //        Order = order,
+            //        OtherPaymentInfo = otherPaymentInfo
+            //    };
+            //    return View(model);
+            //}
             
-            if (order.PaymentType == PaymentTypeCodes.UcOtherAccount)
-            {
-                order.Paid = true;
-                Message = "UC account marked as paid";
-            }
+            var orderDetails = order.GetOrderDetails();
+            orderDetails.OtherPaymentInfo = otherPaymentInfo;
+
+            order.SaveDetails(orderDetails);
+            //order.Paid = true;
+            
 
             await _context.SaveChangesAsync();
 
