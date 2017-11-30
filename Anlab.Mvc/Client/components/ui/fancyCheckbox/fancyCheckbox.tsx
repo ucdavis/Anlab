@@ -28,6 +28,8 @@ export default class FancyCheckbox extends React.PureComponent<IProps, {}> {
                         type="checkbox"
                         name={this.props.name}
                         ref={this.props.inputRef}
+                        checked={this.props.checked}
+                        onChange={this.props.onChange}
                     />
                     {labelOnLeft && label}
                     <span className="checkbox-material">
