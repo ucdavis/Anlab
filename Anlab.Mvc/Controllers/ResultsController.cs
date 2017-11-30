@@ -116,7 +116,7 @@ namespace AnlabMvc.Controllers
                 ErrorMessage = "Order requires Credit Card or Other Payment type, not a UC Account payment";
                 return RedirectToAction("Link", new { id = id });
             }
-            //TODO: Validation, update json, send email, mark as paid and completed (yeah, completed)
+
 
             if (order.PaymentType == PaymentTypeCodes.Other && string.IsNullOrWhiteSpace(otherPaymentInfo.PoNum))
             {
@@ -139,7 +139,8 @@ namespace AnlabMvc.Controllers
 
             order.SaveDetails(orderDetails);
             order.Paid = true;
-
+            order.Status = OrderStatusCodes.Complete; //mark as paid and completed (yeah, completed)
+            
             //TODO: Email
 
             await _context.SaveChangesAsync();
