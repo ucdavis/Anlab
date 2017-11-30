@@ -58,7 +58,6 @@ export class TestList extends React.PureComponent<ITestListProps, ITestListState
                 <table className="table">
                     <thead>
                         <tr>
-                            <th>Select</th>
                             <th>Analysis</th>
                             <th>Method Ref</th>
                             <th>Price</th>
@@ -121,7 +120,6 @@ export class TestList extends React.PureComponent<ITestListProps, ITestListState
                         onSelection={this.props.onTestSelectionChanged}
                     />
                 </td>
-                <td>{item.analysis}</td>
                 <td>
                     {item.sop === "0" ? "---" : <a href={url} target="_blank" >{item.sop}</a>} </td>
                 <td>
