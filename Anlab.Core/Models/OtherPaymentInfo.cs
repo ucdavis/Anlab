@@ -32,7 +32,7 @@ namespace Anlab.Core.Models
         [Display(Name = "Account Contact Phone Number")]
         public string AcPhone { get; set; }
         
-        [Required]
+        //[Required] 
         [Display(Name = "PO #")]
         public string PoNum { get; set; }
     }

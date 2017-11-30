@@ -118,17 +118,22 @@ namespace AnlabMvc.Controllers
             }
             //TODO: Validation, update json, send email, mark as paid and completed (yeah, completed)
 
-            //if (!ModelState.IsValid) //Doesn't work if PO isn't displayed, but is required
-            //{
-            //    ErrorMessage = "There were errors trying to save that.";
-            //    var model = new PaymentConfirmationModel
-            //    {
-            //        Order = order,
-            //        OtherPaymentInfo = otherPaymentInfo
-            //    };
-            //    return View(model);
-            //}
-            
+            if (order.PaymentType == PaymentTypeCodes.Other && string.IsNullOrWhiteSpace(otherPaymentInfo.PoNum))
+            {
+                ModelState.AddModelError("OtherPaymentInfo.PoNum", "PO # is required");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ErrorMessage = "There were errors trying to save that.";
+                var model = new PaymentConfirmationModel
+                {
+                    Order = order,
+                    OtherPaymentInfo = otherPaymentInfo
+                };
+                return View(model);
+            }
+
             var orderDetails = order.GetOrderDetails();
             orderDetails.OtherPaymentInfo = otherPaymentInfo;
 
