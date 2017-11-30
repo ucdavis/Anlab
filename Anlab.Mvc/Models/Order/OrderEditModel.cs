@@ -12,15 +12,9 @@ namespace AnlabMvc.Models.Order
         public TestItemModel[] TestItems { get; set; }
         public Anlab.Core.Domain.Order Order { get; set; }
 
-        public string DefaultAccount { get; set; }
-
         public decimal InternalProcessingFee { get; set; }
         public decimal ExternalProcessingFee { get; set; }
 
-        public string DefaultEmail { get; set; }
-        
-        public string DefaultClientId { get; set; }
-
-        public string DefaultClientIdName { get; set; }
+        public OrderEditDefaults Defaults { get; set; }
     }
 }

@@ -8,6 +8,7 @@ import { ClientId } from "./ClientId";
 import { ClientIdModal, INewClientInfo } from "./ClientIdModal";
 import { Commodity } from "./Commodity";
 import { IPayment, PaymentSelection } from "./PaymentSelection";
+import { IOtherPaymentInfo } from "./OtherPaymentQuestions";
 import { Project } from "./Project";
 import { Quantity } from "./Quantity";
 import { ISampleTypeQuestions, SampleTypeQuestions } from "./SampleTypeQuestions";
@@ -24,6 +25,11 @@ export interface IOrderFormProps {
     defaultEmail: string;
     defaultClientId: string;
     defaultClientIdName: string;
+    defaultAcName: string;
+    defaultAcAddr: string;
+    defaultAcPhone: string;
+    defaultAcEmail: string;
+    defaultCompanyName: string;
     orderInfo: any;
     internalProcessingFee: number;
     externalProcessingFee: number;
@@ -37,6 +43,7 @@ interface IOrderFormState {
     filteredTests: ITestItem[];
     commodity: string;
     payment: IPayment;
+    otherPaymentInfo: IOtherPaymentInfo;
     quantity?: number;
     sampleType: string;
     sampleTypeQuestions: ISampleTypeQuestions;
@@ -61,12 +68,12 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
     private waterPreservativeRef: any;
     private clientIdRef: any;
     private ucAccountRef: any;
+    private otherPaymentInfoRef: any;
 
     constructor(props) {
         super(props);
 
         const initialState: IOrderFormState = {
-            placingOrder: true,
             additionalEmails: [],
             additionalInfo: "",
             additionalInfoList: {},
@@ -85,6 +92,17 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             },
             clientName: (this.props.defaultClientIdName ? this.props.defaultClientIdName : null),
             payment: { clientType: "uc", account: "" },
+            otherPaymentInfo: {
+                paymentType: "",
+                companyName: this.props.defaultCompanyName ? this.props.defaultCompanyName : "",
+                acName: this.props.defaultAcName ? this.props.defaultAcName : "",
+                acAddr: this.props.defaultAcAddr ? this.props.defaultAcAddr : "",
+                acEmail: this.props.defaultAcEmail ? this.props.defaultAcEmail : "",
+                acPhone: this.props.defaultAcPhone ? this.props.defaultAcPhone : "",
+                poNum: "",
+                agreementRequired: false,
+            },
+            placingOrder: true,
             project: "",
             quantity: null,
             sampleType: "",
@@ -129,6 +147,16 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             initialState.payment.clientType = orderInfo.Payment.ClientType;
             initialState.payment.account = orderInfo.Payment.Account;
             initialState.payment.accountName = orderInfo.Payment.AccountName;
+            initialState.otherPaymentInfo = {
+                acAddr: orderInfo.OtherPaymentInfo.AcAddr,
+                acEmail: orderInfo.OtherPaymentInfo.AcEmail,
+                acName: orderInfo.OtherPaymentInfo.AcName,
+                acPhone: orderInfo.OtherPaymentInfo.AcPhone,
+                companyName: orderInfo.OtherPaymentInfo.CompanyName,
+                paymentType: orderInfo.OtherPaymentInfo.PaymentType,
+                poNum: orderInfo.OtherPaymentInfo.PoNum,
+                agreementRequired: false,
+            },
             initialState.clientId = orderInfo.ClientId;
             initialState.newClientInfo = {
                 email: orderInfo.NewClientInfo.Email,
@@ -152,7 +180,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         const {
             payment, selectedTests, sampleType, sampleTypeQuestions, quantity, additionalInfo, project,
             commodity, additionalEmails, status, clientId, newClientInfo, clientName,
-            additionalInfoList, filteredTests, selectedCodes, placingOrder,
+            additionalInfoList, filteredTests, selectedCodes, placingOrder, otherPaymentInfo,
         } = this.state;
 
         const isUcClient = this.state.payment.clientType === "uc";
@@ -187,7 +215,12 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                         <PaymentSelection
                             placingOrder={placingOrder}
                             payment={payment}
+                            checkChart={this._checkUcChart}
                             onPaymentSelected={this._onPaymentSelected}
+                            otherPaymentInfo={otherPaymentInfo}
+                            updateOtherPaymentInfo={this._updateOtherPaymentInfo}
+                            updateOtherPaymentInfoType={this._changeOtherPaymentInfoType}
+                            otherPaymentInfoRef={(inputRef) => { this.otherPaymentInfoRef = inputRef; }}
                             ucAccountRef={(inputRef) => { this.ucAccountRef = inputRef; }} />
                     </div>
                     </Collapse>
@@ -310,6 +343,18 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         {
             valid = false;
         }
+        if (this.state.payment.clientType === "uc" && this._checkUcChart(this.state.payment.account.charAt(0)) && this.state.payment.accountName == null)
+        {
+            valid = false;
+        }
+        if (this.state.payment.clientType === "uc" && !this._checkUcChart(this.state.payment.account.charAt(0)) &&
+            !this._checkOtherPaymentInfo()) {
+            valid = false;
+        }
+
+        if (this.state.payment.clientType === "other" && !this._checkOtherPaymentInfo()){
+            valid = false;
+        }
 
         // check quantity
         if (this.state.quantity <= 0 || this.state.quantity > 100) {
@@ -340,7 +385,12 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
     }
 
     private _onPaymentSelected = (payment: any) => {
-        this.setState({ payment }, this._validate);
+        this._changeOtherPaymentInfoType(payment.clientType, this.state.otherPaymentInfo.agreementRequired);
+        this.setState({payment}, this._validate);
+    }
+
+    private _checkUcChart = (chart: string) => {
+        return (chart === "L" || chart === "l" || chart === "3");
     }
 
     private _onSampleSelected = (sampleType: string) => {
@@ -412,10 +462,12 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             && (!this.state.newClientInfo.name || !this.state.newClientInfo.name.trim())){
             this._focusInput(this.clientIdRef);
         } else if (this.state.payment.clientType === "uc"
-            && (!this.state.payment.account || !this.state.payment.account.trim())) {
+            && ((!this.state.payment.account || !this.state.payment.account.trim()) || (this._checkUcChart(this.state.payment.account.charAt(0)) && this.state.payment.accountName == null))) {
             this._focusInput(this.ucAccountRef);
-        }
-        else if (!this.state.project || !this.state.project.trim()) {
+        } else if ((this.state.payment.clientType === "other" && !this._checkOtherPaymentInfo()) ||
+            (this.state.payment.clientType === "uc" && !this._checkUcChart(this.state.payment.account.charAt(0)) && !this._checkOtherPaymentInfo())) {
+            this._focusInput(this.otherPaymentInfoRef); //TODO, add input ref 
+        } else if (!this.state.project || !this.state.project.trim()) {
             this._focusInput(this.projectRef);
         } else if (this.state.quantity <= 0 || this.state.quantity > 100) {
             this._focusInput(this.quantityRef);
@@ -440,6 +492,42 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                 [id]: value,
             },
         }, this._validate);
+    }
+
+    private _updateOtherPaymentInfo = (property, value) => {
+        if (property === "agreementRequired") {
+            this._changeOtherPaymentInfoType("other", value);
+            return;
+        }
+        this.setState({
+            ...this.state, otherPaymentInfo: {
+                ...this.state.otherPaymentInfo,
+                [property]: value
+            }
+        }, this._validate);
+
+    }
+
+    private _changeOtherPaymentInfoType = (clientType: string, agreementRequired: boolean) => {
+        var paymentType = "";
+        if (clientType === "uc")
+            paymentType = "IOC";
+        else if (clientType === "other")
+            paymentType = agreementRequired ? "Agreement" : "PO";
+        this.setState({
+            otherPaymentInfo: {
+                ...this.state.otherPaymentInfo, agreementRequired: agreementRequired,
+                paymentType: paymentType,
+            },
+        }, this._validate);
+    }
+
+    private _checkOtherPaymentInfo = () => {
+        return (!!this.state.otherPaymentInfo.acAddr.trim() && !!this.state.otherPaymentInfo.acEmail.trim() &&
+            !!this.state.otherPaymentInfo.acName.trim() && !!this.state.otherPaymentInfo.acPhone.trim() &&
+            !!this.state.otherPaymentInfo.companyName.trim() && !!this.state.otherPaymentInfo.paymentType.trim() &&
+            (this.state.payment.clientType === "uc" || this.state.otherPaymentInfo.agreementRequired ||
+                !!this.state.otherPaymentInfo.poNum.trim()));
     }
 
     private _handleChange = (name, value) => {
@@ -480,6 +568,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             internalProcessingFee: this.props.internalProcessingFee,
             newClientInfo: this.state.newClientInfo,
             orderId: this.props.orderId,
+            otherPaymentInfo: this.state.otherPaymentInfo,
             payment: this.state.payment,
             project: this.state.project,
             quantity: this.state.quantity,

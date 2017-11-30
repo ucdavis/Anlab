@@ -50,15 +50,22 @@ namespace AnlabMvc.Controllers
             var joined = await _orderService.PopulateTestItemModel();
             var proc = await _labworksService.GetPrice(processingCode);
 
+            var user = _context.Users.Single(a => a.Id == CurrentUserId);
+
             var model = new OrderEditModel {
                 TestItems = joined.ToArray(),
                 InternalProcessingFee = Math.Ceiling(proc.Cost),
-                ExternalProcessingFee = Math.Ceiling(proc.Cost * _appSettings.NonUcRate)
+                ExternalProcessingFee = Math.Ceiling(proc.Cost * _appSettings.NonUcRate),
+                Defaults = new OrderEditDefaults {
+                    DefaultAccount = user.Account?.ToUpper(),
+                    DefaultEmail = user.Email,
+                    DefaultCompanyName = user.CompanyName,
+                    DefaultAcAddr = user.BillingContactAddress,
+                    DefaultAcEmail = user.BillingContactEmail,
+                    DefaultAcName = user.BillingContactName,
+                    DefaultAcPhone = user.BillingContactPhone,
+                },
             };
-
-            var user = _context.Users.Single(a => a.Id == CurrentUserId);
-            model.DefaultAccount = user.Account?.ToUpper();
-            model.DefaultEmail = user.Email;
 
             if (!string.IsNullOrWhiteSpace(user.ClientId))
             {
@@ -66,15 +73,12 @@ namespace AnlabMvc.Controllers
                 var defaults = await _labworksService.GetClientDetails(user.ClientId);
                 if (defaults != null)
                 {
-                    model.DefaultAccount = model.DefaultAccount ?? defaults.DefaultAccount;
-                    model.DefaultClientId = defaults.ClientId;
-                    model.DefaultClientIdName = defaults.Name;
+                    model.Defaults.DefaultAccount = model.Defaults.DefaultAccount ?? defaults.DefaultAccount;
+                    model.Defaults.DefaultClientId = defaults.ClientId;
+                    model.Defaults.DefaultClientIdName = defaults.Name;
 
                 }
             }
-
-
-
 
             return View(model);
         }
@@ -108,7 +112,10 @@ namespace AnlabMvc.Controllers
                 Order = order,
                 InternalProcessingFee = Math.Ceiling(proc.Cost),
                 ExternalProcessingFee = Math.Ceiling(proc.Cost * _appSettings.NonUcRate),
-                DefaultEmail = order.Creator.Email
+                Defaults = new OrderEditDefaults
+                {
+                    DefaultEmail = order.Creator.Email
+                }
             };
 
             return View(model);

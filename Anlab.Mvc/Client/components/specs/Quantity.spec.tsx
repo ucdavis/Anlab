@@ -14,7 +14,7 @@ describe('<Quantity />', () => {
         });
         it('should have a label', () => {
             const target = mount(<Quantity quantity={1} onQuantityChanged={null} quantityRef={null}/>);
-            expect(target.find('IntegerInput').at(0).prop('label')).toEqual('Quantity *');
+            expect(target.find('IntegerInput').at(0).prop('label')).toEqual('Quantity');
         });
         it('should have a value 1', () => {
             const target = mount(<Quantity quantity={1} onQuantityChanged={null} quantityRef={null}/>);
@@ -32,6 +32,10 @@ describe('<Quantity />', () => {
         it('should have a max of 100', () => {
             const target = mount(<Quantity quantity={1} onQuantityChanged={null} quantityRef={null}/>);
             expect(target.find('IntegerInput').at(0).prop('max')).toEqual(100);
+        });
+        it('should have be required', () => {
+            const target = mount(<Quantity quantity={1} onQuantityChanged={null} quantityRef={null} />);
+            expect(target.find('IntegerInput').at(0).prop('required')).toBeTruthy();
         });
     });
 });
