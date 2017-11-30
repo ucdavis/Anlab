@@ -93,12 +93,12 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             clientName: (this.props.defaultClientIdName ? this.props.defaultClientIdName : null),
             payment: { clientType: "uc", account: "" },
             otherPaymentInfo: {
-                paymentType: "",
-                companyName: this.props.defaultCompanyName ? this.props.defaultCompanyName : "",
-                acName: this.props.defaultAcName ? this.props.defaultAcName : "",
-                acAddr: this.props.defaultAcAddr ? this.props.defaultAcAddr : "",
-                acEmail: this.props.defaultAcEmail ? this.props.defaultAcEmail : "",
-                acPhone: this.props.defaultAcPhone ? this.props.defaultAcPhone : "",
+                paymentType: this.props.defaultAccount ? "IOC" : "",
+                companyName: this.props.defaultCompanyName || "",
+                acName: this.props.defaultAcName || "",
+                acAddr: this.props.defaultAcAddr || "",
+                acEmail: this.props.defaultAcEmail || "",
+                acPhone: this.props.defaultAcPhone || "",
                 poNum: "",
                 agreementRequired: false,
             },
@@ -466,7 +466,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             this._focusInput(this.ucAccountRef);
         } else if ((this.state.payment.clientType === "other" && !this._checkOtherPaymentInfo()) ||
             (this.state.payment.clientType === "uc" && !this._checkUcChart(this.state.payment.account.charAt(0)) && !this._checkOtherPaymentInfo())) {
-            this._focusInput(this.otherPaymentInfoRef); //TODO, add input ref 
+            this._focusInput(this.otherPaymentInfoRef);
         } else if (!this.state.project || !this.state.project.trim()) {
             this._focusInput(this.projectRef);
         } else if (this.state.quantity <= 0 || this.state.quantity > 100) {
