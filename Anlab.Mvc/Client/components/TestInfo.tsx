@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Checkbox, Modal, Button } from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
+import FancyCheckbox from "./ui/fancyCheckbox/fancyCheckbox";
 import Input from "./ui/input/input";
 import { ITestItem } from "./TestList";
 
@@ -31,8 +32,11 @@ export class TestInfo extends React.PureComponent<ITestInfoProps, ITestInfoState
 
         return (
             <div>
-                <Checkbox checked={this.props.selected} onChange={(e) => this._onSelection(this.props.test)}> {this.props.test.analysis} </Checkbox>
-
+                <FancyCheckbox
+                    checked={this.props.selected}
+                    label={this.props.test.analysis}
+                    onChange={(e) => this._onSelection(this.props.test)}
+                />
                 <Modal show={this.state.active}>
                     <Modal.Header>
                         <Modal.Title>{this.props.test.additionalInfoPrompt}</Modal.Title>
