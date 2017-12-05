@@ -1,47 +1,55 @@
 @using Anlab.Core.Models
 @using Humanizer
-@model AnlabMvc.Models.Order.OrderReviewModel
+@model AnlabMvc.Models.Order.OverrideOrderModel
 @{
     ViewData["Title"] = "Override Order";
 }
 <div class="col">
-    @Html.Partial("_OrderDetails")
+    @Html.Partial("_OrderDetails", @Model.OrderReviewModel)
     
-    <form asp-controller="Lab" asp-action="OverrideOrder" asp-route-id="@Model.Order.Id" method="post">
+    <form enctype="multipart/form-data" asp-controller="Lab" asp-action="OverrideOrder" asp-route-id="@Model.OrderReviewModel.Order.Id" method="post">
         <div class="form-horizontal">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Order.IsDeleted" class="col-md-2 control-label">Delete Order</label>
+                <label asp-for="IsDeleted" class="col-md-2 control-label">Delete Order</label>
                 <div class="col-md-10">
-                    <select asp-for="Order.IsDeleted" class="form-control">
+                    <select asp-for="IsDeleted" class="form-control">
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </select>
-                    <span asp-validation-for="Order.IsDeleted" class="text-danger"></span>
+                    <span asp-validation-for="IsDeleted" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group">
-                <label asp-for="Order.Paid" class="col-md-2 control-label">Paid</label>
+                <label asp-for="Paid" class="col-md-2 control-label">Paid</label>
                 <div class="col-md-10">
-                    <select asp-for="Order.Paid" class="form-control">
+                    <select asp-for="Paid" class="form-control">
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </select>
-                    <span asp-validation-for="Order.Paid" class="text-danger"></span>
+                    <span asp-validation-for="Paid" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group">
-                <label asp-for="Order.Status" class="col-md-2 control-label">Status</label>
+                <label asp-for="Status" class="col-md-2 control-label">Status</label>
                 <div class="col-md-10">
-                    <select asp-for="Order.Status" class="form-control">
+                    <select asp-for="Status" class="form-control">
                         @foreach (var status in OrderStatusCodes.All)
                         {
                             <option value="@status">@status</option>
                         }
                     </select>
-                    <span asp-validation-for="Order.Paid" class="text-danger"></span>
+                    <span asp-validation-for="Paid" class="text-danger"></span>
                 </div>
             </div>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label">@(string.IsNullOrWhiteSpace(Model.OrderReviewModel.Order.ResultsFileIdentifier) ? "Upload Results" : "Replace Results")</label>
+                <div class="col-md-10">
+                    <input id="UploadFile" type="file" class="form-control" name="UploadFile"/>
+                </div>
+            </div>
+
             <button type="submit" class="btn btn-danger"><i class="fa fa-warning" aria-hidden="true"></i> Override Order</button>
         </div>
     </form>
@@ -68,6 +76,23 @@
                 var adjustAmt = 0;
             $('#adjustmentAmount').val(adjustAmt);
             $('#adjustAmt').html(adjustAmt);
+        });
+        $('#UploadFile').on('change', function () {
+            var upload = $("#UploadFile");
+            var fullFileName = upload.val().replace(/^.*[\\\/]/, '').toUpperCase();
+            var fileName = fullFileName.replace(/\.[^/.]+$/, "");
+            var extension = fullFileName.split('.').pop();
+
+            var error = "";
+            if (extension !== 'XLS' && extension !== 'XLSX') {
+                error = "Only XLS and XLSX files can be uploaded";
+            }
+            var expectedFileName = '@Model.OrderReviewModel.Order.RequestNum'.toUpperCase();
+            if (fileName.indexOf(expectedFileName) === -1) {
+                error = "File name did not include request number: " + "@Model.OrderReviewModel.Order.RequestNum";
+            }
+            upload[0].setCustomValidity(error);
+
         });
     </script>
     @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }

@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Anlab.Core.Domain;
 using Anlab.Core.Services;
+using Serilog;
 
 namespace AnlabMvc.Controllers
 {
@@ -338,17 +339,25 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
 
-            var model = new OrderReviewModel();
-            model.Order = order;
-            model.OrderDetails = order.GetOrderDetails();
-            model.HideLabDetails = false;
+            var model = new OverrideOrderModel
+            {
+                OrderReviewModel =
+                {
+                    Order = order,
+                    OrderDetails = order.GetOrderDetails(),
+                    HideLabDetails = false
+                },
+                IsDeleted = order.IsDeleted,
+                Paid = order.Paid,
+                Status = order.Status
+            };
 
             return View(model);
         }
 
         [Authorize(Roles = RoleCodes.Admin)]
         [HttpPost]
-        public async Task<ActionResult> OverrideOrder(int id, Order order)
+        public async Task<ActionResult> OverrideOrder(int id, OverrideOrderModel model)
         {
             var orderToUpdate = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
@@ -357,13 +366,19 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
 
-            orderToUpdate.Paid = order.Paid;
-            orderToUpdate.Status = order.Status;
-            orderToUpdate.IsDeleted = order.IsDeleted;
+            orderToUpdate.Paid = model.Paid;
+            orderToUpdate.Status = model.Status;
+            orderToUpdate.IsDeleted = model.IsDeleted;
+            if (model.UploadFile != null && model.UploadFile.Length >= 0)
+            {
+                Log.Information($"Old Results File Identifier {orderToUpdate.ResultsFileIdentifier}");
+                orderToUpdate.ResultsFileIdentifier = await _fileStorageService.UploadFile(model.UploadFile);
+                Log.Information($"New Results File Identifier {orderToUpdate.ResultsFileIdentifier}");
+            }
 
             await _dbContext.SaveChangesAsync();
             
-            if (order.IsDeleted)
+            if (model.IsDeleted)
             {
                 ErrorMessage = "Order deleted!!!";
                 return RedirectToAction("Orders");
