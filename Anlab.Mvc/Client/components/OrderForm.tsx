@@ -390,7 +390,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
     }
 
     private _checkUcChart = (chart: string) => {
-        return (chart === "L" || chart === "l" || chart === "3");
+        return (chart === "L" || chart === "l" || chart === "3" || chart === "S" || chart === "s" || chart === "M" || chart === "m");
     }
 
     private _onSampleSelected = (sampleType: string) => {
