@@ -10,6 +10,8 @@ namespace AnlabMvc.Services
         Task EnqueueReceivedMessage(Order order);
         Task EnqueueFinalizedMessage(Order order);
         Task EnqueuePaidMessage(Order order);
+        Task EnqueueBillingMessage(Order order);
+
     }
 
     public class OrderMessageService : IOrderMessageService
@@ -93,6 +95,25 @@ namespace AnlabMvc.Services
             _mailService.EnqueueMessage(message);
         }
 
+        public async Task EnqueueBillingMessage(Order order)
+        {
+            var orderDetails = order.GetOrderDetails();
+            var subject = "Anlab Work Order Billing Info";
+            //TODO: change wording, change SendTo to billing email
+            var body = await _viewRenderService.RenderViewToStringAsync("Templates/_BillingInformation", order);
+
+
+            var message = new MailMessage
+            {
+                Subject = subject,
+                Body = body,
+                SendTo = order.Creator.Email,
+                Order = order,
+                User = order.Creator,
+            };
+
+            _mailService.EnqueueMessage(message);
+        }
 
     }
 }
