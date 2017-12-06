@@ -75,9 +75,13 @@
                  <span> (@Model.OrderDetails.Payment.AccountName)</span>
              }
         }
-        else
+        else if (string.Equals(Model.OrderDetails.Payment.ClientType, "creditcard", StringComparison.OrdinalIgnoreCase))
         {
             <span>Credit Card</span>
+        }
+        else
+        {
+            <span>Other</span>
         }
 
     </div>
@@ -124,6 +128,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                <td>Processing Fee</td>
                 <td>
                     @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
                     {
@@ -134,7 +139,6 @@
                         <span>@(String.Format("{0:C}", Model.OrderDetails.ExternalProcessingFee))</span>
                     }
                 </td>
-                <td>Processing Fee</td>
             </tr>
             <tr>
                 <td></td>
@@ -142,8 +146,8 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <th>@(String.Format("{0:C}", Model.OrderDetails.GrandTotal))</th>
                 <th>Total</th>
+                <th>@(String.Format("{0:C}", Model.OrderDetails.GrandTotal))</th>
             </tr>
         </tfoot>
     </table>

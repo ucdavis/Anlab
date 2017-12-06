@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Anlab.Core.Domain;
 using Anlab.Core.Services;
 
@@ -9,8 +9,9 @@ namespace AnlabMvc.Services
         Task EnqueueCreatedMessage(Order order);
         Task EnqueueReceivedMessage(Order order);
         Task EnqueueFinalizedMessage(Order order);
-        Task EnqueueAcceptedMessage(Order order);
         Task EnqueuePaidMessage(Order order);
+        Task EnqueueBillingMessage(Order order);
+
     }
 
     public class OrderMessageService : IOrderMessageService
@@ -74,25 +75,6 @@ namespace AnlabMvc.Services
             _mailService.EnqueueMessage(message);
         }
 
-        public async Task EnqueueAcceptedMessage(Order order)
-        {
-            var orderDetails = order.GetOrderDetails();
-            var subject = "Order Pending Payment Confirmation";
-            //TODO: change body of email, right now it is the same as OrderCreated
-            var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderAccepted", order);
-
-            var message = new MailMessage
-            {
-                Subject = subject,
-                Body = body,
-                SendTo = order.Creator.Email,
-                Order = order,
-                User = order.Creator,
-            };
-
-            _mailService.EnqueueMessage(message);
-        }
-
         public async Task EnqueuePaidMessage(Order order)
         {
             var orderDetails = order.GetOrderDetails();
@@ -113,6 +95,25 @@ namespace AnlabMvc.Services
             _mailService.EnqueueMessage(message);
         }
 
+        public async Task EnqueueBillingMessage(Order order)
+        {
+            var orderDetails = order.GetOrderDetails();
+            var subject = "Anlab Work Order Billing Info";
+            //TODO: change wording, change SendTo to billing email
+            var body = await _viewRenderService.RenderViewToStringAsync("Templates/_BillingInformation", order);
+
+
+            var message = new MailMessage
+            {
+                Subject = subject,
+                Body = body,
+                SendTo = order.Creator.Email,
+                Order = order,
+                User = order.Creator,
+            };
+
+            _mailService.EnqueueMessage(message);
+        }
 
     }
 }
