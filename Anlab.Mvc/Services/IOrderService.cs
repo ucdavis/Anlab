@@ -215,7 +215,7 @@ namespace AnlabMvc.Services
             if (orderDetails.Payment.IsInternalClient)
             {
                 var account = new AccountModel(orderDetails.Payment.Account);
-                if (account.Chart == "3" || account.Chart == "L")
+                if (account.Chart == "3" || account.Chart == "L" || account.Chart == "S" || account.Chart == "M")
                 {
                     orderToUpdate.PaymentType = PaymentTypeCodes.UcDavisAccount;
                 }
