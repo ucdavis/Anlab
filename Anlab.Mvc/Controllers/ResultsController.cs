@@ -76,8 +76,33 @@ namespace AnlabMvc.Controllers
             return Redirect(result.AccessUrl);
         }
 
-        [HttpPost]
+        [HttpGet] //Maybe move to the Payment controller...
         public async Task<IActionResult> ConfirmPayment(Guid id)
+        {
+            var order = await _context.Orders.SingleOrDefaultAsync(o => o.ShareIdentifier == id);
+            if (order.Paid)
+            {
+                ErrorMessage = "Payment has already been confirmed";
+                return RedirectToAction("Link", new {id });
+            }
+
+            if (order.PaymentType == PaymentTypeCodes.CreditCard)
+            {
+                ErrorMessage = "Order requires Credit Card or Other Payment type, not a UC Account payment";
+                return RedirectToAction("Link", new { id });
+            }
+
+            var model = new PaymentConfirmationModel
+            {
+                Order = order,
+                OtherPaymentInfo = order.GetOrderDetails().OtherPaymentInfo
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmPayment(Guid id, OtherPaymentInfo otherPaymentInfo) //Put in model
         {
             var order = await _context.Orders.SingleOrDefaultAsync(o => o.ShareIdentifier == id);
             if (order.Paid)
@@ -92,11 +117,31 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Link", new { id = id });
             }
 
-            if (order.PaymentType == PaymentTypeCodes.UcOtherAccount)
+
+            if (order.PaymentType == PaymentTypeCodes.Other && string.IsNullOrWhiteSpace(otherPaymentInfo.PoNum))
             {
-                order.Paid = true;
-                Message = "UC account marked as paid";
+                ModelState.AddModelError("OtherPaymentInfo.PoNum", "PO # is required");
             }
+
+            if (!ModelState.IsValid)
+            {
+                ErrorMessage = "There were errors trying to save that.";
+                var model = new PaymentConfirmationModel
+                {
+                    Order = order,
+                    OtherPaymentInfo = otherPaymentInfo
+                };
+                return View(model);
+            }
+
+            var orderDetails = order.GetOrderDetails();
+            orderDetails.OtherPaymentInfo = otherPaymentInfo;
+
+            order.SaveDetails(orderDetails);
+            order.Paid = true;
+            order.Status = OrderStatusCodes.Complete; //mark as paid and completed (yeah, completed)
+            
+            //TODO: Email
 
             await _context.SaveChangesAsync();
 
