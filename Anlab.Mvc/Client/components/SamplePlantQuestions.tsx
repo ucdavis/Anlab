@@ -20,34 +20,19 @@ export class SamplePlantQuestions extends React.Component<IPlantQuestionProps, {
         const option2 = "Report results on As Received basis.";
         const option3 = "Report results on 100% dry weight basis, based on individual dry matter results (charge applies).";
         return (
-            <div>
-                <table>
-                    <tbody>
-                        <tr>
-                            <th>
-                                How would you like your samples reported?
-                            </th>
-                        </tr>
-                        <tr>
-                            <td>
+            <div className="input-group">
+                <p>
+                                How would you like your samples reported?</p>
+                      <p>
                                 <input type="radio" value={option1} checked={this.props.questions.plantReportingBasis == option1} onChange={this._changeReporting} />
-                                {option1}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
+                                {option1}</p>
+                      <p>
                                 <input type="radio" value={option2} checked={this.props.questions.plantReportingBasis == option2 } onChange={this._changeReporting} />
-                                {option2}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
+                                {option2}</p>
+                      <p>
                                 <input type="radio" value={option3} checked={this.props.questions.plantReportingBasis == option3 } onChange={this._changeReporting} />
                                 {option3}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+              </p>
             </div>
         );
     }

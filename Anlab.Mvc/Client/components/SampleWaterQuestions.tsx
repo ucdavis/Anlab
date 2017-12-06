@@ -63,38 +63,26 @@ export class SampleWaterQuestions extends React.Component<IWaterQuestionsProps, 
             return null;
         }
         return (
-            <div>
-                <table>
-                    <tbody>
-                        <tr>
-                            <th colSpan={2}>
+            <div className="input-group">
+                <p>
                                Are these samples filtered?
-                            </th>
-                        </tr>
-                        <tr>
-                            <td>
+                  </p>
+                  <p>
                                 <input type="radio" checked={this.props.questions.waterFiltered} onChange={this._changeFilter} /> Yes
-                            </td>
-                            <td>
-                                <input type="radio" checked={!this.props.questions.waterFiltered} onChange={this._changeFilter} /> No
-                            </td>
-                        </tr>
-                        <tr>
-                            <th colSpan={2}>
+</p>
+<p>
+                                <input type="radio" checked={!this.props.questions.waterFiltered} onChange={this._changeFilter} /> No</p>
+<p>
                                 Was a preservative added to your sample?
-                            </th>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="radio" checked={this.props.questions.waterPreservativeAdded} onChange={this._changePreservative} /> Yes
-                            </td>
-                            <td>
-                                <input type="radio" checked={!this.props.questions.waterPreservativeAdded} onChange={this._changePreservative} /> No
-                            </td>
-                        </tr>
+</p>
+                              <p>
+                              <input type="radio" checked={this.props.questions.waterPreservativeAdded} onChange={this._changePreservative} /> Yes
+</p>
+
+                              <input type="radio" checked={!this.props.questions.waterPreservativeAdded} onChange={this._changePreservative} /> No
+<p>
                         {this.props.questions.waterPreservativeAdded &&
-                            <tr>
-                            <td colSpan={2}>
+
                                 <Input
                                     inputRef={this.props.waterPreservativeRef}
                                     error={this.state.error}
@@ -105,25 +93,18 @@ export class SampleWaterQuestions extends React.Component<IWaterQuestionsProps, 
                                     onBlur={this._onBlurPreservativeText}
                                     label="Provide more information about your preservative"
                                 />
-                                </td>
-                            </tr>
+
                         }
-                        <tr>
-                            <th colSpan={2}>
+                        </p>
+<p>
                                  Cl and Soluble Ca, Mg, and Na are reported in meq/L. Do you want them reported in mg/L?
-                            </th>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="radio" checked={this.props.questions.waterReportedInMgL} onChange={this._changeReporting} /> Yes
-                            </td>
-                            <td>
-                                <input type="radio" checked={!this.props.questions.waterReportedInMgL} onChange={this._changeReporting} /> No
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+</p>
+                                <p><input type="radio" checked={this.props.questions.waterReportedInMgL} onChange={this._changeReporting} /> Yes</p>
+<p>
+                                <input type="radio" checked={!this.props.questions.waterReportedInMgL} onChange={this._changeReporting} /> No</p>
+
+
             </div>
         );
-    } 
+    }
 }

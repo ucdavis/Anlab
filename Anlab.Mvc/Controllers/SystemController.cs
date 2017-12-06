@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AnlabMvc.Controllers
 {
-    [Authorize]
     public class SystemController : ApplicationController
     {
         private readonly IDbInitializationService _dbInitializationService;
@@ -50,9 +49,9 @@ namespace AnlabMvc.Controllers
 
         public async Task<IActionResult> ResetDb()
         {
-#if DEBUG
+
             await _dbInitializationService.RecreateAndInitialize();
-#endif
+
             return RedirectToAction("LogoutDirect", "Account");
         }
 
