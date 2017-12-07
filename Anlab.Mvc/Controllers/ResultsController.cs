@@ -126,6 +126,8 @@ namespace AnlabMvc.Controllers
                 ModelState.AddModelError("OtherPaymentInfo.PoNum", "PO # is required");
             }
 
+            otherPaymentInfo.PaymentType = order.GetOrderDetails().OtherPaymentInfo.PaymentType;
+
             if (!ModelState.IsValid)
             {
                 ErrorMessage = "There were errors trying to save that.";
