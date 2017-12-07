@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Anlab.Core.Domain;
 using Anlab.Core.Services;
+using Microsoft.Extensions.Options;
 
 namespace AnlabMvc.Services
 {
@@ -18,11 +19,13 @@ namespace AnlabMvc.Services
     {
         private readonly ViewRenderService _viewRenderService;
         private readonly IMailService _mailService;
+        private readonly AppSettings _appSettings;
 
-        public OrderMessageService(ViewRenderService viewRenderService, IMailService mailService)
+        public OrderMessageService(ViewRenderService viewRenderService, IMailService mailService, IOptions<AppSettings> appSettings)
         {
             _viewRenderService = viewRenderService;
             _mailService = mailService;
+            _appSettings = appSettings.Value;
         }
         public async Task EnqueueCreatedMessage(Order order)
         {
@@ -107,7 +110,7 @@ namespace AnlabMvc.Services
             {
                 Subject = subject,
                 Body = body,
-                SendTo = order.Creator.Email,
+                SendTo = _appSettings.AccountsEmail,
                 Order = order,
                 User = order.Creator,
             };
