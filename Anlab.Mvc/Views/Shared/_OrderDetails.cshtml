@@ -153,7 +153,7 @@
             <td>
                 @if (Model.HideLabDetails)
                 {
-                    <a asp-controller="Analysis" asp-action="Details" asp-route-id="@temp.Sop" target="_blank">@temp.Sop</a>
+                    <a asp-controller="Analysis" asp-action="@Model.OrderDetails.SampleType" asp-route-id="@temp.Sop" target="_blank">@temp.Sop</a>
                 }
                 else
                 {
