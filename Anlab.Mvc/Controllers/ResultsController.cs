@@ -21,17 +21,20 @@ namespace AnlabMvc.Controllers
         private readonly IFileStorageService _fileStorageService;
         private readonly CyberSourceSettings _cyberSourceSettings;
         private readonly IDataSigningService _dataSigningService;
+        private readonly IOrderMessageService _orderMessageService;
         private readonly AppSettings _appSettings;
 
         public ResultsController(ApplicationDbContext context,
             IFileStorageService fileStorageService,
             IDataSigningService dataSigningService,
             IOptions<CyberSourceSettings> cyberSourceSettings,
-            IOptions<AppSettings> appSettings)
+            IOptions<AppSettings> appSettings,
+            IOrderMessageService orderMessageService)
         {
             _context = context;
             _fileStorageService = fileStorageService;
             _dataSigningService = dataSigningService;
+            _orderMessageService = orderMessageService;
             _appSettings = appSettings.Value;
             _cyberSourceSettings = cyberSourceSettings.Value;
         }
@@ -140,8 +143,8 @@ namespace AnlabMvc.Controllers
             order.SaveDetails(orderDetails);
             order.Paid = true;
             order.Status = OrderStatusCodes.Complete; //mark as paid and completed (yeah, completed)
-            
-            //TODO: Email
+
+            await _orderMessageService.EnqueueBillingMessage(order); //Send email to accountants
 
             await _context.SaveChangesAsync();
 
