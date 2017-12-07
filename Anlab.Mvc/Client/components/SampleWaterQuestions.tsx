@@ -78,9 +78,8 @@ export class SampleWaterQuestions extends React.Component<IWaterQuestionsProps, 
                               <p>
                               <input type="radio" checked={this.props.questions.waterPreservativeAdded} onChange={this._changePreservative} /> Yes
 </p>
-
-                              <input type="radio" checked={!this.props.questions.waterPreservativeAdded} onChange={this._changePreservative} /> No
 <p>
+                              <input type="radio" checked={!this.props.questions.waterPreservativeAdded} onChange={this._changePreservative} /> No
                         {this.props.questions.waterPreservativeAdded &&
 
                                 <Input
@@ -95,7 +94,7 @@ export class SampleWaterQuestions extends React.Component<IWaterQuestionsProps, 
                                 />
 
                         }
-                        </p>
+                      </p>
 <p>
                                  Cl and Soluble Ca, Mg, and Na are reported in meq/L. Do you want them reported in mg/L?
 </p>
