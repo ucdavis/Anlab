@@ -8,6 +8,7 @@ namespace Anlab.Core.Models
 {
     public class OtherPaymentInfo
     {
+        [Display(Name = "Payment Type")]
         public string PaymentType { get; set; }
         
         [Required]

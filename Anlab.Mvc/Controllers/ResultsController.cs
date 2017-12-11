@@ -107,7 +107,7 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> ConfirmPayment(Guid id, OtherPaymentInfo otherPaymentInfo) //Put in model
         {
-            var order = await _context.Orders.SingleOrDefaultAsync(o => o.ShareIdentifier == id);
+            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.ShareIdentifier == id);
             if (order.Paid)
             {
                 ErrorMessage = "Payment has already been confirmed";
@@ -125,6 +125,8 @@ namespace AnlabMvc.Controllers
             {
                 ModelState.AddModelError("OtherPaymentInfo.PoNum", "PO # is required");
             }
+
+            otherPaymentInfo.PaymentType = order.GetOrderDetails().OtherPaymentInfo.PaymentType;
 
             if (!ModelState.IsValid)
             {

@@ -20,6 +20,13 @@
                 </div>
             }
             <div class="form-group">
+                <label asp-for="OtherPaymentInfo.PaymentType" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="OtherPaymentInfo.PaymentType" class="form-control" disabled="disabled"/>
+                    <span asp-validation-for="OtherPaymentInfo.PaymentType" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
                 <label asp-for="OtherPaymentInfo.CompanyName" class="col-md-2 control-label"></label>
                 <div class="col-md-10">
                     <input asp-for="OtherPaymentInfo.CompanyName" class="form-control"/>
