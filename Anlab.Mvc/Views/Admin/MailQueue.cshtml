@@ -1,4 +1,4 @@
-﻿@model List<Anlab.Core.Domain.MailMessage>
+@model List<Anlab.Core.Domain.MailMessage>
 @{
     ViewData["Title"] = "Mail Queue";
 }
@@ -12,6 +12,7 @@
     <thead>
         <tr>
             <th>Status:</th>
+            <th>Id</th>
             <th>To:</th>
             <th>Subject:</th>
             <th>Sent At:</th>
@@ -41,6 +42,7 @@
                     @:Pending
                 }
             </td>
+            <td>@message.Order.Id</td>
             <td>@message.SendTo</td>
             <td data-search="@message.Subject">@message.Subject<br />
                     <a data-toggle="collapse" href="#@message.Id" aria-expanded="true" aria-controls="@message.Id">Expand Body </a> |
@@ -113,13 +115,13 @@
     <script type="text/javascript">
         $(function() {
             $("#table").dataTable({
-                "order": [[0, "desc"],[3,"desc"]],
+                "order": [[0, "desc"],[4,"desc"]],
                 "columnDefs": [
                     {
-                        "type": "ordering", "targets": [0,1,2,3]
+                        "type": "ordering", "targets": [0,1,2,3,4]
                     },
                     {
-                        "width": "55%", "targets":[2]
+                        "width": "55%", "targets":[3]
                     }
                 ]
             });

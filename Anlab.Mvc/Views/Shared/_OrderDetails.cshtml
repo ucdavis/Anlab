@@ -38,8 +38,9 @@
     {
         <div class="row no-margin">
             <div class="form-group no-margin">
-                <h4>Override Order</h4>
+                <h4>Admin Actions</h4>
                 <p><a asp-controller="Lab" asp-action="OverrideOrder" asp-route-id="@Model.Order.Id">Override</a></p>
+                <p><a asp-controller="Admin" asp-action="MailQueue" asp-route-id="@Model.Order.Id" target="_blank">View Emails</a></p>
             </div>
         </div>
     }
