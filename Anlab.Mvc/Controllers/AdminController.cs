@@ -130,12 +130,22 @@ namespace AnlabMvc.Controllers
             return Content("Added Reports Role");
         }
 
-        public async Task<IActionResult> MailQueue()
+        public async Task<IActionResult> MailQueue(int? id = null)
         {
             // Right now, show unsent pending emails, failures, and successfully sent within 30 days.
             // TODO: Review filter
 
-            var messages = await _dbContext.MailMessages.Where(x => x.Sent == null || !x.Sent.Value || x.Sent.Value && x.SentAt != null && x.SentAt.Value >= DateTime.UtcNow.AddDays(-30)).AsNoTracking().ToListAsync();
+            List<MailMessage> messages = null;
+            if (id.HasValue)
+            {
+                messages = await _dbContext.MailMessages.Include(i => i.Order).Where(x => x.Order.Id == id).AsNoTracking().ToListAsync();
+            }
+            else
+            {
+                messages = await _dbContext.MailMessages.Include(i => i.Order).Where(x =>
+                    x.Sent == null || !x.Sent.Value || x.Sent.Value && x.SentAt != null &&
+                    x.SentAt.Value >= DateTime.UtcNow.AddDays(-30)).AsNoTracking().ToListAsync();
+            }
             return View(messages);
         }
 
