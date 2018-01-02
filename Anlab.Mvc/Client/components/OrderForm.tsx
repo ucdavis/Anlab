@@ -576,6 +576,10 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             sampleTypeQuestions: this.state.sampleTypeQuestions,
             selectedTests: this.state.selectedTests,
         };
+        //If a CC, clear out the otherPaymentInfo to avoid triggering validation server side.
+        if (order.payment.clientType === "creditcard") {
+            order.otherPaymentInfo = null;
+        }
 
         // submit request to server
         const that = this;
