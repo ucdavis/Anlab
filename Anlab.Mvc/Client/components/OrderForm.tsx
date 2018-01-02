@@ -147,16 +147,18 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             initialState.payment.clientType = orderInfo.Payment.ClientType;
             initialState.payment.account = orderInfo.Payment.Account;
             initialState.payment.accountName = orderInfo.Payment.AccountName;
-            initialState.otherPaymentInfo = {
-                acAddr: orderInfo.OtherPaymentInfo.AcAddr,
-                acEmail: orderInfo.OtherPaymentInfo.AcEmail,
-                acName: orderInfo.OtherPaymentInfo.AcName,
-                acPhone: orderInfo.OtherPaymentInfo.AcPhone,
-                companyName: orderInfo.OtherPaymentInfo.CompanyName,
-                paymentType: orderInfo.OtherPaymentInfo.PaymentType,
-                poNum: orderInfo.OtherPaymentInfo.PoNum,
-                agreementRequired: false,
-            },
+            if (orderInfo.OtherPaymentInfo) {
+                initialState.otherPaymentInfo = {
+                    acAddr: orderInfo.OtherPaymentInfo.AcAddr,
+                    acEmail: orderInfo.OtherPaymentInfo.AcEmail,
+                    acName: orderInfo.OtherPaymentInfo.AcName,
+                    acPhone: orderInfo.OtherPaymentInfo.AcPhone,
+                    companyName: orderInfo.OtherPaymentInfo.CompanyName,
+                    paymentType: orderInfo.OtherPaymentInfo.PaymentType,
+                    poNum: orderInfo.OtherPaymentInfo.PoNum,
+                    agreementRequired: false,
+                };
+            }
             initialState.clientId = orderInfo.ClientId;
             initialState.newClientInfo = {
                 email: orderInfo.NewClientInfo.Email,
@@ -576,6 +578,10 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
             sampleTypeQuestions: this.state.sampleTypeQuestions,
             selectedTests: this.state.selectedTests,
         };
+        //If a CC, clear out the otherPaymentInfo to avoid triggering validation server side.
+        if (order.payment.clientType === "creditcard" || (order.payment.clientType === "uc" && this._checkUcChart(order.payment.account.charAt(0)))) {
+            order.otherPaymentInfo = null;
+        }
 
         // submit request to server
         const that = this;
