@@ -54,6 +54,8 @@ namespace Anlab.Core.Services
                 client.BaseAddress = new Uri(url);
                 client.DefaultRequestHeaders.Add("X-Auth-Token", token);
 
+                Log.Information(JsonConvert.SerializeObject(model));
+
                 var response = await client.PostAsync("Transactions", new StringContent(JsonConvert.SerializeObject(model), System.Text.Encoding.UTF8, "application/json"));
                 if (response.StatusCode == HttpStatusCode.NotFound)
                 {
