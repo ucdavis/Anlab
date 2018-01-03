@@ -44,6 +44,9 @@ namespace Anlab.Core.Services
             var creditAccount = new AccountModel(_appSettings.AnlabAccount);
             var debitAccount = new AccountModel(orderDetails.Payment.Account);
 
+            Log.Information($"Debugging '{token}'");
+            Log.Information($"Debugging '{url}'");
+
             var model = new TransactionViewModel();
             model.MerchantTrackingNumber = order.Id.ToString();
             model.Transfers.Add(new TransferViewModel { Account = debitAccount.Account , Amount = orderDetails.GrandTotal, Chart = debitAccount.Chart, SubAccount = debitAccount.SubAccount, Description = $"{order.Project} - {order.RequestNum}", Direction = "Debit", ObjectCode = _appSettings.DebitObjectCode });
@@ -73,6 +76,10 @@ namespace Anlab.Core.Services
                     var content = await response.Content.ReadAsStringAsync();
                     return JsonConvert.DeserializeObject<SlothResponseModel>(content);
 
+                }
+                else
+                {
+                    Log.Error($"Sloth Error for order {order.Id}");
                 }
 
                 //var content2 = await response.Content.ReadAsStringAsync();
