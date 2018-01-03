@@ -44,8 +44,11 @@ namespace Anlab.Core.Services
             var creditAccount = new AccountModel(_appSettings.AnlabAccount);
             var debitAccount = new AccountModel(orderDetails.Payment.Account);
 
-            Log.Information($"Debugging '{token}'");
-            Log.Information($"Debugging '{url}'");
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                Log.Error("Sloth Token missing");
+            }
+
 
             var model = new TransactionViewModel();
             model.MerchantTrackingNumber = order.Id.ToString();
@@ -62,11 +65,11 @@ namespace Anlab.Core.Services
                 var response = await client.PostAsync("Transactions", new StringContent(JsonConvert.SerializeObject(model), System.Text.Encoding.UTF8, "application/json"));
                 if (response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    //Log.Information("No tFound");
+                    Log.Information($"Sloth Response Not Found for order id {order.Id}");
                 }
                 if (response.StatusCode == HttpStatusCode.NoContent)
                 {
-                    //Log.Information("No Content");
+                    Log.Information($"Sloth Response No Content for order id {order.Id}");
                 }
 
                 //TODO: Capture errors?
@@ -79,7 +82,7 @@ namespace Anlab.Core.Services
                 }
                 else
                 {
-                    Log.Error($"Sloth Error for order {order.Id}");
+                    Log.Information($"Sloth Response didn't have a success code for order {order.Id}");
                 }
 
                 //var content2 = await response.Content.ReadAsStringAsync();
