@@ -7,6 +7,7 @@ using AnlabMvc.Extensions;
 using AnlabMvc.Models;
 using AnlabMvc.Models.AccountViewModels;
 using AnlabMvc.Services;
+using Ietws;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -295,27 +296,24 @@ namespace AnlabMvc.Controllers
                 // email comes across in both name claim and upn
                 var email = info.Principal.FindFirstValue(ClaimTypes.Upn);
 
-                var ucdUser = await _directorySearchService.GetByEmail(email);
+                var ucdPerson = await _directorySearchService.GetByEmailAsync(email);
 
-                if (ucdUser != null)
-                {
-                    // TODO: see if we need to modify claims like this
-                    var identity = (ClaimsIdentity)info.Principal.Identity;
+                // TODO: see if we need to modify claims like this
+                var identity = (ClaimsIdentity)info.Principal.Identity;
 
-                    // Should we bother replacing via directory service?
-                    identity.AddClaim(new Claim(ClaimTypes.Email, ucdUser.Mail));
-                    identity.AddClaim(new Claim(ClaimTypes.GivenName, ucdUser.GivenName));
-                    identity.AddClaim(new Claim(ClaimTypes.Surname, ucdUser.Surname));
+                // Should we bother replacing via directory service?
+                identity.AddClaim(new Claim(ClaimTypes.Email, ucdPerson.Mail));
+                identity.AddClaim(new Claim(ClaimTypes.GivenName, ucdPerson.GivenName));
+                identity.AddClaim(new Claim(ClaimTypes.Surname, ucdPerson.Surname));
 
-                    // name from Azure comes back w/ email, so replace w/ display name
-                    identity.RemoveClaim(identity.FindFirst(ClaimTypes.NameIdentifier));
-                    identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, ucdUser.Kerberos));
-                    info.ProviderKey = ucdUser.Kerberos;
+                // name from Azure comes back w/ email, so replace w/ display name
+                identity.RemoveClaim(identity.FindFirst(ClaimTypes.NameIdentifier));
+                identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, ucdPerson.Kerberos));
+                info.ProviderKey = ucdPerson.Kerberos;
 
-                    // name from Azure comes back w/ email, so replace w/ display name
-                    identity.RemoveClaim(identity.FindFirst(ClaimTypes.Name));
-                    identity.AddClaim(new Claim(ClaimTypes.Name, identity.FindFirst("name").Value));
-                }
+                // name from Azure comes back w/ email, so replace w/ display name
+                identity.RemoveClaim(identity.FindFirst(ClaimTypes.Name));
+                identity.AddClaim(new Claim(ClaimTypes.Name, identity.FindFirst("name").Value));
             }
 
             // Sign in the user with this external login provider if the user already has a login.

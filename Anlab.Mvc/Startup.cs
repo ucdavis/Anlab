@@ -124,7 +124,7 @@ namespace AnlabMvc
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<IDirectorySearchService, DirectorySearchService>();
+            services.AddTransient<IDirectorySearchService, IetWsSearchService>();
             services.AddTransient<IDbInitializationService, DbInitializationService>();
             services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<ViewRenderService>();
