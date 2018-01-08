@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AnlabMvc.Models.Configuration;
+using AnlabMvc.Models;
 using AzureActiveDirectorySearcher;
 using Ietws;
 using Microsoft.Extensions.Configuration;
@@ -13,15 +13,6 @@ namespace AnlabMvc.Services
     public interface IDirectorySearchService
     {
         Task<Person> GetByEmailAsync(string email);
-    }
-
-    public class Person
-    {
-        public string GivenName { get; internal set; }
-        public string Surname { get; internal set; }
-        public string Kerberos { get; internal set; }
-        public string Mail { get; internal set; }
-        public string FullName { get; internal set; }
     }
 
     public class IetWsSearchService : IDirectorySearchService
