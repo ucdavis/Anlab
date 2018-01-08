@@ -29,10 +29,12 @@ namespace AnlabMvc.Services
         {
             // find the contact via their email
             var ucdContactResult = await ietClient.Contacts.Search(ContactSearchField.email, email);
+            EnsureResponseSuccess(ucdContactResult);
             var ucdContact = ucdContactResult.ResponseData.Results.First();
 
             // now look up the whole person's record by ID including kerb
             var ucdKerbResult = await ietClient.Kerberos.Search(KerberosSearchField.iamId, ucdContact.IamId);
+            EnsureResponseSuccess(ucdKerbResult);
             var ucdKerbPerson = ucdKerbResult.ResponseData.Results.Single();
             return new Person
             {
@@ -42,6 +44,13 @@ namespace AnlabMvc.Services
                 Kerberos = ucdKerbPerson.UserId,
                 Mail = ucdContact.Email
             };
+        }
+
+        private void EnsureResponseSuccess<T>(IetResult<T> result) {
+            if (result.ResponseStatus != 0)
+            {
+                throw new ApplicationException(result.ResponseDetails);
+            }
         }
     }
 }
