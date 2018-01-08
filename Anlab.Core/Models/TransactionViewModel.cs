@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -15,7 +15,10 @@ namespace Anlab.Jobs.MoneyMovement
         public string MerchantTrackingNumber { get; set; }
 
         public DateTime TransactionDate { get; set; }
-        
+
+        public string Source { get; set; } = "ANLAB";
+        public string SourceType { get; set; } = "Recharge";
+
         public IList<TransferViewModel> Transfers { get; set; }
     }
 
