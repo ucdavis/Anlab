@@ -34,12 +34,11 @@ namespace AnlabMvc.Services
             // now look up the whole person's record by ID including kerb
             var ucdKerbResult = await ietClient.Kerberos.Search(KerberosSearchField.iamId, ucdContact.IamId);
             var ucdKerbPerson = ucdKerbResult.ResponseData.Results.Single();
-
             return new Person
             {
-                GivenName = ucdKerbPerson.OFirstName,
-                Surname = ucdKerbPerson.OLastName,
-                FullName = ucdKerbPerson.OFullName,
+                GivenName = ucdKerbPerson.DFirstName,
+                Surname = ucdKerbPerson.DLastName,
+                FullName = ucdKerbPerson.DFullName,
                 Kerberos = ucdKerbPerson.UserId,
                 Mail = ucdContact.Email
             };
