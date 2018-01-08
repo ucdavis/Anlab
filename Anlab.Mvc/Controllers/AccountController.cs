@@ -296,7 +296,7 @@ namespace AnlabMvc.Controllers
                 // email comes across in both name claim and upn
                 var email = info.Principal.FindFirstValue(ClaimTypes.Upn);
 
-                var ucdPerson = await _directorySearchService.GetByEmailAsync(email);
+                var ucdPerson = await _directorySearchService.GetByEmail(email);
 
                 // TODO: see if we need to modify claims like this
                 var identity = (ClaimsIdentity)info.Principal.Identity;

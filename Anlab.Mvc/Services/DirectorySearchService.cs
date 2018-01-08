@@ -12,7 +12,7 @@ namespace AnlabMvc.Services
 {
     public interface IDirectorySearchService
     {
-        Task<Person> GetByEmailAsync(string email);
+        Task<Person> GetByEmail(string email);
     }
 
     public class IetWsSearchService : IDirectorySearchService
@@ -25,7 +25,7 @@ namespace AnlabMvc.Services
             ietClient = new IetClient(settings.IetWsKey);
         }
 
-        public async Task<Person> GetByEmailAsync(string email)
+        public async Task<Person> GetByEmail(string email)
         {
             // find the contact via their email
             var ucdContactResult = await ietClient.Contacts.Search(ContactSearchField.email, email);
