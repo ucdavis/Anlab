@@ -22,8 +22,7 @@ namespace AnlabMvc.Services
         public IetWsSearchService(IOptions<AppSettings> configuration)
         {
             var settings = configuration.Value;
-            // TODO: get key from settings
-            ietClient = new IetClient("");
+            ietClient = new IetClient(settings.IetWsKey);
         }
 
         public async Task<Person> GetByEmailAsync(string email)
