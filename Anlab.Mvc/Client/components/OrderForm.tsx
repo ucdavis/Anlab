@@ -537,6 +537,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
     }
 
     private _switchViews = (b: boolean) => {
+        window.scrollTo(0,0);
         this.setState({ placingOrder: b });
     }
 
