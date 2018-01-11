@@ -65,42 +65,64 @@ export class SampleWaterQuestions extends React.Component<IWaterQuestionsProps, 
         return (
             <div className="input-group">
                 <p>
-                               Are these samples filtered?
-                  </p>
-                  <p>
-                                <input type="radio" checked={this.props.questions.waterFiltered} onChange={this._changeFilter} /> Yes
-</p>
-<p>
-                                <input type="radio" checked={!this.props.questions.waterFiltered} onChange={this._changeFilter} /> No</p>
-<p>
-                                Was a preservative added to your sample?
-</p>
-                              <p>
-                              <input type="radio" checked={this.props.questions.waterPreservativeAdded} onChange={this._changePreservative} /> Yes
-</p>
-<p>
-                              <input type="radio" checked={!this.props.questions.waterPreservativeAdded} onChange={this._changePreservative} /> No
-                        {this.props.questions.waterPreservativeAdded &&
+                    Are these samples filtered?
+                </p>
+                <p>
+                    <label>
+                        <input type="radio" checked={this.props.questions.waterFiltered} onChange={this
+                        ._changeFilter}/> Yes
+                    </label>
+                </p>
+                <p>
+                    <label>
+                        <input type="radio" checked={!this.props.questions.waterFiltered} onChange={this
+                        ._changeFilter}/> No
+                    </label>
+                </p>
+                <p>
+                    Was a preservative added to your sample?
+                </p>
+                <p>
+                    <label>
+                        <input type="radio" checked={this.props.questions.waterPreservativeAdded} onChange={this
+                        ._changePreservative}/> Yes
+                    </label>
+                </p>
+                <p>
+                    <label>
+                        <input type="radio" checked={!this.props.questions.waterPreservativeAdded} onChange={this
+                        ._changePreservative}/> No
+                    </label>
+                    {this.props.questions.waterPreservativeAdded &&
+                        <p>
+                            <Input
+                                inputRef={this.props.waterPreservativeRef}
+                                error={this.state.error}
+                                required={true}
+                                maxLength={256}
+                                value={this.state.waterPreservativeInfo}
+                                onChange={this._onChangePreservativeText}
+                                onBlur={this._onBlurPreservativeText}
+                                label="Provide more information about your preservative"/>
+                        </p>
 
-                                <Input
-                                    inputRef={this.props.waterPreservativeRef}
-                                    error={this.state.error}
-                                    required={true}
-                                    maxLength={256}
-                                    value={this.state.waterPreservativeInfo}
-                                    onChange={this._onChangePreservativeText}
-                                    onBlur={this._onBlurPreservativeText}
-                                    label="Provide more information about your preservative"
-                                />
-
-                        }
-                      </p>
-<p>
-                                 Cl and Soluble Ca, Mg, and Na are reported in meq/L. Do you want them reported in mg/L?
-</p>
-                                <p><input type="radio" checked={this.props.questions.waterReportedInMgL} onChange={this._changeReporting} /> Yes</p>
-<p>
-                                <input type="radio" checked={!this.props.questions.waterReportedInMgL} onChange={this._changeReporting} /> No</p>
+                    }
+                </p>
+                <p>
+                    Cl and Soluble Ca, Mg, and Na are reported in meq/L. Do you want them reported in mg/L?
+                </p>
+                <p>
+                    <label>
+                        <input type="radio" checked={this.props.questions.waterReportedInMgL} onChange={this
+                        ._changeReporting}/> Yes
+                    </label>
+                </p>
+                <p>
+                    <label>
+                        <input type="radio" checked={!this.props.questions.waterReportedInMgL} onChange={this
+                        ._changeReporting}/> No
+                    </label>
+                </p>
 
 
             </div>

@@ -23,15 +23,23 @@ export class SamplePlantQuestions extends React.Component<IPlantQuestionProps, {
             <div className="input-group">
                 <p>
                                 How would you like your samples reported?</p>
-                      <p>
-                                <input className="videokilledtheradiostar" type="radio" checked={this.props.questions.plantReportingBasis == option1} onChange={this._changeReporting} />
-                                {option1}</p>
-                      <p>
-                                <input className="videokilledtheradiostar" type="radio" value={option2} checked={this.props.questions.plantReportingBasis == option2 } onChange={this._changeReporting} />
-                                {option2}</p>
-                      <p>
-                                <input className="videokilledtheradiostar" type="radio" value={option3} checked={this.props.questions.plantReportingBasis == option3 } onChange={this._changeReporting} />
-                                {option3}
+                <p>
+                    <label>
+                        <input className="videokilledtheradiostar" type="radio" value={option1} checked={this.props.questions.plantReportingBasis == option1} onChange={this._changeReporting} />
+                        {option1}
+                    </label>
+                </p>
+                <p>
+                    <label>
+                        <input className="videokilledtheradiostar" type="radio" value={option2} checked={this.props.questions.plantReportingBasis == option2 } onChange={this._changeReporting} />
+                        {option2}
+                    </label>
+                </p>
+                <p>
+                    <label>
+                        <input className="videokilledtheradiostar" type="radio" value={option3} checked={this.props.questions.plantReportingBasis == option3 } onChange={this._changeReporting} />
+                        {option3}
+                    </label>
               </p>
             </div>
         );
