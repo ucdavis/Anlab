@@ -20,16 +20,17 @@ export class SampleSoilQuestions extends React.Component<ISampleSoilQuestions, {
         return (
             <div className="input-group">
 
-                                <p>Is your soil sample imported?</p>
-                                <p>
-                                <input type="radio" checked={this.props.questions.soilImported} onChange={this.onChange} /> Yes
-                                </p>
-                                <p>
-  <input type="radio" checked={!this.props.questions.soilImported} onChange={this.onChange} /> No
-                                </p>
-
-
-
+                <p>Is your soil sample imported?</p>
+                <p>
+                    <label>
+                        <input type="radio" checked={this.props.questions.soilImported} onChange={this.onChange}/> Yes
+                    </label>
+                </p>
+                <p>
+                    <label>
+                        <input type="radio" checked={!this.props.questions.soilImported} onChange={this.onChange}/> No
+                    </label>
+                </p>
 
             </div>
         );
