@@ -176,10 +176,12 @@ namespace Anlab.Core.Services
                     var response = await client.GetAsync(order.ApprovedPayment.Transaction_Id);
                     if (response.StatusCode == HttpStatusCode.NotFound)
                     {
+                        Log.Information($"Credit Card transaction id {order.ApprovedPayment.Transaction_Id} not found for order id {order.Id}");
                         continue;
                     }
                     if (response.StatusCode == HttpStatusCode.NoContent)
                     {
+                        Log.Information($"Credit Card transaction id {order.ApprovedPayment.Transaction_Id} no content returned from sloth for order id {order.Id}");
                         continue;
                     }
                     if (response.IsSuccessStatusCode)
@@ -191,6 +193,10 @@ namespace Anlab.Core.Services
                         order.KfsTrackingNumber = slothResponse.KfsTrackingNumber;
                         order.SlothTransactionId = slothResponse.Id;
                         order.Status = OrderStatusCodes.Complete;
+                    }
+                    else
+                    {
+                        Log.Error($"Credit Card transaction id {order.ApprovedPayment.Transaction_Id} sloth response {response.StatusCode} was not success for order id {order.Id}");
                     }
                 }
 
