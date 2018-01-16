@@ -13,6 +13,7 @@ namespace AnlabMvc.Services
     public interface IDirectorySearchService
     {
         Task<Person> GetByEmail(string email);
+        Task<Person> GetByKerberos(string kerb);
     }
 
     public class IetWsSearchService : IDirectorySearchService
@@ -36,6 +37,27 @@ namespace AnlabMvc.Services
             var ucdKerbResult = await ietClient.Kerberos.Search(KerberosSearchField.iamId, ucdContact.IamId);
             EnsureResponseSuccess(ucdKerbResult);
             var ucdKerbPerson = ucdKerbResult.ResponseData.Results.Single();
+            return new Person
+            {
+                GivenName = ucdKerbPerson.DFirstName,
+                Surname = ucdKerbPerson.DLastName,
+                FullName = ucdKerbPerson.DFullName,
+                Kerberos = ucdKerbPerson.UserId,
+                Mail = ucdContact.Email
+            };
+        }
+
+        public async Task<Person> GetByKerberos(string kerb)
+        {
+            var ucdKerbResult = await ietClient.Kerberos.Search(KerberosSearchField.userId, kerb);
+            EnsureResponseSuccess(ucdKerbResult);
+            var ucdKerbPerson = ucdKerbResult.ResponseData.Results.Single();
+
+            // find their email
+            var ucdContactResult = await ietClient.Contacts.Get(ucdKerbPerson.IamId);
+            EnsureResponseSuccess(ucdContactResult);
+            var ucdContact = ucdContactResult.ResponseData.Results.First();
+
             return new Person
             {
                 GivenName = ucdKerbPerson.DFirstName,
