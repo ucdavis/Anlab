@@ -95,24 +95,9 @@ namespace AnlabMvc
             //services.ConfigureApplicationCookie(options => options.LoginPath = "/Account/LogIn");
 
             services.AddAuthentication()
-                // .AddCookie(options => {
-                //     options.LoginPath = new PathString("/login");
-                // })
-                .AddCAS("UCD", options => {
+                .AddCAS("UCDavis", options => {
                     options.CasServerUrlBase = "https://cas.ucdavis.edu/cas/";
                     // options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                })
-                .AddOpenIdConnect("UCDavis", options =>
-                {
-                    options.Events.OnRedirectToIdentityProvider = context =>
-                    {
-                        context.ProtocolMessage.SetParameter("domain_hint", "ucdavis.edu");
-
-                        return Task.FromResult(0);
-                    };
-                    options.ClientId = "c631afcb-0795-4546-844d-9fe7759ae620";
-                    options.Authority = "https://login.microsoftonline.com/ucdavis365.onmicrosoft.com";
-                    options.SignedOutRedirectUri = "http://localhost:44349/";
                 })
                 .AddGoogle(options =>
                 {
