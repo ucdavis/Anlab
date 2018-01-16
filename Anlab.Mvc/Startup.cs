@@ -96,7 +96,7 @@ namespace AnlabMvc
 
             services.AddAuthentication()
                 .AddCAS("UCDavis", options => {
-                    options.CasServerUrlBase = "https://cas.ucdavis.edu/cas/";
+                    options.CasServerUrlBase = Configuration["AppSettings:CasBaseUrl"];
                     // options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 })
                 .AddGoogle(options =>
