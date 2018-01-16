@@ -290,6 +290,10 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction(nameof(Login));
             }
 
+            var claims = info.Principal.Claims.Select(x => new { x.Type, x.Value });
+
+            return new JsonResult(claims);
+
             // setup claims properly to deal with how azureAD represents things
             if (info.LoginProvider.Equals("UCDavis", StringComparison.OrdinalIgnoreCase))
             {

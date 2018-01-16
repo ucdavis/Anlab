@@ -95,6 +95,13 @@ namespace AnlabMvc
             //services.ConfigureApplicationCookie(options => options.LoginPath = "/Account/LogIn");
 
             services.AddAuthentication()
+                // .AddCookie(options => {
+                //     options.LoginPath = new PathString("/login");
+                // })
+                .AddCAS("UCD", options => {
+                    options.CasServerUrlBase = "https://cas.ucdavis.edu/cas/";
+                    // options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                })
                 .AddOpenIdConnect("UCDavis", options =>
                 {
                     options.Events.OnRedirectToIdentityProvider = context =>
