@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace AnlabMvc.Controllers
 {
@@ -34,6 +35,7 @@ namespace AnlabMvc.Controllers
         {
 
             var currentUserId = User.GetUserId();
+            Log.Information($"Impersonation Begins: {currentUserId} . Impersonating {email}");
 
             var impersonatedUser = await _userManager.FindByEmailAsync(email);
 
@@ -64,6 +66,8 @@ namespace AnlabMvc.Controllers
             await _signInManager.SignOutAsync();
 
             await _signInManager.SignInAsync(originalUser, isPersistent: true);
+
+            Log.Information($"Impersonation Ends: {originalUserId}");
 
             return RedirectToAction("Index", "Home");
         }
