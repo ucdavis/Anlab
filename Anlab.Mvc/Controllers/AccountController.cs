@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -295,6 +295,12 @@ namespace AnlabMvc.Controllers
             {
                 // kerberos comes across in both name and nameidentifier
                 var kerb = info.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if (!await _directorySearchService.VerifyKerberos(kerb))
+                {
+                    TempData["ErrorMessage"] = "Not a Valid Kerb";
+                    return RedirectToAction("Index", "Home");
+                }
 
                 var ucdPerson = await _directorySearchService.GetByKerberos(kerb);
 

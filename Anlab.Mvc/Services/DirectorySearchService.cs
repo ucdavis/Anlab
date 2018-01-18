@@ -14,6 +14,8 @@ namespace AnlabMvc.Services
     {
         Task<Person> GetByEmail(string email);
         Task<Person> GetByKerberos(string kerb);
+
+        Task<bool> VerifyKerberos(string kerb);
     }
 
     public class IetWsSearchService : IDirectorySearchService
@@ -66,6 +68,15 @@ namespace AnlabMvc.Services
                 Kerberos = ucdKerbPerson.UserId,
                 Mail = ucdContact.Email
             };
+        }
+
+        public async Task<bool> VerifyKerberos(string kerb)
+        {
+            var ucdKerbResult = await ietClient.Kerberos.Search(KerberosSearchField.userId, kerb);
+            EnsureResponseSuccess(ucdKerbResult);
+            var ucdKerbPerson = ucdKerbResult.ResponseData.Results.FirstOrDefault();
+
+            return (ucdKerbPerson != null);
         }
 
         private void EnsureResponseSuccess<T>(IetResult<T> result) {
