@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,9 +13,8 @@ namespace AnlabMvc.Services
     public interface IDirectorySearchService
     {
         Task<Person> GetByEmail(string email);
-        Task<Person> GetByKerberos(string kerb);
+        Task<ValidPerson> GetByKerberos(string kerb);
 
-        Task<bool> VerifyKerberos(string kerb);
     }
 
     public class IetWsSearchService : IDirectorySearchService
@@ -38,6 +37,7 @@ namespace AnlabMvc.Services
             // now look up the whole person's record by ID including kerb
             var ucdKerbResult = await ietClient.Kerberos.Search(KerberosSearchField.iamId, ucdContact.IamId);
             EnsureResponseSuccess(ucdKerbResult);
+            //TODO: If we use this method. Change the result to return ValidPerson like GetByKerberous below.
             var ucdKerbPerson = ucdKerbResult.ResponseData.Results.Single();
             return new Person
             {
@@ -49,10 +49,18 @@ namespace AnlabMvc.Services
             };
         }
 
-        public async Task<Person> GetByKerberos(string kerb)
+        public async Task<ValidPerson> GetByKerberos(string kerb)
         {
             var ucdKerbResult = await ietClient.Kerberos.Search(KerberosSearchField.userId, kerb);
             EnsureResponseSuccess(ucdKerbResult);
+            if (ucdKerbResult.ResponseData.Results.Length == 0)
+            {
+                return new ValidPerson()
+                {
+                    IsInvalid = true,
+                    ErrorMessage = "Login id not found. Please make sure you are using a personal login id."
+                };
+            }
             var ucdKerbPerson = ucdKerbResult.ResponseData.Results.Single();
 
             // find their email
@@ -60,23 +68,15 @@ namespace AnlabMvc.Services
             EnsureResponseSuccess(ucdContactResult);
             var ucdContact = ucdContactResult.ResponseData.Results.First();
 
-            return new Person
+            return new ValidPerson()
             {
+                Person = new Person() { 
                 GivenName = ucdKerbPerson.DFirstName,
                 Surname = ucdKerbPerson.DLastName,
                 FullName = ucdKerbPerson.DFullName,
                 Kerberos = ucdKerbPerson.UserId,
-                Mail = ucdContact.Email
+                Mail = ucdContact.Email}
             };
-        }
-
-        public async Task<bool> VerifyKerberos(string kerb)
-        {
-            var ucdKerbResult = await ietClient.Kerberos.Search(KerberosSearchField.userId, kerb);
-            EnsureResponseSuccess(ucdKerbResult);
-            var ucdKerbPerson = ucdKerbResult.ResponseData.Results.FirstOrDefault();
-
-            return (ucdKerbPerson != null);
         }
 
         private void EnsureResponseSuccess<T>(IetResult<T> result) {

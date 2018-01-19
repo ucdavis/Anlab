@@ -8,4 +8,11 @@ namespace AnlabMvc.Models
         public string Mail { get; internal set; }
         public string FullName { get; internal set; }
     }
+
+    public class ValidPerson
+    {
+        public Person Person { get; set; }
+        public bool IsInvalid { get; set; } = false;
+        public string ErrorMessage { get; set; }
+    }
 }
