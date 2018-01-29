@@ -229,7 +229,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
 
                     <Collapse in={placingOrder && (!!this.state.payment.clientType.trim() || !!this.state.project.trim())}>
                     <div className="form_wrap">
-                        <label className="form_header">What is the project title for this order?</label>
+                        <label className="form_header">What is the project title associated with this order?</label>
                         <Project
                             project={project}
                             handleChange={this._handleChange}
@@ -243,7 +243,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                         <div>
                             {placingOrder &&
                                 <div className="form_wrap">
-                                    <label className="form_header">Who should be notified for this test?</label>
+                                <label className="form_header">Who should receive emails and results for this sample submission?</label>
                                     <AdditionalEmails
                                         addedEmails={additionalEmails}
                                         defaultEmail={defaultEmail}
@@ -253,7 +253,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                                 </div>}
                     
                     <div className="form_wrap">
-                        <label className="form_header">How many samples will you require?</label>
+                                <label className="form_header">How many samples will you be submitting?</label>
                         <Quantity
                             quantity={quantity}
                             onQuantityChanged={this._onQuantityChanged}

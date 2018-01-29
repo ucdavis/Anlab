@@ -18,7 +18,7 @@ export class ViewMode extends React.Component<IViewModeProps, any> {
                         className={this.props.placingOrder ? activeDiv : inactiveDiv}
                         onClick={() => this._handleChange()}
                     >
-                        <h3>Create Order</h3>
+                        <h3>Create New Order</h3>
                     </div>
                     <span className="dividing_span col-2 t-center align-middle">or</span>
                     <div

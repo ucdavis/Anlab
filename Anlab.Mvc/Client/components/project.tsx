@@ -24,7 +24,7 @@ export class Project extends React.Component<IProjectInputProps, IProjectInputSt
         return (
             <div>
                 <Input
-                    label="Project Title"
+                    label="Project Title / Location"
                     value={this.props.project}
                     error={this.state.error}
                     required={true}
