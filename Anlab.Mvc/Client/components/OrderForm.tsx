@@ -253,7 +253,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                                 </div>}
                     
                     <div className="form_wrap">
-                        <label className="form_header">How many samples will you require?</label>
+                                <label className="form_header">How many samples will you be submitting?</label>
                         <Quantity
                             quantity={quantity}
                             onQuantityChanged={this._onQuantityChanged}
