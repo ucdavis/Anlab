@@ -58,18 +58,18 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
 
                 <div className="flexrow">
                     <div
-                        className={isCC ? activeDiv : inactiveDiv}
-                        onClick={() => this._handleChange("creditcard")}
-                    >
-                        <h3>Credit Card</h3>
-                        <p>Your credit card information will be collected at a later date.</p>
-                    </div>
-                    <div
                         className={isUcClient ? activeDiv : inactiveDiv}
                         onClick={() => this._handleChange("uc")}
                     >
                         <h3>UC Funds</h3>
                         <p>Required to receive the UC Rate.</p>
+                    </div>
+                    <div
+                        className={isCC ? activeDiv : inactiveDiv}
+                        onClick={() => this._handleChange("creditcard")}
+                    >
+                        <h3>Credit Card</h3>
+                        <p>Your credit card information will be collected at a later date.</p>
                     </div>
                     <div
                         className={isOther ? activeDiv : inactiveDiv}
