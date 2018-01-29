@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import Input from "./ui/input/input";
 
 interface ICommodityProps {
@@ -22,7 +22,7 @@ export class Commodity extends React.Component<ICommodityProps, ICommodityState>
     public render() {
         return (
             <Input
-              label="Commodity"
+                label="Type of Material / Commodity"
               value={this.state.internalValue}
               onChange={this._onChange}
               onBlur={this._onBlur}
