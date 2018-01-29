@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -297,20 +297,25 @@ namespace AnlabMvc.Controllers
                 var kerb = info.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
 
                 var ucdPerson = await _directorySearchService.GetByKerberos(kerb);
+                if (ucdPerson.IsInvalid)
+                {
+                    TempData["ErrorMessage"] = ucdPerson.ErrorMessage;
+                    return RedirectToAction("Index", "Home");
+                }
 
                 var identity = (ClaimsIdentity)info.Principal.Identity;
 
-                identity.AddClaim(new Claim(ClaimTypes.Email, ucdPerson.Mail));
-                identity.AddClaim(new Claim(ClaimTypes.GivenName, ucdPerson.GivenName));
-                identity.AddClaim(new Claim(ClaimTypes.Surname, ucdPerson.Surname));
+                identity.AddClaim(new Claim(ClaimTypes.Email, ucdPerson.Person.Mail));
+                identity.AddClaim(new Claim(ClaimTypes.GivenName, ucdPerson.Person.GivenName));
+                identity.AddClaim(new Claim(ClaimTypes.Surname, ucdPerson.Person.Surname));
 
                 // name and identifier come back as kerb, let's replace them with our found values.
                 identity.RemoveClaim(identity.FindFirst(ClaimTypes.NameIdentifier));
-                identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, ucdPerson.Kerberos));
-                info.ProviderKey = ucdPerson.Kerberos;
+                identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, ucdPerson.Person.Kerberos));
+                info.ProviderKey = ucdPerson.Person.Kerberos;
 
                 identity.RemoveClaim(identity.FindFirst(ClaimTypes.Name));
-                identity.AddClaim(new Claim(ClaimTypes.Name, ucdPerson.FullName));
+                identity.AddClaim(new Claim(ClaimTypes.Name, ucdPerson.Person.FullName));
             }
 
             // return Json(info.Principal.Claims.Select(x=>new { x.Type, x.Value}));
