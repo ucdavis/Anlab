@@ -13,7 +13,7 @@ namespace AnlabMvc.Services
     public interface IDirectorySearchService
     {
         Task<Person> GetByEmail(string email);
-        Task<ValidPerson> GetByKerberos(string kerb);
+        Task<DirectoryResult> GetByKerberos(string kerb);
 
     }
 
@@ -37,7 +37,7 @@ namespace AnlabMvc.Services
             // now look up the whole person's record by ID including kerb
             var ucdKerbResult = await ietClient.Kerberos.Search(KerberosSearchField.iamId, ucdContact.IamId);
             EnsureResponseSuccess(ucdKerbResult);
-            //TODO: If we use this method. Change the result to return ValidPerson like GetByKerberous below.
+            //TODO: If we use this method. Change the result to return DirectoryResult like GetByKerberous below.
             var ucdKerbPerson = ucdKerbResult.ResponseData.Results.Single();
             return new Person
             {
@@ -49,13 +49,13 @@ namespace AnlabMvc.Services
             };
         }
 
-        public async Task<ValidPerson> GetByKerberos(string kerb)
+        public async Task<DirectoryResult> GetByKerberos(string kerb)
         {
             var ucdKerbResult = await ietClient.Kerberos.Search(KerberosSearchField.userId, kerb);
             EnsureResponseSuccess(ucdKerbResult);
             if (ucdKerbResult.ResponseData.Results.Length == 0)
             {
-                return new ValidPerson()
+                return new DirectoryResult()
                 {
                     IsInvalid = true,
                     ErrorMessage = "Login id not found. Please make sure you are using a personal login id."
@@ -68,7 +68,7 @@ namespace AnlabMvc.Services
             EnsureResponseSuccess(ucdContactResult);
             var ucdContact = ucdContactResult.ResponseData.Results.First();
 
-            return new ValidPerson()
+            return new DirectoryResult()
             {
                 Person = new Person() { 
                 GivenName = ucdKerbPerson.DFirstName,
