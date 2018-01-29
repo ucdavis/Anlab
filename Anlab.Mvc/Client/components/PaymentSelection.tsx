@@ -62,21 +62,21 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
                         onClick={() => this._handleChange("creditcard")}
                     >
                         <h3>Credit Card</h3>
-                        <p>It's amazing what you can do with a little love in your heart.</p>
+                        <p>Your credit card information will be collected at a later date.</p>
                     </div>
                     <div
                         className={isUcClient ? activeDiv : inactiveDiv}
                         onClick={() => this._handleChange("uc")}
                     >
                         <h3>UC Funds</h3>
-                        <p>It's amazing what you can do with a little love in your heart</p>
+                        <p>Required to receive the UC Rate.</p>
                     </div>
                     <div
                         className={isOther ? activeDiv : inactiveDiv}
                         onClick={() => this._handleChange("other")}
                     >
                         <h3>Other</h3>
-                        <p>It's amazing what you can do with a little love in your heart</p>
+                        <p>Payment by PO or Bank Transfer.</p>
                     </div>
                 </div>
                 {this.props.placingOrder && this._renderUcAccount()}
