@@ -243,7 +243,7 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                         <div>
                             {placingOrder &&
                                 <div className="form_wrap">
-                                    <label className="form_header">Who should be notified for this test?</label>
+                                <label className="form_header">Who should receive emails and results for this sample submission?</label>
                                     <AdditionalEmails
                                         addedEmails={additionalEmails}
                                         defaultEmail={defaultEmail}
