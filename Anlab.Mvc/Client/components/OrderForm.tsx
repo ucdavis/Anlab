@@ -536,9 +536,11 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
         this.setState({ [name]: value }, this._validate);
     }
 
-    private _switchViews = (b: boolean) => {
-        window.scrollTo(0,0);
-        this.setState({ placingOrder: b });
+    private _switchViews = (viewName: string) => {
+        if ((this.state.placingOrder && viewName === "browse") || !this.state.placingOrder && viewName === "order") {
+            window.scrollTo(0, 0);
+            this.setState({ placingOrder: !this.state.placingOrder });
+        }
     }
 
     private _handleDialogToggle = () => {

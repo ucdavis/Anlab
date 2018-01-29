@@ -108,7 +108,7 @@ export default class Summary extends React.PureComponent<ISummaryProps, {}> {
     }
 
     private _switchViews = () => {
-        this.props.switchViews(true);
+        this.props.switchViews("order");
     }
 
     private _renderErrorButton = () => {
