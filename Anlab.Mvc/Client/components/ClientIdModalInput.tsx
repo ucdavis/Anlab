@@ -46,12 +46,19 @@ export class ClientIdModalInput extends React.Component<IClientIdModalInputProps
         this.props.handleChange(this.props.property, value);
     }
 
+    onBlur = () => {
+        if (!this.props.value || this.props.value.trim() === "") {
+            this.setState({ error: "This field is required" });
+        }
+    }
+
     render() {
         return (
             <Input
                 required={true}
                 error={this.state.error}
                 value={this.props.value}
+                onBlur={this.onBlur}
                 onChange={this.onChange}
                 label={this.props.label}
             />
