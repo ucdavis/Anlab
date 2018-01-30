@@ -19,8 +19,9 @@ export class SampleSoilQuestions extends React.Component<ISampleSoilQuestions, {
         }
         return (
             <div className="input-group">
-
-                <p>Is your soil sample imported?</p>
+                <label className="form_header margin-bottom-zero">
+                  Is your soil sample imported?
+                </label>
                 <p>
                     <label>
                         <input type="radio" checked={this.props.questions.soilImported} onChange={this.onChange}/> Yes
