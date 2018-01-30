@@ -54,14 +54,17 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     }
 
     private _updateNewClientInfo = (info: INewClientInfo) => {
+        let error = "";
+        let valid = false;
         if (info.name)
         {
-            this.setState({ newClientInfoAdded: true, error: "" });
+            valid = true;
         }
-        else
+        else if (!this.props.clientId)
         {
-            this.setState({ newClientInfoAdded: false });
+            error = "Either a Client ID or New Client Info is required";
         }
+        this.setState({ newClientInfoAdded: valid, error: error});
         this.props.updateNewClientInfo(info);
     }
 
