@@ -58,8 +58,8 @@ export class TestList extends React.PureComponent<ITestListProps, ITestListState
                 <table className="table">
                     <thead>
                         <tr>
-                            <th>Analysis</th>
-                            <th>Method Ref</th>
+                            <th />
+                            <th>Method Reference</th>
                             <th>Price</th>
                             <th>Notes</th>
                         </tr>
@@ -91,7 +91,7 @@ export class TestList extends React.PureComponent<ITestListProps, ITestListState
             // push the group header
             rows.push((
                 <tr key={`group-${groupName}`} className="group-header">
-                    <td colSpan={5}>Group {groupName}</td>
+                    <td colSpan={5}>{groupName}</td>
                 </tr>
             ));
 
