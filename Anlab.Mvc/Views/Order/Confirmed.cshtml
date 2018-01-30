@@ -9,19 +9,22 @@
   <div class="col-8">
     <p>Thank you for placing a work request order with the UC Davis Analytical Laboratory.
     Below is a summary of the tests you requested and an estimate of your charges.
-    Please [something something about how to send in samples]</p>
+        <strong>
+            Please print this page and include a copy with the samples
+        </strong>
+    </p>
 
     <p>You will be billed when the work has been completed.</p>
 
     <div class="form-group">
-        <strong>Id</strong>
+        <strong>Online Order Number:</strong>
         <span>@Model.Order.Id</span>
     </div>
 
     @if (Model.Order.ClientId != null)
     {
         <div class="form-group">
-            <strong>Client Id</strong>
+            <strong>Client ID:</strong>
             <span>@Model.Order.ClientId</span>
         </div>
     }
