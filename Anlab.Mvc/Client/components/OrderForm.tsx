@@ -296,6 +296,8 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                             updateAdditionalInfo={this._updateAdditionalInfo}
                         />
                     </div>
+                </div>
+                    </Collapse>
 
                     <div className="stickyfoot" data-spy="affix" data-offset-bottom="0">
                         <div className="summary-container shadowed" >
@@ -315,8 +317,6 @@ export default class OrderForm extends React.Component<IOrderFormProps, IOrderFo
                             />
                         </div>
                     </div>
-                </div>
-                </Collapse>
 
                 </div>
 
