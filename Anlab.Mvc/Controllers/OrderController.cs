@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Text;
+using AnlabMvc.Extensions;
 
 namespace AnlabMvc.Controllers
 {
@@ -373,14 +374,14 @@ namespace AnlabMvc.Controllers
 
             if (orderDetails.SampleType == TestCategories.Soil)
             {
-                sb.AppendFormat("{0}: {1}{2}", "Soil is imported", orderDetails.SampleTypeQuestions.SoilImported, Environment.NewLine);
+                sb.AppendFormat("{0}: {1}{2}", "Soil is imported", orderDetails.SampleTypeQuestions.SoilImported.ToYesNoString(), Environment.NewLine);
             }
 
             if (orderDetails.SampleType == TestCategories.Water)
             {
-                sb.AppendFormat("{0}: {1}{2}", "Water filtered", orderDetails.SampleTypeQuestions.WaterFiltered, Environment.NewLine);
-                sb.AppendFormat("{0}: {1} {2}{3}", "Water preservative added", orderDetails.SampleTypeQuestions.WaterPreservativeAdded, orderDetails.SampleTypeQuestions.WaterPreservativeInfo, Environment.NewLine);
-                sb.AppendFormat("{0}: {1}{2}", "Water reported in mg/L", orderDetails.SampleTypeQuestions.WaterReportedInMgL, Environment.NewLine);
+                sb.AppendFormat("{0}: {1}{2}", "Water filtered", orderDetails.SampleTypeQuestions.WaterFiltered.ToYesNoString(), Environment.NewLine);
+                sb.AppendFormat("{0}: {1} {2}{3}", "Water preservative added", orderDetails.SampleTypeQuestions.WaterPreservativeAdded.ToYesNoString(), orderDetails.SampleTypeQuestions.WaterPreservativeInfo, Environment.NewLine);
+                sb.AppendFormat("{0}: {1}{2}", "Water reported in mg/L", orderDetails.SampleTypeQuestions.WaterReportedInMgL.ToYesNoString(), Environment.NewLine);
             }
 
             if (orderDetails.AdditionalInfoList != null)
