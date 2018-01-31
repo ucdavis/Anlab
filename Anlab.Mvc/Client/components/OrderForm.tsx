@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import * as moment from "moment";
 import { Collapse, Fade } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
 import { AdditionalEmails } from "./AdditionalEmails";
@@ -7,6 +8,7 @@ import { AdditionalInfo } from "./AdditionalInfo";
 import { ClientId } from "./ClientId";
 import { ClientIdModal, INewClientInfo } from "./ClientIdModal";
 import { Commodity } from "./Commodity";
+import { DateSampled } from "./DateSampled";
 import { IPayment, PaymentSelection } from "./PaymentSelection";
 import { IOtherPaymentInfo } from "./OtherPaymentQuestions";
 import { Project } from "./Project";
@@ -45,6 +47,7 @@ interface IOrderFormState {
   project: string;
   filteredTests: ITestItem[];
   commodity: string;
+  dateSampled: any;
   payment: IPayment;
   otherPaymentInfo: IOtherPaymentInfo;
   quantity?: number;
@@ -84,6 +87,7 @@ export default class OrderForm extends React.Component<
       additionalInfoList: {},
       clientId: this.props.defaultClientId ? this.props.defaultClientId : "",
       commodity: "",
+      dateSampled: moment(),
       errorMessage: "",
       filteredTests: [],
       isErrorActive: false,
@@ -207,6 +211,7 @@ export default class OrderForm extends React.Component<
       additionalInfo,
       project,
       commodity,
+      dateSampled,
       additionalEmails,
       status,
       clientId,
@@ -302,6 +307,10 @@ export default class OrderForm extends React.Component<
               <Commodity
                 commodity={commodity}
                 handleChange={this._handleChange}
+              />
+              <DateSampled
+                  date={dateSampled}
+                  handleChange={this._handleChange}
               />
             </div>
           </Collapse>
