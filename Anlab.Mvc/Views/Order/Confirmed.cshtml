@@ -32,22 +32,22 @@
     {
         <div class="form-group">
             <h4>New Client Info</h4>
-            <strong>Client Name</strong>
+            <strong>Client Name:</strong>
             <span>@Model.OrderDetails.NewClientInfo.Name</span>
             <br />
-            <strong>Employer</strong>
+            <strong>Employer:</strong>
             <span>@Model.OrderDetails.NewClientInfo.Employer</span>
             <br />
-            <strong>Email</strong>
+            <strong>Email:</strong>
             <span>@Model.OrderDetails.NewClientInfo.Email</span>
             <br />
-            <strong>Phone Number</strong>
+            <strong>Phone Number:</strong>
             <span>@Model.OrderDetails.NewClientInfo.PhoneNumber</span>
         </div>
     }
 
     <div class="form-group">
-        <strong>Project</strong>
+        <strong>Project Title / Location:</strong>
         <span>@Model.Order.Project</span>
     </div>
     @if (!String.IsNullOrWhiteSpace(Model.OrderDetails.Commodity))
@@ -58,18 +58,18 @@
         </div>
     }
     <div class="form-group">
-        <strong># of Samples</strong>
+        <strong>Number of Samples Submitted:</strong>
         <span>@Model.OrderDetails.Quantity</span>
     </div>
     @if (!String.IsNullOrWhiteSpace(Model.OrderDetails.AdditionalInfo))
     {
     <div class="form-group">
-        <strong>Additional Info</strong>
+        <strong>Comments, special test requests and missing samples</strong>
         <div class="well well-sm" style="white-space: pre-wrap">@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</div>
     </div>}
 
     <div class="form-group">
-        <strong>Payment Method</strong>
+        <strong>Payment Method:</strong>
         @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
         {
             <span>UC Account: @Model.OrderDetails.Payment.Account</span>
