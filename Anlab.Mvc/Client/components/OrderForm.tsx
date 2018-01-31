@@ -410,7 +410,8 @@ export default class OrderForm extends React.Component<
             <div className="summary-container shadowed">
               <Summary
                 isCreate={this.props.orderId === null}
-                canSubmit={this.state.isValid && !this.state.isSubmitting}
+                canSubmit={this.state.isValid}
+                isSubmitting={this.state.isSubmitting}
                 hideError={
                   !placingOrder || this.state.isValid || this.state.isSubmitting
                 }
