@@ -31,11 +31,17 @@ namespace AnlabMvc.Services
         {
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderCreated", order);
 
+            var sendTo = order.Creator.Email;
+            if (!string.IsNullOrWhiteSpace(order.AdditionalEmails))
+            {
+                sendTo = $"{sendTo};{order.AdditionalEmails}";
+            }
+
             var message = new MailMessage
             {
                 Subject = "Work Request Confirmation",
                 Body = body,
-                SendTo = order.Creator.Email,
+                SendTo = sendTo,
                 Order = order,
                 User = order.Creator,
             };
