@@ -310,7 +310,7 @@ namespace AnlabMvc.Services
         public async Task<ClientDetailsLookupModel> GetClientDetails(string clientId)
         {
             var rtValue =
-                new ClientDetailsLookupModel {ClientId = "Fake", Name = "Fake, Name", DefaultAccount = "X-1234567", CopyEmail = "copy@fake.com", SubEmail = "badone@"};
+                new ClientDetailsLookupModel {ClientId = "Fake", Name = "Fake, Name", DefaultAccount = "X-1234567", CopyEmail = "copy@fake.com", SubEmail = null};
             if (clientId == "1234567")
             {
                 rtValue = null;

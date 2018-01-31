@@ -31,39 +31,39 @@ namespace AnlabMvc.Services
         {
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderCreated", order);
 
-            var sendTo = order.Creator.Email;
-            if (!string.IsNullOrWhiteSpace(order.AdditionalEmails))
-            {
-                sendTo = $"{sendTo};{order.AdditionalEmails}";
-            }
-
             var message = new MailMessage
             {
                 Subject = "Work Request Confirmation",
                 Body = body,
-                SendTo = sendTo,
+                SendTo = GetSendTo(order),
                 Order = order,
                 User = order.Creator,
             };
 
             _mailService.EnqueueMessage(message);
         }
-        public async Task EnqueueReceivedMessage(Order order)
-        {
-            //TODO: change body of email, right now it is the same as OrderCreated
-            var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderReceived", order);
 
+        private string GetSendTo(Order order)
+        {
             var sendTo = order.Creator.Email;
             if (!string.IsNullOrWhiteSpace(order.AdditionalEmails))
             {
                 sendTo = $"{sendTo};{order.AdditionalEmails}";
             }
 
+            return sendTo;
+        }
+
+        public async Task EnqueueReceivedMessage(Order order)
+        {
+            //TODO: change body of email, right now it is the same as OrderCreated
+            var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderReceived", order);
+
             var message = new MailMessage
             {
                 Subject = "Order Received Confirmation",
                 Body = body,
-                SendTo = sendTo,
+                SendTo = GetSendTo(order),
                 Order = order,
                 User = order.Creator,
             };
@@ -78,17 +78,11 @@ namespace AnlabMvc.Services
             //TODO: change body of email, right now it is the same as OrderCreated
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderFinalized", order);
 
-            var sendTo = order.Creator.Email;
-            if (!string.IsNullOrWhiteSpace(order.AdditionalEmails))
-            {
-                sendTo = $"{sendTo};{order.AdditionalEmails}";
-            }
-
             var message = new MailMessage
             {
                 Subject = subject,
                 Body = body,
-                SendTo = sendTo,
+                SendTo = GetSendTo(order),
                 Order = order,
                 User = order.Creator,
             };
@@ -103,17 +97,11 @@ namespace AnlabMvc.Services
             //TODO: change body of email, right now it is the same as OrderCreated
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_PaymentReceived", order);
 
-            var sendTo = order.Creator.Email;
-            if (!string.IsNullOrWhiteSpace(order.AdditionalEmails))
-            {
-                sendTo = $"{sendTo};{order.AdditionalEmails}";
-            }
-
             var message = new MailMessage
             {
                 Subject = subject,
                 Body = body,
-                SendTo = sendTo,
+                SendTo = GetSendTo(order),
                 Order = order,
                 User = order.Creator,
             };
