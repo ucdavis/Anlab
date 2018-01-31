@@ -9,5 +9,7 @@ namespace Anlab.Core.Models
         public string ClientId { get; set; }
         public string Name { get; set; }
         public string DefaultAccount { get; set; }
+        public string CopyEmail { get; set; }
+        public string SubEmail { get; set; }
     }
 }
