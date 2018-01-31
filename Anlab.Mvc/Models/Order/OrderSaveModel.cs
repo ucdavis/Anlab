@@ -34,6 +34,8 @@ namespace AnlabMvc.Models.Order
         public string Project { get; set; }
         public string Commodity { get; set; }
 
+        [Required]
+        public DateTime DateSampled { get; set; }
 
         public Payment Payment { get; set; }
 

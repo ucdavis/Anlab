@@ -21,6 +21,7 @@ import { SampleTypeSelection } from "./SampleTypeSelection";
 import Summary from "./Summary";
 import { ITestItem, TestList } from "./TestList";
 import { ViewMode } from "./ViewMode";
+import "react-datepicker/dist/react-datepicker.css";
 
 declare var $: any;
 
@@ -760,6 +761,7 @@ export default class OrderForm extends React.Component<
       additionalInfoList,
       clientId: this.state.clientId,
       commodity: this.state.commodity,
+      dateSampled: this.state.dateSampled.toISOString(),
       externalProcessingFee: this.props.externalProcessingFee,
       internalProcessingFee: this.props.internalProcessingFee,
       newClientInfo: this.state.newClientInfo,
