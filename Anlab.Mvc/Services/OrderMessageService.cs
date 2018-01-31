@@ -35,13 +35,25 @@ namespace AnlabMvc.Services
             {
                 Subject = "Work Request Confirmation",
                 Body = body,
-                SendTo = order.Creator.Email,
+                SendTo = GetSendTo(order),
                 Order = order,
                 User = order.Creator,
             };
 
             _mailService.EnqueueMessage(message);
         }
+
+        private string GetSendTo(Order order)
+        {
+            var sendTo = order.Creator.Email;
+            if (!string.IsNullOrWhiteSpace(order.AdditionalEmails))
+            {
+                sendTo = $"{sendTo};{order.AdditionalEmails}";
+            }
+
+            return sendTo;
+        }
+
         public async Task EnqueueReceivedMessage(Order order)
         {
             //TODO: change body of email, right now it is the same as OrderCreated
@@ -51,7 +63,7 @@ namespace AnlabMvc.Services
             {
                 Subject = "Order Received Confirmation",
                 Body = body,
-                SendTo = order.Creator.Email,
+                SendTo = GetSendTo(order),
                 Order = order,
                 User = order.Creator,
             };
@@ -70,7 +82,7 @@ namespace AnlabMvc.Services
             {
                 Subject = subject,
                 Body = body,
-                SendTo = order.Creator.Email,
+                SendTo = GetSendTo(order),
                 Order = order,
                 User = order.Creator,
             };
@@ -85,12 +97,11 @@ namespace AnlabMvc.Services
             //TODO: change body of email, right now it is the same as OrderCreated
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_PaymentReceived", order);
 
-
             var message = new MailMessage
             {
                 Subject = subject,
                 Body = body,
-                SendTo = order.Creator.Email,
+                SendTo = GetSendTo(order),
                 Order = order,
                 User = order.Creator,
             };

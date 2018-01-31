@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Models;
@@ -138,28 +139,59 @@ namespace AnlabMvc.Services
 
         public async Task<ClientDetailsLookupModel> GetClientDetails(string clientId)
         {
+            //TODO: Check this. copied the JS one and edited a little. Original:
+            // const regex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+            var regex = @"^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
+
             try
             {
                 using (var db = new DbManager(_connectionSettings.AnlabConnection))
                 {
                     IEnumerable<ClientDetailsLookupModel> clientInfo =
-                        await db.Connection.QueryAsync<ClientDetailsLookupModel>(QueryResource.AnlabClientDetailsLookup, new { clientId });
+                        await db.Connection.QueryAsync<ClientDetailsLookupModel>(QueryResource.AnlabClientDetailsLookup,
+                            new {clientId});
 
                     if (clientInfo == null || !clientInfo.Any())
                     {
                         return null;
                     }
+
                     if (clientInfo.Count() > 1)
                     {
                         throw new Exception("Too many results");
                     }
 
-                    return clientInfo.ElementAt(0);
+                    var rtValue = clientInfo.ElementAt(0);
+                    if (rtValue.CopyEmail != null)
+                    {
+                        if (Regex.IsMatch(rtValue.CopyEmail.ToLower(), regex))
+                        {
+                            rtValue.CopyEmail = rtValue.CopyEmail.ToLower();
+                        }
+                        else
+                        {
+                            rtValue.CopyEmail = null;
+                        }
+                    }
+
+                    if (rtValue.SubEmail != null)
+                    {
+                        if (Regex.IsMatch(rtValue.SubEmail.ToLower(), regex))
+                        {
+                            rtValue.SubEmail = rtValue.SubEmail.ToLower();
+                        }
+                        else
+                        {
+                            rtValue.SubEmail = null;
+                        }
+                    }
+
+                    return rtValue;
                 }
             }
             catch
             {
-                return new ClientDetailsLookupModel{Name = "Unknown"};
+                return new ClientDetailsLookupModel {Name = "Unknown"};
             }
 
         }
@@ -278,7 +310,7 @@ namespace AnlabMvc.Services
         public async Task<ClientDetailsLookupModel> GetClientDetails(string clientId)
         {
             var rtValue =
-                new ClientDetailsLookupModel {ClientId = "Fake", Name = "Fake, Name", DefaultAccount = "X-1234567", CopyEmail = "copy@fake.com", SubEmail = "badone@"};
+                new ClientDetailsLookupModel {ClientId = "Fake", Name = "Fake, Name", DefaultAccount = "X-1234567", CopyEmail = "copy@fake.com", SubEmail = null};
             if (clientId == "1234567")
             {
                 rtValue = null;

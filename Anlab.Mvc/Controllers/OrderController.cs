@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Text;
+using System.Text.RegularExpressions;
 using AnlabMvc.Extensions;
 
 namespace AnlabMvc.Controllers
@@ -281,6 +282,30 @@ namespace AnlabMvc.Controllers
             }
 
             await _orderService.UpdateTestsAndPrices(order);
+            if (!string.IsNullOrWhiteSpace(order.ClientId))
+            {
+                var clientDetails = await _labworksService.GetClientDetails(order.ClientId);
+                if (clientDetails != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(clientDetails.CopyEmail))
+                    {
+                        //Validate good email (or do that in the GetClientDetails)
+                        if (!order.AdditionalEmails.Contains(clientDetails.CopyEmail))
+                        {
+                            order.AdditionalEmails = $"{order.AdditionalEmails};{clientDetails.CopyEmail}";
+                        }
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(clientDetails.SubEmail))
+                    {
+                        if (!order.AdditionalEmails.Contains(clientDetails.SubEmail))
+                        {
+                            order.AdditionalEmails = $"{order.AdditionalEmails};{clientDetails.SubEmail}";
+                        }
+                    }
+
+                }
+            }
 
             UpdateAdditionalInfo(order);
             order.Status = OrderStatusCodes.Confirmed;
