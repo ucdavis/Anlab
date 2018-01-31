@@ -35,6 +35,7 @@ describe("<Summary />", () => {
         hideError: false,
         isCreate: true,
         onSubmit: null,
+        isSubmitting: false,
         processingFee: null,
         quantity: 0,
         selectedTests,
