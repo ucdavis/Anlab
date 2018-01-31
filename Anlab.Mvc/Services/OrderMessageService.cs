@@ -53,11 +53,17 @@ namespace AnlabMvc.Services
             //TODO: change body of email, right now it is the same as OrderCreated
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderReceived", order);
 
+            var sendTo = order.Creator.Email;
+            if (!string.IsNullOrWhiteSpace(order.AdditionalEmails))
+            {
+                sendTo = $"{sendTo};{order.AdditionalEmails}";
+            }
+
             var message = new MailMessage
             {
                 Subject = "Order Received Confirmation",
                 Body = body,
-                SendTo = order.Creator.Email,
+                SendTo = sendTo,
                 Order = order,
                 User = order.Creator,
             };
@@ -72,11 +78,17 @@ namespace AnlabMvc.Services
             //TODO: change body of email, right now it is the same as OrderCreated
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderFinalized", order);
 
+            var sendTo = order.Creator.Email;
+            if (!string.IsNullOrWhiteSpace(order.AdditionalEmails))
+            {
+                sendTo = $"{sendTo};{order.AdditionalEmails}";
+            }
+
             var message = new MailMessage
             {
                 Subject = subject,
                 Body = body,
-                SendTo = order.Creator.Email,
+                SendTo = sendTo,
                 Order = order,
                 User = order.Creator,
             };
