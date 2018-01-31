@@ -92,18 +92,15 @@ export default class Summary extends React.PureComponent<ISummaryProps, {}> {
         if (this.props.placingOrder) {
             return (
                 <Button className="btn btn-order" disabled={!this.props.canSubmit} onClick={this.props.onSubmit}>
-                    Save & Review
+                    {!this.props.canSubmit ? <i className="fa fa-spin fa-circle-o-notch" /> : null} Save & Review
                 </Button>
-            )
-        }
-
-        else
-        {
+            );
+        } else {
             return (
                 <Button className="btn btn-order" onClick={this._switchViews}>
                     Use for order
                 </Button>
-                )
+                );
         }
     }
 
