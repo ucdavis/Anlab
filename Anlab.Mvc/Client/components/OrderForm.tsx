@@ -21,6 +21,7 @@ import { SampleTypeSelection } from "./SampleTypeSelection";
 import Summary from "./Summary";
 import { ITestItem, TestList } from "./TestList";
 import { ViewMode } from "./ViewMode";
+
 import "react-datepicker/dist/react-datepicker.css";
 
 declare var $: any;
@@ -157,6 +158,7 @@ export default class OrderForm extends React.Component<
       }),
         (initialState.project = orderInfo.Project);
       initialState.commodity = orderInfo.Commodity;
+      initialState.dateSampled = moment(orderInfo.DateSampled);
       initialState.isValid = true;
       initialState.payment.clientType = orderInfo.Payment.ClientType;
       initialState.payment.account = orderInfo.Payment.Account;
