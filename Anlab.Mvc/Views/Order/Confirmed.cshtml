@@ -155,21 +155,49 @@
         </tfoot>
     </table>
 
-    <p>
-        If you have any questions or need information about analytical procedures, please contact Dirk Holstege at (530) 752-0148 or at dmholstege@ucdavis.edu.
-        <br />
-        For specific questions about sending or preparing samples, you may call me or contact Gary Chan, Receiving Facility Manager (530) 752-0266.
-        <br />
-        For laboratory report copies or accounting, office personnel can be reached at (530) 752-0147 or by email at anlab@ucdavis.edu.
-    </p>
+    <br /><br />
+    <div class="row">
+        <div class="col-xs-6 nopadding">
+            <span>Work Authorized By:</span>
+            <div style="width: 100%; height: 40px">&nbsp;</div>
+            <div style="width: 100%; border-top: 1px solid black">
+                <span>Client / Responsible Party Signature (Required)</span>
+                <span style="display: inline-block; padding: 0 0 0 50px">Date</span>
+            </div>
+        </div>
+        <div class="col-xs-2">
+            <div class="row">
+                <div>
+                    <input type="checkbox" /> <small>Mailed/Shipped</small>
+                </div>
+            </div>
+            <div class="row">
+                <div>
+                    <input type="checkbox" /> <small>Hand Delivered By:</small>
+                </div>
+            </div>
 
-    <p>
-        For your convenience, information on the Lab is also available on our <a href="http://anlab.ucdavis.edu">web site</a> and I have provided links to several useful pages and documents.  We look forward to serving you.
-    </p>
-      <div class="noprint">
-          <a asp-action="Index" class="btn btn-default">Back to Orders</a>
-          <a href="#" class="btn btn-default" type="button" onclick="window.print()">Print this page</a>
-      </div>
+        </div>
+        <div class="col-xs-4 nopadding">
+            <span>&nbsp;</span>
+            <div style="width: 100%; height: 40px">&nbsp;</div>
+            <div style="width: 100%; border-top: 1px solid black">
+                <span>Print Name</span>
+                <span style="display: inline-block; padding: 0 0 0 40px">Date</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="noprint">
+                <a asp-action="Index" class="btn btn-default">Back to Orders</a>
+                <a href="#" class="btn btn-default" type="button" onclick="window.print()">Print this page</a>
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
 
@@ -179,6 +207,11 @@
     <style media="print">
         .noprint {
             display: none !important;
+        }
+
+        .nopadding {
+            padding: 0 !important;
+            margin: 0 !important;
         }
 
         th {
