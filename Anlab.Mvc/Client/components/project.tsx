@@ -23,6 +23,9 @@ export class Project extends React.Component<IProjectInputProps, IProjectInputSt
     public render() {
         return (
             <div>
+                <p className="help-block">
+                    Project Title / Location can be used to help organize your submissions
+                </p>
                 <Input
                     label="Project Title / Location"
                     value={this.props.project}
