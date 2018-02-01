@@ -64,6 +64,8 @@ namespace AnlabMvc.Resources {
         ///   Looks up a localized string similar to SELECT	dbo.USERFLDS.LOCCODE AS ClientId, 
         ///	USERFLDS.CPYEMAIL AS CopyEmail, 
         ///	USERFLDS.SUBEMAIL AS SubEmail, 
+        ///	USERFLDS.CPYPHONE AS CopyPhone, 
+        ///	USERFLDS.SUBPHONE AS SubPhone,
         ///	dbo.LOCLIST.REPADD1 AS Name, 
         ///	dbo.LOCLIST.[INVADD4] as DefaultAccount
         ///FROM	dbo.USERFLDS INNER JOIN

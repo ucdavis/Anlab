@@ -11,5 +11,7 @@ namespace Anlab.Core.Models
         public string DefaultAccount { get; set; }
         public string CopyEmail { get; set; }
         public string SubEmail { get; set; }
+        public string CopyPhone { get; set; }
+        public string SubPhone { get; set; }
     }
 }
