@@ -32,7 +32,7 @@ export class SampleSoilQuestions extends React.Component<ISampleSoilQuestions, {
                         <input type="radio" checked={!this.props.questions.soilImported} onChange={this.onChange}/> No
                     </label>
                 </p>
-                {this.props.questions.soilImported && (<p>Please remember to choose "Imported Soil" in the tests below to have an accurate order price.</p>)}
+                {this.props.questions.soilImported && (<div className="alert alert-info" role="alert">Please remember to choose "Imported Soil" in the tests below to have an accurate order price.</div>)}
             </div>
         );
     }
