@@ -57,7 +57,7 @@
 
     <div class="form-group">
         <strong>Date Sampled</strong>
-        <span>@Model.OrderDetails.DateSampled</span>
+        <span>@Model.OrderDetails.DateSampled.ToShortDateString()</span>
     </div>
 
 @if (Model.OrderDetails.AdditionalEmails.Length > 0)

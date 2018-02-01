@@ -22,13 +22,16 @@ export class DateSampled extends React.Component<IDateSampledProps, IDateSampled
 
     public render() {
         return (
-            <DatePicker
-                selected={this.state.internalValue}
-                onChange={this._onChange}
-                onBlur={this._onBlur}
-                dateFormat="DD-MM-YYYY"
-                className="form-control"
-            />
+            <div>
+                <label className="control-label">Sample Date*</label>
+                <DatePicker
+                    selected={this.state.internalValue}
+                    onChange={this._onChange}
+                    onBlur={this._onBlur}
+                    dateFormat="MM/DD/YYYY"
+                    className="form-control"
+                />
+            </div>
         );
     }
 

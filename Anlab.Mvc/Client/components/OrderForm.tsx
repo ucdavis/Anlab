@@ -311,10 +311,13 @@ export default class OrderForm extends React.Component<
                 commodity={commodity}
                 handleChange={this._handleChange}
               />
-              <DateSampled
-                  date={dateSampled}
-                  handleChange={this._handleChange}
-              />
+              <div className="form_wrap">
+                  <label className="form_header">What date were the items sampled?</label>
+                  <DateSampled
+                      date={dateSampled}
+                      handleChange={this._handleChange}
+                  />
+            </div>
             </div>
           </Collapse>
 
