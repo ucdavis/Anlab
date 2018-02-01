@@ -69,7 +69,10 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     }
 
     private _onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
+        let value = e.target.value;
+        if (value) {
+            value = value.toUpperCase();
+        }
         this._validate(value);
         this.props.handleChange("clientId", value);
         this._lookupClientId(value);
