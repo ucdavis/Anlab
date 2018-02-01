@@ -504,7 +504,7 @@ export default class OrderForm extends React.Component<
     }
 
     // check sample date
-    if (!moment.isDate(this.state.dateSampled))
+    if (!moment.isMoment(this.state.dateSampled))
         valid = false;
 
     // check special water requirements
@@ -649,8 +649,8 @@ export default class OrderForm extends React.Component<
     ) {
       this._focusInput(this.otherPaymentInfoRef);
     } else if (!this.state.project || !this.state.project.trim()) {
-      this._focusInput(this.projectRef);
-    } else if (!moment.isDate(this.state.dateSampled)) {
+        this._focusInput(this.projectRef);
+    } else if (!moment.isMoment(this.state.dateSampled)) {
       this._focusInput(this.sampleDateRef);
     } else if (this.state.quantity <= 0 || this.state.quantity > 100) {
       this._focusInput(this.quantityRef);
