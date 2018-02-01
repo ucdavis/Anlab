@@ -12,6 +12,7 @@ export interface IInputProps {
     onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     inputRef?: (element: HTMLInputElement) => void;
+    onClick?: (element: React.MouseEvent<HTMLInputElement>) => void;
 }
 
 export default class Input extends React.PureComponent<IInputProps, {}> {
@@ -41,6 +42,7 @@ export default class Input extends React.PureComponent<IInputProps, {}> {
                     placeholder={this.props.placeholder}
                     onBlur={this.props.onBlur}
                     onChange={this.props.onChange}
+                    onClick={this.props.onClick}
                     ref={this.props.inputRef}
                 />
                 {this.renderError()}

@@ -79,6 +79,7 @@ export default class OrderForm extends React.Component<
   private clientIdRef: any;
   private ucAccountRef: any;
   private otherPaymentInfoRef: any;
+  private sampleDateRef: any;
 
   constructor(props) {
     super(props);
@@ -316,7 +317,9 @@ export default class OrderForm extends React.Component<
                   <DateSampled
                       date={dateSampled}
                       handleChange={this._handleChange}
-                  />
+                      dateRef={inputRef => {
+                          this.sampleDateRef = inputRef;
+                      }}                  />
             </div>
             </div>
           </Collapse>
@@ -500,6 +503,10 @@ export default class OrderForm extends React.Component<
       valid = false;
     }
 
+    // check sample date
+    if (!moment.isDate(this.state.dateSampled))
+        valid = false;
+
     // check special water requirements
     if (
       this.state.sampleType === "Water" &&
@@ -643,6 +650,8 @@ export default class OrderForm extends React.Component<
       this._focusInput(this.otherPaymentInfoRef);
     } else if (!this.state.project || !this.state.project.trim()) {
       this._focusInput(this.projectRef);
+    } else if (!moment.isDate(this.state.dateSampled)) {
+      this._focusInput(this.sampleDateRef);
     } else if (this.state.quantity <= 0 || this.state.quantity > 100) {
       this._focusInput(this.quantityRef);
     } else if (

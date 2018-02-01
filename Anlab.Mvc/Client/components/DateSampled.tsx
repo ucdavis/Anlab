@@ -1,10 +1,11 @@
 import * as React from "react";
 import DatePicker from "react-datepicker";
+import Input from "./ui/input/input";
 
 interface IDateSampledProps {
     date?: any;
     handleChange: (key: string, value: any) => void;
-    //dateRef: (element: HTMLInputElement) => void;
+    dateRef: (element: HTMLInputElement) => void;
 }
 
 interface IDateSampledState {
@@ -22,16 +23,18 @@ export class DateSampled extends React.Component<IDateSampledProps, IDateSampled
 
     public render() {
         return (
-            <div>
-                <label className="control-label">Sample Date*</label>
-                <DatePicker
-                    selected={this.state.internalValue}
-                    onChange={this._onChange}
-                    onBlur={this._onBlur}
-                    dateFormat="MM/DD/YYYY"
-                    className="form-control"
-                />
-            </div>
+            <DatePicker
+                selected={this.state.internalValue}
+                onChange={this._onChange}
+                onBlur={this._onBlur}
+                dateFormat="MM/DD/YYYY"
+                customInput={<Input
+                    label="Date Sampled"
+                    value={this.state.internalValue}
+                    required={true}
+                    inputRef={this.props.dateRef}
+                />}
+            />
         );
     }
 
