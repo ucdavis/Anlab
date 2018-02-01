@@ -287,22 +287,25 @@ namespace AnlabMvc.Controllers
                 var clientDetails = await _labworksService.GetClientDetails(order.ClientId);
                 if (clientDetails != null)
                 {
+                    var addEmailList = order.AdditionalEmails.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList();
+
                     if (!string.IsNullOrWhiteSpace(clientDetails.CopyEmail))
                     {
-                        //Validate good email (or do that in the GetClientDetails)
-                        if (!order.AdditionalEmails.Contains(clientDetails.CopyEmail))
+                        if (!addEmailList.Contains(clientDetails.CopyEmail))
                         {
-                            order.AdditionalEmails = $"{order.AdditionalEmails};{clientDetails.CopyEmail}";
+                            addEmailList.Add(clientDetails.CopyEmail);
                         }
                     }
 
                     if (!string.IsNullOrWhiteSpace(clientDetails.SubEmail))
                     {
-                        if (!order.AdditionalEmails.Contains(clientDetails.SubEmail))
+                        if (!addEmailList.Contains(clientDetails.SubEmail))
                         {
-                            order.AdditionalEmails = $"{order.AdditionalEmails};{clientDetails.SubEmail}";
+                            addEmailList.Add(clientDetails.SubEmail);
                         }
                     }
+
+                    order.AdditionalEmails = string.Join(';', addEmailList);
 
                 }
             }
