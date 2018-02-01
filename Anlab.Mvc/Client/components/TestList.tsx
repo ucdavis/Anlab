@@ -60,7 +60,7 @@ export class TestList extends React.PureComponent<ITestListProps, ITestListState
                         <tr>
                             <th />
                             <th>Method Reference</th>
-                            <th>Price</th>
+                            <th>{(this.props.clientType === "uc" ? "UC Price" : "Non UC Price")}</th>
                             <th>Notes</th>
                         </tr>
                     </thead>

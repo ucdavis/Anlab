@@ -42,7 +42,7 @@ export default class Summary extends React.PureComponent<ISummaryProps, {}> {
           <div>
               <div className="ordersum">
                   <div>
-                      <h3>Order Total: <NumberFormat value={this._totalCost()} {...numberFormatOptions} /></h3>
+                      <h3>Order Total: <NumberFormat value={this._totalCost()} {...numberFormatOptions} /> ({(this.props.clientType === "uc" ? "UC Rate" : "Non UC Rate")})</h3>
                       <a role="button" data-toggle="collapse" data-target="#testSummary" aria-expanded="false" aria-controls="testSummary">
                           Order Details
                       </a>
