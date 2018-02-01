@@ -15,7 +15,7 @@ export class SampleSoilQuestions extends React.Component<ISampleSoilQuestions, {
             return null;
         }
         return (
-            <div className="alert alert-info" role="alert">If your soil is imported, please remember to select that in the Special sections of the tests below.</div>
+            <div className="alert alert-warning" role="alert">If your soil is imported, please remember to select that in the Special sections of the tests below.</div>
         );
     }
 }
