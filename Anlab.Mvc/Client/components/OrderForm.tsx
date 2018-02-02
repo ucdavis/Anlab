@@ -22,8 +22,6 @@ import Summary from "./Summary";
 import { ITestItem, TestList } from "./TestList";
 import { ViewMode } from "./ViewMode";
 
-import "react-datepicker/dist/react-datepicker.css";
-
 declare var $: any;
 
 export interface IOrderFormProps {
