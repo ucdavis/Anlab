@@ -651,7 +651,8 @@ export default class OrderForm extends React.Component<
     } else if (!this.state.project || !this.state.project.trim()) {
         this._focusInput(this.projectRef);
     } else if (!moment.isMoment(this.state.dateSampled)) {
-      this._focusInput(this.sampleDateRef);
+        this._focusInput(this.sampleDateRef);
+        this.sampleDateRef.click();
     } else if (this.state.quantity <= 0 || this.state.quantity > 100) {
       this._focusInput(this.quantityRef);
     } else if (
