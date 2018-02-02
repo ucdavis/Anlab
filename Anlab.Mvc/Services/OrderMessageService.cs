@@ -11,7 +11,7 @@ namespace AnlabMvc.Services
         Task EnqueueReceivedMessage(Order order);
         Task EnqueueFinalizedMessage(Order order);
         Task EnqueuePaidMessage(Order order);
-        Task EnqueueBillingMessage(Order order);
+        Task EnqueueBillingMessage(Order order, string overrideSubject = null);
 
     }
 
@@ -109,10 +109,10 @@ namespace AnlabMvc.Services
             _mailService.EnqueueMessage(message);
         }
 
-        public async Task EnqueueBillingMessage(Order order)
+        public async Task EnqueueBillingMessage(Order order, string overrideSubject= null)
         {
             var orderDetails = order.GetOrderDetails();
-            var subject = "Anlab Work Order Billing Info";
+            var subject = overrideSubject ?? "Anlab Work Order Billing Info";
             //TODO: change wording, change SendTo to billing email
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_BillingInformation", order);
 

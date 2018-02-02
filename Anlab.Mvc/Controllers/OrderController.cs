@@ -280,6 +280,14 @@ namespace AnlabMvc.Controllers
                     return RedirectToAction("Confirmation", new {id = order.Id});
                 }
             }
+            if (order.PaymentType == PaymentTypeCodes.Other)
+            {
+                var orderDetails = order.GetOrderDetails();
+                if (orderDetails.OtherPaymentInfo.PaymentType.Equals("Agreement", StringComparison.OrdinalIgnoreCase))
+                {
+                    await _orderMessageService.EnqueueBillingMessage(order, "Anlab Work Order Billing Info -- Agreement"); //TODO: Maybe a different one for an Agreement?
+                }
+            }
 
             await _orderService.UpdateTestsAndPrices(order);
             if (!string.IsNullOrWhiteSpace(order.ClientId))
