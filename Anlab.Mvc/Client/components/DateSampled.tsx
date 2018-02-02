@@ -10,7 +10,6 @@ interface IDateSampledProps {
 }
 
 interface IDateSampledState {
-    date: any;
     error: string;
 }
 
@@ -19,7 +18,6 @@ export class DateSampled extends React.Component<IDateSampledProps, IDateSampled
         super(props);
 
         this.state = {
-            date: this.props.date,
             error: "",
         };
     }
@@ -28,16 +26,15 @@ export class DateSampled extends React.Component<IDateSampledProps, IDateSampled
     public render() {
         return (
             <DatePicker
-                selected={this.state.date}
+                selected={this.props.date}
                 onChange={this._onChange}
                 onChangeRaw={this._onChangeRaw}
-                onBlur={this._onBlur}
                 required={true}
                 dateFormat="MM/DD/YYYY"
                 openToDate={moment()}
                 customInput={<Input
                     label="Date Sampled"
-                    value={this.state.date}
+                    value={this.props.date}
                     inputRef={this.props.dateRef}
                     error={this.state.error}
                 />}
@@ -47,29 +44,21 @@ export class DateSampled extends React.Component<IDateSampledProps, IDateSampled
 
     //will always be called on a valid date format
     private _onChange = (d: any) => {
-        this.setState({ date: d, error: "" });
+        this.setState({ error: "" });
+        this.props.handleChange("dateSampled", d);
     }
 
     //actual string input, validate here
     private _onChangeRaw = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        if (!value) {
-            this.setState({ error: "Sample Date is required", date: null });
-            return;
-        }
         let m = moment(value, "MM/DD/YYYY", true);
         if (m.isValid()) {
             this._onChange(m);
         }
         else {
-            this.setState({ error: "Please enter a valid date", date: null });
+            this.setState({ error: "Please enter a valid date" });
+            this.props.handleChange("dateSampled", null);
         }
-
-    }
-
-    //sets null if raw has error
-    private _onBlur = () => {
-        this.props.handleChange("dateSampled", this.state.date);
     }
 
 }
