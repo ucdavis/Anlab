@@ -21,6 +21,12 @@ export class ClientIdModalInput extends React.Component<IClientIdModalInputProps
         };
     }
 
+    componentDidMount() {
+        if (!!this.props.value) {
+            this._validate(this.props.value);
+        }
+    }
+
     _validate = (v: string) => {
         let error = null;
         const emailRe = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -47,9 +53,7 @@ export class ClientIdModalInput extends React.Component<IClientIdModalInputProps
     }
 
     onBlur = () => {
-        if (!this.props.value || this.props.value.trim() === "") {
-            this.setState({ error: "This field is required" });
-        }
+        this._validate(this.props.value);
     }
 
     render() {
