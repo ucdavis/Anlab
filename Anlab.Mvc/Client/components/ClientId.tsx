@@ -29,6 +29,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     }
 
     public render() {
+        let style = this.state.newClientInfoAdded ? "btn" : "btn-newClient";
         return (
             <div className="row">
                 <div className="col-3">
@@ -39,13 +40,14 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
                             onChange={this._onChange}
                             placeholder={"Client ID"}
                             label={"Already have Client ID"}
+                            disabled={this.state.newClientInfoAdded}
                         />
                         {this.props.clientName}
 
                     </div>
                     <span className="col-2 t-center align-middle"></span>
                     <div className="col-3">
-                    <ClientIdModal clientInfo={this.props.newClientInfo} updateClient={this._updateNewClientInfo} />
+                    <ClientIdModal clientInfo={this.props.newClientInfo} updateClient={this._updateNewClientInfo} disabled={this.props.clientId != ""} style={style} />
                     {(this.state.newClientInfoAdded || (this.props.newClientInfo.name != null && !!this.props.newClientInfo.name.trim())) &&
                             <i className="fa fa-check" aria-hidden="true"></i>}
                     </div>

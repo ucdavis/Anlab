@@ -12,6 +12,8 @@ export interface INewClientInfo {
 interface IClientIdModalProps {
     clientInfo: INewClientInfo;
     updateClient: Function;
+    disabled: boolean;
+    style: string;
 }
 
 interface IClientIdModalState {
@@ -87,7 +89,7 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
                 <div>
                     <label>Need a new Client ID</label>
                 </div>
-                <Button className="btn" onClick={this.toggleModal}>New Client</Button>
+                <Button className={this.props.style} onClick={this.toggleModal} disabled={this.props.disabled} > New Client</Button>
 
                 <Modal show={this.state.active} onHide={this.cancelAction} >
                     <Modal.Header>

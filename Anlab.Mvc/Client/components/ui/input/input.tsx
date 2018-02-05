@@ -9,6 +9,7 @@ export interface IInputProps {
     maxLength?: number;
     required?: boolean;
     placeholder?: string;
+    disabled?: boolean;
     onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     inputRef?: (element: HTMLInputElement) => void;
@@ -39,6 +40,7 @@ export default class Input extends React.PureComponent<IInputProps, {}> {
                     value={this.props.value}
                     maxLength={this.props.maxLength}
                     required={this.props.required}
+                    disabled={this.props.disabled}
                     placeholder={this.props.placeholder}
                     onBlur={this.props.onBlur}
                     onChange={this.props.onChange}
