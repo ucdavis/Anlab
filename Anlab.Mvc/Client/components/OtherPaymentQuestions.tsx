@@ -13,6 +13,7 @@ export interface IOtherPaymentInfo {
 }
 
 interface IOtherPaymentInfoProps {
+    defCompany: string;
     otherPaymentInfo: IOtherPaymentInfo;
     updateOtherPaymentInfo: Function;
     otherPaymentInfoRef: any;
@@ -22,11 +23,19 @@ interface IOtherPaymentInfoProps {
 export class OtherPaymentInfo extends React.Component<IOtherPaymentInfoProps, {}> {
 
     public render() {
+        let company = "";
+        let companyLabel = "Company Name";
+        if (this.props.defCompany) {
+            company = this.props.defCompany;
+            companyLabel = "Campus";
+        } else {
+            company = this.props.otherPaymentInfo.companyName;
+        }
 
         return (
             <div className="flexrow">
                 <div className="flexcol">
-                    <OtherPaymentInput property="companyName" value={this.props.otherPaymentInfo.companyName} label="Company Name" handleChange={this._onOtherInfoChange} required={true} inputRef={this.props.otherPaymentInfoRef} />
+                    <OtherPaymentInput property="companyName" value={company} label={companyLabel} handleChange={this._onOtherInfoChange} required={true} inputRef={this.props.otherPaymentInfoRef} />
                     <OtherPaymentInput property="acName" value={this.props.otherPaymentInfo.acName} label="Account Contact Name" handleChange={this._onOtherInfoChange} required={true} />
                     <OtherPaymentInput property="acAddr" value={this.props.otherPaymentInfo.acAddr} label="Account Contact Address" handleChange={this._onOtherInfoChange} required={true} />
                 </div>

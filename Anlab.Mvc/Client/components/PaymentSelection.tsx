@@ -13,6 +13,7 @@ export interface IPayment {
 interface IPaymentSelectionProps {
     payment: IPayment;
     checkChart: Function;
+    getCampus: Function;
     onPaymentSelected: (payment: IPayment) => void;
     otherPaymentInfo: IOtherPaymentInfo;
     updateOtherPaymentInfo: (property, value) => void;
@@ -121,7 +122,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
         if (this.props.payment.clientType === "other" || (this.props.payment.clientType === "uc" && this.props.payment.account != null &&
             !!this.props.payment.account.trim() && !this.props.checkChart(this.props.payment.account.charAt(0)))) {
             return (
-                <OtherPaymentInfo otherPaymentInfo={this.props.otherPaymentInfo} updateOtherPaymentInfo={this.props.updateOtherPaymentInfo} otherPaymentInfoRef={this.props.otherPaymentInfoRef} clientType={this.props.payment.clientType} />
+                <OtherPaymentInfo defCompany={this.props.getCampus(this.props.payment.account.charAt(0))} otherPaymentInfo={this.props.otherPaymentInfo} updateOtherPaymentInfo={this.props.updateOtherPaymentInfo} otherPaymentInfoRef={this.props.otherPaymentInfoRef} clientType={this.props.payment.clientType} />
                 );
         }
     }
