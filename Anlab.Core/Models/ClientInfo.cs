@@ -1,11 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Anlab.Core.Models
 {
-    public class NewClientInfo
+    public class ClientInfo
     {
+        public string ClientId { get; set; }
         public string Email { get; set; }
         public string Employer { get; set; }
         public string Name { get; set; }

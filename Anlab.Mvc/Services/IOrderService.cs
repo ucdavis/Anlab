@@ -198,7 +198,7 @@ namespace AnlabMvc.Services
         public void PopulateOrder(OrderSaveModel model, Order orderToUpdate)
         {
             orderToUpdate.Project = model.Project;
-            orderToUpdate.ClientId = model.ClientId;
+            orderToUpdate.ClientId = model.ClientInfo.ClientId;
 
             orderToUpdate.JsonDetails = JsonConvert.SerializeObject(model);
             var orderDetails = orderToUpdate.GetOrderDetails();

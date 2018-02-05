@@ -174,12 +174,12 @@ export default class OrderForm extends React.Component<
           agreementRequired: false
         };
       }
-      initialState.clientId = orderInfo.ClientId;
+      initialState.clientId = orderInfo.ClientInfo.ClientId;
       initialState.newClientInfo = {
-        email: orderInfo.NewClientInfo.Email,
-        employer: orderInfo.NewClientInfo.Employer,
-        name: orderInfo.NewClientInfo.Name,
-        phoneNumber: orderInfo.NewClientInfo.PhoneNumber
+        email: orderInfo.ClientInfo.Email,
+        employer: orderInfo.ClientInfo.Employer,
+        name: orderInfo.ClientInfo.Name,
+        phoneNumber: orderInfo.ClientInfo.PhoneNumber
       };
       initialState.clientName = "";
       initialState.additionalInfoList = orderInfo.AdditionalInfoList;
@@ -772,12 +772,14 @@ export default class OrderForm extends React.Component<
       additionalEmails: this.state.additionalEmails,
       additionalInfo: this.state.additionalInfo,
       additionalInfoList,
-      clientId: this.state.clientId,
       commodity: this.state.commodity,
       dateSampled: this.state.dateSampled.toISOString(),
       externalProcessingFee: this.props.externalProcessingFee,
       internalProcessingFee: this.props.internalProcessingFee,
-      newClientInfo: this.state.newClientInfo,
+      clientInfo: {
+          ...this.state.newClientInfo,
+          clientId: this.state.clientId
+      },
       orderId: this.props.orderId,
       otherPaymentInfo: this.state.otherPaymentInfo,
       payment: this.state.payment,
