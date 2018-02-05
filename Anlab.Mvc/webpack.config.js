@@ -20,7 +20,7 @@ module.exports = (env) => {
         entry: {
             'root': './Client/root.tsx',
             'order': './Client/order.tsx',
-            'react': ['react', 'react-dom', 'react-router', 'react-toolbox', 'react-bootstrap'],
+            'react': ['react', 'react-dom', 'react-router', 'react-toolbox', 'react-bootstrap', 'react-datepicker'],
             'showdown': ['showdown']
         },
         resolve: { extensions: [ '.js', '.jsx', '.ts', '.tsx' ] },

@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import * as moment from "moment";
 import { Collapse, Fade } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
 import { AdditionalEmails } from "./AdditionalEmails";
@@ -7,6 +8,7 @@ import { AdditionalInfo } from "./AdditionalInfo";
 import { ClientId } from "./ClientId";
 import { ClientIdModal, INewClientInfo } from "./ClientIdModal";
 import { Commodity } from "./Commodity";
+import { DateSampled } from "./DateSampled";
 import { IPayment, PaymentSelection } from "./PaymentSelection";
 import { IOtherPaymentInfo } from "./OtherPaymentQuestions";
 import { Project } from "./Project";
@@ -45,6 +47,7 @@ interface IOrderFormState {
   project: string;
   filteredTests: ITestItem[];
   commodity: string;
+  dateSampled: any;
   payment: IPayment;
   otherPaymentInfo: IOtherPaymentInfo;
   quantity?: number;
@@ -74,6 +77,7 @@ export default class OrderForm extends React.Component<
   private clientIdRef: any;
   private ucAccountRef: any;
   private otherPaymentInfoRef: any;
+  private sampleDateRef: any;
 
   constructor(props) {
     super(props);
@@ -84,6 +88,7 @@ export default class OrderForm extends React.Component<
       additionalInfoList: {},
       clientId: this.props.defaultClientId ? this.props.defaultClientId : "",
       commodity: "",
+      dateSampled: moment(),
       errorMessage: "",
       filteredTests: [],
       isErrorActive: false,
@@ -152,6 +157,7 @@ export default class OrderForm extends React.Component<
       }),
         (initialState.project = orderInfo.Project);
       initialState.commodity = orderInfo.Commodity;
+      initialState.dateSampled = moment(orderInfo.DateSampled);
       initialState.isValid = true;
       initialState.payment.clientType = orderInfo.Payment.ClientType;
       initialState.payment.account = orderInfo.Payment.Account;
@@ -207,6 +213,7 @@ export default class OrderForm extends React.Component<
       additionalInfo,
       project,
       commodity,
+      dateSampled,
       additionalEmails,
       status,
       clientId,
@@ -303,6 +310,15 @@ export default class OrderForm extends React.Component<
                 commodity={commodity}
                 handleChange={this._handleChange}
               />
+              <div className="form_wrap">
+                  <label className="form_header">What date were the items sampled?</label>
+                  <DateSampled
+                      date={dateSampled}
+                      handleChange={this._handleChange}
+                      dateRef={inputRef => {
+                          this.sampleDateRef = inputRef;
+                      }}                  />
+            </div>
             </div>
           </Collapse>
 
@@ -485,6 +501,10 @@ export default class OrderForm extends React.Component<
       valid = false;
     }
 
+    // check sample date
+    if (!moment.isMoment(this.state.dateSampled))
+        valid = false;
+
     // check special water requirements
     if (
       this.state.sampleType === "Water" &&
@@ -627,7 +647,10 @@ export default class OrderForm extends React.Component<
     ) {
       this._focusInput(this.otherPaymentInfoRef);
     } else if (!this.state.project || !this.state.project.trim()) {
-      this._focusInput(this.projectRef);
+        this._focusInput(this.projectRef);
+    } else if (!moment.isMoment(this.state.dateSampled)) {
+        this._focusInput(this.sampleDateRef);
+        this.sampleDateRef.click();
     } else if (this.state.quantity <= 0 || this.state.quantity > 100) {
       this._focusInput(this.quantityRef);
     } else if (
@@ -751,6 +774,7 @@ export default class OrderForm extends React.Component<
       additionalInfoList,
       clientId: this.state.clientId,
       commodity: this.state.commodity,
+      dateSampled: this.state.dateSampled.toISOString(),
       externalProcessingFee: this.props.externalProcessingFee,
       internalProcessingFee: this.props.internalProcessingFee,
       newClientInfo: this.state.newClientInfo,

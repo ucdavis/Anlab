@@ -23,6 +23,7 @@ namespace Anlab.Core.Models
 
         public string Project { get; set; }
         public string Commodity { get; set; }
+        public DateTime DateSampled { get; set; }
 
         [DataType(DataType.MultilineText)]
         public string LabComments { get; set; }
