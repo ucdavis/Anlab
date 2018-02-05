@@ -92,7 +92,7 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
                 <Button className={this.props.style} onClick={this.toggleModal} disabled={this.props.disabled} > New Client</Button>
 
                 <Modal show={this.state.active} onHide={this.cancelAction} >
-                    <Modal.Header>
+                    <Modal.Header closeButton={true}>
                         <Modal.Title>{title}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
@@ -102,8 +102,8 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
                             <ClientIdModalInput property="phoneNumber" value={this.state.newClientInfo.phoneNumber} label="Phone Number" handleChange={this.handleChange} />
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={this.clearAction}>Clear</Button>
-                        <Button onClick={this.cancelAction}>Close</Button>
+                        <Button className="btn btn-newClient" onClick={this.clearAction} type="reset">Clear</Button>
+                        <Button className="btn btn-newClient" onClick={this.cancelAction}>Close</Button>
                         <Button onClick={this.saveAction} disabled={!this.state.isValid} > Submit</Button>
                     </Modal.Footer>
                 </Modal>
