@@ -267,6 +267,7 @@ export default class OrderForm extends React.Component<
                 placingOrder={placingOrder}
                 payment={payment}
                 checkChart={this._checkUcChart}
+                getCampus={this._getCampus}
                 onPaymentSelected={this._onPaymentSelected}
                 otherPaymentInfo={otherPaymentInfo}
                 updateOtherPaymentInfo={this._updateOtherPaymentInfo}
@@ -526,6 +527,42 @@ export default class OrderForm extends React.Component<
       chart === "m"
     );
   };
+    private _getCampus = (chart: string) => {
+        if (!chart) {
+            return ("");
+        }
+        const chrt = chart.toUpperCase();
+        switch (chrt) {
+        case "1":
+        case "J":
+            return ("UC Berkeley");
+        case "2":
+        case "K":
+            return ("UC San Francisco");
+        case "4":
+                return ("UC Los Angeles");
+        case "5":
+        case "N":
+                return ("UC Riverside");
+        case "6":
+        case "O":
+                return ("UC San Diego");
+        case "7":
+        case "P":
+                return ("UC Santa Cruz");
+        case "8":
+        case "Q":
+            return ("UC Santa Barbara");
+        case "9":
+        case "R":
+                return ("UC Irvine");
+        case "0":
+        case "S":
+                return ("UC Merced");
+        default:
+            return ("");
+        }
+    };
 
   private _onSampleSelected = (sampleType: string) => {
     var agree = true;
