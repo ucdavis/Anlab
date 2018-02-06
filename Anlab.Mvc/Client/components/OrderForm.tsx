@@ -61,8 +61,8 @@ interface IOrderFormState {
   isErrorActive: boolean;
   errorMessage: string;
   status: string;
-  clientName: string;
   clientInfo: IClientInfo;
+  clientInfoValid: boolean;
   additionalInfoList: object;
 }
 
@@ -96,12 +96,12 @@ export default class OrderForm extends React.Component<
         clientId: this.props.defaultClientId ? this.props.defaultClientId : "",
         email: this.props.defaultEmail,
         employer: "",
-        name: "",
+        name: this.props.defaultClientIdName
+            ? this.props.defaultClientIdName
+            : "",
         phoneNumber: ""
       },
-      clientName: this.props.defaultClientIdName
-        ? this.props.defaultClientIdName
-        : null,
+      clientInfoValid: false,
       payment: { clientType: "uc", account: "" },
       otherPaymentInfo: {
         paymentType: this.props.defaultAccount ? "IOC" : "",
@@ -180,7 +180,7 @@ export default class OrderForm extends React.Component<
         name: orderInfo.ClientInfo.Name,
         phoneNumber: orderInfo.ClientInfo.PhoneNumber
       };
-      initialState.clientName = "";
+      initialState.clientInfoValid = true;
       initialState.additionalInfoList = orderInfo.AdditionalInfoList;
       initialState.filteredTests = this.props.testItems.filter(
         item => item.categories.indexOf(orderInfo.SampleType) !== -1
@@ -216,7 +216,6 @@ export default class OrderForm extends React.Component<
       additionalEmails,
       status,
       clientInfo,
-      clientName,
       additionalInfoList,
       filteredTests,
       selectedCodes,
@@ -243,12 +242,12 @@ export default class OrderForm extends React.Component<
             <div className="form_wrap">
               <label className="form_header">Do you have a Client ID?</label>
               <ClientId
-                clientName={clientName}
                 clientIdRef={inputRef => {
                   this.clientIdRef = inputRef;
                 }}
                 clientInfo={clientInfo}
-                handleChange={this._updateClientInfo}
+                handleClientInfoChange={this._updateClientInfo}
+                updateClientInfoValid={this._handleChange}
                 clearClientInfo={this._clearClientInfo}
               />
             </div>
@@ -257,9 +256,7 @@ export default class OrderForm extends React.Component<
           <Collapse
             in={
               !placingOrder ||
-              (this.state.clientName != null ||
-                (this.state.clientInfo.name != null &&
-                  !!this.state.clientInfo.name.trim()) ||
+              (this.state.clientInfoValid ||
                 !!this.state.payment.clientType.trim())
             }
           >
@@ -460,10 +457,7 @@ export default class OrderForm extends React.Component<
     let valid = true;
 
     //check either client name or new client info
-    if (
-      this.state.clientName == null &&
-      (!this.state.clientInfo.name || !this.state.clientInfo.name.trim())
-    ) {
+    if (!this.state.clientInfoValid) {
       valid = false;
     }
     if (
@@ -616,18 +610,6 @@ export default class OrderForm extends React.Component<
         });
   }
 
-  //private _checkClientInfo = () => {
-  //    let valid = false;
-  //    if (!!this.state.clientInfo.clientId.trim() && !!this.state.clientInfo.name.trim())
-  //        valid = true;
-  //    else if(
-  //        (this.state.clientInfo.name && !!this.state.clientInfo.name.trim())
-  //        || (this.state.clientInfo.employer && !!this.state.clientInfo.employer.trim())
-  //        || (this.state.clientInfo.email && !!this.state.clientInfo.email.trim())
-
-
-  //}
-
   private _onEmailAdded = (additionalEmail: string) => {
     this.setState({
       additionalEmails: [...this.state.additionalEmails, additionalEmail]
@@ -647,9 +629,7 @@ export default class OrderForm extends React.Component<
     if (this.state.isValid || this.state.isSubmitting) {
       return;
     }
-    if (
-      (!this.state.clientInfo.name || !this.state.clientInfo.name.trim())
-    ) {
+    if (!this.state.clientInfoValid) {
       this._focusInput(this.clientIdRef);
     } else if (
       this.state.payment.clientType === "uc" &&

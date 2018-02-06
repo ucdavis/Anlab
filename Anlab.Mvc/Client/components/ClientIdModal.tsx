@@ -29,10 +29,6 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
         this.setState({ ...this.state, active: !this.state.active });
     }
 
-    saveAction = () => {
-            this.setState({ active: false });
-    }
-
     closeAction = () => {
         this.props.onClose();
         this.setState({  active: false });

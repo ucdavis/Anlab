@@ -12,8 +12,8 @@ export interface IClientInfo {
 }
 
 interface IClientIdProps {
-    clientName: string;
-    handleChange: (key: string, value: string) => void;
+    handleClientInfoChange: (key: string, value: string) => void;
+    updateClientInfoValid: (key: string, value: any) => void;
     clearClientInfo: () => void;
     clientIdRef: (element: HTMLInputElement) => void;
     clientInfo: IClientInfo;
@@ -82,17 +82,17 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
         if (value) {
             value = value.toUpperCase();
         }
-        this._lookupClientId(value);
         this._handleChange("clientId", value);
-
+        this._lookupClientId(value);
     }
 
     private _handleChange = (property: string, value: string) => {
-        this.props.handleChange(property, value);
+        //this._validate();
+        this.props.handleClientInfoChange(property, value);
     }
 
     private _onBlur = () => {
-        this.props.handleChange("name", this.state.fetchedName);
+        this.props.handleClientInfoChange("name", this.state.fetchedName);
     }
 
     private _onModalClose = () => {
@@ -107,6 +107,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
         if (this.props.clientInfo.clientId && !!this.props.clientInfo.clientId.trim() && this.props.clientInfo.name)
         {
             this.setState({ error: "", newClientInfoAdded: false });
+            this.props.updateClientInfoValid("clientInfoValid", true);
             return;
         }
         const emailre = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -116,9 +117,11 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
             && emailre.test((this.props.clientInfo.email)) && phoneRe.test((this.props.clientInfo.phoneNumber));
         if (!valid) {
             this.setState({ error: this._modalError, newClientInfoAdded: false });
+            this.props.updateClientInfoValid("clientInfoValid", false);
         }
         else {
-            this.setState({ error: "", newClientInfoAdded: true});
+            this.setState({ error: "", newClientInfoAdded: true });
+            this.props.updateClientInfoValid("clientInfoValid", true);
         }
 
 
@@ -127,31 +130,30 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
 
     private _lookupClientId = (value) => {
         if (!value || !value.trim()) {
-            //this.props.handleChange("name", "");
             this.setState({ error: "Either a Client ID or New Client Info is required", fetchedName: "" });
+            this.props.updateClientInfoValid("clientInfoValid", false);
             return;
         }
         if (value.length < 4) {
-            //this.props.handleChange("name", "");
             this.setState({ error: "Client IDs must be at least 4 characters long", fetchedName: "" });
+            this.props.updateClientInfoValid("clientInfoValid", false);
             return;
         }
-
         fetch(`/order/LookupClientId?id=${value.trim()}`, { credentials: "same-origin" })
             .then((response) => {
                 if (response === null || response.status !== 200) {
-                  throw new Error("The client id you entered could not be found");
+                    throw new Error("The client id you entered could not be found");
                 }
                 return response;
             })
             .then((response) => response.json())
             .then((response) => {
-                this.setState({ error: null, fetchedName: response.name });
-                //this.props.handleChange("name", response.name);
+                this.setState({ error: "", fetchedName: response.name });
+                this.props.updateClientInfoValid("clientInfoValid", true);
             })
             .catch((error: Error) => {
                 this.setState({ error: error.message, fetchedName: "" });
-                //this.props.handleChange("name", null);
+                this.props.updateClientInfoValid("clientInfoValid", false);
             });
     }
 }
