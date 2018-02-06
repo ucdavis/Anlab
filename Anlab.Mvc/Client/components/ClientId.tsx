@@ -41,7 +41,11 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     }
 
     public render() {
+        //if modal filled properly, set button style to filled it
         let style = this.state.newClientInfoAdded ? "btn" : "btn-newClient";
+        //set border red if modal has error
+        if (this.state.error == this._modalError)
+            style += " btn-error";
         return (
             <div className="row">
                 <div className="col-3">
@@ -62,8 +66,8 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
                     <div className="col-3">
                     <ClientIdModal
                         clientInfo={this.props.clientInfo}
-                        handleChange={this._handleChange}
-                        onClear={this._onClear}
+                        handleChange={this.props.handleClientInfoChange}
+                        onClear={this.props.clearClientInfo}
                         disabled={this.props.clientInfo.clientId != ""}
                         style={style}
                         onClose={this._onModalClose} />
@@ -82,13 +86,8 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
         if (value) {
             value = value.toUpperCase();
         }
-        this._handleChange("clientId", value);
+        this.props.handleClientInfoChange("clientId", value);
         this._lookupClientId(value);
-    }
-
-    private _handleChange = (property: string, value: string) => {
-        //this._validate();
-        this.props.handleClientInfoChange(property, value);
     }
 
     private _onBlur = () => {
@@ -99,9 +98,6 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
         this._validate();
     }
 
-    private _onClear = () => {
-        this.props.clearClientInfo();
-    }
 
     private _validate = () => {
         if (this.props.clientInfo.clientId && !!this.props.clientInfo.clientId.trim() && this.props.clientInfo.name)
