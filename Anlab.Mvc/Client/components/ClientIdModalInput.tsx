@@ -43,7 +43,7 @@ export class ClientIdModalInput extends React.Component<IClientIdModalInputProps
         {
             error = "Invalid phone number";
         }
-        this.setState({ ...this.state, error: error });
+        this.setState({ error: error });
     }
 
     onChange = (e: React.ChangeEvent<HTMLInputElement>) => {

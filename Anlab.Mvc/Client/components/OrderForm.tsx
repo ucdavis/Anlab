@@ -5,8 +5,8 @@ import { Collapse, Fade } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
 import { AdditionalEmails } from "./AdditionalEmails";
 import { AdditionalInfo } from "./AdditionalInfo";
-import { ClientId } from "./ClientId";
-import { ClientIdModal, INewClientInfo } from "./ClientIdModal";
+import { ClientId, IClientInfo } from "./ClientId";
+import { ClientIdModal } from "./ClientIdModal";
 import { Commodity } from "./Commodity";
 import { DateSampled } from "./DateSampled";
 import { IPayment, PaymentSelection } from "./PaymentSelection";
@@ -61,9 +61,8 @@ interface IOrderFormState {
   isErrorActive: boolean;
   errorMessage: string;
   status: string;
-  clientId: string;
   clientName: string;
-  newClientInfo: INewClientInfo;
+  clientInfo: IClientInfo;
   additionalInfoList: object;
 }
 
@@ -86,7 +85,6 @@ export default class OrderForm extends React.Component<
       additionalEmails: [],
       additionalInfo: "",
       additionalInfoList: {},
-      clientId: this.props.defaultClientId ? this.props.defaultClientId : "",
       commodity: "",
       dateSampled: moment(),
       errorMessage: "",
@@ -94,7 +92,8 @@ export default class OrderForm extends React.Component<
       isErrorActive: false,
       isSubmitting: false,
       isValid: false,
-      newClientInfo: {
+      clientInfo: {
+        clientId: this.props.defaultClientId ? this.props.defaultClientId : "",
         email: this.props.defaultEmail,
         employer: "",
         name: "",
@@ -174,8 +173,8 @@ export default class OrderForm extends React.Component<
           agreementRequired: false
         };
       }
-      initialState.clientId = orderInfo.ClientInfo.ClientId;
-      initialState.newClientInfo = {
+      initialState.clientInfo = {
+        clientId: orderInfo.ClientInfo.ClientId,
         email: orderInfo.ClientInfo.Email,
         employer: orderInfo.ClientInfo.Employer,
         name: orderInfo.ClientInfo.Name,
@@ -216,8 +215,7 @@ export default class OrderForm extends React.Component<
       dateSampled,
       additionalEmails,
       status,
-      clientId,
-      newClientInfo,
+      clientInfo,
       clientName,
       additionalInfoList,
       filteredTests,
@@ -245,14 +243,12 @@ export default class OrderForm extends React.Component<
             <div className="form_wrap">
               <label className="form_header">Do you have a Client ID?</label>
               <ClientId
-                clientId={clientId}
                 clientName={clientName}
-                handleChange={this._handleChange}
                 clientIdRef={inputRef => {
                   this.clientIdRef = inputRef;
                 }}
-                newClientInfo={newClientInfo}
-                updateNewClientInfo={this._updateNewClientInfo}
+                clientInfo={clientInfo}
+                handleChange={this._updateClientInfo}
               />
             </div>
           </Collapse>
@@ -261,8 +257,8 @@ export default class OrderForm extends React.Component<
             in={
               !placingOrder ||
               (this.state.clientName != null ||
-                (this.state.newClientInfo.name != null &&
-                  !!this.state.newClientInfo.name.trim()) ||
+                (this.state.clientInfo.name != null &&
+                  !!this.state.clientInfo.name.trim()) ||
                 !!this.state.payment.clientType.trim())
             }
           >
@@ -465,7 +461,7 @@ export default class OrderForm extends React.Component<
     //check either client name or new client info
     if (
       this.state.clientName == null &&
-      (!this.state.newClientInfo.name || !this.state.newClientInfo.name.trim())
+      (!this.state.clientInfo.name || !this.state.clientInfo.name.trim())
     ) {
       valid = false;
     }
@@ -597,14 +593,15 @@ export default class OrderForm extends React.Component<
     this.setState({ quantity }, this._validate);
   };
 
-  private _updateNewClientInfo = (info: INewClientInfo) => {
-    this.setState(
-      {
-        newClientInfo: { ...info }
-      },
-      this._validate
-    );
-  };
+  private _updateClientInfo = (property: string, value: string) => {
+      console.log("updating " + property + " with " + value);
+      this.setState({
+          ...this.state, clientInfo: {
+              ...this.state.clientInfo,
+              [property]: value
+          }
+      }, this._validate);
+  }
 
   private _onEmailAdded = (additionalEmail: string) => {
     this.setState({
@@ -627,7 +624,7 @@ export default class OrderForm extends React.Component<
     }
     if (
       this.state.clientName == null &&
-      (!this.state.newClientInfo.name || !this.state.newClientInfo.name.trim())
+      (!this.state.clientInfo.name || !this.state.clientInfo.name.trim())
     ) {
       this._focusInput(this.clientIdRef);
     } else if (
@@ -777,8 +774,7 @@ export default class OrderForm extends React.Component<
       externalProcessingFee: this.props.externalProcessingFee,
       internalProcessingFee: this.props.internalProcessingFee,
       clientInfo: {
-          ...this.state.newClientInfo,
-          clientId: this.state.clientId
+          ...this.state.clientInfo,
       },
       orderId: this.props.orderId,
       otherPaymentInfo: this.state.otherPaymentInfo,
