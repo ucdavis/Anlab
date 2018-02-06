@@ -47,6 +47,10 @@ namespace Anlab.Core.Domain
         [Display(Name = "Billing Contact Email")]
         public string BillingContactEmail { get; set; }
 
+        [Required]
+        [EmailAddress]
+        public override string Email { get; set; }
+
         public ICollection<MailMessage> MailMessages { get; set; }
 
         ///// <summary>

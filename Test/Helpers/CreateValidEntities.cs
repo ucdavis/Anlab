@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Anlab.Core.Domain;
@@ -15,8 +15,7 @@ namespace Test.Helpers
             rtValue.Creator = new User(); //Meh? test later
 
             if (populateAllFields)
-            {
-                
+            {                
                 rtValue.LabId = string.Format("LabId{0}", counter);
                 rtValue.ClientId = string.Format("ClientId{0}", counter);
                 rtValue.AdditionalEmails = string.Format("AdditionalEmails{0}", counter);
@@ -37,12 +36,14 @@ namespace Test.Helpers
             rtValue.FirstName = string.Format("FirstName{0}", counter);
             rtValue.LastName = string.Format("LastName{0}", counter);
             rtValue.Name = string.Format("{0} {1}", rtValue.FirstName, rtValue.LastName);
+            rtValue.Email = $"test{counter}@testy.com";
 
             if (populateAllFields)
             {
                 rtValue.ClientId = string.Format("ClientId{0}", counter);
                 rtValue.Phone = string.Format("Phone{0}", counter);
                 rtValue.Account = string.Format("Account{0}", counter);
+                
             }
 
             rtValue.Id = (counter ?? 99).ToString();
