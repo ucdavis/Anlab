@@ -39,6 +39,8 @@ namespace AnlabMvc.Controllers
 
             if (ModelState.IsValid)
             {
+                userToUpdate.Email = user.Email.ToLower();
+                userToUpdate.NormalizedEmail = user.Email.ToUpper();
                 userToUpdate.FirstName = user.FirstName;
                 userToUpdate.LastName = user.LastName;
                 userToUpdate.Name = user.Name;
