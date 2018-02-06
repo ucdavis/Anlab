@@ -12,7 +12,7 @@ namespace Anlab.Core.Models
         public string PaymentType { get; set; }
         
         [Required]
-        [Display(Name = "Company Name")]
+        [Display(Name = "Company/Campus Name")]
         public string CompanyName { get; set; }
         
         [Required]
