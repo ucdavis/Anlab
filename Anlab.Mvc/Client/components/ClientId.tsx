@@ -14,6 +14,7 @@ export interface IClientInfo {
 interface IClientIdProps {
     clientName: string;
     handleChange: (key: string, value: string) => void;
+    clearClientInfo: () => void;
     clientIdRef: (element: HTMLInputElement) => void;
     clientInfo: IClientInfo;
 }
@@ -25,6 +26,9 @@ interface IClientIdInputState {
 }
 
 export class ClientId extends React.Component<IClientIdProps, IClientIdInputState> {
+
+    private _modalError = "There are some errors with the information you provided";
+    private _clientIdError = ""
 
     constructor(props) {
         super(props);
@@ -56,9 +60,18 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
                     </div>
                     <span className="col-2 t-center align-middle"></span>
                     <div className="col-3">
-                    <ClientIdModal clientInfo={this.props.clientInfo} handleChange={this._handleChange} disabled={this.props.clientInfo.clientId != ""} style={style} onClose={this._onModalClose} />
-                    {(this.state.newClientInfoAdded || (this.props.clientInfo.name != null && !!this.props.clientInfo.name.trim())) &&
-                            <i className="fa fa-check" aria-hidden="true"></i>}
+                    <ClientIdModal
+                        clientInfo={this.props.clientInfo}
+                        handleChange={this._handleChange}
+                        onClear={this._onClear}
+                        disabled={this.props.clientInfo.clientId != ""}
+                        style={style}
+                        onClose={this._onModalClose} />
+                    {(this.state.newClientInfoAdded && this.state.error == "") &&
+                        <i className="fa fa-check" aria-hidden="true"></i>}
+                    {(this.state.error == this._modalError) &&
+                        <i className="fa fa-times" aria-hidden="true"></i>}
+
                     </div>
                 </div>
         );
@@ -83,8 +96,11 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     }
 
     private _onModalClose = () => {
-        console.log("modal close");
         this._validate();
+    }
+
+    private _onClear = () => {
+        this.props.clearClientInfo();
     }
 
     private _validate = () => {
@@ -99,7 +115,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
         let valid = (this.props.clientInfo.employer && !!this.props.clientInfo.employer.trim()) && (this.props.clientInfo.name && !!this.props.clientInfo.name.trim())
             && emailre.test((this.props.clientInfo.email)) && phoneRe.test((this.props.clientInfo.phoneNumber));
         if (!valid) {
-            this.setState({ error: "There are some errors with the information you provided", newClientInfoAdded: false });
+            this.setState({ error: this._modalError, newClientInfoAdded: false });
         }
         else {
             this.setState({ error: "", newClientInfoAdded: true});
@@ -111,7 +127,6 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
 
     private _lookupClientId = (value) => {
         if (!value || !value.trim()) {
-            console.log("empty");
             //this.props.handleChange("name", "");
             this.setState({ error: "Either a Client ID or New Client Info is required", fetchedName: "" });
             return;

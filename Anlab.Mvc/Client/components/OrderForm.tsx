@@ -249,6 +249,7 @@ export default class OrderForm extends React.Component<
                 }}
                 clientInfo={clientInfo}
                 handleChange={this._updateClientInfo}
+                clearClientInfo={this._clearClientInfo}
               />
             </div>
           </Collapse>
@@ -594,7 +595,6 @@ export default class OrderForm extends React.Component<
   };
 
   private _updateClientInfo = (property: string, value: string) => {
-      console.log("updating " + property + " with " + value);
       this.setState({
           ...this.state, clientInfo: {
               ...this.state.clientInfo,
@@ -602,6 +602,31 @@ export default class OrderForm extends React.Component<
           }
       }, this._validate);
   }
+
+  private _clearClientInfo = () => {
+      const clearInfo = {
+            clientId: "",
+            employer: "",
+            name: "",
+            email: "",
+            phoneNumber: "",
+        };
+        this.setState({
+            ...this.state, clientInfo: clearInfo
+        });
+  }
+
+  //private _checkClientInfo = () => {
+  //    let valid = false;
+  //    if (!!this.state.clientInfo.clientId.trim() && !!this.state.clientInfo.name.trim())
+  //        valid = true;
+  //    else if(
+  //        (this.state.clientInfo.name && !!this.state.clientInfo.name.trim())
+  //        || (this.state.clientInfo.employer && !!this.state.clientInfo.employer.trim())
+  //        || (this.state.clientInfo.email && !!this.state.clientInfo.email.trim())
+
+
+  //}
 
   private _onEmailAdded = (additionalEmail: string) => {
     this.setState({
@@ -623,7 +648,6 @@ export default class OrderForm extends React.Component<
       return;
     }
     if (
-      this.state.clientName == null &&
       (!this.state.clientInfo.name || !this.state.clientInfo.name.trim())
     ) {
       this._focusInput(this.clientIdRef);

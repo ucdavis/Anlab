@@ -6,6 +6,7 @@ import { IClientInfo } from "./ClientId";
 interface IClientIdModalProps {
     clientInfo: IClientInfo;
     onClose: () => void;
+    onClear: () => void;
     handleChange: (key: string, value: string) => void;
     disabled: boolean;
     style: string;
@@ -28,35 +29,17 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
         this.setState({ ...this.state, active: !this.state.active });
     }
 
-    //validate = () => {
-    //    const emailre = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    //    const phoneRe = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
-
-    //    let valid = (this.state.newClientInfo.employer && !!this.state.newClientInfo.employer.trim()) && (this.state.newClientInfo.name && !!this.state.newClientInfo.name.trim())
-    //        && emailre.test((this.state.newClientInfo.email)) && phoneRe.test((this.state.newClientInfo.phoneNumber));
-
-    //    this.setState({ ...this.state, isValid: valid });
-    //}
-
     saveAction = () => {
             this.setState({ active: false });
     }
 
-    cancelAction = () => {
+    closeAction = () => {
         this.props.onClose();
         this.setState({  active: false });
     }
 
     clearAction = () => {
-        //const clearInfo = {
-        //    employer: "",
-        //    name: "",
-        //    email: "",
-        //    phoneNumber: "",
-        //};
-        //this.setState({
-        //    ...this.state, newClientInfo: clearInfo
-        //});
+        this.props.onClear();
     }
 
     render() {
@@ -69,7 +52,7 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
                 </div>
                 <Button className={this.props.style} onClick={this.toggleModal} disabled={this.props.disabled} > New Client</Button>
 
-                <Modal show={this.state.active} onHide={this.cancelAction} >
+                <Modal show={this.state.active} onHide={this.closeAction} >
                     <Modal.Header closeButton={true}>
                         <Modal.Title>{title}</Modal.Title>
                     </Modal.Header>
@@ -81,7 +64,7 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
                     </Modal.Body>
                     <Modal.Footer>
                         <Button className="btn btn-newClient" onClick={this.clearAction} type="reset">Clear</Button>
-                        <Button className="btn btn-newClient" onClick={this.cancelAction}>Close</Button>
+                        <Button className="btn" onClick={this.closeAction}>Save</Button>
                     </Modal.Footer>
                 </Modal>
             </span>
