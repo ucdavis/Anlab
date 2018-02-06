@@ -30,8 +30,7 @@ interface IClientIdInputState {
 
 export class ClientId extends React.Component<IClientIdProps, IClientIdInputState> {
 
-    private _modalError = "There are some errors with the information you provided";
-    private _clientIdError = ""
+    private _modalError = "There are some errors with the new client information you provided";
 
     constructor(props) {
         super(props);

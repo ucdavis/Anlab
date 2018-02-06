@@ -6,7 +6,6 @@ import { Modal, Button } from "react-bootstrap";
 import { AdditionalEmails } from "./AdditionalEmails";
 import { AdditionalInfo } from "./AdditionalInfo";
 import { ClientId, IClientInfo } from "./ClientId";
-import { ClientIdModal } from "./ClientIdModal";
 import { Commodity } from "./Commodity";
 import { DateSampled } from "./DateSampled";
 import { IPayment, PaymentSelection } from "./PaymentSelection";
