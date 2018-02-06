@@ -12,8 +12,11 @@ export interface IClientInfo {
 }
 
 interface IClientIdProps {
+    //change one property of parent ClientInfo state
     handleClientInfoChange: (key: string, value: string) => void;
+    //change if parent thinks ClientInfo is valid
     updateClientInfoValid: (key: string, value: any) => void;
+    //clear all 
     clearClientInfo: () => void;
     clientIdRef: (element: HTMLInputElement) => void;
     clientInfo: IClientInfo;
@@ -21,7 +24,7 @@ interface IClientIdProps {
 
 interface IClientIdInputState {
     error: string;
-    newClientInfoAdded: boolean;
+    modalValid: boolean;
     fetchedName: string;
 }
 
@@ -35,14 +38,14 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
 
         this.state = {
             error: null,
-            newClientInfoAdded: false,
+            modalValid: false,
             fetchedName: "",
         };
     }
 
     public render() {
         //if modal filled properly, set button style to filled it
-        let style = this.state.newClientInfoAdded ? "btn" : "btn-newClient";
+        let style = this.state.modalValid ? "btn" : "btn-newClient";
         //set border red if modal has error
         if (this.state.error == this._modalError)
             style += " btn-error";
@@ -57,7 +60,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
                             onBlur={this._onBlur}
                             placeholder={"Client ID"}
                             label={"Already have Client ID"}
-                            disabled={this.state.newClientInfoAdded}
+                            disabled={this.state.modalValid}
                         />
                         {this.props.clientInfo.clientId ? this.state.fetchedName : ""}
 
@@ -71,7 +74,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
                         disabled={this.props.clientInfo.clientId != ""}
                         style={style}
                         onClose={this._onModalClose} />
-                    {(this.state.newClientInfoAdded && this.state.error == "") &&
+                    {(this.state.modalValid && this.state.error == "") &&
                         <i className="fa fa-check" aria-hidden="true"></i>}
                     {(this.state.error == this._modalError) &&
                         <i className="fa fa-times" aria-hidden="true"></i>}
@@ -87,7 +90,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
             value = value.toUpperCase();
         }
         this.props.handleClientInfoChange("clientId", value);
-        this._lookupClientId(value);
+        this._lookupAndValidateClientId(value);
     }
 
     private _onBlur = () => {
@@ -95,36 +98,28 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     }
 
     private _onModalClose = () => {
-        this._validate();
+        this._validateModal();
     }
 
-
-    private _validate = () => {
-        if (this.props.clientInfo.clientId && !!this.props.clientInfo.clientId.trim() && this.props.clientInfo.name)
-        {
-            this.setState({ error: "", newClientInfoAdded: false });
-            this.props.updateClientInfoValid("clientInfoValid", true);
-            return;
-        }
+    //validate modal contents via props, not client id
+    private _validateModal = () => {
         const emailre = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         const phoneRe = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
 
         let valid = (this.props.clientInfo.employer && !!this.props.clientInfo.employer.trim()) && (this.props.clientInfo.name && !!this.props.clientInfo.name.trim())
             && emailre.test((this.props.clientInfo.email)) && phoneRe.test((this.props.clientInfo.phoneNumber));
         if (!valid) {
-            this.setState({ error: this._modalError, newClientInfoAdded: false });
+            this.setState({ error: this._modalError, modalValid: false });
             this.props.updateClientInfoValid("clientInfoValid", false);
         }
         else {
-            this.setState({ error: "", newClientInfoAdded: true });
+            this.setState({ error: "", modalValid: true });
             this.props.updateClientInfoValid("clientInfoValid", true);
         }
-
-
-
     }
 
-    private _lookupClientId = (value) => {
+    //validate client id, not modal. this is because we are validating the string itself, not the props
+    private _lookupAndValidateClientId = (value) => {
         if (!value || !value.trim()) {
             this.setState({ error: "Either a Client ID or New Client Info is required", fetchedName: "" });
             this.props.updateClientInfoValid("clientInfoValid", false);

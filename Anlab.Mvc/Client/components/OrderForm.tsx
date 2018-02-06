@@ -605,8 +605,8 @@ export default class OrderForm extends React.Component<
             email: "",
             phoneNumber: "",
         };
-        this.setState({
-            ...this.state, clientInfo: clearInfo
+      this.setState({
+          ...this.state, clientInfo: clearInfo, clientInfoValid: false,
         });
   }
 
