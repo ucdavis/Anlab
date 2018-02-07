@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -20,22 +21,25 @@ namespace AnlabMvc.Services
         private IRazorViewEngine _viewEngine;
         private ITempDataProvider _tempDataProvider;
         private IServiceProvider _serviceProvider;
+        private IActionContextAccessor _actionContextAccessor;
 
         public ViewRenderService(
             IRazorViewEngine viewEngine,
             ITempDataProvider tempDataProvider,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            IActionContextAccessor actionContextAccessor)
         {
             _viewEngine = viewEngine;
             _tempDataProvider = tempDataProvider;
             _serviceProvider = serviceProvider;
+            _actionContextAccessor = actionContextAccessor;
         }
 
         public async Task<string> RenderViewToStringAsync<TModel>(string name, TModel model)
         {
-            var actionContext = GetActionContext();
+            var actionContext = _actionContextAccessor.ActionContext;
 
-            var viewEngineResult = _viewEngine.FindView(actionContext, name, false);
+            var viewEngineResult = _viewEngine.FindView(GetDefaultActionContext(), name, false);
 
             if (!viewEngineResult.Success)
             {
@@ -67,7 +71,7 @@ namespace AnlabMvc.Services
             }
         }
 
-        private ActionContext GetActionContext()
+        private ActionContext GetDefaultActionContext()
         {
             var httpContext = new DefaultHttpContext();
             httpContext.RequestServices = _serviceProvider;
