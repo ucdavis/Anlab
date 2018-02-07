@@ -589,11 +589,11 @@ export default class OrderForm extends React.Component<
     this.setState({ quantity }, this._validate);
   };
 
-  private _updateClientInfo = (property: string, value: string) => {
+  private _updateClientInfo = (property: string[], value: string[]) => {
       this.setState({
           ...this.state, clientInfo: {
               ...this.state.clientInfo,
-              [property]: value
+              [property[0]]: value[0]
           }
       }, this._validate);
   }

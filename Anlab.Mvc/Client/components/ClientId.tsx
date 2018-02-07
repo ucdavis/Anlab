@@ -8,12 +8,14 @@ export interface IClientInfo {
     employer: string;
     name: string;
     email: string;
+    copyEmail?: string;
+    subEmail?: string;
     phoneNumber: string;
 }
 
 interface IClientIdProps {
     //change one property of parent ClientInfo state
-    handleClientInfoChange: (key: string, value: string) => void;
+    handleClientInfoChange: (key: string[], value: string[]) => void;
     //change if parent thinks ClientInfo is valid
     updateClientInfoValid: (key: string, value: any) => void;
     //clear all 
@@ -26,6 +28,8 @@ interface IClientIdInputState {
     error: string;
     modalValid: boolean;
     fetchedName: string;
+    fetchedCopyEmail: string;
+    fetchedSubEmail: string;
 }
 
 export class ClientId extends React.Component<IClientIdProps, IClientIdInputState> {
@@ -39,6 +43,8 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
             error: null,
             modalValid: false,
             fetchedName: this.props.clientInfo.name,
+            fetchedCopyEmail: this.props.clientInfo.copyEmail,
+            fetchedSubEmail: this.props.clientInfo.subEmail,
         };
     }
 
@@ -88,12 +94,12 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
         if (value) {
             value = value.toUpperCase();
         }
-        this.props.handleClientInfoChange("clientId", value);
+        this.props.handleClientInfoChange(["clientId"], [value]);
         this._lookupAndValidateClientId(value);
     }
 
     private _onBlur = () => {
-        this.props.handleClientInfoChange("name", this.state.fetchedName);
+        this.props.handleClientInfoChange(["name", "copyEmail", "subEmail"], [this.state.fetchedName, this.state.fetchedCopyEmail, this.state.fetchedSubEmail]);
     }
 
     private _onModalClose = () => {
@@ -138,7 +144,12 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
             })
             .then((response) => response.json())
             .then((response) => {
-                this.setState({ error: "", fetchedName: response.name });
+                this.setState({
+                    error: "",
+                    fetchedName: response.name,
+                    fetchedCopyEmail: response.copyEmail,
+                    fetchedSubEmail: response.subEmail,
+                });
                 this.props.updateClientInfoValid("clientInfoValid", true);
             })
             .catch((error: Error) => {

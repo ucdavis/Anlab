@@ -7,7 +7,7 @@ interface IClientIdModalProps {
     clientInfo: IClientInfo;
     onClose: () => void;
     onClear: () => void;
-    handleChange: (key: string, value: string) => void;
+    handleChange: (key: string[], value: string[]) => void;
     disabled: boolean;
     style: string;
 }
