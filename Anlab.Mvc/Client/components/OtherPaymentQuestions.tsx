@@ -26,7 +26,7 @@ export class OtherPaymentInfo extends React.Component<IOtherPaymentInfoProps, {}
         return (
             <div className="flexrow">
                 <div className="flexcol">
-                    <OtherPaymentInput property="companyName" value={this.props.otherPaymentInfo.companyName} label="Company Name" handleChange={this._onOtherInfoChange} required={true} inputRef={this.props.otherPaymentInfoRef} />
+                    <OtherPaymentInput property="companyName" value={this.props.otherPaymentInfo.companyName} label={this.props.otherPaymentInfo.paymentType === "IOC" ? "Campus Name" : "Company Name"} handleChange={this._onOtherInfoChange} required={true} inputRef={this.props.otherPaymentInfoRef} />
                     <OtherPaymentInput property="acName" value={this.props.otherPaymentInfo.acName} label="Account Contact Name" handleChange={this._onOtherInfoChange} required={true} />
                     <OtherPaymentInput property="acAddr" value={this.props.otherPaymentInfo.acAddr} label="Account Contact Address" handleChange={this._onOtherInfoChange} required={true} />
                 </div>

@@ -163,6 +163,8 @@ namespace Test.TestsController
 
             savedResult.ShouldNotBeNull();
             //Changed Values
+            savedResult.Email.ShouldBe("test7@testy.com");
+            savedResult.NormalizedEmail.ShouldBe("TEST7@TESTY.COM");
             savedResult.FirstName.ShouldBe("FirstName7");
             savedResult.LastName.ShouldBe("LastName7");
             savedResult.Name.ShouldBe("FirstName7 LastName7");

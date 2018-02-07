@@ -526,14 +526,16 @@ export default class OrderForm extends React.Component<
   };
 
   private _checkUcChart = (chart: string) => {
+      if (!chart) {
+          return(false);
+      }
+      const upperChart = chart.toUpperCase();
+      //Removed S as a choice (can be used by other UC's) added H (From Brian's excel doc)
     return (
-      chart === "L" ||
-      chart === "l" ||
-      chart === "3" ||
-      chart === "S" ||
-      chart === "s" ||
-      chart === "M" ||
-      chart === "m"
+        upperChart === "L" ||
+        upperChart === "3" ||
+        upperChart === "M" ||
+        upperChart === "H"
     );
   };
 

@@ -57,7 +57,10 @@ namespace Test.TestsDatabase
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)1000)]"
             }));
             expectedFields.Add(new NameAndType("ConcurrencyStamp", "System.String", new List<string>()));
-            expectedFields.Add(new NameAndType("Email", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Email", "System.String", new List<string>{
+                "[System.ComponentModel.DataAnnotations.EmailAddressAttribute()]",
+                "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+            }));
             expectedFields.Add(new NameAndType("EmailConfirmed", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("FirstName", "System.String", new List<string>
             {
