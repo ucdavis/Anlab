@@ -33,8 +33,7 @@ namespace Anlab.Core.Models
                 return AdjustmentAmount + Total;
             }
         }
-        public string ClientId { get; set; }
-        public NewClientInfo NewClientInfo { get; set; }
+        public ClientInfo ClientInfo { get; set; }
         public OtherPaymentInfo OtherPaymentInfo { get; set; }
         public decimal InternalProcessingFee { get; set; }
         public decimal ExternalProcessingFee { get; set; }

@@ -85,7 +85,7 @@ namespace AnlabMvc.Controllers
                 userToUpdate.Name = user.Name;
                 userToUpdate.Phone = user.Phone;
                 userToUpdate.Account = user.Account?.ToUpper();
-                userToUpdate.ClientId = user.ClientId;
+                userToUpdate.ClientId = user.ClientId?.ToUpper();
                 userToUpdate.CompanyName = user.CompanyName;
                 userToUpdate.BillingContactName = user.BillingContactName;
                 userToUpdate.BillingContactAddress = user.BillingContactAddress;

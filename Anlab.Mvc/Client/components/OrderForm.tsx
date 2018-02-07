@@ -5,8 +5,7 @@ import { Collapse, Fade } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
 import { AdditionalEmails } from "./AdditionalEmails";
 import { AdditionalInfo } from "./AdditionalInfo";
-import { ClientId } from "./ClientId";
-import { ClientIdModal, INewClientInfo } from "./ClientIdModal";
+import { ClientId, IClientInfo } from "./ClientId";
 import { Commodity } from "./Commodity";
 import { DateSampled } from "./DateSampled";
 import { IPayment, PaymentSelection } from "./PaymentSelection";
@@ -61,9 +60,8 @@ interface IOrderFormState {
   isErrorActive: boolean;
   errorMessage: string;
   status: string;
-  clientId: string;
-  clientName: string;
-  newClientInfo: INewClientInfo;
+  clientInfo: IClientInfo;
+  clientInfoValid: boolean;
   additionalInfoList: object;
 }
 
@@ -86,7 +84,6 @@ export default class OrderForm extends React.Component<
       additionalEmails: [],
       additionalInfo: "",
       additionalInfoList: {},
-      clientId: this.props.defaultClientId ? this.props.defaultClientId : "",
       commodity: "",
       dateSampled: moment(),
       errorMessage: "",
@@ -94,15 +91,16 @@ export default class OrderForm extends React.Component<
       isErrorActive: false,
       isSubmitting: false,
       isValid: false,
-      newClientInfo: {
+      clientInfo: {
+        clientId: this.props.defaultClientId ? this.props.defaultClientId : "",
         email: this.props.defaultEmail,
         employer: "",
-        name: "",
+        name: this.props.defaultClientIdName
+            ? this.props.defaultClientIdName
+            : "",
         phoneNumber: ""
       },
-      clientName: this.props.defaultClientIdName
-        ? this.props.defaultClientIdName
-        : null,
+      clientInfoValid: false,
       payment: { clientType: "uc", account: "" },
       otherPaymentInfo: {
         paymentType: this.props.defaultAccount ? "IOC" : "",
@@ -174,14 +172,14 @@ export default class OrderForm extends React.Component<
           agreementRequired: false
         };
       }
-      initialState.clientId = orderInfo.ClientId;
-      initialState.newClientInfo = {
-        email: orderInfo.NewClientInfo.Email,
-        employer: orderInfo.NewClientInfo.Employer,
-        name: orderInfo.NewClientInfo.Name,
-        phoneNumber: orderInfo.NewClientInfo.PhoneNumber
+      initialState.clientInfo = {
+        clientId: orderInfo.ClientInfo.ClientId,
+        email: orderInfo.ClientInfo.Email,
+        employer: orderInfo.ClientInfo.Employer,
+        name: orderInfo.ClientInfo.Name,
+        phoneNumber: orderInfo.ClientInfo.PhoneNumber
       };
-      initialState.clientName = "";
+      initialState.clientInfoValid = true;
       initialState.additionalInfoList = orderInfo.AdditionalInfoList;
       initialState.filteredTests = this.props.testItems.filter(
         item => item.categories.indexOf(orderInfo.SampleType) !== -1
@@ -216,9 +214,7 @@ export default class OrderForm extends React.Component<
       dateSampled,
       additionalEmails,
       status,
-      clientId,
-      newClientInfo,
-      clientName,
+      clientInfo,
       additionalInfoList,
       filteredTests,
       selectedCodes,
@@ -245,14 +241,13 @@ export default class OrderForm extends React.Component<
             <div className="form_wrap">
               <label className="form_header">Do you have a Client ID?</label>
               <ClientId
-                clientId={clientId}
-                clientName={clientName}
-                handleChange={this._handleChange}
                 clientIdRef={inputRef => {
                   this.clientIdRef = inputRef;
                 }}
-                newClientInfo={newClientInfo}
-                updateNewClientInfo={this._updateNewClientInfo}
+                clientInfo={clientInfo}
+                handleClientInfoChange={this._updateClientInfo}
+                updateClientInfoValid={this._handleChange}
+                clearClientInfo={this._clearClientInfo}
               />
             </div>
           </Collapse>
@@ -260,9 +255,7 @@ export default class OrderForm extends React.Component<
           <Collapse
             in={
               !placingOrder ||
-              (this.state.clientName != null ||
-                (this.state.newClientInfo.name != null &&
-                  !!this.state.newClientInfo.name.trim()) ||
+              (this.state.clientInfoValid ||
                 !!this.state.payment.clientType.trim())
             }
           >
@@ -463,10 +456,7 @@ export default class OrderForm extends React.Component<
     let valid = true;
 
     //check either client name or new client info
-    if (
-      this.state.clientName == null &&
-      (!this.state.newClientInfo.name || !this.state.newClientInfo.name.trim())
-    ) {
+    if (!this.state.clientInfoValid) {
       valid = false;
     }
     if (
@@ -599,14 +589,27 @@ export default class OrderForm extends React.Component<
     this.setState({ quantity }, this._validate);
   };
 
-  private _updateNewClientInfo = (info: INewClientInfo) => {
-    this.setState(
-      {
-        newClientInfo: { ...info }
-      },
-      this._validate
-    );
-  };
+  private _updateClientInfo = (property: string, value: string) => {
+      this.setState({
+          ...this.state, clientInfo: {
+              ...this.state.clientInfo,
+              [property]: value
+          }
+      }, this._validate);
+  }
+
+  private _clearClientInfo = () => {
+      const clearInfo = {
+            clientId: "",
+            employer: "",
+            name: "",
+            email: "",
+            phoneNumber: "",
+        };
+      this.setState({
+          ...this.state, clientInfo: clearInfo, clientInfoValid: false,
+        });
+  }
 
   private _onEmailAdded = (additionalEmail: string) => {
     this.setState({
@@ -627,10 +630,7 @@ export default class OrderForm extends React.Component<
     if (this.state.isValid || this.state.isSubmitting) {
       return;
     }
-    if (
-      this.state.clientName == null &&
-      (!this.state.newClientInfo.name || !this.state.newClientInfo.name.trim())
-    ) {
+    if (!this.state.clientInfoValid) {
       this._focusInput(this.clientIdRef);
     } else if (
       this.state.payment.clientType === "uc" &&
@@ -774,12 +774,13 @@ export default class OrderForm extends React.Component<
       additionalEmails: this.state.additionalEmails,
       additionalInfo: this.state.additionalInfo,
       additionalInfoList,
-      clientId: this.state.clientId,
       commodity: this.state.commodity,
       dateSampled: this.state.dateSampled.toISOString(),
       externalProcessingFee: this.props.externalProcessingFee,
       internalProcessingFee: this.props.internalProcessingFee,
-      newClientInfo: this.state.newClientInfo,
+      clientInfo: {
+          ...this.state.clientInfo,
+      },
       orderId: this.props.orderId,
       otherPaymentInfo: this.state.otherPaymentInfo,
       payment: this.state.payment,

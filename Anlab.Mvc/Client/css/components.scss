@@ -110,6 +110,17 @@
         box-shadow: none;
         color: $primary-color !important;
     }
+
+    &.btn-newClient {
+        background-color: #fff;
+        box-shadow: none;
+        color: $primary-color !important;
+        border:1px solid $borders;
+        border-color: $primary-color;
+        &.btn-error {
+            border-color: $unitrans-red;
+        }
+    }
 }
 .btn-hollow {
   background-color: #fff;

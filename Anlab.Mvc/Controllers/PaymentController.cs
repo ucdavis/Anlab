@@ -72,7 +72,7 @@ namespace AnlabMvc.Controllers
             ViewBag.ShareId = order.ShareIdentifier;
 
             //ViewBag.PaymentDictionary = dictionary; //Debugging. Remove when not needed
-
+            
             return View(response);
         }
 
@@ -206,7 +206,7 @@ namespace AnlabMvc.Controllers
                 if (response.Reason_Code == ReasonCodes.AvsFailure)
                 {
                     Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Warning("Avs Failure");
-                    rtValue.Errors.Add("We’re sorry, but it appears that the billing address that you entered does not match the billing address registered with your card. Please verify that the billing address and zip code you entered are the ones registered with your card issuer and try again. If you experience further problems, please contact us");
+                    rtValue.Errors.Add("Weâ€™re sorry, but it appears that the billing address that you entered does not match the billing address registered with your card. Please verify that the billing address and zip code you entered are the ones registered with your card issuer and try again. If you experience further problems, please contact us");
                 }
 
                 if (response.Reason_Code == ReasonCodes.BankTimeoutError ||
@@ -218,7 +218,7 @@ namespace AnlabMvc.Controllers
                 else
                 {
                     Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Warning("Declined Card Error");
-                    rtValue.Errors.Add("We’re sorry but your credit card was declined. Please use an alternative credit card and try submitting again. If you experience further problems, please contact us");
+                    rtValue.Errors.Add("Weâ€™re sorry but your credit card was declined. Please use an alternative credit card and try submitting again. If you experience further problems, please contact us");
                 }
             }
 
@@ -230,7 +230,7 @@ namespace AnlabMvc.Controllers
                 //TODO: credit card was partially billed. flag transaction for review
                 //TODO: send to general error page
                 Log.ForContext("decision", response.Decision).ForContext("reason", response.Reason_Code).Error("Partial Payment Error");
-                rtValue.Errors.Add("We’re sorry but a Partial Payment Error was detected. Please contact us");
+                rtValue.Errors.Add("Weâ€™re sorry but a Partial Payment Error was detected. Please contact us");
             }
 
             if (rtValue.Errors.Count <= 0)
