@@ -100,7 +100,7 @@ export default class OrderForm extends React.Component<
             : "",
         phoneNumber: ""
       },
-      clientInfoValid: false,
+      clientInfoValid: (this.props.defaultClientId && this.props.defaultClientIdName) ? true: false,
       payment: { clientType: "uc", account: "" },
       otherPaymentInfo: {
         paymentType: this.props.defaultAccount ? "IOC" : "",
