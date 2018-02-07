@@ -333,6 +333,8 @@ export default class OrderForm extends React.Component<
                   <AdditionalEmails
                     addedEmails={additionalEmails}
                     defaultEmail={defaultEmail}
+                    copyEmail={clientInfo.copyEmail}
+                    subEmail={clientInfo.subEmail}
                     onEmailAdded={this._onEmailAdded}
                     onDeleteEmail={this._onDeleteEmail}
                   />
