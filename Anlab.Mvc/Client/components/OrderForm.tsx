@@ -590,11 +590,13 @@ export default class OrderForm extends React.Component<
   };
 
   private _updateClientInfo = (property: string[], value: string[]) => {
+      let newState = { ...this.state.clientInfo }
+      for (var i = 0; i < property.length; i++)
+      {
+          newState[property[i]] = value[i];
+      }
       this.setState({
-          ...this.state, clientInfo: {
-              ...this.state.clientInfo,
-              [property[0]]: value[0]
-          }
+          ...this.state, clientInfo: newState,
       }, this._validate);
   }
 
