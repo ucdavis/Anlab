@@ -38,7 +38,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
         this.state = {
             error: null,
             modalValid: false,
-            fetchedName: "",
+            fetchedName: this.props.clientInfo.name,
         };
     }
 
