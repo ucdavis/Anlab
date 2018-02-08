@@ -9,7 +9,6 @@ export interface IClientInfo {
     name: string;
     email: string;
     copyEmail?: string;
-    subEmail?: string;
     phoneNumber: string;
 }
 
@@ -28,8 +27,8 @@ interface IClientIdInputState {
     error: string;
     modalValid: boolean;
     fetchedName: string;
+    fetchedEmail: string;
     fetchedCopyEmail: string;
-    fetchedSubEmail: string;
 }
 
 export class ClientId extends React.Component<IClientIdProps, IClientIdInputState> {
@@ -43,8 +42,8 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
             error: null,
             modalValid: false,
             fetchedName: this.props.clientInfo.name,
+            fetchedEmail: this.props.clientInfo.email,
             fetchedCopyEmail: this.props.clientInfo.copyEmail,
-            fetchedSubEmail: this.props.clientInfo.subEmail,
         };
     }
 
@@ -99,7 +98,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     }
 
     private _onBlur = () => {
-        this.props.handleClientInfoChange(["name", "copyEmail", "subEmail"], [this.state.fetchedName, this.state.fetchedCopyEmail, this.state.fetchedSubEmail]);
+        this.props.handleClientInfoChange(["name", "copyEmail", "email"], [this.state.fetchedName, this.state.fetchedCopyEmail, this.state.fetchedEmail]);
     }
 
     private _onModalClose = () => {
@@ -126,12 +125,12 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     //validate client id, not modal. this is because we are validating the string itself, not the props
     private _lookupAndValidateClientId = (value) => {
         if (!value || !value.trim()) {
-            this.setState({ error: "Either a Client ID or New Client Info is required", fetchedName: "", fetchedCopyEmail: "", fetchedSubEmail: "" });
+            this.setState({ error: "Either a Client ID or New Client Info is required", fetchedName: "", fetchedCopyEmail: "", fetchedEmail: "" });
             this.props.updateClientInfoValid("clientInfoValid", false);
             return;
         }
         if (value.length < 4) {
-            this.setState({ error: "Client IDs must be at least 4 characters long", fetchedName: "", fetchedCopyEmail: "", fetchedSubEmail: "" });
+            this.setState({ error: "Client IDs must be at least 4 characters long", fetchedName: "", fetchedCopyEmail: "", fetchedEmail: "" });
             this.props.updateClientInfoValid("clientInfoValid", false);
             return;
         }
@@ -148,12 +147,12 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
                     error: "",
                     fetchedName: response.name,
                     fetchedCopyEmail: response.copyEmail,
-                    fetchedSubEmail: response.subEmail,
+                    fetchedEmail: response.subEmail,
                 });
                 this.props.updateClientInfoValid("clientInfoValid", true);
             })
             .catch((error: Error) => {
-                this.setState({ error: error.message, fetchedName: "", fetchedCopyEmail: "", fetchedSubEmail: "" });
+                this.setState({ error: error.message, fetchedName: "", fetchedCopyEmail: "", fetchedEmail: "" });
                 this.props.updateClientInfoValid("clientInfoValid", false);
             });
     }

@@ -11,7 +11,7 @@ export interface IAdditionalEmailsProps {
     onDeleteEmail: (email: string) => void;
     defaultEmail: string;
     copyEmail?: string;
-    subEmail?: string;
+    clientEmail?: string;
 }
 
 interface IAdditionalEmailsState {
@@ -37,10 +37,10 @@ export class AdditionalEmails extends React.Component<IAdditionalEmailsProps, IA
             <div>
                 <div>
                     <Badge>{this.props.defaultEmail}</Badge>
+                    {(this.props.clientEmail && this.props.clientEmail != this.props.defaultEmail && this.props.addedEmails.indexOf(this.props.clientEmail) == -1) &&
+                        <Badge>{this.props.clientEmail}</Badge>}
                     {(this.props.copyEmail && this.props.copyEmail != this.props.defaultEmail && this.props.addedEmails.indexOf(this.props.copyEmail) == -1) &&
                         <Badge>{this.props.copyEmail}</Badge>}
-                    {(this.props.subEmail && this.props.subEmail != this.props.defaultEmail && this.props.addedEmails.indexOf(this.props.subEmail) == -1) &&
-                        <Badge>{this.props.subEmail}</Badge>}
                     {this._renderEmails()}
                     {this._renderInput()}
                 </div>

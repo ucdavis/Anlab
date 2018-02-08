@@ -94,15 +94,14 @@ export default class OrderForm extends React.Component<
       isSubmitting: false,
       isValid: false,
       clientInfo: {
-        clientId: this.props.defaultClientId ? this.props.defaultClientId : "",
-        email: this.props.defaultEmail,
+          clientId: this.props.defaultClientId ? this.props.defaultClientId : "",
+        email: this.props.defaultSubEmail ? this.props.defaultSubEmail : this.props.defaultEmail,
         employer: "",
         name: this.props.defaultClientIdName
             ? this.props.defaultClientIdName
             : "",
         phoneNumber: "",
         copyEmail: this.props.defaultCopyEmail ? this.props.defaultCopyEmail : "",
-        subEmail: this.props.defaultSubEmail ? this.props.defaultSubEmail : "", 
       },
       clientInfoValid: (this.props.defaultClientId && this.props.defaultClientIdName) ? true: false,
       payment: { clientType: "uc", account: "" },
@@ -183,7 +182,6 @@ export default class OrderForm extends React.Component<
         name: orderInfo.ClientInfo.Name,
         phoneNumber: orderInfo.ClientInfo.PhoneNumber,
         copyEmail: orderInfo.ClientInfo.CopyEmail,
-        subEmail: orderInfo.ClientInfo.SubEmail,
       };
       initialState.clientInfoValid = true;
       initialState.additionalInfoList = orderInfo.AdditionalInfoList;
@@ -340,7 +338,7 @@ export default class OrderForm extends React.Component<
                     addedEmails={additionalEmails}
                     defaultEmail={defaultEmail}
                     copyEmail={clientInfo.copyEmail}
-                    subEmail={clientInfo.subEmail}
+                    clientEmail={clientInfo.email}
                     onEmailAdded={this._onEmailAdded}
                     onDeleteEmail={this._onDeleteEmail}
                   />
