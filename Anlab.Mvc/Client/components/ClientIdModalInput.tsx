@@ -5,7 +5,7 @@ interface IClientIdModalInputProps {
     property: string;
     value: string;
     label: string;
-    handleChange: (key: string[], value: string[]) => void;
+    handleChange: (keys: string[], values: string[]) => void;
 }
 
 interface IClientIdModalInputState {

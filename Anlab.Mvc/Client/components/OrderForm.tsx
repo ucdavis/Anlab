@@ -597,11 +597,11 @@ export default class OrderForm extends React.Component<
     this.setState({ quantity }, this._validate);
   };
 
-  private _updateClientInfo = (property: string[], value: string[]) => {
+  private _updateClientInfo = (keys: string[], values: string[]) => {
       let newState = { ...this.state.clientInfo }
-      for (var i = 0; i < property.length; i++)
+      for (var i = 0; i < keys.length; i++)
       {
-          newState[property[i]] = value[i];
+          newState[keys[i]] = values[i];
       }
       this.setState({
           ...this.state, clientInfo: newState,
@@ -615,6 +615,8 @@ export default class OrderForm extends React.Component<
             name: "",
             email: "",
             phoneNumber: "",
+            subEmail: "",
+            copyEmail: "",
         };
       this.setState({
           ...this.state, clientInfo: clearInfo, clientInfoValid: false,

@@ -15,7 +15,7 @@ export interface IClientInfo {
 
 interface IClientIdProps {
     //change one property of parent ClientInfo state
-    handleClientInfoChange: (key: string[], value: string[]) => void;
+    handleClientInfoChange: (keys: string[], values: string[]) => void;
     //change if parent thinks ClientInfo is valid
     updateClientInfoValid: (key: string, value: any) => void;
     //clear all 
