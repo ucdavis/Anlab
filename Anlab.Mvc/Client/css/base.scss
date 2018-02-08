@@ -57,6 +57,10 @@ header {
 }
 .logo_wrapper {
   padding:10px;
+  a {
+       transition: none !important;
+      -webkit-transition: none !important;
+  }
   padding-left:0px;
   @include breakpoint(mobileonly) {
     margin:auto;
