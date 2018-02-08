@@ -292,33 +292,6 @@ namespace AnlabMvc.Controllers
             }
 
             await _orderService.UpdateTestsAndPrices(order);
-            if (!string.IsNullOrWhiteSpace(order.ClientId))
-            {
-                var clientDetails = await _labworksService.GetClientDetails(order.ClientId);
-                if (clientDetails != null)
-                {
-                    var addEmailList = order.AdditionalEmails.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList();
-
-                    if (!string.IsNullOrWhiteSpace(clientDetails.CopyEmail))
-                    {
-                        if (!addEmailList.Contains(clientDetails.CopyEmail))
-                        {
-                            addEmailList.Add(clientDetails.CopyEmail);
-                        }
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(clientDetails.SubEmail))
-                    {
-                        if (!addEmailList.Contains(clientDetails.SubEmail))
-                        {
-                            addEmailList.Add(clientDetails.SubEmail);
-                        }
-                    }
-
-                    order.AdditionalEmails = string.Join(';', addEmailList);
-
-                }
-            }
 
             UpdateAdditionalInfo(order);
             order.Status = OrderStatusCodes.Confirmed;
