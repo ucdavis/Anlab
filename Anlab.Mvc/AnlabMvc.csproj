@@ -83,6 +83,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Update="wwwroot\Images\anlab.jpeg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Images\anlab170.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Update="Resources\QueryResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>QueryResource.Designer.cs</LastGenOutput>
