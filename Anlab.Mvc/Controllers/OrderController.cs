@@ -79,7 +79,7 @@ namespace AnlabMvc.Controllers
                     model.Defaults.DefaultClientId = defaults.ClientId;
                     model.Defaults.DefaultClientIdName = defaults.Name;
                     model.Defaults.DefaultSubEmail = defaults.SubEmail;
-                    model.Defaults.DefaultCopyEmail = defaults.SubEmail;
+                    model.Defaults.DefaultCopyEmail = defaults.CopyEmail;
 
                 }
             }
