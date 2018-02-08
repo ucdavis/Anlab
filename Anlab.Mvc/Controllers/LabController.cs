@@ -25,16 +25,18 @@ namespace AnlabMvc.Controllers
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IOrderService _orderService;
+        private readonly ILabworksService _labworksService;
         private readonly IOrderMessageService _orderMessageService;
         private readonly IFileStorageService _fileStorageService;
         private readonly ISlothService _slothService;
 
         private const int _maxShownOrders = 1000;
 
-        public LabController(ApplicationDbContext dbContext, IOrderService orderService, IOrderMessageService orderMessageService, IFileStorageService fileStorageService, ISlothService slothService)
+        public LabController(ApplicationDbContext dbContext, IOrderService orderService, ILabworksService labworksService, IOrderMessageService orderMessageService, IFileStorageService fileStorageService, ISlothService slothService)
         {
             _dbContext = dbContext;
             _orderService = orderService;
+            _labworksService = labworksService;
             _orderMessageService = orderMessageService;
             _fileStorageService = fileStorageService;
             _slothService = slothService;
@@ -145,6 +147,45 @@ namespace AnlabMvc.Controllers
             }
             order.ClientId = result.ClientId;
             var orderDetails = order.GetOrderDetails();
+
+            if (!string.IsNullOrWhiteSpace(order.ClientId))
+            {
+
+                //TODO: update other info if we pull it: phone numbers
+                var clientInfo = await _labworksService.GetClientDetails(order.ClientId);
+
+                if (clientInfo != null)
+                {
+                    orderDetails.ClientInfo.ClientId = order.ClientId;
+                    orderDetails.ClientInfo.Email = clientInfo.SubEmail;
+                    orderDetails.ClientInfo.CopyEmail = clientInfo.CopyEmail;
+                    orderDetails.ClientInfo.Name = clientInfo.Name;
+
+                }
+
+                var addEmailList = new List<string> { };
+                if(order.AdditionalEmails != null)
+                    addEmailList = order.AdditionalEmails.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList();
+
+                if (!string.IsNullOrWhiteSpace(clientInfo.CopyEmail))
+                {
+                    if (!addEmailList.Contains(clientInfo.CopyEmail))
+                    {
+                        addEmailList.Add(clientInfo.CopyEmail);
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(clientInfo.SubEmail))
+                {
+                    if (!addEmailList.Contains(clientInfo.SubEmail))
+                    {
+                        addEmailList.Add(clientInfo.SubEmail);
+                    }
+                }
+
+                order.AdditionalEmails = string.Join(';', addEmailList);
+
+            }
 
             orderDetails.Quantity = result.Quantity;
             orderDetails.SelectedTests = result.SelectedTests;
