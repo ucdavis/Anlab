@@ -10,6 +10,8 @@ const props = {
     defaultClientId: window.App.defaults.defaultClientId,
     defaultClientIdName: window.App.defaults.defaultClientIdName,
     defaultEmail: window.App.defaults.defaultEmail,
+    defaultCopyEmail: window.App.defaults.defaultCopyEmail,
+    defaultSubEmail: window.App.defaults.defaultSubEmail,
     defaultAcName: window.App.defaults.defaultAcName,
     defaultAcAddr: window.App.defaults.defaultAcAddr,
     defaultAcPhone: window.App.defaults.defaultAcPhone,

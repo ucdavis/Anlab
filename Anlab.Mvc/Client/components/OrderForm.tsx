@@ -27,6 +27,8 @@ export interface IOrderFormProps {
   testItems: ITestItem[];
   defaultAccount: string;
   defaultEmail: string;
+  defaultCopyEmail: string;
+  defaultSubEmail: string;
   defaultClientId: string;
   defaultClientIdName: string;
   defaultAcName: string;
@@ -98,7 +100,9 @@ export default class OrderForm extends React.Component<
         name: this.props.defaultClientIdName
             ? this.props.defaultClientIdName
             : "",
-        phoneNumber: ""
+        phoneNumber: "",
+        copyEmail: this.props.defaultCopyEmail ? this.props.defaultCopyEmail : "",
+        subEmail: this.props.defaultSubEmail ? this.props.defaultSubEmail : "", 
       },
       clientInfoValid: (this.props.defaultClientId && this.props.defaultClientIdName) ? true: false,
       payment: { clientType: "uc", account: "" },
@@ -177,7 +181,9 @@ export default class OrderForm extends React.Component<
         email: orderInfo.ClientInfo.Email,
         employer: orderInfo.ClientInfo.Employer,
         name: orderInfo.ClientInfo.Name,
-        phoneNumber: orderInfo.ClientInfo.PhoneNumber
+        phoneNumber: orderInfo.ClientInfo.PhoneNumber,
+        copyEmail: orderInfo.ClientInfo.CopyEmail,
+        subEmail: orderInfo.ClientInfo.SubEmail,
       };
       initialState.clientInfoValid = true;
       initialState.additionalInfoList = orderInfo.AdditionalInfoList;
