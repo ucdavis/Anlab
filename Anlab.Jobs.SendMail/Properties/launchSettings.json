@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Anlab.Jobs.SendMail": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

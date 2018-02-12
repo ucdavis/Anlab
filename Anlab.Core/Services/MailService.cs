@@ -1,14 +1,17 @@
+using System;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
+using Anlab.Core.Models;
 using MailKit.Net.Smtp;
 using MimeKit;
 
-namespace Anlab.Core.Services {
+namespace Anlab.Core.Services
+{
     public interface IMailService
     {
         void EnqueueMessage(MailMessage message);
-        void SendMessage(MailMessage mailMessage);
+        void SendMessage(MailMessage mailMessage, EmailSettings emailSettings);
     }
 
     public class MailService : IMailService
@@ -25,31 +28,38 @@ namespace Anlab.Core.Services {
             _dbContext.Add(message);
         }
 
-        public void SendMessage(MailMessage mailMessage) {
-            var message = new MimeMessage ();
-    		message.From.Add (new MailboxAddress ("Anlab", "anlab@ucdavis.edu"));
-			message.To.Add (new MailboxAddress(mailMessage.SendTo));
-			message.Subject = mailMessage.Subject;
-            message.Body = new TextPart("html") { Text = mailMessage.Body };
+        public void SendMessage(MailMessage mailMessage, EmailSettings emailSettings)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Anlab", "anlab@ucdavis.edu"));
+            if (mailMessage.SendTo != "anlab-test@ucdavis.edu") //TODO: Remove when we want to start actually emailing people.
+            {
+                throw new Exception("The testing email was not used.");
+            }
 
-            using (var client = new SmtpClient ()) {
-				// For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
-				client.ServerCertificateValidationCallback = (s,c,h,e) => true;
+            message.To.Add(new MailboxAddress(mailMessage.SendTo));
+            message.Subject = mailMessage.Subject;
+            message.Body = new TextPart("html") {Text = mailMessage.Body};
+
+            using (var client = new SmtpClient())
+            {
+                // For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
+                client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
                 // TODO: use authenticated STMP
                 client.Connect("smtp.mailtrap.io", 2525);
-				// client.Connect ("smtp.ucdavis.edu", 587, false);
+                // client.Connect ("smtp.ucdavis.edu", 587, false);
 
-				// Note: since we don't have an OAuth2 token, disable
-				// the XOAUTH2 authentication mechanism.
-				client.AuthenticationMechanisms.Remove ("XOAUTH2");
+                // Note: since we don't have an OAuth2 token, disable
+                // the XOAUTH2 authentication mechanism.
+                client.AuthenticationMechanisms.Remove("XOAUTH2");
 
                 // Note: only needed if the SMTP server requires authentication
-                client.Authenticate("b8a905cbb77fa1", "64d1a775a037f2");
+                client.Authenticate(emailSettings.EmailUserName, emailSettings.EmailPassword);
 
-                client.Send (message);
-				client.Disconnect (true);
-			}
+                client.Send(message);
+                client.Disconnect(true);
+            }
         }
     }
 }
