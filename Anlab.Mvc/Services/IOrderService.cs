@@ -210,9 +210,12 @@ namespace AnlabMvc.Services
 
             orderToUpdate.SaveDetails(orderDetails);
 
-            if (!String.IsNullOrWhiteSpace(orderDetails.ClientInfo.Email) && !orderDetails.AdditionalEmails.Contains(orderDetails.ClientInfo.Email))
+
+            if (!String.IsNullOrWhiteSpace(orderDetails.ClientInfo.Email) && orderToUpdate.Creator.Email != orderDetails.ClientInfo.Email &&
+                    !orderDetails.AdditionalEmails.Contains(orderDetails.ClientInfo.Email))
                 orderDetails.AdditionalEmails.Add(orderDetails.ClientInfo.Email);
-            if (!String.IsNullOrWhiteSpace(orderDetails.ClientInfo.CopyEmail) && !orderDetails.AdditionalEmails.Contains(orderDetails.ClientInfo.CopyEmail))
+            if (!String.IsNullOrWhiteSpace(orderDetails.ClientInfo.CopyEmail) && orderToUpdate.Creator.Email != orderDetails.ClientInfo.CopyEmail &&
+                    !orderDetails.AdditionalEmails.Contains(orderDetails.ClientInfo.CopyEmail))
                 orderDetails.AdditionalEmails.Add(orderDetails.ClientInfo.CopyEmail);
 
             orderToUpdate.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails);

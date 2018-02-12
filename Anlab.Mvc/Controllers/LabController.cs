@@ -169,7 +169,7 @@ namespace AnlabMvc.Controllers
 
                 if (!string.IsNullOrWhiteSpace(clientInfo.CopyEmail))
                 {
-                    if (!addEmailList.Contains(clientInfo.CopyEmail))
+                    if (clientInfo.CopyEmail != order.Creator.Email && !addEmailList.Contains(clientInfo.CopyEmail))
                     {
                         addEmailList.Add(clientInfo.CopyEmail);
                     }
@@ -177,7 +177,7 @@ namespace AnlabMvc.Controllers
 
                 if (!string.IsNullOrWhiteSpace(clientInfo.SubEmail))
                 {
-                    if (!addEmailList.Contains(clientInfo.SubEmail))
+                    if (clientInfo.SubEmail != order.Creator.Email && !addEmailList.Contains(clientInfo.SubEmail))
                     {
                         addEmailList.Add(clientInfo.SubEmail);
                     }

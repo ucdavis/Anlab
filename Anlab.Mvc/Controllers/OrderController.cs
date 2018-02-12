@@ -148,7 +148,7 @@ namespace AnlabMvc.Controllers
 
             if (model.OrderId.HasValue)
             {
-                var orderToUpdate = await _context.Orders.SingleAsync(a => a.Id == model.OrderId.Value);
+                var orderToUpdate = await _context.Orders.Include(i => i.Creator).SingleAsync(a => a.Id == model.OrderId.Value);
                 if (orderToUpdate.CreatorId != CurrentUserId)
                 {
                     return Json(new { success = false, message = "This is not your order." });
@@ -168,9 +168,11 @@ namespace AnlabMvc.Controllers
             }
             else
             {
+                var user = _context.Users.Single(a => a.Id == CurrentUserId);
                 var order = new Order
                 {
                     CreatorId = CurrentUserId,
+                    Creator = user,
                     Status = OrderStatusCodes.Created,
                     ShareIdentifier = Guid.NewGuid(),
                 };
