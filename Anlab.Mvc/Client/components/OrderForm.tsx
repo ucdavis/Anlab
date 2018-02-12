@@ -176,7 +176,7 @@ export default class OrderForm extends React.Component<
         };
       }
       initialState.clientInfo = {
-        clientId: orderInfo.ClientInfo.ClientId,
+        clientId: orderInfo.ClientInfo.ClientId ? orderInfo.ClientInfo.ClientId : "",
         email: orderInfo.ClientInfo.Email,
         employer: orderInfo.ClientInfo.Employer,
         name: orderInfo.ClientInfo.Name,

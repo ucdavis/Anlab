@@ -47,6 +47,12 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
         };
     }
 
+    componentDidMount() {
+        //if we are editing an order with new clientInfo, validate modal info
+        if (this.props.clientInfo.clientId == "" && this.props.clientInfo.name != "")
+            this._validateModal();
+    }
+
     public render() {
         //if modal filled properly, set button style to filled it
         let style = this.state.modalValid ? "btn" : "btn-newClient";
