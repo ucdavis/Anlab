@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Anlab.Core.Domain;
 using Anlab.Core.Services;
 using Serilog;
+using AnlabMvc.Helpers;
 
 namespace AnlabMvc.Controllers
 {
@@ -163,27 +164,7 @@ namespace AnlabMvc.Controllers
 
                 }
 
-                var addEmailList = new List<string> { };
-                if(order.AdditionalEmails != null)
-                    addEmailList = order.AdditionalEmails.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList();
-
-                if (!string.IsNullOrWhiteSpace(clientInfo.CopyEmail))
-                {
-                    if (clientInfo.CopyEmail != order.Creator.Email && !addEmailList.Contains(clientInfo.CopyEmail))
-                    {
-                        addEmailList.Add(clientInfo.CopyEmail);
-                    }
-                }
-
-                if (!string.IsNullOrWhiteSpace(clientInfo.SubEmail))
-                {
-                    if (clientInfo.SubEmail != order.Creator.Email && !addEmailList.Contains(clientInfo.SubEmail))
-                    {
-                        addEmailList.Add(clientInfo.SubEmail);
-                    }
-                }
-
-                order.AdditionalEmails = string.Join(';', addEmailList);
+                order.AdditionalEmails = AdditionalEmailsHelper.AddClientInfoEmails(order, orderDetails.ClientInfo);
 
             }
 
