@@ -5,7 +5,7 @@ interface IClientIdModalInputProps {
     property: string;
     value: string;
     label: string;
-    handleChange: (key: string, value: string) => void;
+    handleChange: (keys: string[], values: string[]) => void;
 }
 
 interface IClientIdModalInputState {
@@ -49,7 +49,7 @@ export class ClientIdModalInput extends React.Component<IClientIdModalInputProps
     onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         this._validate(value);
-        this.props.handleChange(this.props.property, value);
+        this.props.handleChange([this.props.property], [value]);
     }
 
     onBlur = () => {

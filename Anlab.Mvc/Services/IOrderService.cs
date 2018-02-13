@@ -10,6 +10,7 @@ using AnlabMvc.Models.Order;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using AnlabMvc.Helpers;
 
 namespace AnlabMvc.Services
 {
@@ -211,7 +212,9 @@ namespace AnlabMvc.Services
             orderToUpdate.SaveDetails(orderDetails);
 
             orderToUpdate.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails);
-            
+
+            orderToUpdate.AdditionalEmails = AdditionalEmailsHelper.AddClientInfoEmails(orderToUpdate, orderDetails.ClientInfo);
+
             if (orderDetails.Payment.IsInternalClient)
             {
                 var account = new AccountModel(orderDetails.Payment.Account);

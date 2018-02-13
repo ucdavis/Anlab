@@ -78,6 +78,8 @@ namespace AnlabMvc.Controllers
                     model.Defaults.DefaultAccount = model.Defaults.DefaultAccount ?? defaults.DefaultAccount;
                     model.Defaults.DefaultClientId = defaults.ClientId;
                     model.Defaults.DefaultClientIdName = defaults.Name;
+                    model.Defaults.DefaultSubEmail = defaults.SubEmail;
+                    model.Defaults.DefaultCopyEmail = defaults.CopyEmail;
 
                 }
             }
@@ -146,7 +148,7 @@ namespace AnlabMvc.Controllers
 
             if (model.OrderId.HasValue)
             {
-                var orderToUpdate = await _context.Orders.SingleAsync(a => a.Id == model.OrderId.Value);
+                var orderToUpdate = await _context.Orders.Include(i => i.Creator).SingleAsync(a => a.Id == model.OrderId.Value);
                 if (orderToUpdate.CreatorId != CurrentUserId)
                 {
                     return Json(new { success = false, message = "This is not your order." });
@@ -166,9 +168,11 @@ namespace AnlabMvc.Controllers
             }
             else
             {
+                var user = _context.Users.Single(a => a.Id == CurrentUserId);
                 var order = new Order
                 {
                     CreatorId = CurrentUserId,
+                    Creator = user,
                     Status = OrderStatusCodes.Created,
                     ShareIdentifier = Guid.NewGuid(),
                 };
@@ -290,33 +294,6 @@ namespace AnlabMvc.Controllers
             }
 
             await _orderService.UpdateTestsAndPrices(order);
-            if (!string.IsNullOrWhiteSpace(order.ClientId))
-            {
-                var clientDetails = await _labworksService.GetClientDetails(order.ClientId);
-                if (clientDetails != null)
-                {
-                    var addEmailList = order.AdditionalEmails.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList();
-
-                    if (!string.IsNullOrWhiteSpace(clientDetails.CopyEmail))
-                    {
-                        if (!addEmailList.Contains(clientDetails.CopyEmail))
-                        {
-                            addEmailList.Add(clientDetails.CopyEmail);
-                        }
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(clientDetails.SubEmail))
-                    {
-                        if (!addEmailList.Contains(clientDetails.SubEmail))
-                        {
-                            addEmailList.Add(clientDetails.SubEmail);
-                        }
-                    }
-
-                    order.AdditionalEmails = string.Join(';', addEmailList);
-
-                }
-            }
 
             UpdateAdditionalInfo(order);
             order.Status = OrderStatusCodes.Confirmed;

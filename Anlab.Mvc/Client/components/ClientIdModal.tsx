@@ -7,7 +7,7 @@ interface IClientIdModalProps {
     clientInfo: IClientInfo;
     onClose: () => void;
     onClear: () => void;
-    handleChange: (key: string, value: string) => void;
+    handleChange: (keys: string[], values: string[]) => void;
     disabled: boolean;
     style: string;
 }
@@ -55,7 +55,7 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
                     <Modal.Body>
                         <ClientIdModalInput property="name" value={this.props.clientInfo.name} label="Name" handleChange={this.props.handleChange} />
                         <ClientIdModalInput property="employer" value={this.props.clientInfo.employer} label="Employer" handleChange={this.props.handleChange} />
-                        <ClientIdModalInput property="email" value={this.props.clientInfo.email} label="Email" handleChange={this.props.handleChange} />
+                        <ClientIdModalInput property="email" value={this.props.clientInfo.email} label="Client Email" handleChange={this.props.handleChange} />
                         <ClientIdModalInput property="phoneNumber" value={this.props.clientInfo.phoneNumber} label="Phone Number" handleChange={this.props.handleChange} />
                     </Modal.Body>
                     <Modal.Footer>

@@ -8,12 +8,13 @@ export interface IClientInfo {
     employer: string;
     name: string;
     email: string;
+    copyEmail?: string;
     phoneNumber: string;
 }
 
 interface IClientIdProps {
     //change one property of parent ClientInfo state
-    handleClientInfoChange: (key: string, value: string) => void;
+    handleClientInfoChange: (keys: string[], values: string[]) => void;
     //change if parent thinks ClientInfo is valid
     updateClientInfoValid: (key: string, value: any) => void;
     //clear all 
@@ -26,6 +27,8 @@ interface IClientIdInputState {
     error: string;
     modalValid: boolean;
     fetchedName: string;
+    fetchedEmail: string;
+    fetchedCopyEmail: string;
 }
 
 export class ClientId extends React.Component<IClientIdProps, IClientIdInputState> {
@@ -39,7 +42,15 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
             error: null,
             modalValid: false,
             fetchedName: this.props.clientInfo.name,
+            fetchedEmail: this.props.clientInfo.email,
+            fetchedCopyEmail: this.props.clientInfo.copyEmail,
         };
+    }
+
+    componentDidMount() {
+        //if we are editing an order with new clientInfo, validate modal info
+        if (this.props.clientInfo.clientId == "" && this.props.clientInfo.name != "")
+            this._validateModal();
     }
 
     public render() {
@@ -88,12 +99,12 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
         if (value) {
             value = value.toUpperCase();
         }
-        this.props.handleClientInfoChange("clientId", value);
+        this.props.handleClientInfoChange(["clientId"], [value]);
         this._lookupAndValidateClientId(value);
     }
 
     private _onBlur = () => {
-        this.props.handleClientInfoChange("name", this.state.fetchedName);
+        this.props.handleClientInfoChange(["name", "copyEmail", "email"], [this.state.fetchedName, this.state.fetchedCopyEmail, this.state.fetchedEmail]);
     }
 
     private _onModalClose = () => {
@@ -120,12 +131,12 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     //validate client id, not modal. this is because we are validating the string itself, not the props
     private _lookupAndValidateClientId = (value) => {
         if (!value || !value.trim()) {
-            this.setState({ error: "Either a Client ID or New Client Info is required", fetchedName: "" });
+            this.setState({ error: "Either a Client ID or New Client Info is required", fetchedName: "", fetchedCopyEmail: "", fetchedEmail: "" });
             this.props.updateClientInfoValid("clientInfoValid", false);
             return;
         }
         if (value.length < 4) {
-            this.setState({ error: "Client IDs must be at least 4 characters long", fetchedName: "" });
+            this.setState({ error: "Client IDs must be at least 4 characters long", fetchedName: "", fetchedCopyEmail: "", fetchedEmail: "" });
             this.props.updateClientInfoValid("clientInfoValid", false);
             return;
         }
@@ -138,11 +149,16 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
             })
             .then((response) => response.json())
             .then((response) => {
-                this.setState({ error: "", fetchedName: response.name });
+                this.setState({
+                    error: "",
+                    fetchedName: response.name,
+                    fetchedCopyEmail: response.copyEmail,
+                    fetchedEmail: response.subEmail,
+                });
                 this.props.updateClientInfoValid("clientInfoValid", true);
             })
             .catch((error: Error) => {
-                this.setState({ error: error.message, fetchedName: "" });
+                this.setState({ error: error.message, fetchedName: "", fetchedCopyEmail: "", fetchedEmail: "" });
                 this.props.updateClientInfoValid("clientInfoValid", false);
             });
     }

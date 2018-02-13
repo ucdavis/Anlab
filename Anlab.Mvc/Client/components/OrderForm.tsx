@@ -27,6 +27,8 @@ export interface IOrderFormProps {
   testItems: ITestItem[];
   defaultAccount: string;
   defaultEmail: string;
+  defaultCopyEmail: string;
+  defaultSubEmail: string;
   defaultClientId: string;
   defaultClientIdName: string;
   defaultAcName: string;
@@ -92,13 +94,14 @@ export default class OrderForm extends React.Component<
       isSubmitting: false,
       isValid: false,
       clientInfo: {
-        clientId: this.props.defaultClientId ? this.props.defaultClientId : "",
-        email: this.props.defaultEmail,
+          clientId: this.props.defaultClientId ? this.props.defaultClientId : "",
+        email: this.props.defaultSubEmail ? this.props.defaultSubEmail : this.props.defaultEmail,
         employer: "",
         name: this.props.defaultClientIdName
             ? this.props.defaultClientIdName
             : "",
-        phoneNumber: ""
+        phoneNumber: "",
+        copyEmail: this.props.defaultCopyEmail ? this.props.defaultCopyEmail : "",
       },
       clientInfoValid: (this.props.defaultClientId && this.props.defaultClientIdName) ? true: false,
       payment: { clientType: "uc", account: "" },
@@ -173,11 +176,12 @@ export default class OrderForm extends React.Component<
         };
       }
       initialState.clientInfo = {
-        clientId: orderInfo.ClientInfo.ClientId,
+        clientId: orderInfo.ClientInfo.ClientId ? orderInfo.ClientInfo.ClientId : "",
         email: orderInfo.ClientInfo.Email,
         employer: orderInfo.ClientInfo.Employer,
         name: orderInfo.ClientInfo.Name,
-        phoneNumber: orderInfo.ClientInfo.PhoneNumber
+        phoneNumber: orderInfo.ClientInfo.PhoneNumber,
+        copyEmail: orderInfo.ClientInfo.CopyEmail,
       };
       initialState.clientInfoValid = true;
       initialState.additionalInfoList = orderInfo.AdditionalInfoList;
@@ -333,6 +337,8 @@ export default class OrderForm extends React.Component<
                   <AdditionalEmails
                     addedEmails={additionalEmails}
                     defaultEmail={defaultEmail}
+                    copyEmail={clientInfo.copyEmail}
+                    clientEmail={clientInfo.email}
                     onEmailAdded={this._onEmailAdded}
                     onDeleteEmail={this._onDeleteEmail}
                   />
@@ -589,12 +595,14 @@ export default class OrderForm extends React.Component<
     this.setState({ quantity }, this._validate);
   };
 
-  private _updateClientInfo = (property: string, value: string) => {
+  private _updateClientInfo = (keys: string[], values: string[]) => {
+      let newState = { ...this.state.clientInfo }
+      for (var i = 0; i < keys.length; i++)
+      {
+          newState[keys[i]] = values[i];
+      }
       this.setState({
-          ...this.state, clientInfo: {
-              ...this.state.clientInfo,
-              [property]: value
-          }
+          ...this.state, clientInfo: newState,
       }, this._validate);
   }
 
@@ -605,6 +613,8 @@ export default class OrderForm extends React.Component<
             name: "",
             email: "",
             phoneNumber: "",
+            subEmail: "",
+            copyEmail: "",
         };
       this.setState({
           ...this.state, clientInfo: clearInfo, clientInfoValid: false,

@@ -9,6 +9,10 @@ namespace AnlabMvc.Models.Order
     {
         public string DefaultEmail { get; set; }
 
+        public string DefaultCopyEmail { get; set; }
+
+        public string DefaultSubEmail { get; set; }
+
         public string DefaultClientId { get; set; }
 
         public string DefaultAccount { get; set; }
