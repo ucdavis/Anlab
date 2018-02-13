@@ -66,24 +66,19 @@ namespace Anlab.Jobs.SendMail
 
             // Get all messages that we haven't tried to send yet
             var messagesToSend = dbContext.MailMessages.Where(x => x.Sent == null).ToList();
+            Log.Information($"Emails to Send: {messagesToSend.Count}");
             var counter = 0;
 
             foreach (var message in messagesToSend)
             {
+                var saveSendTo = message.SendTo;
+                if (!emailSettings.UseLiveEmails)
+                {
+                    message.SendTo = "anlab-test@ucdavis.edu";                    
+                }
                 try
                 {
-                    var saveSendTo = message.SendTo;
-                    if (!emailSettings.UseLiveEmails)
-                    {
-                        message.SendTo = "anlab-test@ucdavis.edu";
-                    }
-
                     MailService.SendMessage(message, emailSettings);
-
-                    if (!emailSettings.UseLiveEmails)
-                    {
-                        message.SendTo = saveSendTo;
-                    }
 
                     message.Sent = true;
                     message.SentAt = DateTime.UtcNow;
@@ -95,6 +90,10 @@ namespace Anlab.Jobs.SendMail
                     // TODO: figure out which exceptions to retry
                     message.Sent = false;
                     message.FailureReason = ex.Message;
+                }
+                if (!emailSettings.UseLiveEmails)
+                {
+                    message.SendTo = saveSendTo;
                 }
 
                 dbContext.Update(message);

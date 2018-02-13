@@ -32,7 +32,7 @@ namespace Anlab.Core.Services
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("Anlab", "anlab@ucdavis.edu"));
-            if (mailMessage.SendTo != "anlab-test@ucdavis.edu") //TODO: Remove when we want to start actually emailing people.
+            if (mailMessage.SendTo != "anlab-test@ucdavis.edu") //TODO: Remove when we want to start actually emailing people.            
             {
                 throw new Exception("The testing email was not used.");
             }
@@ -47,8 +47,8 @@ namespace Anlab.Core.Services
                 client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
                 // TODO: use authenticated STMP
-                client.Connect("smtp.mailtrap.io", 2525);
-                // client.Connect ("smtp.ucdavis.edu", 587, false);
+                // client.Connect("smtp.mailtrap.io", 2525);
+                client.Connect ("smtp.ucdavis.edu", 587, false);
 
                 // Note: since we don't have an OAuth2 token, disable
                 // the XOAUTH2 authentication mechanism.
