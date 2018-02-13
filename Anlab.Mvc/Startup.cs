@@ -64,7 +64,8 @@ namespace AnlabMvc
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<ConnectionSettings>(Configuration.GetSection("ConnectionSettings"));
             services.Configure<CyberSourceSettings>(Configuration.GetSection("CyberSourceSettings"));
-            services.Configure<FinancialSettings>(Configuration.GetSection("Financial"));            
+            services.Configure<FinancialSettings>(Configuration.GetSection("Financial"));
+            services.Configure<EmailSettings>(Configuration.GetSection("Email"));
 
             // Add framework services.
             if (_environment.IsDevelopment())

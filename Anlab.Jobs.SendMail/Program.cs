@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using Anlab.Core.Models;
 using Microsoft.Extensions.Options;
 using Anlab.Jobs.Core.Logging;
-using Microsoft.Extensions.Configuration;
+
 
 namespace Anlab.Jobs.SendMail
 {
@@ -52,17 +52,14 @@ namespace Anlab.Jobs.SendMail
             );
 
             services.AddTransient<IMailService, MailService>();
+            
+            services.Configure<EmailSettings>(Configuration.GetSection("Email"));
+
             Provider = services.BuildServiceProvider();
             MailService = Provider.GetService<IMailService>();
 
             var dbContext = Provider.GetService<ApplicationDbContext>();
 
-            var emailSettings = new EmailSettings()
-            {
-                EmailUserName = Configuration.GetSection("Email:EmailUserName").Value,
-                EmailPassword = Configuration.GetSection("Email:EmailPassword").Value,
-                UseLiveEmails = Configuration.GetSection("Email:UseLiveEmails").Value == "1"
-            };
 
             // Get all messages that we haven't tried to send yet
             var messagesToSend = dbContext.MailMessages.Where(x => x.Sent == null).ToList();
@@ -72,13 +69,11 @@ namespace Anlab.Jobs.SendMail
             foreach (var message in messagesToSend)
             {
                 var saveSendTo = message.SendTo;
-                if (!emailSettings.UseLiveEmails)
-                {
-                    message.SendTo = "anlab-test@ucdavis.edu";                    
-                }
+                message.SendTo = "anlab-test@ucdavis.edu";
+
                 try
                 {
-                    MailService.SendMessage(message, emailSettings);
+                    MailService.SendMessage(message);
 
                     message.Sent = true;
                     message.SentAt = DateTime.UtcNow;
@@ -91,14 +86,14 @@ namespace Anlab.Jobs.SendMail
                     message.Sent = false;
                     message.FailureReason = ex.Message;
                 }
-                if (!emailSettings.UseLiveEmails)
-                {
-                    message.SendTo = saveSendTo;
-                }
+
+                message.SendTo = saveSendTo;
+
 
                 dbContext.Update(message);
                 dbContext.SaveChanges();
             }
+
             Log.Information($"Emails Sent: {counter}");
 
             Log.Information("Job completed");
