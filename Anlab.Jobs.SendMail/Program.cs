@@ -1,8 +1,5 @@
-using System;
-using System.IO;
-using System.Linq;
 using Anlab.Core.Data;
-using Anlab.Core.Domain;
+using Anlab.Core.Models;
 using Anlab.Core.Services;
 using Anlab.Jobs.Core.Logging;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +9,6 @@ using Serilog;
 using System;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using Anlab.Core.Models;
-using Microsoft.Extensions.Options;
-using Anlab.Jobs.Core.Logging;
 
 
 namespace Anlab.Jobs.SendMail
@@ -69,7 +62,7 @@ namespace Anlab.Jobs.SendMail
             foreach (var message in messagesToSend)
             {
                 var saveSendTo = message.SendTo;
-                message.SendTo = "anlab-test@ucdavis.edu";
+                message.SendTo = "anlab-test@ucdavis.edu;jsylvestre@ucdavis.edu";
 
                 try
                 {

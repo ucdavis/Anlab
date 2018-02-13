@@ -1,12 +1,12 @@
 using System;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
-using Anlab.Core.Domain;
 using Anlab.Core.Models;
-using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
-using MimeKit;
 using Serilog;
+using MailMessage = Anlab.Core.Domain.MailMessage;
 
 namespace Anlab.Core.Services
 {
@@ -36,36 +36,36 @@ namespace Anlab.Core.Services
         {
             Log.Information($"Email Host: {_emailSettings.Host}");
 
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("Anlab", "anlab@ucdavis.edu"));
-            if (mailMessage.SendTo != "anlab-test@ucdavis.edu") //TODO: Remove when we want to start actually emailing people.            
+            var message = new System.Net.Mail.MailMessage {From = new MailAddress("anlab@ucdavis.edu", "Anlab")};
+            if (mailMessage.SendTo != "anlab-test@ucdavis.edu;jsylvestre@ucdavis.edu") //TODO: Remove when we want to start actually emailing people.            
             {
                 throw new Exception("The testing email was not used.");
             }
 
-            message.To.Add(new MailboxAddress(mailMessage.SendTo));
-            message.Subject = mailMessage.Subject;
-            message.Body = new TextPart("html") {Text = mailMessage.Body};
-
-            using (var client = new SmtpClient())
+            var sendToEmails = mailMessage.SendTo.Split(';');
+            foreach (var sendToEmail in sendToEmails)
             {
-                // For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
-                client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+                message.To.Add(sendToEmail);
+            }
 
-                // TODO: use authenticated STMP
-                // client.Connect("smtp.mailtrap.io", 2525);
-                client.Connect (_emailSettings.Host, _emailSettings.Port, false); //If useSsl is true, I get "The handshake failed due to an unexpected packet format"
+            message.Subject = mailMessage.Subject;
+            message.IsBodyHtml = false;
+            message.Body = mailMessage.Body;
+            var mimeType = new System.Net.Mime.ContentType("text/html");
+            var alternate = AlternateView.CreateAlternateViewFromString(mailMessage.Body, mimeType);
+            message.AlternateViews.Add(alternate);
 
-                // Note: since we don't have an OAuth2 token, disable
-                // the XOAUTH2 authentication mechanism.
-                client.AuthenticationMechanisms.Remove("XOAUTH2");
-
-                // Note: only needed if the SMTP server requires authentication
-                client.Authenticate(_emailSettings.UserName, _emailSettings.Password);
+            using (var client = new SmtpClient(_emailSettings.Host))
+            {
+                client.UseDefaultCredentials = false;
+                client.Credentials = new NetworkCredential(_emailSettings.UserName, _emailSettings.Password);
+                client.Port = _emailSettings.Port;
+                client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                client.EnableSsl = true;
 
                 client.Send(message);
-                client.Disconnect(true);
             }
+
         }
     }
 }
