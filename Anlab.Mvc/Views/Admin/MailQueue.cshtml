@@ -11,6 +11,7 @@
 <table id="table" cellpadding="0" class="row-border stripe order-column dt-responsive">
     <thead>
         <tr>
+            <th></th>
             <th>Status:</th>
             <th>Id</th>
             <th>To:</th>
@@ -23,6 +24,7 @@
     @foreach (var message in Model)
     {
         <tr>
+            <td></td>
             <td>
                 @if (message.Sent.HasValue)
                 {
@@ -45,15 +47,7 @@
             </td>
             <td>@message.Order.Id</td>
             <td>@message.SendTo</td>
-            <td>@message.Subject
-                    @*<a data-toggle="collapse" href="#@message.Id" aria-expanded="true" aria-controls="@message.Id">Expand Body </a> |
-                    <a href="@Url.Action("ViewMessage",new { id = message.Id })" target="_blank">Open in a new window</a>
-                <div id="@message.Id" class="panel-collapse collapse">
-
-                    <a data-toggle="collapse" href="#@message.Id" aria-expanded="true" aria-controls="@message.Id">Collapse Body </a> |
-                    <a href="@Url.Action("ViewMessage",new { id = message.Id })" target="_blank">Open in a new window</a>
-                </div>*@
-            </td>
+            <td>@message.Subject</td>
             <td>
                 Created At: @message.CreatedAt.ToPacificTime().ToString("g")<br />
                 @if (message.Sent.HasValue)
@@ -99,13 +93,9 @@
         }
         table {
             width: 100% !important;
-            height: auto;
         }
         table tbody{
             vertical-align: top;
-        }
-        table tfoot{
-            margin-bottom: 16px; 
         }
         i.fa-check-circle{
             color: #289616;
@@ -130,10 +120,10 @@
     <script type="text/javascript">
         $(function() {
             var table = $("#table").DataTable({
-                "order": [[0, "desc"],[4,"desc"]],
+                "order": [[1, "desc"],[5,"desc"]],
                 "columnDefs": [
                     {
-                        "type": "ordering", "targets": [0,1,2,3,4]
+                        "type": "ordering", "targets": [1,2,3,4,5]
                     },
                 ],
                 responsive: true,
@@ -141,13 +131,26 @@
 
             $("#collapsebutton").hide();
             $("#expandbutton").click(function () {
-                table.rows(':not(.parent)').nodes().to$().find('td:first-child').trigger('click');
+                console.log("expanding all");
+                table.rows({ page: "current" }).every(function () {
+                    // If row has details collapsed
+                    if (!this.child.isShown()) {
+                        // Expand row details
+                        table.settings()[0].responsive._detailsDisplay(this, false);
+                    }
+                });
                 $("#expandbutton").hide();
                 $("#collapsebutton").show();
             });
 
             $("#collapsebutton").click(function () {
-                table.rows('.parent').nodes().to$().find('td:first-child').trigger('click');
+                table.rows({page: "current"}).every(function () {
+                    // If row has details expanded
+                    if (this.child.isShown()) {
+                        // Collapse row details
+                        table.settings()[0].responsive._detailsDisplay(this, false);
+                    }
+                });
                 $("#expandbutton").show();
                 $("#collapsebutton").hide();
             });
