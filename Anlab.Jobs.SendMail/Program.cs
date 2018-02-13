@@ -62,7 +62,7 @@ namespace Anlab.Jobs.SendMail
             foreach (var message in messagesToSend)
             {
                 var saveSendTo = message.SendTo;
-                message.SendTo = "anlab-test@ucdavis.edu;jsylvestre@ucdavis.edu";
+                message.SendTo = "anlab-test@ucdavis.edu";
 
                 try
                 {
