@@ -8,7 +8,7 @@
 <button id="expandbutton" class="btn-hollow"><i class="glyphicon glyphicon-plus"></i> Expand All</button>
 
 <div style="margin-top:16px;">
-<table id="table" cellpadding="0" class="row-border stripe order-column">
+<table id="table" cellpadding="0" class="row-border stripe order-column dt-responsive">
     <thead>
         <tr>
             <th>Status:</th>
@@ -16,6 +16,7 @@
             <th>To:</th>
             <th>Subject:</th>
             <th>Sent At:</th>
+            <th>Message Body:</th>
         </tr>
     </thead>
     <tbody>
@@ -44,16 +45,14 @@
             </td>
             <td>@message.Order.Id</td>
             <td>@message.SendTo</td>
-            <td data-search="@message.Subject">@message.Subject<br />
-                    <a data-toggle="collapse" href="#@message.Id" aria-expanded="true" aria-controls="@message.Id">Expand Body </a> |
+            <td>@message.Subject
+                    @*<a data-toggle="collapse" href="#@message.Id" aria-expanded="true" aria-controls="@message.Id">Expand Body </a> |
                     <a href="@Url.Action("ViewMessage",new { id = message.Id })" target="_blank">Open in a new window</a>
                 <div id="@message.Id" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        @Html.Raw(message.Body)
-                    </div>
+
                     <a data-toggle="collapse" href="#@message.Id" aria-expanded="true" aria-controls="@message.Id">Collapse Body </a> |
                     <a href="@Url.Action("ViewMessage",new { id = message.Id })" target="_blank">Open in a new window</a>
-                </div>
+                </div>*@
             </td>
             <td>
                 Created At: @message.CreatedAt.ToPacificTime().ToString("g")<br />
@@ -76,6 +75,12 @@
                     <br />
                 }
             </td>
+            <td>
+                <a href="@Url.Action("ViewMessage",new { id = message.Id })" target="_blank">Open in a new window</a>
+                <div class="panel-body">
+                    @Html.Raw(message.Body)
+                </div>
+            </td>
 
         </tr>
     }
@@ -87,15 +92,20 @@
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.1/css/responsive.dataTables.min.css" />
     <style>
         div.panel-body tr tr{
             background-color: transparent;
         }
+        table {
+            width: 100% !important;
+            height: auto;
+        }
         table tbody{
             vertical-align: top;
         }
-        div.btn {
-            margin: 10px 0px;
+        table tfoot{
+            margin-bottom: 16px; 
         }
         i.fa-check-circle{
             color: #289616;
@@ -106,35 +116,38 @@
         i.fa-refresh{
             color: #2c8ba5;
         }
+        footer{
+            position: relative !important;
+        }
     </style>
 
 }
 @section Scripts
 {
     @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.1/js/dataTables.responsive.min.js"></script>
+
     <script type="text/javascript">
         $(function() {
-            $("#table").dataTable({
+            var table = $("#table").DataTable({
                 "order": [[0, "desc"],[4,"desc"]],
                 "columnDefs": [
                     {
                         "type": "ordering", "targets": [0,1,2,3,4]
                     },
-                    {
-                        "width": "55%", "targets":[3]
-                    }
-                ]
+                ],
+                responsive: true,
             });
 
             $("#collapsebutton").hide();
             $("#expandbutton").click(function () {
-                $('div.panel-collapse').collapse("show");
+                table.rows(':not(.parent)').nodes().to$().find('td:first-child').trigger('click');
                 $("#expandbutton").hide();
                 $("#collapsebutton").show();
             });
 
             $("#collapsebutton").click(function () {
-                $('div.panel-collapse').collapse("hide");
+                table.rows('.parent').nodes().to$().find('td:first-child').trigger('click');
                 $("#expandbutton").show();
                 $("#collapsebutton").hide();
             });
