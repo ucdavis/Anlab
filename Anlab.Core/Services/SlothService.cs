@@ -17,9 +17,9 @@ namespace Anlab.Core.Services
     public interface ISlothService
     {
         Task<SlothResponseModel> MoveMoney(Order order);
-        Task ProcessCreditCards(FinancialSettings financialSettings);
+        Task ProcessCreditCards();
 
-        Task MoneyHasMoved(FinancialSettings financialSettings);
+        Task MoneyHasMoved();
     }
 
     public class SlothService : ISlothService
@@ -93,7 +93,7 @@ namespace Anlab.Core.Services
             return new SlothResponseModel { Success = false };
         }
 
-        public async Task MoneyHasMoved(FinancialSettings financialSettings)
+        public async Task MoneyHasMoved()
         {
             Log.Information("Beginning UCD money has moved");
             var orders = _dbContext.Orders.Where(a =>
@@ -105,8 +105,8 @@ namespace Anlab.Core.Services
             }
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri($"{financialSettings.SlothApiUrl}Transactions/");
-                client.DefaultRequestHeaders.Add("X-Auth-Token", financialSettings.SlothApiKey);
+                client.BaseAddress = new Uri($"{_appSettings.SlothApiUrl}Transactions/");
+                client.DefaultRequestHeaders.Add("X-Auth-Token", _appSettings.SlothApiKey);
 
                 Log.Information($"Processing {orders.Count} orders");
                 var updatedCount = 0;
@@ -153,7 +153,7 @@ namespace Anlab.Core.Services
             return;
         }
 
-        public async Task ProcessCreditCards(FinancialSettings financialSettings) //Have to pass here, can't get DI working for the job
+        public async Task ProcessCreditCards()
         {
             Log.Information("Staring Credit Card process");
             var orders = _dbContext.Orders.Include(i => i.ApprovedPayment).Where(a =>
@@ -166,8 +166,8 @@ namespace Anlab.Core.Services
 
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri($"{financialSettings.SlothApiUrl}Transactions/processor/");
-                client.DefaultRequestHeaders.Add("X-Auth-Token", financialSettings.SlothApiKey);
+                client.BaseAddress = new Uri($"{_appSettings.SlothApiUrl}Transactions/processor/");
+                client.DefaultRequestHeaders.Add("X-Auth-Token", _appSettings.SlothApiKey);
 
                 Log.Information($"Processing Credit Card {orders.Count} orders");
                 var updatedCount = 0;
