@@ -32,6 +32,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
         this.state = {
             error: "",
         };
+        this._lookupAccount();
     }
 
     public shouldComponentUpdate(nextProps: IPaymentSelectionProps, nextState: IPaymentSelectionState) {
