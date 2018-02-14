@@ -12,23 +12,10 @@
             <tr>
                 <td><label>Minimum Date:</label></td>
                 <td><label>Maximum Date:</label></td>
-                <td><label>Status:</label></td>
             </tr>
             <tr>
                 <td><input name="min" id="min" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
                 <td><input name="max" id="max" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
-                <td>
-                    <select name="status" id="status">
-                        <option value="All">Show All</option>
-                        @foreach (var status in OrderStatusCodes.All)
-                        {
-                            if (status != "Created")
-                            {
-                                <option value="@status">@status</option>
-                            }
-                        }
-                    </select>
-                </td>
             </tr>
         </tbody>
     </table>
@@ -38,63 +25,25 @@
             <tr>
                 <th>Work Req #</th>
                 <th>Id</th>
-                <th>Status</th>
                 <th>ClientId</th>
-                <th>User</th>
+                <th>Payment Type</th>
+                <th>Total</th>
                 <th>Created</th>
-                <th>Updated</th>
-                <th>Paid</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
 
             @foreach (var order in Model)
             {
+                var orderDetails = order.GetOrderDetails();
                 <tr>
-                    <td>
-                        @if (order.Status == OrderStatusCodes.Confirmed)
-                {
-                            <a asp-action="AddRequestNumber" asp-route-id="@order.Id">N/A</a>
-                        }
-                        else if (order.Status == OrderStatusCodes.Complete || order.Status == OrderStatusCodes.Finalized)
-                        {
-                            <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier">@order.RequestNum</a>
-                        }
-                        else if (order.Status == OrderStatusCodes.Received)
-                        {
-                            <a asp-action="Finalize" asp-route-id="@order.Id">@order.RequestNum</a>
-                        }
-                        else
-                        {
-                            <a asp-action="Details" asp-route-id="@order.Id">@order.RequestNum</a>
-
-                        }
-                    </td>
+                    <td>@order.RequestNum</td>
                     <td>@order.Id</td>
-                    <td>@order.Status</td>
                     <td>@order.ClientId</td>
-                    <td>@order.Creator.Email</td>
+                    <td>@order.PaymentType</td>
+                    <td>@orderDetails.GrandTotal.ToString("C")</td>
                     <td>@order.Created.ToPacificTime().ToString("g")</td>
-                    <td>@order.Updated.ToPacificTime().ToString("g")</td>
-                    <td style="text-align: center">
-                        @if (order.Paid)
-                {
-                            <i class="fa fa-check" aria-hidden="true"></i>
-
-                        }
-                    </td>
-                    <td>
-                        @if (order.Status == OrderStatusCodes.Confirmed)
-                {
-                            <a asp-action="AddRequestNumber" asp-route-id="@order.Id"><i class="fa fa-check"></i> Receive</a>
-                        }
-                        @if (order.Status == OrderStatusCodes.Received)
-                {
-                            <a asp-action="Finalize" asp-route-id="@order.Id"><i class="fa fa-upload" style="color: red"></i> Finalize</a>
-                        }
-
-                    </td>
+                    
                 </tr>
             }
         </tbody>
@@ -109,7 +58,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" />
 
     <style>
-        #max, #min, #status {
+        #max, #min {
             margin: 0 5px 5px 0;
             height: 30px;
         }
@@ -125,10 +74,10 @@
     <script type="text/javascript">
         $(function () {
             var table = $("#table").DataTable({
-                "sorting": [[8, "desc"], [6, "desc"]],
+                "sorting": [[5, "desc"]],
                 "columnDefs": [
                     {
-                        "type": "date", "targets": [5, 6]
+                        "type": "date", "targets": 5
                     }
                 ],
                 "stateSave": true,
@@ -140,7 +89,7 @@
             $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
 
             //Event listener to the two range filtering inputs to redraw on input
-            $('#min, #max, #status').change(function () {
+            $('#min, #max').change(function () {
                 table.draw();
             });
         });
@@ -152,15 +101,11 @@
                 var startDate = new Date(data[5]);
                 startDate.setHours(0, 0, 0, 0);
 
-                var status = data[2];
-                var statusFilter = $('#status').val();
+                if (min == null && max == null) { return true; }
+                if (min == null && startDate <= max) { return true; }
+                if (max == null && startDate >= min) { return true; }
+                if (startDate <= max && startDate >= min) { return true; }
 
-                if (statusFilter == "All" || status == statusFilter) {
-                    if (min == null && max == null) { return true; }
-                    if (min == null && startDate <= max) { return true; }
-                    if (max == null && startDate >= min) { return true; }
-                    if (startDate <= max && startDate >= min) { return true; }
-                }
                 return false;
             }
         );
