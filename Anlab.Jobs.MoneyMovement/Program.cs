@@ -46,21 +46,18 @@ namespace Anlab.Jobs.MoneyMovement
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
+            services.Configure<FinancialSettings>(Configuration.GetSection("Financial"));
+
             services.AddTransient<ISlothService, SlothService>();           
             Provider = services.BuildServiceProvider();
             
             SlothService = Provider.GetService<ISlothService>();
 
             Log.Information("Job Starting");
-            var financialSettings = new FinancialSettings
-            {
-                SlothApiKey = Configuration.GetSection("Financial:SlothApiKey").Value,
-                SlothApiUrl = Configuration.GetSection("Financial:SlothApiUrl").Value
-            };
-            
+          
 
-            SlothService.ProcessCreditCards(financialSettings).GetAwaiter().GetResult();
-            SlothService.MoneyHasMoved(financialSettings).GetAwaiter().GetResult();
+            SlothService.ProcessCreditCards().GetAwaiter().GetResult();
+            SlothService.MoneyHasMoved().GetAwaiter().GetResult();
 
             Log.Information("Job Done");
         }
