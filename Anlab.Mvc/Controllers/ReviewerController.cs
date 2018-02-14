@@ -23,7 +23,7 @@ namespace AnlabMvc.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var model = await _context.Orders.Include(i=> i.Creator).Where(a => a.Status == OrderStatusCodes.Finalized).ToArrayAsync();
+            var model = await _context.Orders.Where(a => a.Status == OrderStatusCodes.Finalized).ToArrayAsync();
 
             return View(model);
         }
