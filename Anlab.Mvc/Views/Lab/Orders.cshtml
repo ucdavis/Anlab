@@ -13,6 +13,7 @@
             <td><label>Minimum Date:</label></td>
             <td><label>Maximum Date:</label></td>
             <td><label>Status:</label></td>
+            <td></td>
         </tr>
         <tr>
             <td><input name="min" id="min" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
@@ -29,6 +30,7 @@
                     }
                 </select>
             </td>
+            <td><span><input id="hideComplete" type="checkbox" checked/> Hide Complete</span></td>
         </tr>
     </tbody>
 </table>
@@ -37,9 +39,9 @@
     <thead>
     <tr>
         <th>Work Req #</th>
-        <th>Id</th>
+        <th>Order ID</th>
         <th>Status</th>
-        <th>ClientId</th>
+        <th>Client ID</th>
         <th>User</th>
         <th>Created</th>
         <th>Updated</th>
@@ -140,7 +142,7 @@
             $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
 
            //Event listener to the two range filtering inputs to redraw on input
-            $('#min, #max, #status').change(function () {
+            $('#min, #max, #status, #hideComplete').change(function () {
                 table.draw();
             });
         });
@@ -154,6 +156,9 @@
 
                 var status = data[2];
                 var statusFilter = $('#status').val();
+                var hideComplete = $('#hideComplete').is(":checked");
+
+                if (hideComplete && status == "Complete" && statusFilter != "Complete") { return false; }
 
                 if (statusFilter == "All" || status == statusFilter) {
                     if (min == null && max == null) { return true; }
