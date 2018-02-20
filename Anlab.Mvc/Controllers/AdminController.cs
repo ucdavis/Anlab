@@ -49,10 +49,10 @@ namespace AnlabMvc.Controllers
             return View(usersInRoles);
         }
 
-        public async Task<IActionResult> ListNonAdminUsers()
+        public async Task<IActionResult> ListClients()
         {
-            // TODO: handle if there are other non-admin roles
-            var users = await _userManager.GetUsersInRoleAsync(RoleCodes.User);
+            // TODO: filter out admin and lab users
+            var users = await _dbContext.Users.AsNoTracking().ToListAsync();
 
             return View(users);
         }

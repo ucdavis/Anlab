@@ -1,4 +1,4 @@
-@using AnlabMvc.Helpers
+﻿@using AnlabMvc.Helpers
 @using AnlabMvc.Models.Roles
 <!DOCTYPE html>
 <html>
@@ -76,7 +76,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a asp-controller="Lab" asp-action="Orders">Orders</a></li>
-                            <li><a asp-controller="Admin" asp-action="ListNonAdminUsers">Clients</a></li>
+                            <li><a asp-controller="Admin" asp-action="ListClients">Clients</a></li>
                             @if (User.IsInRole(RoleCodes.Admin))
                             {
                                 <li><a asp-controller="Admin" asp-action="Index">Maintain Admin Users</a></li>
