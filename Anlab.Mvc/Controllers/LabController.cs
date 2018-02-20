@@ -21,7 +21,7 @@ using AnlabMvc.Helpers;
 
 namespace AnlabMvc.Controllers
 {
-    [Authorize(Roles = RoleCodes.Admin + "," + RoleCodes.User)]
+    [Authorize(Roles = RoleCodes.Admin + "," + RoleCodes.LabUser)]
     public class LabController : ApplicationController
     {
         private readonly ApplicationDbContext _dbContext;

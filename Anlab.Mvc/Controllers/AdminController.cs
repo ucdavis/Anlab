@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AnlabMvc.Controllers
 {
-    [Authorize(Roles = RoleCodes.Admin + "," + RoleCodes.User)]
+    [Authorize(Roles = RoleCodes.Admin + "," + RoleCodes.LabUser)]
     public class AdminController : ApplicationController
     {
         private readonly ApplicationDbContext _dbContext;
@@ -42,7 +42,7 @@ namespace AnlabMvc.Controllers
             {
 
                 userRole.IsAdmin = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.Admin);
-                userRole.IsUser = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.User);
+                userRole.IsUser = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.LabUser);
                 userRole.IsReports = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.Reports);
             }
 
