@@ -11,7 +11,7 @@ using AnlabMvc.Models.Roles;
 
 namespace AnlabMvc.Controllers
 {
-    [Authorize(Roles = RoleCodes.Admin)]
+    [Authorize(Roles = RoleCodes.Admin + "," + RoleCodes.Reports)]
     public class ReviewerController : ApplicationController
     {
         private readonly ApplicationDbContext _context;
