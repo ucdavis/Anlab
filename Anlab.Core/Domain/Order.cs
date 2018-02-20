@@ -32,6 +32,9 @@ namespace Anlab.Core.Domain
 
         [StringLength(16)]
         public string ClientId { get; set; }
+
+        [StringLength(512)]
+        public string ClientName { get; set; }
         
         public string AdditionalEmails { get; set; }
         
