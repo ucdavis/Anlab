@@ -82,7 +82,7 @@ namespace AnlabMvc.Controllers
 
             return View(model);
         }
-
+        [Obsolete]
         public IActionResult ListUsersOrders(string id)
         {
             var orders = _dbContext.Orders.Where(a => a.CreatorId == id && a.Status != OrderStatusCodes.Created).ToArray();
