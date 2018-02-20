@@ -124,10 +124,10 @@ namespace AnlabMvc.Controllers
         }
 
         [Authorize(Roles =  RoleCodes.Admin)]
-        public async Task<IActionResult> CreateRole() //TODO: Remove after role created
+        public async Task<IActionResult> CreateRole(string role) //TODO: Remove after role created
         {
-            await _roleManager.CreateAsync(new IdentityRole(RoleCodes.Reports));
-            return Content("Added Reports Role");
+            await _roleManager.CreateAsync(new IdentityRole(role));
+            return Content($"Added {role} Role");
         }
 
         public async Task<IActionResult> MailQueue(int? id = null)
