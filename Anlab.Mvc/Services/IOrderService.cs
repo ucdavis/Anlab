@@ -200,6 +200,7 @@ namespace AnlabMvc.Services
         {
             orderToUpdate.Project = model.Project;
             orderToUpdate.ClientId = model.ClientInfo.ClientId;
+            orderToUpdate.ClientName = model.ClientInfo.Name;
 
             orderToUpdate.JsonDetails = JsonConvert.SerializeObject(model);
             var orderDetails = orderToUpdate.GetOrderDetails();
