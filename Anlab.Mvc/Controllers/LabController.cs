@@ -57,7 +57,8 @@ namespace AnlabMvc.Controllers
                     RequestNum = c.RequestNum,
                     Status = c.Status,
                     ShareIdentifier = c.ShareIdentifier,
-                    Paid = c.Paid
+                    Paid = c.Paid,
+                    ClientName = c.ClientName
                 })
                 .Take(_maxShownOrders)
                 .ToList();
@@ -147,6 +148,7 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Orders");
             }
             order.ClientId = result.ClientId;
+            order.ClientName = "[Not Found]"; //Updated below if we find it
             var orderDetails = order.GetOrderDetails();
 
             if (!string.IsNullOrWhiteSpace(order.ClientId))
@@ -161,7 +163,7 @@ namespace AnlabMvc.Controllers
                     orderDetails.ClientInfo.Email = clientInfo.SubEmail;
                     orderDetails.ClientInfo.CopyEmail = clientInfo.CopyEmail;
                     orderDetails.ClientInfo.Name = clientInfo.Name;
-
+                    order.ClientName = clientInfo.Name;
                 }
 
                 order.AdditionalEmails = AdditionalEmailsHelper.AddClientInfoEmails(order, orderDetails.ClientInfo);
