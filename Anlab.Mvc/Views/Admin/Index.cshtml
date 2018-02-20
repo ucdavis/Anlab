@@ -20,19 +20,6 @@
     {
         <tr>
             <td>
-                @if (user.IsUser)
-                {
-                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role=@RoleCodes.LabUser asp-route-add="false" asp-antiforgery="true">
-                        <button class="btn btn-red" type="submit"><i class="fa fa-trash"></i> Lab User</button>
-                    </form>
-
-                }
-                else
-                {
-                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role=@RoleCodes.LabUser asp-route-add="true" asp-antiforgery="true">
-                        <button class="btn btn-default" type="submit"><i class="fa fa-plus"></i> Lab User</button>
-                    </form>
-                }
                 @if (user.IsAdmin)
                 {
                     <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role=@RoleCodes.Admin asp-route-add="false" asp-antiforgery="true">
@@ -43,6 +30,19 @@
                 {
                     <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role=@RoleCodes.Admin asp-route-add="true" asp-antiforgery="true">
                         <button class="btn btn-default" type="submit"><i class="fa fa-plus"></i> Admin</button>
+                    </form>
+                }
+                @if (user.IsLabUser)
+                {
+                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role=@RoleCodes.LabUser asp-route-add="false" asp-antiforgery="true">
+                        <button class="btn btn-red" type="submit"><i class="fa fa-trash"></i> Lab User</button>
+                    </form>
+
+                }
+                else
+                {
+                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role=@RoleCodes.LabUser asp-route-add="true" asp-antiforgery="true">
+                        <button class="btn btn-default" type="submit"><i class="fa fa-plus"></i> Lab User</button>
                     </form>
                 }
                 @if (user.IsReports)
@@ -63,7 +63,7 @@
             <td>@user.User.Name</td>
             <td>@user.User.Email</td>
             <td>@user.IsAdmin</td>
-            <td>@user.IsUser</td>
+            <td>@user.IsLabUser</td>
         </tr>
     }
     </tbody>

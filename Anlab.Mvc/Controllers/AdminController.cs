@@ -42,7 +42,7 @@ namespace AnlabMvc.Controllers
             {
 
                 userRole.IsAdmin = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.Admin);
-                userRole.IsUser = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.LabUser);
+                userRole.IsLabUser = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.LabUser);
                 userRole.IsReports = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.Reports);
             }
 
