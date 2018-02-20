@@ -13,6 +13,7 @@
             <th>Email</th>
             <th>Is Admin</th>
             <th>Is Lab User</th>
+            <th>Is Reports</th>
         </tr>
     </thead>
     <tbody>
@@ -64,6 +65,7 @@
             <td>@user.User.Email</td>
             <td>@user.IsAdmin</td>
             <td>@user.IsLabUser</td>
+            <td>@user.IsReports</td>
         </tr>
     }
     </tbody>
@@ -80,7 +82,7 @@
     <script type="text/javascript">
         $(function () {
             $("#table").dataTable({
-                "sorting": [[3, "desc"],[4,"desc"],[2,"desc"]]
+                "sorting": [[3, "desc"],[4,"desc"],[5,"desc"],[2,"asc"]]
             });
         });
     </script>
