@@ -148,7 +148,7 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Orders");
             }
             order.ClientId = result.ClientId;
-            order.ClientName = "ERROR Client Name not found."; //Updated below if we find it
+            order.ClientName = "[Not Found]"; //Updated below if we find it
             var orderDetails = order.GetOrderDetails();
 
             if (!string.IsNullOrWhiteSpace(order.ClientId))
