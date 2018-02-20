@@ -135,6 +135,10 @@ namespace Test.TestsDatabase
             {
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)16)]"
             }));
+            expectedFields.Add(new NameAndType("ClientName", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)512)]"
+            }));
             expectedFields.Add(new NameAndType("Created", "System.DateTime", new List<string>()));
             expectedFields.Add(new NameAndType("Creator", "Anlab.Core.Domain.User", new List<string>
             {
