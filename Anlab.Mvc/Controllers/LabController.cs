@@ -21,7 +21,7 @@ using AnlabMvc.Helpers;
 
 namespace AnlabMvc.Controllers
 {
-    [Authorize(Roles = RoleCodes.Admin + "," + RoleCodes.User)]
+    [Authorize(Roles = RoleCodes.Admin + "," + RoleCodes.LabUser)]
     public class LabController : ApplicationController
     {
         private readonly ApplicationDbContext _dbContext;
@@ -83,7 +83,7 @@ namespace AnlabMvc.Controllers
 
             return View(model);
         }
-
+        [Obsolete]
         public IActionResult ListUsersOrders(string id)
         {
             var orders = _dbContext.Orders.Where(a => a.CreatorId == id && a.Status != OrderStatusCodes.Created).ToArray();

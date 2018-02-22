@@ -1,0 +1,48 @@
+@model IList<User>
+
+@{
+    ViewData["Title"] = "List Non Admin Users";
+}
+<div class="col">
+<table id="table">
+    <thead>
+    <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Client Id</th>
+        <th>Phone</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>
+                <a class="btn btn-default" asp-action="EditUser" asp-route-Id="@user.Id" >Edit</a>
+            </td>
+            <td>@user.Name</td>
+            <td>@user.Email</td>
+            <td>@user.ClientId</td>
+            <td>@user.Phone</td>
+        </tr>
+    }
+    </tbody>
+</table>
+</div>
+@section AdditionalStyles
+{
+    @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+}
+
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+    <script type="text/javascript">
+        $(function () {
+            $("#table").dataTable({
+                "sorting": [[2, "desc"]]
+            });
+        });
+    </script>
+}

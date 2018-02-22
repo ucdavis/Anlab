@@ -50,7 +50,7 @@ namespace AnlabMvc.Services
 
             // create roles
             await _roleManager.CreateAsync(new IdentityRole(RoleCodes.Admin));
-            await _roleManager.CreateAsync(new IdentityRole(RoleCodes.User));
+            await _roleManager.CreateAsync(new IdentityRole(RoleCodes.LabUser));
             await _roleManager.CreateAsync(new IdentityRole(RoleCodes.Reports));
 
             var scottUser = new User
@@ -88,7 +88,7 @@ namespace AnlabMvc.Services
             await _userManager.CreateAsync(jasonUser);
             await _userManager.AddLoginAsync(jasonUser, jasonLoginInfo);
             await _userManager.AddToRoleAsync(jasonUser, RoleCodes.Admin);
-            await _userManager.AddToRoleAsync(jasonUser, RoleCodes.User);
+            await _userManager.AddToRoleAsync(jasonUser, RoleCodes.LabUser);
 
             var lauraUser = new User
             {
@@ -107,7 +107,7 @@ namespace AnlabMvc.Services
             await _userManager.CreateAsync(lauraUser);
             await _userManager.AddLoginAsync(lauraUser, lauraLoginInfo);
             await _userManager.AddToRoleAsync(lauraUser, RoleCodes.Admin);
-            await _userManager.AddToRoleAsync(lauraUser, RoleCodes.User);
+            await _userManager.AddToRoleAsync(lauraUser, RoleCodes.LabUser);
 
             #region Cal's login
             var calUser = new User

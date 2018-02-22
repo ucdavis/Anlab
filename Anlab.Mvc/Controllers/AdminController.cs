@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AnlabMvc.Controllers
 {
-    [Authorize(Roles = RoleCodes.Admin + "," + RoleCodes.User)]
+    [Authorize(Roles = RoleCodes.Admin + "," + RoleCodes.LabUser)]
     public class AdminController : ApplicationController
     {
         private readonly ApplicationDbContext _dbContext;
@@ -42,17 +42,17 @@ namespace AnlabMvc.Controllers
             {
 
                 userRole.IsAdmin = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.Admin);
-                userRole.IsUser = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.User);
+                userRole.IsLabUser = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.LabUser);
                 userRole.IsReports = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.Reports);
             }
 
             return View(usersInRoles);
         }
 
-        public async Task<IActionResult> ListNonAdminUsers()
+        public async Task<IActionResult> ListClients()
         {
-            // TODO: handle if there are other non-admin roles
-            var users = await _userManager.GetUsersInRoleAsync(RoleCodes.User);
+            // TODO: filter out admin and lab users
+            var users = await _dbContext.Users.AsNoTracking().ToListAsync();
 
             return View(users);
         }
@@ -124,10 +124,10 @@ namespace AnlabMvc.Controllers
         }
 
         [Authorize(Roles =  RoleCodes.Admin)]
-        public async Task<IActionResult> CreateRole() //TODO: Remove after role created
+        public async Task<IActionResult> CreateRole(string role) //TODO: Remove after role created
         {
-            await _roleManager.CreateAsync(new IdentityRole(RoleCodes.Reports));
-            return Content("Added Reports Role");
+            await _roleManager.CreateAsync(new IdentityRole(role));
+            return Content($"Added {role} Role");
         }
 
         public async Task<IActionResult> MailQueue(int? id = null)
