@@ -30,7 +30,9 @@
                     }
                 </select>
             </td>
-            <td><span><input id="hideComplete" type="checkbox" checked/> Hide Complete</span></td>
+            <td>
+                <span><input id="hideComplete" type="checkbox" value="@ViewBag.HideComplete.ToString().ToLower()"/> Hide Complete</span>
+            </td>
         </tr>
     </tbody>
 </table>
@@ -147,6 +149,16 @@
             });
         });
 
+        $(function () {
+            $("#hideComplete")[0].checked = @ViewBag.HideComplete.ToString().ToLower();
+            $("#hideComplete").change(function () {
+                var checked = this.checked;
+                window.location.href = "/Lab/Orders?hideComplete=" + checked;
+
+            })
+
+        });
+
         $.fn.dataTable.ext.search.push(
             function (settings, data, dataIndex) {
                 var min = $('#min').datepicker("getDate");
@@ -156,9 +168,6 @@
 
                 var status = data[2];
                 var statusFilter = $('#status').val();
-                var hideComplete = $('#hideComplete').is(":checked");
-
-                if (hideComplete && status == "Complete" && statusFilter != "Complete") { return false; }
 
                 if (statusFilter == "All" || status == statusFilter) {
                     if (min == null && max == null) { return true; }
