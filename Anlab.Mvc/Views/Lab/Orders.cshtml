@@ -31,7 +31,9 @@
                 </select>
             </td>
             <td>
-                <span><input id="hideComplete" type="checkbox" value="@ViewBag.HideComplete.ToString().ToLower()"/> Hide Complete</span>
+                <form id="hideCompleteForm" method="post" asp-action="Orders" asp-antiforgery="true">
+                    <span><input id="hideComplete" type="checkbox" name="hideComplete" value="@ViewBag.HideComplete.ToString().ToLower()" /> Hide Complete</span>
+                </form>
             </td>
         </tr>
     </tbody>
@@ -152,9 +154,8 @@
         $(function () {
             $("#hideComplete")[0].checked = @ViewBag.HideComplete.ToString().ToLower();
             $("#hideComplete").change(function () {
-                var checked = this.checked;
-                window.location.href = "/Lab/Orders?hideComplete=" + checked;
-
+                this.value = this.checked;
+                document.getElementById("hideCompleteForm").submit();
             })
 
         });
