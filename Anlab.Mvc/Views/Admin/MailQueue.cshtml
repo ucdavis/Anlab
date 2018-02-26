@@ -46,7 +46,7 @@
                 }
             </td>
             <td>@message.Order.Id</td>
-            <td>@message.SendTo</td>
+            <td>@message.SendTo.Replace(";", "; ")</td>
             <td>@message.Subject</td>
             <td>
                 Created At: @message.CreatedAt.ToPacificTime().ToString("g")<br />
