@@ -72,47 +72,30 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         public IActionResult Orders(bool hideComplete)
         {
-            List<Order> orders;
+            var ordersQueryable = _dbContext.Orders
+                    .Where(a => a.Status != OrderStatusCodes.Created);
             if (hideComplete)
             {
-                orders = _dbContext.Orders
-                    .Where(a => a.Status != OrderStatusCodes.Created && a.Status != OrderStatusCodes.Complete)
-                    .Select(c => new Order
-                    {
-                        Id = c.Id,
-                        ClientId = c.ClientId,
-                        Creator = new User { Email = c.Creator.Email },
-                        Created = c.Created,
-                        Updated = c.Updated,
-                        RequestNum = c.RequestNum,
-                        Status = c.Status,
-                        ShareIdentifier = c.ShareIdentifier,
-                        Paid = c.Paid,
-                        ClientName = c.ClientName
-                    })
-                    .Take(_maxShownOrders)
-                    .ToList();
+                ordersQueryable = ordersQueryable.Where(a => a.Status != OrderStatusCodes.Complete);
+
             }
-            else
-            {
-                orders = _dbContext.Orders
-                    .Where(a => a.Status != OrderStatusCodes.Created)
-                    .Select(c => new Order
-                    {
-                        Id = c.Id,
-                        ClientId = c.ClientId,
-                        Creator = new User { Email = c.Creator.Email },
-                        Created = c.Created,
-                        Updated = c.Updated,
-                        RequestNum = c.RequestNum,
-                        Status = c.Status,
-                        ShareIdentifier = c.ShareIdentifier,
-                        Paid = c.Paid,
-                        ClientName = c.ClientName
-                    })
-                    .Take(_maxShownOrders)
-                    .ToList();
-            }
+
+            var orders = ordersQueryable.Select(c => new Order
+                {
+                    Id = c.Id,
+                    ClientId = c.ClientId,
+                    Creator = new User { Email = c.Creator.Email },
+                    Created = c.Created,
+                    Updated = c.Updated,
+                    RequestNum = c.RequestNum,
+                    Status = c.Status,
+                    ShareIdentifier = c.ShareIdentifier,
+                    Paid = c.Paid,
+                    ClientName = c.ClientName
+                })
+            .Take(_maxShownOrders)
+            .ToList();
+
             ViewBag.HideComplete = hideComplete;
 
             return View(orders);
