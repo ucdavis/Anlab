@@ -43,38 +43,12 @@ namespace AnlabMvc.Controllers
             _slothService = slothService;
         }
 
-        public IActionResult Orders()
-        {
-           
-            var orders = _dbContext.Orders
-                .Where(a => a.Status != OrderStatusCodes.Created && a.Status != OrderStatusCodes.Complete)
-                .Select(c => new Order
-                {
-                    Id = c.Id,
-                    ClientId = c.ClientId,
-                    Creator = new User { Email = c.Creator.Email },
-                    Created = c.Created,
-                    Updated = c.Updated,
-                    RequestNum = c.RequestNum,
-                    Status = c.Status,
-                    ShareIdentifier = c.ShareIdentifier,
-                    Paid = c.Paid,
-                    ClientName = c.ClientName
-                })
-                .Take(_maxShownOrders)
-                .ToList();
-
-            ViewBag.HideComplete = true;
-
-            return View(orders);
-        }
-
-        [HttpPost]
-        public IActionResult Orders(bool hideComplete)
+        [HttpGet]
+        public IActionResult Orders(bool showComplete)
         {
             var ordersQueryable = _dbContext.Orders
                     .Where(a => a.Status != OrderStatusCodes.Created);
-            if (hideComplete)
+            if (!showComplete)
             {
                 ordersQueryable = ordersQueryable.Where(a => a.Status != OrderStatusCodes.Complete);
 
@@ -96,7 +70,7 @@ namespace AnlabMvc.Controllers
             .Take(_maxShownOrders)
             .ToList();
 
-            ViewBag.HideComplete = hideComplete;
+            ViewBag.ShowComplete = showComplete;
 
             return View(orders);
         }
