@@ -43,11 +43,18 @@ namespace AnlabMvc.Controllers
             _slothService = slothService;
         }
 
-        public IActionResult Orders()
+        [HttpGet]
+        public IActionResult Orders(bool showComplete)
         {
-            var orders = _dbContext.Orders
-                .Where(a => a.Status != OrderStatusCodes.Created)
-                .Select(c => new Order
+            var ordersQueryable = _dbContext.Orders
+                    .Where(a => a.Status != OrderStatusCodes.Created);
+            if (!showComplete)
+            {
+                ordersQueryable = ordersQueryable.Where(a => a.Status != OrderStatusCodes.Complete);
+
+            }
+
+            var orders = ordersQueryable.Select(c => new Order
                 {
                     Id = c.Id,
                     ClientId = c.ClientId,
@@ -60,12 +67,13 @@ namespace AnlabMvc.Controllers
                     Paid = c.Paid,
                     ClientName = c.ClientName
                 })
-                .Take(_maxShownOrders)
-                .ToList();
+            .Take(_maxShownOrders)
+            .ToList();
+
+            ViewBag.ShowComplete = showComplete;
 
             return View(orders);
         }
-
 
         public async Task<IActionResult> Details(int id)
         {

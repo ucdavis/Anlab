@@ -13,6 +13,7 @@
             <td><label>Minimum Date:</label></td>
             <td><label>Maximum Date:</label></td>
             <td><label>Status:</label></td>
+            <td></td>
         </tr>
         <tr>
             <td><input name="min" id="min" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
@@ -29,6 +30,11 @@
                     }
                 </select>
             </td>
+            <td>
+                <form id="toggleCompleteForm" method="get" asp-action="Orders">
+                    <span><input id="showComplete" type="checkbox" name="showComplete" value="@ViewBag.ShowComplete.ToString().ToLower()" /> Show Complete</span>
+                </form>
+            </td>
         </tr>
     </tbody>
 </table>
@@ -37,9 +43,9 @@
     <thead>
     <tr>
         <th>Work Req #</th>
-        <th>Id</th>
+        <th>Order ID</th>
         <th>Status</th>
-        <th>ClientId</th>
+        <th>Client ID</th>
         <th>User</th>
         <th>Created</th>
         <th>Updated</th>
@@ -143,6 +149,15 @@
             $('#min, #max, #status').change(function () {
                 table.draw();
             });
+        });
+
+        $(function () {
+            $("#showComplete")[0].checked = @ViewBag.ShowComplete.ToString().ToLower();
+            $("#showComplete").change(function () {
+                this.value = this.checked;
+                document.getElementById("toggleCompleteForm").submit();
+            })
+
         });
 
         $.fn.dataTable.ext.search.push(
