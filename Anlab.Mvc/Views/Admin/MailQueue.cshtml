@@ -16,7 +16,7 @@
             <th>Id</th>
             <th>To:</th>
             <th>Subject:</th>
-            <th>Last Action:</th>
+            <th>Sent At:</th>
             <th>Message Body:</th>
         </tr>
     </thead>
@@ -40,21 +40,14 @@
                 }
                 else
                 {
-                    <span data-toggle="tooltip" title="Pending"><i class="fa fa-refresh" aria-hidden="true"></i> Pending</span>
+                    <span data-toggle="tooltip" title='Pending: Created @message.CreatedAt.ToPacificTime().Format()'><i class="fa fa-refresh" aria-hidden="true"></i> Pending</span>
                 }
             </td>
             <td>@message.Order.Id</td>
             <td>@message.SendTo.Replace(";", "; ")</td>
             <td>@message.Subject</td>
             <td>
-                @if (message.Sent.HasValue && message.Sent.Value && message.SentAt.HasValue)
-                {
-                    @message.SentAt.Value.ToPacificTime().ToString("g")
-                }
-                else
-                {
-                    @message.CreatedAt.ToPacificTime().ToString("g")
-                }
+                @message.SentAt.ToPacificTime().Format()
             </td>
             <td>
                 <a href="@Url.Action("ViewMessage",new { id = message.Id })" target="_blank">Open in a new window</a>

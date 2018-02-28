@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Anlab.Core.Extensions
 {
@@ -29,6 +29,15 @@ namespace Anlab.Core.Extensions
         public static DateTime FromPacificTime(this DateTime dateTime)
         {
             return TimeZoneInfo.ConvertTime(dateTime, GetPacificTimeZone(), TimeZoneInfo.Utc);
+        }
+
+        public static string Format(this DateTime? dateTime, string format = "g")
+        {
+            return dateTime?.ToString(format);
+        }
+        public static string Format(this DateTime dateTime, string format = "g")
+        {
+            return dateTime.ToString(format);
         }
 
         /// <summary>
