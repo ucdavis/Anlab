@@ -10,6 +10,6 @@ namespace Anlab.Core.Models
         public string Password { get; set; }
         public string Host { get; set; }
         public int Port { get; set; }
-        public string BccAnlab { get; set; }
+        public string AnlabAddress { get; set; }
     }
 }
