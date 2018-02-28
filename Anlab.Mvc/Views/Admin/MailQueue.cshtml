@@ -30,44 +30,24 @@
                 {
                     if (message.Sent.Value)
                     {
-                        <i class="fa fa-check-circle" aria-hidden="true" title="Sent"></i>
-                        @:Sent
+                        <span data-toggle="tooltip" title="Sent"><i class="fa fa-check-circle" aria-hidden="true"></i> Sent</span>
                     }
                     else
                     {
-                        <i class="fa fa-times-circle" aria-hidden="true" title="Failed"></i>
-                        @:Failed
+                        <span data-toggle="tooltip" title="Failed: @message.FailureReason"><i class="fa fa-times-circle" aria-hidden="true"></i> Failed</span>
+
                     }
                 }
                 else
                 {
-                    <i class="fa fa-refresh" aria-hidden="true" title="Pending"></i>
-                    @:Pending
+                    <span data-toggle="tooltip" title='Pending: Created @message.CreatedAt.ToPacificTime().Format()'><i class="fa fa-refresh" aria-hidden="true"></i> Pending</span>
                 }
             </td>
             <td>@message.Order.Id</td>
             <td>@message.SendTo.Replace(";", "; ")</td>
             <td>@message.Subject</td>
             <td>
-                Created At: @message.CreatedAt.ToPacificTime().ToString("g")<br />
-                @if (message.Sent.HasValue)
-                {
-                        @if (message.Sent.Value && message.SentAt.HasValue)
-                        {
-                            @:Sent At:
-                            @message.SentAt.Value.ToPacificTime().ToString("g")
-                        }
-                        else
-                        {
-                            @:Error:
-                            @message.FailureReason
-
-                        }
-                }
-                else
-                {
-                    <br />
-                }
+                @message.SentAt.ToPacificTime().Format()
             </td>
             <td>
                 <a href="@Url.Action("ViewMessage",new { id = message.Id })" target="_blank">Open in a new window</a>
@@ -122,7 +102,8 @@
             var table = $("#table").DataTable({
                 "order": [[1, "desc"],[5,"desc"]],
                 "columnDefs": [
-                    { "orderable": false, "targets": 0 }
+                    { "orderable": false, "targets": 0 },
+                    {"type": "date", "targets": 5}
                 ],
                 responsive: true,
             });
@@ -153,5 +134,10 @@
             });
 
         });
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            $('body').tooltip({ selector: '[data-toggle="tooltip"]' });
+        })
     </script>
 }
