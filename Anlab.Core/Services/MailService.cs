@@ -48,6 +48,12 @@ namespace Anlab.Core.Services
                 message.To.Add(sendToEmail);
             }
 
+            var bcc = _emailSettings.BccAnlab;
+            if (!string.IsNullOrWhiteSpace(bcc))
+            {
+                message.Bcc.Add(bcc);
+            }
+
             message.Subject = mailMessage.Subject;
             message.IsBodyHtml = false;
             message.Body = mailMessage.Body;
