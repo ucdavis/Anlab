@@ -30,19 +30,17 @@
                 {
                     if (message.Sent.Value)
                     {
-                        <i class="fa fa-check-circle" aria-hidden="true" title="Sent"></i>
-                        @:Sent
+                        <span data-toggle="tooltip" title="Sent"><i class="fa fa-check-circle" aria-hidden="true"></i> Sent</span>
                     }
                     else
                     {
-                        <i class="fa fa-times-circle" aria-hidden="true" title="Failed: @message.FailureReason"></i>
-                        @:Failed
+                        <span data-toggle="tooltip" title="Failed: @message.FailureReason"><i class="fa fa-times-circle" aria-hidden="true"></i> Failed</span>
+
                     }
                 }
                 else
                 {
-                    <i class="fa fa-refresh" aria-hidden="true" title="Pending"></i>
-                    @:Pending
+                    <span data-toggle="tooltip" title="Pending"><i class="fa fa-refresh" aria-hidden="true"></i> Pending</span>
                 }
             </td>
             <td>@message.Order.Id</td>
@@ -143,5 +141,10 @@
             });
 
         });
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            $('body').tooltip({ selector: '[data-toggle="tooltip"]' });
+        })
     </script>
 }
