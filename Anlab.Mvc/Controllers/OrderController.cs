@@ -401,7 +401,10 @@ namespace AnlabMvc.Controllers
             {
                 foreach (var item in orderDetails.AdditionalInfoList)
                 {
-                    sb.AppendFormat("{0}: {1}{2}", item.Key, item.Value, Environment.NewLine);
+                    if (orderDetails.SelectedTests.Any(a => a.Id == item.Key))
+                    {
+                        sb.AppendFormat("{0}: {1}{2}", item.Key, item.Value, Environment.NewLine);
+                    }
                 }
                 orderDetails.AdditionalInfoList = new Dictionary<string, string>();
             }
