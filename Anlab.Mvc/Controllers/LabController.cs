@@ -416,6 +416,10 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Orders");
             }
             Message = "Order Updated";
+            if (model.Status == OrderStatusCodes.Created)
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             return RedirectToAction("Details", new{id});
         }
