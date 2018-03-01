@@ -1,4 +1,4 @@
-﻿@using Anlab.Core.Domain
+@using Anlab.Core.Domain
 @using Microsoft.AspNetCore.Http
 
 @inject SignInManager<User> SignInManager
@@ -19,6 +19,6 @@
 else
 {
 
-        <p><a asp-area="" asp-controller="Account" asp-action="Login">Log in</a></p>
+        <p><a class="btn btn-primary" asp-area="" asp-controller="Account" asp-action="Login">Log in</a></p>
 
 }
