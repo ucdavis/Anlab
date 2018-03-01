@@ -11,11 +11,12 @@ body {
 }
 
 /* Set widths on the form inputs since otherwise they're 100% wide */
+/* don't do text areas otherwise it is too small, and if you set a specific bigger size for text areas, over flows on phone*/
 input,
-select,
-textarea {
+select {
     max-width: 280px;
 }
+
 
 /* Carousel */
 .carousel-caption p {
