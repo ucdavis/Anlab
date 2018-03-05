@@ -1,4 +1,5 @@
 @using Anlab.Core.Models
+@using AnlabMvc.Extensions
 @using AnlabMvc.Models.Roles
 @using Humanizer
 @model AnlabMvc.Models.Order.OrderReviewModel
@@ -15,7 +16,7 @@
         </div>
         <div class="form-group no-margin detail-bumper">
             <h4>Project</h4>
-            <p>@Model.Order.Project</p>
+            <p title="@Model.Order.Project" class="showTooltip">@Model.Order.Project.MaxLength(45)</p>
         </div>
         <div class="form-group no-margin detail-bumper">
             <h4>Quantity</h4>

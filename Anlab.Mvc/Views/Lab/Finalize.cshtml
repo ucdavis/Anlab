@@ -1,4 +1,4 @@
-﻿@using Humanizer
+@using Humanizer
 @model AnlabMvc.Models.Order.OrderReviewModel
 
 @{
@@ -50,6 +50,12 @@
     <script type="text/javascript">
         $(function() {
             $("#table").dataTable();
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(function() {
+            $(".showTooltip").tooltip();
         });
     </script>
 

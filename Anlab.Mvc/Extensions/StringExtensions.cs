@@ -21,5 +21,25 @@ namespace AnlabMvc.Extensions
 
             return "Other";
         }
+
+        public static string MaxLength(this string value, int maxLength, bool ellipsis = true)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return value;
+            }
+
+            if (value.Length > maxLength)
+            {
+                if (ellipsis)
+                {
+                    return $"{value.Substring(0, maxLength - 3)}...";
+                }
+
+                return value.Substring(0, maxLength);
+            }
+
+            return value;
+        }
     }
 }
