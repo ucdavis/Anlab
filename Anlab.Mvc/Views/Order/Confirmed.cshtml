@@ -71,9 +71,9 @@
             <span>@Model.OrderDetails.Quantity</span>
          </div>
       </div>
-      <div class="col-6">
+      <div class="col-6 onlyPrint">
          <div class="pull-right">
-            <img style="width: 250px; height 250px;" src="/images/lab-only-section.png" alt="lab use only section" />
+            <img style="width: 350px; height 350px;"  src="/images/lab-only-section.png" alt="lab use only section" />
          </div>
       </div>
    </div>
@@ -289,6 +289,9 @@
         }
         td {
             padding: 5px;
+        }
+        .onlyPrint {
+            display: none !important;
         }
     </style>
 }
