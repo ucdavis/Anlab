@@ -30,8 +30,11 @@
          @if (Model.Order.ClientId != null)
          {
          <div class="form-group">
-            <strong>Client ID:</strong>
-            <span>@Model.Order.ClientId</span>
+             <strong>Client ID:</strong>
+             <span>@Model.Order.ClientId</span>
+             <br />
+             <strong>Client Name:</strong>
+             <span>@Model.OrderDetails.ClientInfo.Name</span>
          </div>
          }
          else
@@ -109,11 +112,11 @@
    <table id="t">
       <thead>
          <tr>
-            <th>Analysis</th>
-            <th>Sop</th>
+            <th>Test(s)</th>
+            <th>Ref</th>
             <th>Per Test</th>
             <th>Quantity</th>
-            <th>SubTotal</th>
+            <th>Subtotal</th>
             <th>Setup Cost</th>
             <th>Test Total</th>
          </tr>
