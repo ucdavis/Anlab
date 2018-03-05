@@ -30,8 +30,11 @@
          @if (Model.Order.ClientId != null)
          {
          <div class="form-group">
-            <strong>Client ID:</strong>
-            <span>@Model.Order.ClientId</span>
+             <strong>Client ID:</strong>
+             <span>@Model.Order.ClientId</span>
+             <br />
+             <strong>Client Name:</strong>
+             <span>@Model.OrderDetails.ClientInfo.Name</span>
          </div>
          }
          else
@@ -51,6 +54,25 @@
             <span>@Model.OrderDetails.ClientInfo.PhoneNumber</span>
          </div>
          }
+          <div class="form-group">
+              <strong>Payment Method:</strong>
+              @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
+              {
+                  <span>UC Account: @Model.OrderDetails.Payment.Account</span>
+                  @if(!string.IsNullOrWhiteSpace(Model.OrderDetails.Payment.AccountName))
+                   {
+                       <span> (@Model.OrderDetails.Payment.AccountName)</span>
+                   }
+              }
+              else if (string.Equals(Model.OrderDetails.Payment.ClientType, "creditcard", StringComparison.OrdinalIgnoreCase))
+              {
+                  <span>Credit Card</span>
+              }
+              else
+              {
+                  <span>Other</span>
+              }
+          </div>
          <div class="form-group">
             <strong>Project Title / Location:</strong>
             <span>@Model.Order.Project</span>
@@ -84,36 +106,17 @@
       <div class="well well-sm" style="white-space: pre-wrap">@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</div>
    </div>
    }
-   <div class="form-group">
-      <strong>Payment Method:</strong>
-      @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
-      {
-      <span>UC Account: @Model.OrderDetails.Payment.Account</span>
-      @if(!string.IsNullOrWhiteSpace(Model.OrderDetails.Payment.AccountName))
-      {
-      <span> (@Model.OrderDetails.Payment.AccountName)</span>
-      }
-      }
-      else if (string.Equals(Model.OrderDetails.Payment.ClientType, "creditcard", StringComparison.OrdinalIgnoreCase))
-      {
-      <span>Credit Card</span>
-      }
-      else
-      {
-      <span>Other</span>
-      }
-   </div>
    <p>
       The following estimate of charges is based on routine testing.  Should non-routine testing be required you will be contacted to discuss any additional costs.
    </p>
    <table id="t">
       <thead>
          <tr>
-            <th>Analysis</th>
-            <th>Sop</th>
+            <th>Test(s)</th>
+            <th>Ref</th>
             <th>Per Test</th>
             <th>Quantity</th>
-            <th>SubTotal</th>
+            <th>Subtotal</th>
             <th>Setup Cost</th>
             <th>Test Total</th>
          </tr>
