@@ -1,4 +1,4 @@
-﻿@using Humanizer
+@using Humanizer
 @model AnlabMvc.Models.Order.OrderReviewModel
 
 @{
@@ -38,6 +38,12 @@
     </script>
 
     <script type="text/javascript">
+        $(function() {
+            $(".showTooltip").tooltip();
+        });
+    </script>
+
+    <script type="text/javascript">
         $('#GrandTotal').on('keyup', function () {
             var prevTotal = $('#prevTotal').val();
             var grandTotal = $(this).val();
@@ -53,4 +59,3 @@
     @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
 
 }
-                                                                  
