@@ -33,7 +33,7 @@ namespace AnlabMvc.Services
 
             var message = new MailMessage
             {
-                Subject = "Work Request Confirmation",
+                Subject = "Work Order Confirmation",
                 Body = body,
                 SendTo = GetSendTo(order),
                 Order = order,
