@@ -28,7 +28,7 @@ export class OtherPaymentInput extends React.Component<IOtherPaymentInputProps, 
         return (
             <Input
                 required={this.props.required}
-                error={this.state.error}
+                error={this.props.required ? this.state.error : ""} //clear out error on PO if no longer required
                 value={this.props.value}
                 onChange={this._handleChange}
                 onBlur={this._onBlur}
