@@ -327,7 +327,7 @@ namespace AnlabMvc.Controllers
 
             order.SaveDetails(orderDetails);
 
-            await _orderMessageService.EnqueueFinalizedMessage(order);
+            await _orderMessageService.EnqueueFinalizedMessage(order, model.BypassEmail);
             var extraMessage = string.Empty;
             if (order.PaymentType == PaymentTypeCodes.UcDavisAccount)
             {
