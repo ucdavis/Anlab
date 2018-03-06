@@ -26,14 +26,14 @@
 <form asp-controller="Lab" asp-action="AddRequestNumber" asp-route-id="@Model.Order.Id" method="post">
     @Html.Hidden("confirm", true)
     <div class="form-group">
-        <span>Request Number:</span>
+        <span>Work Request Number:</span>
         <span><input type="text" class="form-control" name="requestNum" value="@Model.Order.RequestNum" required /></span>
     </div>
-    <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true">Add Request Number</i></button>
+    <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true"></i> Update Work Request Number</button>
 </form>
 <br />
 
-<h3>This info is outdated and will be updated from the request number</h3>
+<h3>This info is outdated and will be updated from the Work Request Number</h3>
 @Html.Partial("_OrderDetails")
 </div>
 @section AdditionalStyles
