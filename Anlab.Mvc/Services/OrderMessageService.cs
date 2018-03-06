@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Anlab.Core.Domain;
+using Anlab.Core.Models;
 using Anlab.Core.Services;
 using Microsoft.Extensions.Options;
 
@@ -20,12 +21,15 @@ namespace AnlabMvc.Services
         private readonly ViewRenderService _viewRenderService;
         private readonly IMailService _mailService;
         private readonly AppSettings _appSettings;
+        private readonly EmailSettings _emailSettings;
 
-        public OrderMessageService(ViewRenderService viewRenderService, IMailService mailService, IOptions<AppSettings> appSettings)
+
+        public OrderMessageService(ViewRenderService viewRenderService, IMailService mailService, IOptions<AppSettings> appSettings, IOptions<EmailSettings> emailSettings)
         {
             _viewRenderService = viewRenderService;
             _mailService = mailService;
             _appSettings = appSettings.Value;
+            _emailSettings = emailSettings.Value;
         }
         public async Task EnqueueCreatedMessage(Order order)
         {
@@ -75,8 +79,8 @@ namespace AnlabMvc.Services
 
             if (bypass)
             {
-                message.Subject = "Order Received Confirmation -- Bypass Client";
-                message.SendTo = "anlab@test.com"; //TODO: Replace
+                message.Subject = $"{message.Subject} -- Bypass Client";
+                message.SendTo = _emailSettings.AnlabAddress;
             }
 
             _mailService.EnqueueMessage(message);
