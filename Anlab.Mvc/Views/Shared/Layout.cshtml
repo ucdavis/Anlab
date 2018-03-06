@@ -60,18 +60,15 @@
                         <li><a asp-controller="Prices" asp-action="Index">Prices</a></li>
                     </ul>
                 </li>
-                @if (User != null && User.Identity.IsAuthenticated)
-                {
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Orders <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a asp-controller="Order" asp-action="Index">Your Orders</a></li>
-                            <li><a asp-controller="Order" asp-action="Create">Create Order</a></li>
-                            <li class="divider"></li>
-                            <li><a asp-area="" asp-controller="Profile" asp-action="Edit" title="Manage">Edit Profile</a></li>
-                        </ul>
-                    </li>
-                }
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Orders <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a asp-controller="Order" asp-action="Index">Your Orders</a></li>
+                        <li><a asp-controller="Order" asp-action="Create">Create Order</a></li>
+                        <li class="divider"></li>
+                        <li><a asp-area="" asp-controller="Profile" asp-action="Edit" title="Manage">Edit Profile</a></li>
+                    </ul>
+                </li>
                 @if (User != null && (User.IsInRole(RoleCodes.Admin) || User.IsInRole(RoleCodes.LabUser) ))
                 {
                     <li class="dropdown">
