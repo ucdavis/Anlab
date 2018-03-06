@@ -1,4 +1,4 @@
-﻿@using System.Collections.Generic
+@using System.Collections.Generic
 @using System.Linq
 @using AnlabMvc.Models.AccountViewModels
 @using Microsoft.AspNetCore.Http
@@ -7,10 +7,10 @@
 @inject SignInManager<User> SignInManager
 
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Sign in";
 }
 <div class="col">
-<h2>Choose how you would like to log in</h2>
+<h2>Choose how you would like to sign in</h2>
 
         @{
             var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
