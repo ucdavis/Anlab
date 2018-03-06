@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Anlab.Core.Domain;
+using Anlab.Core.Models;
 using Anlab.Core.Services;
 using Microsoft.Extensions.Options;
 
@@ -8,8 +9,8 @@ namespace AnlabMvc.Services
     public interface IOrderMessageService
     {
         Task EnqueueCreatedMessage(Order order);
-        Task EnqueueReceivedMessage(Order order);
-        Task EnqueueFinalizedMessage(Order order);
+        Task EnqueueReceivedMessage(Order order, bool bypass = false);
+        Task EnqueueFinalizedMessage(Order order, bool bypass = false);
         Task EnqueuePaidMessage(Order order);
         Task EnqueueBillingMessage(Order order, string subject = "Anlab Work Order Billing Info");
 
@@ -20,12 +21,15 @@ namespace AnlabMvc.Services
         private readonly ViewRenderService _viewRenderService;
         private readonly IMailService _mailService;
         private readonly AppSettings _appSettings;
+        private readonly EmailSettings _emailSettings;
 
-        public OrderMessageService(ViewRenderService viewRenderService, IMailService mailService, IOptions<AppSettings> appSettings)
+
+        public OrderMessageService(ViewRenderService viewRenderService, IMailService mailService, IOptions<AppSettings> appSettings, IOptions<EmailSettings> emailSettings)
         {
             _viewRenderService = viewRenderService;
             _mailService = mailService;
             _appSettings = appSettings.Value;
+            _emailSettings = emailSettings.Value;
         }
         public async Task EnqueueCreatedMessage(Order order)
         {
@@ -54,10 +58,15 @@ namespace AnlabMvc.Services
             return sendTo;
         }
 
-        public async Task EnqueueReceivedMessage(Order order)
+        public async Task EnqueueReceivedMessage(Order order, bool bypass = false)
         {
             //TODO: change body of email, right now it is the same as OrderCreated
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderReceived", order);
+
+            if (bypass)
+            {
+                body = $"Email not sent to clients. </br> {GetSendTo(order)} </br></br></br> {body}";
+            }
 
             var message = new MailMessage
             {
@@ -68,15 +77,26 @@ namespace AnlabMvc.Services
                 User = order.Creator,
             };
 
+            if (bypass)
+            {
+                message.Subject = $"{message.Subject} -- Bypass Client";
+                message.SendTo = _emailSettings.AnlabAddress;
+            }
+
             _mailService.EnqueueMessage(message);
         }
 
-        public async Task EnqueueFinalizedMessage(Order order)
+        public async Task EnqueueFinalizedMessage(Order order, bool bypass = false)
         {
             var orderDetails = order.GetOrderDetails();
             var subject = "Order Finalized - Awaiting Payment";
             //TODO: change body of email, right now it is the same as OrderCreated
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderFinalized", order);
+
+            if (bypass)
+            {
+                body = $"Email not sent to clients. </br> {GetSendTo(order)} </br></br></br> {body}";
+            }
 
             var message = new MailMessage
             {
@@ -86,6 +106,12 @@ namespace AnlabMvc.Services
                 Order = order,
                 User = order.Creator,
             };
+
+            if (bypass)
+            {
+                message.Subject = $"{message.Subject} -- Bypass Client";
+                message.SendTo = _emailSettings.AnlabAddress;
+            }
 
             _mailService.EnqueueMessage(message);
         }

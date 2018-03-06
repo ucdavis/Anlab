@@ -7,36 +7,35 @@
 <div class="col">
 @Html.Partial("_OrderDetails")
 
-<form method="post" asp-controller="Lab" enctype="multipart/form-data" asp-action="Finalize" asp-route-id="@Model.Order.Id">
-
-    <div class="form-group">
-        <span>Upload Results</span>
-        @if (string.IsNullOrWhiteSpace(Model.Order.ResultsFileIdentifier))
+    <form id="form" method="post" asp-controller="Lab" enctype="multipart/form-data" asp-action="Finalize" asp-route-id="@Model.Order.Id">
+        <div class="form-group">
+            <span>Upload Results</span>
+            @if (string.IsNullOrWhiteSpace(Model.Order.ResultsFileIdentifier))
         {
-            <input id="UploadFile" type="file" class="form-control" name="UploadFile" required/>
-        }
-        else
-        {
-            <div>Results File Identifier: @Model.Order.ResultsFileIdentifier</div>
-        }
-        <span>Add Lab Comments</span>
-        <textarea class="form-control" name="LabComments">@Model.OrderDetails.LabComments</textarea>
-        <span>Adjust Final Total:</span>
-        <input type="hidden" class="form-control" id="prevTotal" value="@Model.OrderDetails.Total"/>
-        <input type="text" class="form-control" id="GrandTotal" value="@Model.OrderDetails.GrandTotal" autocomplete="off"/>
-        <div>Original Total: $@Model.OrderDetails.Total</div>
-        @if (Model.OrderDetails.AdjustmentAmount != 0)
+            <input id="UploadFile" type="file" class="form-control" name="UploadFile" required />
+    }
+    else
+    {
+        <div>Results File Identifier: @Model.Order.ResultsFileIdentifier</div>
+}
+            <span>Add Lab Comments</span>
+            <textarea class="form-control" name="LabComments">@Model.OrderDetails.LabComments</textarea>
+            <span>Adjust Final Total:</span>
+            <input type="hidden" class="form-control" id="prevTotal" value="@Model.OrderDetails.Total" />
+            <input type="text" class="form-control" id="GrandTotal" value="@Model.OrderDetails.GrandTotal" autocomplete="off" />
+            <div>Original Total: $@Model.OrderDetails.Total</div>
+            @if (Model.OrderDetails.AdjustmentAmount != 0)
         {
             <div>Current Total: $@Model.OrderDetails.GrandTotal</div>
-        }
-        <div>Adjustment Amount: $<span id="adjustAmt">@Model.OrderDetails.AdjustmentAmount</span></div>
-        <input type="hidden" class="form-control" id="adjustmentAmount" name="AdjustmentAmount" value="@Model.OrderDetails.AdjustmentAmount"/>
-    </div>
-
-
-    @Html.Hidden("Confirm", true)
-    <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true"> Confirm Completed (Update Tests from Labworks)</i></button>
-</form>
+    }
+            <div>Adjustment Amount: $<span id="adjustAmt">@Model.OrderDetails.AdjustmentAmount</span></div>
+            <input type="hidden" class="form-control" id="adjustmentAmount" name="AdjustmentAmount" value="@Model.OrderDetails.AdjustmentAmount" />
+        </div>
+        @Html.Hidden("Confirm", true)
+        @Html.Hidden("bypassEmail", false)
+        <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true"> Confirm Completed (Update Tests from Labworks)</i></button>
+        <button class="btn btn-green" id="submit-with-bypass"><i class="fa fa-ban" aria-hidden="true"></i> Confirm Completed (Update Tests from Labworks) without Email</button>
+    </form>
 </div>
 @section AdditionalStyles
 {
@@ -88,6 +87,14 @@
             upload[0].setCustomValidity(error);
 
         });
+    </script>
+
+    <script type="text/javascript">
+        $("#submit-with-bypass").on("click",
+            function() {
+                $("#bypassEmail").val(true);
+                $("#form").submit();
+            });
     </script>
 
     @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }

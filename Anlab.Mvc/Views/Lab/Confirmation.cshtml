@@ -6,12 +6,12 @@
 }
 <div class="col">
     @Html.Partial("_OrderDetails")
-    <form asp-controller="Lab" asp-action="AddRequestNumber" asp-route-id="@Model.Order.Id" method="post">
+    <form  asp-controller="Lab" asp-action="AddRequestNumber" asp-route-id="@Model.Order.Id" method="post">
         @Html.Hidden("confirm", true)
         @Html.Hidden("requestNum", Model.Order.RequestNum)        
         <button type="submit" class="btn btn-info"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh From Labworks</button>
     </form>
-    <form asp-controller="Lab" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post">
+    <form id="form" asp-controller="Lab" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post">
         @Html.Hidden("confirm", true)
         <div class="form-group">
             <span>Add Lab Comments</span>
@@ -23,7 +23,9 @@
             <div>Adjustment Amount: $<span id="adjustAmt">@Model.OrderDetails.AdjustmentAmount</span></div>
             <input type="hidden" class="form-control" id="adjustmentAmount" name="AdjustmentAmount" value="0" />
         </div>
+        @Html.Hidden("bypassEmail", false)
         <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true"></i> Confirm Received</button>
+        <button class="btn btn-green" id="submit-with-bypass"><i class="fa fa-ban" aria-hidden="true"></i> Confirm Received without Email</button>
         <a asp-action="AddRequestNumber" asp-route-id="@Model.Order.Id"> Opps wrong one. Change it</a>
     </form>
 
@@ -60,6 +62,14 @@
             $('#adjustmentAmount').val(adjustAmt);
             $('#adjustAmt').html(adjustAmt);
         });
+    </script>
+
+    <script type="text/javascript">
+        $("#submit-with-bypass").on("click",
+            function() {
+                $("#bypassEmail").val(true);
+                $("#form").submit();
+            });
     </script>
 
     @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
