@@ -8,7 +8,7 @@ namespace AnlabMvc.Services
     public interface IOrderMessageService
     {
         Task EnqueueCreatedMessage(Order order);
-        Task EnqueueReceivedMessage(Order order);
+        Task EnqueueReceivedMessage(Order order, bool bypass = false);
         Task EnqueueFinalizedMessage(Order order);
         Task EnqueuePaidMessage(Order order);
         Task EnqueueBillingMessage(Order order, string subject = "Anlab Work Order Billing Info");
@@ -54,10 +54,15 @@ namespace AnlabMvc.Services
             return sendTo;
         }
 
-        public async Task EnqueueReceivedMessage(Order order)
+        public async Task EnqueueReceivedMessage(Order order, bool bypass = false)
         {
             //TODO: change body of email, right now it is the same as OrderCreated
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderReceived", order);
+
+            if (bypass)
+            {
+                body = $"Email not sent to clients. </br> {GetSendTo(order)} </br></br></br> {body}";
+            }
 
             var message = new MailMessage
             {
@@ -67,6 +72,12 @@ namespace AnlabMvc.Services
                 Order = order,
                 User = order.Creator,
             };
+
+            if (bypass)
+            {
+                message.Subject = "Order Received Confirmation -- Bypass Client";
+                message.SendTo = "anlab@test.com"; //TODO: Replace
+            }
 
             _mailService.EnqueueMessage(message);
         }

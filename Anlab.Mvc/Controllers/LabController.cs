@@ -207,7 +207,6 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Confirmation(int id, LabReceiveModel model)
         {
-
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
@@ -238,7 +237,7 @@ namespace AnlabMvc.Controllers
 
             await _orderService.SendOrderToAnlab(order);
 
-            await _orderMessageService.EnqueueReceivedMessage(order);
+            await _orderMessageService.EnqueueReceivedMessage(order, model.BypassEmail);
 
             await _dbContext.SaveChangesAsync();
 
