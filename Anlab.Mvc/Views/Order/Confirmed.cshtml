@@ -29,13 +29,38 @@
          </div>
          @if (Model.Order.ClientId != null)
          {
-         <div class="form-group">
-             <strong>Client ID:</strong>
-             <span>@Model.Order.ClientId</span>
-             <br />
-             <strong>Client Name:</strong>
-             <span>@Model.OrderDetails.ClientInfo.Name</span>
-         </div>
+             <div class="form-group">
+                 <h4>Client Info</h4>
+                 <strong>ID:</strong>
+                 <span>@Model.Order.ClientId</span>
+                 <br />
+                 <strong>Name:</strong>
+                 <span>@Model.OrderDetails.ClientInfo.Name</span>
+                 @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.Email))
+                 {
+                     <br />
+                     <strong>Email:</strong>
+                     <span>@Model.OrderDetails.ClientInfo.Email</span>
+                 }
+                 @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.CopyEmail))
+                 {
+                     <br/>
+                     <strong>Copy To Email:</strong>
+                     <span>@Model.OrderDetails.ClientInfo.CopyEmail</span>
+                 }
+                 @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.PhoneNumber))
+                 {
+                     <br/>
+                     <strong>Phone:</strong>
+                     <span>@Model.OrderDetails.ClientInfo.PhoneNumber</span>
+                 }
+                 <br />
+                 @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.CopyPhone))
+                 {
+                     <strong>Copy To Phone:</strong>
+                     <span>@Model.OrderDetails.ClientInfo.CopyPhone</span>
+                 }
+             </div>
          }
          else
          {
