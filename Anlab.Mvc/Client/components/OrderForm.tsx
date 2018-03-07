@@ -8,6 +8,7 @@ import { AdditionalInfo } from "./AdditionalInfo";
 import { ClientId, IClientInfo } from "./ClientId";
 import { Commodity } from "./Commodity";
 import { DateSampled } from "./DateSampled";
+import { SampleDisposition } from "./SampleDisposition";
 import { IPayment, PaymentSelection } from "./PaymentSelection";
 import { IOtherPaymentInfo } from "./OtherPaymentQuestions";
 import { Project } from "./Project";
@@ -49,6 +50,7 @@ interface IOrderFormState {
   filteredTests: ITestItem[];
   commodity: string;
   dateSampled: any;
+  sampleDisposition: string;
   payment: IPayment;
   otherPaymentInfo: IOtherPaymentInfo;
   quantity?: number;
@@ -78,6 +80,7 @@ export default class OrderForm extends React.Component<
   private ucAccountRef: any;
   private otherPaymentInfoRef: any;
   private sampleDateRef: any;
+  private sampleDispositionRef: any;
 
   constructor(props) {
     super(props);
@@ -118,6 +121,7 @@ export default class OrderForm extends React.Component<
       placingOrder: true,
       project: "",
       quantity: null,
+      sampleDisposition: "default",
       sampleType: "",
       sampleTypeQuestions: {
         plantReportingBasis:
@@ -147,16 +151,17 @@ export default class OrderForm extends React.Component<
       initialState.additionalEmails = orderInfo.AdditionalEmails;
       initialState.sampleType = orderInfo.SampleType;
       (initialState.sampleTypeQuestions = {
-        plantReportingBasis: orderInfo.SampleTypeQuestions.PlantReportingBasis,
-        soilImported: orderInfo.SampleTypeQuestions.SoilImported,
-        waterFiltered: orderInfo.SampleTypeQuestions.WaterFiltered,
-        waterPreservativeAdded:
+          plantReportingBasis: orderInfo.SampleTypeQuestions.PlantReportingBasis,
+          soilImported: orderInfo.SampleTypeQuestions.SoilImported,
+          waterFiltered: orderInfo.SampleTypeQuestions.WaterFiltered,
+          waterPreservativeAdded:
           orderInfo.SampleTypeQuestions.WaterPreservativeAdded,
-        waterPreservativeInfo:
+          waterPreservativeInfo:
           orderInfo.SampleTypeQuestions.WaterPreservativeInfo,
-        waterReportedInMgL: orderInfo.SampleTypeQuestions.WaterReportedInMgL
+          waterReportedInMgL: orderInfo.SampleTypeQuestions.WaterReportedInMgL
       }),
-        (initialState.project = orderInfo.Project);
+      initialState.sampleDisposition = orderInfo.SampleDisposition;
+      initialState.project = orderInfo.Project;
       initialState.commodity = orderInfo.Commodity;
       initialState.dateSampled = moment(orderInfo.DateSampled);
       initialState.isValid = true;
@@ -216,6 +221,7 @@ export default class OrderForm extends React.Component<
       project,
       commodity,
       dateSampled,
+      sampleDisposition,
       additionalEmails,
       status,
       clientInfo,
@@ -315,7 +321,16 @@ export default class OrderForm extends React.Component<
                       dateRef={inputRef => {
                           this.sampleDateRef = inputRef;
                       }}                  />
-            </div>
+                </div>
+                <div className="form_wrap">
+                      <label className="form_header">How would you like your samples disposed of?</label>
+                      <SampleDisposition
+                          disposition={sampleDisposition}
+                          handleChange={this._handleChange}
+                          sampleDispositionRef={inputRef => {
+                              this.sampleDispositionRef = inputRef;
+                          }} />
+                </div>
             </div>
           </Collapse>
 
