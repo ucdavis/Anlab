@@ -297,7 +297,8 @@ export default class OrderForm extends React.Component<
               (!!this.state.payment.clientType.trim() ||
                 !!this.state.project.trim())
             }
-          >
+                >
+                    <div>
             <div className="form_wrap">
               <label className="form_header">
                 What is the project title associated with this order?
@@ -313,6 +314,7 @@ export default class OrderForm extends React.Component<
                 commodity={commodity}
                 handleChange={this._handleChange}
               />
+                        </div>
               <div className="form_wrap">
                   <label className="form_header">What date were the items sampled?</label>
                   <DateSampled
@@ -331,13 +333,13 @@ export default class OrderForm extends React.Component<
                               this.sampleDispositionRef = inputRef;
                           }} />
                 </div>
-            </div>
+                        </div>
           </Collapse>
 
           <Collapse
             in={
-              !placingOrder ||
-              (!!this.state.project.trim() ||
+                !placingOrder ||
+                ((!!this.state.project.trim() && !!this.state.sampleDisposition.trim()) ||
                 this.state.quantity > 0 ||
                 !!this.state.sampleType.trim())
             }
@@ -516,6 +518,10 @@ export default class OrderForm extends React.Component<
     if (!moment.isMoment(this.state.dateSampled))
         valid = false;
 
+      //check sample disposition is entered 
+    if (!this.state.sampleDisposition || !this.state.sampleDisposition.trim())
+        valid = false;
+
     // check special water requirements
     if (
       this.state.sampleType === "Water" &&
@@ -656,28 +662,30 @@ export default class OrderForm extends React.Component<
       return;
     }
     if (!this.state.clientInfoValid) {
-      this._focusInput(this.clientIdRef);
+        this._focusInput(this.clientIdRef);
     } else if (
-      this.state.payment.clientType === "uc" &&
-      (!this.state.payment.account ||
-        !this.state.payment.account.trim() ||
-        (this._checkUcChart(this.state.payment.account.charAt(0)) &&
-          this.state.payment.accountName == null))
+        this.state.payment.clientType === "uc" &&
+        (!this.state.payment.account ||
+            !this.state.payment.account.trim() ||
+            (this._checkUcChart(this.state.payment.account.charAt(0)) &&
+                this.state.payment.accountName == null))
     ) {
-      this._focusInput(this.ucAccountRef);
+        this._focusInput(this.ucAccountRef);
     } else if (
-      (this.state.payment.clientType === "other" &&
-        !this._checkOtherPaymentInfo()) ||
-      (this.state.payment.clientType === "uc" &&
-        !this._checkUcChart(this.state.payment.account.charAt(0)) &&
-        !this._checkOtherPaymentInfo())
+        (this.state.payment.clientType === "other" &&
+            !this._checkOtherPaymentInfo()) ||
+        (this.state.payment.clientType === "uc" &&
+            !this._checkUcChart(this.state.payment.account.charAt(0)) &&
+            !this._checkOtherPaymentInfo())
     ) {
-      this._focusInput(this.otherPaymentInfoRef);
+        this._focusInput(this.otherPaymentInfoRef);
     } else if (!this.state.project || !this.state.project.trim()) {
         this._focusInput(this.projectRef);
     } else if (!moment.isMoment(this.state.dateSampled)) {
         this._focusInput(this.sampleDateRef);
         this.sampleDateRef.click();
+    } else if (!this.state.sampleDisposition || !this.state.sampleDisposition.trim()) {
+        this._focusInput(this.sampleDispositionRef);
     } else if (this.state.quantity <= 0 || this.state.quantity > 100) {
       this._focusInput(this.quantityRef);
     } else if (
@@ -811,6 +819,7 @@ export default class OrderForm extends React.Component<
       payment: this.state.payment,
       project: this.state.project,
       quantity: this.state.quantity,
+      sampleDisposition: this.state.sampleDisposition,
       sampleType: this.state.sampleType,
       sampleTypeQuestions: this.state.sampleTypeQuestions,
       selectedTests: this.state.selectedTests

@@ -1,19 +1,19 @@
 import * as React from "react";
 import Input from "./ui/input/input";
 
-interface IWaterQuestionsProps {
+interface ISampleDispositionProps {
     sampleDispositionRef: (element: HTMLInputElement) => void;
     handleChange: (key: string, value: any) => void;
     disposition: string;
 }
 
-interface IWaterQuestionsState {
+interface ISampleDispositionState {
     error: string;
 }
 
 export class SampleDisposition extends React.Component<
-    IWaterQuestionsProps,
-    IWaterQuestionsState
+    ISampleDispositionProps,
+    ISampleDispositionState
     > {
     constructor(props) {
         super(props);
