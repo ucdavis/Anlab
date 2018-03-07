@@ -119,7 +119,7 @@ namespace AnlabMvc.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT DISTINCT([RUSHYNP]) as RushMultiplier FROM [Labworks5].[dbo].[SUSERFLDS] where RUSHYNP != &apos;N&apos; and WORK_REQ = @RequestNum.
+        ///   Looks up a localized string similar to SELECT DISTINCT([RUSHYNP]) as RushMultiplier FROM [dbo].[SUSERFLDS] where RUSHYNP != &apos;N&apos; and WORK_REQ = @RequestNum.
         /// </summary>
         internal static string AnlabRushMultiplierForOrder {
             get {
