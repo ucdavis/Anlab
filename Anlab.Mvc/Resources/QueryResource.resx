@@ -155,7 +155,7 @@ GROUP BY LOGBATCH, LOCCODE
 HAVING (LOGBATCH = @RequestNum)</value>
   </data>
   <data name="AnlabRushMultiplierForOrder" xml:space="preserve">
-    <value>SELECT DISTINCT([RUSHYNP]) as RushMultiplier FROM [Labworks5].[dbo].[SUSERFLDS] where RUSHYNP != 'N' and WORK_REQ = @RequestNum</value>
+    <value>SELECT DISTINCT([RUSHYNP]) as RushMultiplier FROM [dbo].[SUSERFLDS] where RUSHYNP != 'N' and WORK_REQ = @RequestNum</value>
   </data>
   <data name="AnlabTestsRunForOrder" xml:space="preserve">
     <value>SELECT DISTINCT [ACODE] as Id
