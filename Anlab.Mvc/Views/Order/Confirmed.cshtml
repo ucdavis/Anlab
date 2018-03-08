@@ -35,7 +35,13 @@
                  <span>@Model.Order.ClientId</span>
                  <br />
                  <strong>Name:</strong>
-                 <span>@Model.OrderDetails.ClientInfo.Name</span>
+                 <span>@Model.OrderDetails.ClientInfo.Name</span>                 
+                 @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.Department))
+                 {
+                     <br />
+                     <strong>Department/Unit:</strong>
+                     <span>@Model.OrderDetails.ClientInfo.Department</span>
+                 }
                  @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.Email))
                  {
                      <br />

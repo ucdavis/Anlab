@@ -13,5 +13,7 @@ namespace Anlab.Core.Models
         public string SubEmail { get; set; }
         public string CopyPhone { get; set; }
         public string SubPhone { get; set; }
+
+        public string Department { get; set; }
     }
 }

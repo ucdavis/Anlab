@@ -310,6 +310,7 @@ namespace AnlabMvc.Controllers
                     orderDetailsForClient.ClientInfo.Email = result.SubEmail;
                     orderDetailsForClient.ClientInfo.PhoneNumber = result.SubPhone;
                     orderDetailsForClient.ClientInfo.CopyPhone = result.CopyPhone;
+                    orderDetailsForClient.ClientInfo.Department = result.Department;
                     order.SaveDetails(orderDetailsForClient);
                 }
 
