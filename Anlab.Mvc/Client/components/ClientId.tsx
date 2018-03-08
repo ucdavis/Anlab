@@ -6,7 +6,7 @@ import { ClientIdModal } from "./ClientIdModal";
 export interface IClientInfo {
     clientId?: string;
     employer: string;
-    department: string
+    department: string;
     name: string;
     email: string;
     copyEmail?: string;
