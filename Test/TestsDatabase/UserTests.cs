@@ -49,6 +49,7 @@ namespace Test.TestsDatabase
             //expectedFields.Add(new NameAndType("Claims", "System.Collections.Generic.ICollection`1[Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim`1[System.String]]", new List<string>()));
             expectedFields.Add(new NameAndType("ClientId", "System.String", new List<string>
             {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Client ID\")]",
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)16)]"
             }));
             expectedFields.Add(new NameAndType("CompanyName", "System.String", new List<string>
