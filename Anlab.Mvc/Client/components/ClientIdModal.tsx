@@ -53,10 +53,11 @@ export class ClientIdModal extends React.Component<IClientIdModalProps, IClientI
                         <Modal.Title>{title}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <ClientIdModalInput property="name" value={this.props.clientInfo.name} label="Name" handleChange={this.props.handleChange} />
-                        <ClientIdModalInput property="employer" value={this.props.clientInfo.employer} label="Employer" handleChange={this.props.handleChange} />
-                        <ClientIdModalInput property="email" value={this.props.clientInfo.email} label="Client Email" handleChange={this.props.handleChange} />
-                        <ClientIdModalInput property="phoneNumber" value={this.props.clientInfo.phoneNumber} label="Phone Number" handleChange={this.props.handleChange} />
+                        <ClientIdModalInput property="name" value={this.props.clientInfo.name} label="Name" handleChange={this.props.handleChange} required={true} />
+                        <ClientIdModalInput property="employer" value={this.props.clientInfo.employer} label="Employer" handleChange={this.props.handleChange} required={true} />
+                        <ClientIdModalInput property="department" value={this.props.clientInfo.department} label="Department/Unit" handleChange={this.props.handleChange} required={false} />
+                        <ClientIdModalInput property="email" value={this.props.clientInfo.email} label="Client Email" handleChange={this.props.handleChange} required={true} />
+                        <ClientIdModalInput property="phoneNumber" value={this.props.clientInfo.phoneNumber} label="Phone Number" handleChange={this.props.handleChange} required={true} />
                     </Modal.Body>
                     <Modal.Footer>
                         <Button className="btn btn-newClient" onClick={this.clearAction} type="reset">Clear</Button>

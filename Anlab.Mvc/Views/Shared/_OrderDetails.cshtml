@@ -61,7 +61,7 @@
         <span>@Model.OrderDetails.DateSampled.ToShortDateString()</span>
     </div>
 
-@if (Model.OrderDetails.AdditionalEmails.Length > 0)
+@if (Model.Order.AdditionalEmails.Length > 0)
 {
     <div class="form-group">
         <strong>Additional Emails</strong>
@@ -82,17 +82,38 @@
 
 <div class="form-group">
     <strong>Payment Method</strong>
-    @if(Model.Order.PaymentType != PaymentTypeCodes.CreditCard)
-    {
-        <span>UC Account: @Model.OrderDetails.Payment.Account</span>
-        @if(!string.IsNullOrWhiteSpace(Model.OrderDetails.Payment.AccountName))
-         {
-             <span> (@Model.OrderDetails.Payment.AccountName)</span>
-         }
-    }
-    else
+    @if (Model.Order.PaymentType == PaymentTypeCodes.CreditCard)
     {
         <span>Credit Card</span>
+    }
+
+    @if (Model.Order.PaymentType == PaymentTypeCodes.Other)
+    {
+        <span>Other Payment (@Model.OrderDetails.OtherPaymentInfo.PaymentType)</span><br />
+        <strong>Company Name: </strong><span>@Model.OrderDetails.OtherPaymentInfo.CompanyName</span><br />
+        <strong>Account Contact Name: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcName</span><br />
+        <strong>Account Contact Address: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcAddr</span><br />
+        <strong>Account Contact Email: </strong><span><a href="mailto:@Model.OrderDetails.OtherPaymentInfo.AcEmail">@Model.OrderDetails.OtherPaymentInfo.AcEmail</a></span><br />
+        <strong>Account Contact Phone Number: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcPhone</span><br />
+        <strong>PO Number: </strong><span>@Model.OrderDetails.OtherPaymentInfo.PoNum</span>
+    }
+    @if (Model.Order.PaymentType == PaymentTypeCodes.UcOtherAccount)
+    {
+        <span>UC Account: @Model.OrderDetails.Payment.Account</span><br/>
+        <strong>Campus Name: </strong><span>@Model.OrderDetails.OtherPaymentInfo.CompanyName</span><br />
+        <strong>Account Contact Name: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcName</span><br />
+        <strong>Account Contact Address: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcAddr</span><br />
+        <strong>Account Contact Email: </strong><span><a href="mailto:@Model.OrderDetails.OtherPaymentInfo.AcEmail">@Model.OrderDetails.OtherPaymentInfo.AcEmail</a></span><br />
+        <strong>Account Contact Phone Number: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcPhone</span>
+    }
+    @if (Model.Order.PaymentType == PaymentTypeCodes.UcDavisAccount)
+    {
+        <span>UC Davis Account: @Model.OrderDetails.Payment.Account</span>
+        @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.Payment.AccountName))
+        {
+            <span> (@Model.OrderDetails.Payment.AccountName)</span>
+
+        }
     }
 </div>
 
