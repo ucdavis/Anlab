@@ -173,6 +173,7 @@ namespace AnlabMvc.Controllers
                     orderDetails.ClientInfo.Name = clientInfo.Name;
                     orderDetails.ClientInfo.PhoneNumber = clientInfo.SubPhone;
                     orderDetails.ClientInfo.CopyPhone = clientInfo.CopyPhone;
+                    orderDetails.ClientInfo.Department = clientInfo.Department;
                     order.ClientName = clientInfo.Name;
                 }
 
