@@ -149,6 +149,12 @@ namespace AnlabMvc.Controllers
                 ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
                 return RedirectToAction("Orders");
             }
+
+            if (!string.IsNullOrWhiteSpace(order.ClientId) && order.ClientId != result.ClientId)
+            {
+                ErrorMessage = $"Warning!!! Client Id is changing from {order.ClientId} to {result.ClientId}";
+            }
+
             order.ClientId = result.ClientId;
             order.ClientName = "[Not Found]"; //Updated below if we find it
             var orderDetails = order.GetOrderDetails();
