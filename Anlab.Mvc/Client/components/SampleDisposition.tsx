@@ -10,7 +10,7 @@ interface ISampleDispositionProps {
 export const SampleDispositionOptions = {
     dipose: "Dispose of my samples 30 days from report date.",
     pickUp: "I will pick up my samples not later than 30 days from report date.",
-    return: "Return my samples to me at my cost.",
+    return: "Return my samples to me at my cost. (This option is not available to UCD Clients)",
 }
 
 export class SampleDisposition extends React.Component<
