@@ -8,7 +8,7 @@ import { AdditionalInfo } from "./AdditionalInfo";
 import { ClientId, IClientInfo } from "./ClientId";
 import { Commodity } from "./Commodity";
 import { DateSampled } from "./DateSampled";
-import { SampleDisposition } from "./SampleDisposition";
+import { SampleDisposition, SampleDispositionOptions } from "./SampleDisposition";
 import { IPayment, PaymentSelection } from "./PaymentSelection";
 import { IOtherPaymentInfo } from "./OtherPaymentQuestions";
 import { Project } from "./Project";
@@ -121,7 +121,7 @@ export default class OrderForm extends React.Component<
       placingOrder: true,
       project: "",
       quantity: null,
-      sampleDisposition: "default",
+      sampleDisposition: SampleDispositionOptions.dipose,
       sampleType: "",
       sampleTypeQuestions: {
         plantReportingBasis:

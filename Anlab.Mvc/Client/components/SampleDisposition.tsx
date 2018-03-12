@@ -7,49 +7,65 @@ interface ISampleDispositionProps {
     disposition: string;
 }
 
-interface ISampleDispositionState {
-    error: string;
+export const SampleDispositionOptions = {
+    dipose: "Dispose of my samples 30 days from report date.",
+    pickUp: "I will pick up my samples not later than 30 days from report date.",
+    return: "Return my samples to me at my cost.",
 }
 
 export class SampleDisposition extends React.Component<
     ISampleDispositionProps,
-    ISampleDispositionState
+    {}
     > {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            error: null
-        };
-    }
 
     public render() {
+
         return (
-                <Input
-                label="Sample Disposition"
-                value={this.props.disposition}
-                    error={this.state.error}
-                    required={true}
-                    maxLength={256}
-                    onChange={this._onChange}
-                    inputRef={this.props.sampleDispositionRef}
-                />
+            <div className="input-group">
+                <p>
+                    <label>
+                        <input
+                            className="videokilledtheradiostar"
+                            type="radio"
+                            value={SampleDispositionOptions.dipose}
+                            checked={this.props.disposition == SampleDispositionOptions.dipose}
+                            onChange={this._onChange}
+                        />
+                        {SampleDispositionOptions.dipose}
+                    </label>
+                </p>
+                <p>
+                    <label>
+                        <input
+                            className="videokilledtheradiostar"
+                            type="radio"
+                            value={SampleDispositionOptions.pickUp}
+                            checked={this.props.disposition == SampleDispositionOptions.pickUp}
+                            onChange={this._onChange}
+                        />
+                        {SampleDispositionOptions.pickUp}
+                    </label>
+                </p>
+                <p>
+                    <label>
+                        <input
+                            className="videokilledtheradiostar"
+                            type="radio"
+                            value={SampleDispositionOptions.return}
+                            checked={this.props.disposition == SampleDispositionOptions.return}
+                            onChange={this._onChange}
+                        />
+                        {SampleDispositionOptions.return}
+                    </label>
+                </p>
+            </div>
         );
+
     }
 
     private _onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        this._validate(value);
         this.props.handleChange("sampleDisposition", value);
     }
 
-
-    private _validate = (v: string) => {
-        let error = null;
-        if (v.trim() === "") {
-            error = "Sample Disposition is required";
-        }
-
-        this.setState({ error });
-    }
 }
