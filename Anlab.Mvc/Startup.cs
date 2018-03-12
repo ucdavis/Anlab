@@ -126,8 +126,14 @@ namespace AnlabMvc
             services.AddTransient<ISlothService, SlothService>();
             services.AddTransient<IOrderMessageService, OrderMessageService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            // services.AddTransient<ILabworksService, FakeLabworksService>(); //Fake one for testing only
-            services.AddTransient<ILabworksService, LabworksService>();
+            if (Configuration.GetSection("Dev:UseFakeLabworks").Value == "Yes")
+            {
+                services.AddTransient<ILabworksService, FakeLabworksService>(); //Fake one for testing only
+            }
+            else
+            {
+                services.AddTransient<ILabworksService, LabworksService>();
+            }
             services.AddTransient<IFileStorageService, FileStorageService>();
             services.AddSingleton<IDataSigningService, DataSigningService>();
             services.AddTransient<IFinancialService, FinancialService>();
