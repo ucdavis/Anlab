@@ -78,11 +78,11 @@
                             <li><a asp-controller="Admin" asp-action="ListClients">Clients</a></li>
                             @if (User.IsInRole(RoleCodes.Admin))
                             {
-                                <li><a asp-controller="Admin" asp-action="Index">Maintain Admin Users</a></li>
+                                <li><a asp-controller="Admin" asp-action="Index">Admin Users</a></li>
                             }
                             <li><a asp-controller="Admin" asp-action="MailQueue">Mail Queue</a></li>
-                            <li><a asp-controller="TestItems" asp-action="Index">Test Items</a></li>
-                            <li><a asp-controller="AdminAnalysis" asp-action="Index">Maintain Analysis Methods</a></li>
+                            <li><a asp-controller="TestItems" asp-action="Index">Test Codes</a></li>
+                            <li><a asp-controller="AdminAnalysis" asp-action="Index">Method Summaries</a></li>
                         </ul>
                     </li>
                 }

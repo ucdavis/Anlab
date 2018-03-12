@@ -67,7 +67,8 @@ namespace AnlabMvc.Resources {
         ///	USERFLDS.CPYPHONE AS CopyPhone, 
         ///	USERFLDS.SUBPHONE AS SubPhone,
         ///	dbo.LOCLIST.REPADD1 AS Name, 
-        ///	dbo.LOCLIST.[INVADD4] as DefaultAccount
+        ///	dbo.LOCLIST.[INVADD4] as DefaultAccount,
+        ///	dbo.LOCLIST.[INVADD2] as Department
         ///FROM	dbo.USERFLDS INNER JOIN
         ///	dbo.LOCLIST ON dbo.USERFLDS.LOCCODE = dbo.LOCLIST.LOCCODE
         ///WHERE	dbo.USERFLDS.LOCCODE = @clientId  OR dbo.USERFLDS.SUBEMAIL = @clientId.

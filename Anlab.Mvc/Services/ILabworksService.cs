@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using AnlabMvc.Models.Order;
+using Serilog;
 
 namespace AnlabMvc.Services
 {

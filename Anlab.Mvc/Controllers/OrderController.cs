@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Text.RegularExpressions;
 using AnlabMvc.Extensions;
+using Serilog;
 
 namespace AnlabMvc.Controllers
 {
@@ -294,6 +295,26 @@ namespace AnlabMvc.Controllers
             }
 
             await _orderService.UpdateTestsAndPrices(order);
+
+            var orderDetailsForClient = order.GetOrderDetails();
+            if (!string.IsNullOrWhiteSpace(orderDetailsForClient.ClientInfo.ClientId))
+            {
+                var result = await LookupClientId(orderDetailsForClient.ClientInfo.ClientId);
+                if (result == null)
+                {
+                    Log.Error($"Error looking up clientId {orderDetailsForClient.ClientInfo.ClientId}");
+                }
+                else
+                {
+                    orderDetailsForClient.ClientInfo.CopyEmail = result.CopyEmail;
+                    orderDetailsForClient.ClientInfo.Email = result.SubEmail;
+                    orderDetailsForClient.ClientInfo.PhoneNumber = result.SubPhone;
+                    orderDetailsForClient.ClientInfo.CopyPhone = result.CopyPhone;
+                    orderDetailsForClient.ClientInfo.Department = result.Department;
+                    order.SaveDetails(orderDetailsForClient);
+                }
+
+            }
 
             UpdateAdditionalInfo(order);
             order.Status = OrderStatusCodes.Confirmed;

@@ -26,7 +26,7 @@ export class ViewMode extends React.Component<IViewModeProps, any> {
                         className={!this.props.placingOrder ? activeDiv : inactiveDiv}
                         onClick={() => this._handleChange("browse")}
                     >
-                        <h3>Browse</h3>
+                        <h3>Browse Tests and Prices</h3>
                         <p>I just want to browse the available tests and prices</p>
                     </div>
                 </div>

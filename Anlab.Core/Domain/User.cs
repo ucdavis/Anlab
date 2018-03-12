@@ -22,6 +22,7 @@ namespace Anlab.Core.Domain
         public string Name { get; set; }
 
         [StringLength(16)]
+        [Display(Name = "Client ID")]
         public string ClientId { get; set; }
 
         [Phone]

@@ -101,6 +101,7 @@ export default class OrderForm extends React.Component<
           clientId: this.props.defaultClientId ? this.props.defaultClientId : "",
         email: this.props.defaultSubEmail ? this.props.defaultSubEmail : this.props.defaultEmail,
         employer: "",
+        department: "",
         name: this.props.defaultClientIdName
             ? this.props.defaultClientIdName
             : "",
@@ -184,6 +185,7 @@ export default class OrderForm extends React.Component<
         clientId: orderInfo.ClientInfo.ClientId ? orderInfo.ClientInfo.ClientId : "",
         email: orderInfo.ClientInfo.Email,
         employer: orderInfo.ClientInfo.Employer,
+        department: orderInfo.ClientInfo.Department,
         name: orderInfo.ClientInfo.Name,
         phoneNumber: orderInfo.ClientInfo.PhoneNumber,
         copyEmail: orderInfo.ClientInfo.CopyEmail,
@@ -631,6 +633,7 @@ export default class OrderForm extends React.Component<
       const clearInfo = {
             clientId: "",
             employer: "",
+            department: "",
             name: "",
             email: "",
             phoneNumber: "",
