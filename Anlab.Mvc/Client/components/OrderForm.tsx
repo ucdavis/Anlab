@@ -317,24 +317,7 @@ export default class OrderForm extends React.Component<
                 handleChange={this._handleChange}
               />
                         </div>
-              <div className="form_wrap">
-                  <label className="form_header">What date were the items sampled?</label>
-                  <DateSampled
-                      date={dateSampled}
-                      handleChange={this._handleChange}
-                      dateRef={inputRef => {
-                          this.sampleDateRef = inputRef;
-                      }}                  />
-                </div>
-                <div className="form_wrap">
-                      <label className="form_header">How would you like your samples disposed of?</label>
-                      <SampleDisposition
-                          disposition={sampleDisposition}
-                          handleChange={this._handleChange}
-                          sampleDispositionRef={inputRef => {
-                              this.sampleDispositionRef = inputRef;
-                          }} />
-                </div>
+
                         </div>
           </Collapse>
 
@@ -346,21 +329,41 @@ export default class OrderForm extends React.Component<
                 !!this.state.sampleType.trim())
             }
           >
-            <div>
-              {placingOrder && (
-                <div className="form_wrap">
-                  <label className="form_header">
-                    Who should receive emails and results for this sample
-                    submission?
-                  </label>
-                  <AdditionalEmails
-                    addedEmails={additionalEmails}
-                    defaultEmail={defaultEmail}
-                    copyEmail={clientInfo.copyEmail}
-                    clientEmail={clientInfo.email}
-                    onEmailAdded={this._onEmailAdded}
-                    onDeleteEmail={this._onDeleteEmail}
-                  />
+                    <div>
+
+                {placingOrder && (<div>
+                    <div className="form_wrap">
+                        <label className="form_header">What date were the items sampled?</label>
+                        <DateSampled
+                            date={dateSampled}
+                            handleChange={this._handleChange}
+                            dateRef={inputRef => {
+                                this.sampleDateRef = inputRef;
+                            }} />
+                    </div>
+                    <div className="form_wrap">
+                        <label className="form_header">How would you like your samples disposed of?</label>
+                        <SampleDisposition
+                            disposition={sampleDisposition}
+                            handleChange={this._handleChange}
+                            sampleDispositionRef={inputRef => {
+                                this.sampleDispositionRef = inputRef;
+                            }} />
+                    </div>
+                    <div className="form_wrap">
+                      <label className="form_header">
+                        Who should receive emails and results for this sample
+                        submission?
+                      </label>
+                      <AdditionalEmails
+                        addedEmails={additionalEmails}
+                        defaultEmail={defaultEmail}
+                        copyEmail={clientInfo.copyEmail}
+                        clientEmail={clientInfo.email}
+                        onEmailAdded={this._onEmailAdded}
+                        onDeleteEmail={this._onDeleteEmail}
+                      />
+                    </div>
                 </div>
               )}
 
