@@ -19,7 +19,7 @@ export class OtherPaymentInput extends React.Component<IOtherPaymentInputProps, 
         super(props);
 
         this.state = {
-            error: null
+            error: ""
         };
     }
 
@@ -49,7 +49,7 @@ export class OtherPaymentInput extends React.Component<IOtherPaymentInputProps, 
     }
 
     private _validate = (v: string) => {
-        let error = null;
+        let error = "";
         const emailRe = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         const phoneRe = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
 
