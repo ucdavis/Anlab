@@ -6,16 +6,18 @@ interface IPlantQuestionProps {
   sampleType: string;
   questions: ISampleTypeQuestions;
 }
+
+export const SamplePlantQuestionsOptions = {
+    average: "Report results on 100% dry weight basis, based on an average of 10% of the samples.",
+    asReceived: "Report results on As Received basis.",
+    individual: "Report results on 100% dry weight basis, based on individual dry matter results (charge applies)."
+}
+
 export class SamplePlantQuestions extends React.Component<IPlantQuestionProps, {}> {
   public render() {
     if (this.props.sampleType !== "Plant") {
       return null;
     }
-    const option1 =
-      "Report results on 100% dry weight basis, based on an average of 10% of the samples.";
-    const option2 = "Report results on As Received basis.";
-    const option3 =
-      "Report results on 100% dry weight basis, based on individual dry matter results (charge applies).";
     return (
       <div className="input-group">
         <label className="form_header margin-bottom-zero">
@@ -26,11 +28,11 @@ export class SamplePlantQuestions extends React.Component<IPlantQuestionProps, {
             <input
               className="videokilledtheradiostar"
               type="radio"
-              value={option1}
-              checked={this.props.questions.plantReportingBasis == option1}
+              value={SamplePlantQuestionsOptions.average}
+              checked={this.props.questions.plantReportingBasis == SamplePlantQuestionsOptions.average}
               onChange={this._changeReporting}
             />
-            {option1}
+            {SamplePlantQuestionsOptions.average}
           </label>
         </p>
         <p>
@@ -38,11 +40,11 @@ export class SamplePlantQuestions extends React.Component<IPlantQuestionProps, {
             <input
               className="videokilledtheradiostar"
               type="radio"
-              value={option2}
-              checked={this.props.questions.plantReportingBasis == option2}
+              value={SamplePlantQuestionsOptions.asReceived}
+              checked={this.props.questions.plantReportingBasis == SamplePlantQuestionsOptions.asReceived}
               onChange={this._changeReporting}
             />
-            {option2}
+            {SamplePlantQuestionsOptions.asReceived}
           </label>
         </p>
         <p>
@@ -50,11 +52,11 @@ export class SamplePlantQuestions extends React.Component<IPlantQuestionProps, {
             <input
               className="videokilledtheradiostar"
               type="radio"
-              value={option3}
-              checked={this.props.questions.plantReportingBasis == option3}
+              value={SamplePlantQuestionsOptions.individual}
+              checked={this.props.questions.plantReportingBasis == SamplePlantQuestionsOptions.individual}
               onChange={this._changeReporting}
             />
-            {option3}
+            {SamplePlantQuestionsOptions.individual}
           </label>
         </p>
       </div>

@@ -18,6 +18,7 @@ import {
   SampleTypeQuestions
 } from "./SampleTypeQuestions";
 import { SampleTypeSelection } from "./SampleTypeSelection";
+import { SamplePlantQuestionsOptions } from "./SamplePlantQuestions";
 import Summary from "./Summary";
 import { ITestItem, TestList } from "./TestList";
 import { ViewMode } from "./ViewMode";
@@ -124,8 +125,7 @@ export default class OrderForm extends React.Component<
       sampleDisposition: SampleDispositionOptions.dipose,
       sampleType: "",
       sampleTypeQuestions: {
-        plantReportingBasis:
-          "Report results on 100% dry weight basis, based on an average of 10% of the samples.",
+        plantReportingBasis: SamplePlantQuestionsOptions.average,
         soilImported: false,
         waterFiltered: false,
         waterPreservativeAdded: false,
