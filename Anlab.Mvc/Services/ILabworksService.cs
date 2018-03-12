@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using AnlabMvc.Models.Order;
+using Serilog;
 
 namespace AnlabMvc.Services
 {
@@ -43,6 +44,7 @@ namespace AnlabMvc.Services
         /// <returns></returns>
         public async Task<IList<TestItemPrices>> GetPrices()
         {
+            Log.Information($"Start of connection {_connectionSettings.AnlabConnection.Substring(0, 20)}"); //Just to debug if it is really getting hit.
             var codes = _context.TestItems.AsNoTracking().Select(a => a.Id).Distinct().ToArray();
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {
