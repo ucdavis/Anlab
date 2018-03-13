@@ -106,7 +106,9 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     }
 
     private _onBlur = () => {
-        this.props.handleClientInfoChange(["name", "email", "phoneNumber"], [this.state.fetchedName, this.state.fetchedEmail, this.state.fetchedPhoneNumber], this.state.fetchedCopyEmail);
+        if (this.state.fetchedName !== this.props.clientInfo.name || this.state.fetchedEmail !== this.props.clientInfo.email
+            || this.state.fetchedPhoneNumber !== this.props.clientInfo.phoneNumber)
+           this.props.handleClientInfoChange(["name", "email", "phoneNumber"], [this.state.fetchedName, this.state.fetchedEmail, this.state.fetchedPhoneNumber], this.state.fetchedCopyEmail);
     }
 
     private _onModalClose = () => {
