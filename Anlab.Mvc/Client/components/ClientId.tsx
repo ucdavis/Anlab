@@ -9,13 +9,12 @@ export interface IClientInfo {
     department: string;
     name: string;
     email: string;
-    copyEmail?: string;
     phoneNumber: string;
 }
 
 interface IClientIdProps {
     //change one property of parent ClientInfo state
-    handleClientInfoChange: (keys: string[], values: string[]) => void;
+    handleClientInfoChange: (keys: string[], values: string[], copyToEmail?: string) => void;
     //change if parent thinks ClientInfo is valid
     updateClientInfoValid: (key: string, value: any) => void;
     //clear all 
@@ -45,7 +44,7 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
             modalValid: false,
             fetchedName: this.props.clientInfo.name,
             fetchedEmail: this.props.clientInfo.email,
-            fetchedCopyEmail: this.props.clientInfo.copyEmail,
+            fetchedCopyEmail: "",
             fetchedPhoneNumber: this.props.clientInfo.phoneNumber,
         };
     }
@@ -102,12 +101,12 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
         if (value) {
             value = value.toUpperCase();
         }
-        this.props.handleClientInfoChange(["clientId"], [value]);
+        this.props.handleClientInfoChange(["clientId"], [value], null);
         this._lookupAndValidateClientId(value);
     }
 
     private _onBlur = () => {
-        this.props.handleClientInfoChange(["name", "copyEmail", "email", "phoneNumber"], [this.state.fetchedName, this.state.fetchedCopyEmail, this.state.fetchedEmail, this.state.fetchedPhoneNumber]);
+        this.props.handleClientInfoChange(["name", "email", "phoneNumber"], [this.state.fetchedName, this.state.fetchedEmail, this.state.fetchedPhoneNumber], this.state.fetchedCopyEmail);
     }
 
     private _onModalClose = () => {

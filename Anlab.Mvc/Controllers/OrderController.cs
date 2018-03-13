@@ -306,7 +306,6 @@ namespace AnlabMvc.Controllers
                 }
                 else
                 {
-                    orderDetailsForClient.ClientInfo.CopyEmail = result.CopyEmail;
                     orderDetailsForClient.ClientInfo.Email = result.SubEmail;
                     orderDetailsForClient.ClientInfo.PhoneNumber = result.SubPhone;
                     orderDetailsForClient.ClientInfo.CopyPhone = result.CopyPhone;
