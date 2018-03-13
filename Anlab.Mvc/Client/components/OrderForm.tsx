@@ -123,7 +123,7 @@ export default class OrderForm extends React.Component<
       placingOrder: true,
       project: "",
       quantity: null,
-      sampleDisposition: SampleDispositionOptions.dipose,
+      sampleDisposition: SampleDispositionOptions.dispose,
       sampleType: "",
       sampleTypeQuestions: {
         plantReportingBasis: SamplePlantQuestionsOptions.average,

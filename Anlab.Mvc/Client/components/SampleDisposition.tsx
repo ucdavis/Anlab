@@ -8,7 +8,7 @@ interface ISampleDispositionProps {
 }
 
 export const SampleDispositionOptions = {
-    dipose: "Dispose of my samples 30 days from report date.",
+    dispose: "Dispose of my samples 30 days from report date.",
     pickUp: "I will pick up my samples not later than 30 days from report date.",
     return: "Return my samples to me at my cost. (This option is not available to UCD Clients)",
 }
@@ -27,11 +27,11 @@ export class SampleDisposition extends React.Component<
                         <input
                             className="videokilledtheradiostar"
                             type="radio"
-                            value={SampleDispositionOptions.dipose}
-                            checked={this.props.disposition == SampleDispositionOptions.dipose}
+                            value={SampleDispositionOptions.dispose}
+                            checked={this.props.disposition == SampleDispositionOptions.dispose}
                             onChange={this._onChange}
                         />
-                        {SampleDispositionOptions.dipose}
+                        {SampleDispositionOptions.dispose}
                     </label>
                 </p>
                 <p>
