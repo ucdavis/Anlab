@@ -25,6 +25,8 @@ namespace Anlab.Core.Models
         public string Commodity { get; set; }
         public DateTime DateSampled { get; set; }
 
+        public string SampleDisposition { get; set; }
+
         [DataType(DataType.MultilineText)]
         public string LabComments { get; set; }
         public decimal AdjustmentAmount { get; set; }

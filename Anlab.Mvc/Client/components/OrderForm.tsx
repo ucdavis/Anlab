@@ -8,6 +8,7 @@ import { AdditionalInfo } from "./AdditionalInfo";
 import { ClientId, IClientInfo } from "./ClientId";
 import { Commodity } from "./Commodity";
 import { DateSampled } from "./DateSampled";
+import { SampleDisposition, SampleDispositionOptions } from "./SampleDisposition";
 import { IPayment, PaymentSelection } from "./PaymentSelection";
 import { IOtherPaymentInfo } from "./OtherPaymentQuestions";
 import { Project } from "./Project";
@@ -17,6 +18,7 @@ import {
   SampleTypeQuestions
 } from "./SampleTypeQuestions";
 import { SampleTypeSelection } from "./SampleTypeSelection";
+import { SamplePlantQuestionsOptions } from "./SamplePlantQuestions";
 import Summary from "./Summary";
 import { ITestItem, TestList } from "./TestList";
 import { ViewMode } from "./ViewMode";
@@ -49,6 +51,7 @@ interface IOrderFormState {
   filteredTests: ITestItem[];
   commodity: string;
   dateSampled: any;
+  sampleDisposition: string;
   payment: IPayment;
   otherPaymentInfo: IOtherPaymentInfo;
   quantity?: number;
@@ -78,6 +81,7 @@ export default class OrderForm extends React.Component<
   private ucAccountRef: any;
   private otherPaymentInfoRef: any;
   private sampleDateRef: any;
+  private sampleDispositionRef: any;
 
   constructor(props) {
     super(props);
@@ -118,10 +122,10 @@ export default class OrderForm extends React.Component<
       placingOrder: true,
       project: "",
       quantity: null,
+      sampleDisposition: SampleDispositionOptions.dispose,
       sampleType: "",
       sampleTypeQuestions: {
-        plantReportingBasis:
-          "Report results on 100% dry weight basis, based on an average of 10% of the samples.",
+        plantReportingBasis: SamplePlantQuestionsOptions.average,
         soilImported: false,
         waterFiltered: false,
         waterPreservativeAdded: false,
@@ -147,16 +151,17 @@ export default class OrderForm extends React.Component<
       initialState.additionalEmails = orderInfo.AdditionalEmails;
       initialState.sampleType = orderInfo.SampleType;
       (initialState.sampleTypeQuestions = {
-        plantReportingBasis: orderInfo.SampleTypeQuestions.PlantReportingBasis,
-        soilImported: orderInfo.SampleTypeQuestions.SoilImported,
-        waterFiltered: orderInfo.SampleTypeQuestions.WaterFiltered,
-        waterPreservativeAdded:
+          plantReportingBasis: orderInfo.SampleTypeQuestions.PlantReportingBasis,
+          soilImported: orderInfo.SampleTypeQuestions.SoilImported,
+          waterFiltered: orderInfo.SampleTypeQuestions.WaterFiltered,
+          waterPreservativeAdded:
           orderInfo.SampleTypeQuestions.WaterPreservativeAdded,
-        waterPreservativeInfo:
+          waterPreservativeInfo:
           orderInfo.SampleTypeQuestions.WaterPreservativeInfo,
-        waterReportedInMgL: orderInfo.SampleTypeQuestions.WaterReportedInMgL
+          waterReportedInMgL: orderInfo.SampleTypeQuestions.WaterReportedInMgL
       }),
-        (initialState.project = orderInfo.Project);
+      initialState.sampleDisposition = orderInfo.SampleDisposition;
+      initialState.project = orderInfo.Project;
       initialState.commodity = orderInfo.Commodity;
       initialState.dateSampled = moment(orderInfo.DateSampled);
       initialState.isValid = true;
@@ -216,6 +221,7 @@ export default class OrderForm extends React.Component<
       project,
       commodity,
       dateSampled,
+      sampleDisposition,
       additionalEmails,
       status,
       clientInfo,
@@ -291,7 +297,8 @@ export default class OrderForm extends React.Component<
               (!!this.state.payment.clientType.trim() ||
                 !!this.state.project.trim())
             }
-          >
+                >
+                    <div>
             <div className="form_wrap">
               <label className="form_header">
                 What is the project title associated with this order?
@@ -307,40 +314,53 @@ export default class OrderForm extends React.Component<
                 commodity={commodity}
                 handleChange={this._handleChange}
               />
-              <div className="form_wrap">
-                  <label className="form_header">What date were the items sampled?</label>
-                  <DateSampled
-                      date={dateSampled}
-                      handleChange={this._handleChange}
-                      dateRef={inputRef => {
-                          this.sampleDateRef = inputRef;
-                      }}                  />
-            </div>
-            </div>
+                        </div>
+
+                        </div>
           </Collapse>
 
           <Collapse
             in={
-              !placingOrder ||
-              (!!this.state.project.trim() ||
+                !placingOrder ||
+                ((!!this.state.project.trim() && !!this.state.sampleDisposition.trim()) ||
                 this.state.quantity > 0 ||
                 !!this.state.sampleType.trim())
             }
           >
-            <div>
-              {placingOrder && (
-                <div className="form_wrap">
-                  <label className="form_header">
-                    Who should receive emails and results for this sample
-                    submission?
-                  </label>
-                  <AdditionalEmails
-                    addedEmails={additionalEmails}
-                    defaultEmail={defaultEmail}
-                    clientEmail={clientInfo.email}
-                    onEmailAdded={this._onEmailAdded}
-                    onDeleteEmail={this._onDeleteEmail}
-                  />
+                    <div>
+
+                {placingOrder && (<div>
+                    <div className="form_wrap">
+                        <label className="form_header">What date were the items sampled?</label>
+                        <DateSampled
+                            date={dateSampled}
+                            handleChange={this._handleChange}
+                            dateRef={inputRef => {
+                                this.sampleDateRef = inputRef;
+                            }} />
+                    </div>
+                    <div className="form_wrap">
+                        <label className="form_header">How would you like your samples disposed of?</label>
+                        <SampleDisposition
+                            disposition={sampleDisposition}
+                            handleChange={this._handleChange}
+                            sampleDispositionRef={inputRef => {
+                                this.sampleDispositionRef = inputRef;
+                            }} />
+                    </div>
+                    <div className="form_wrap">
+                      <label className="form_header">
+                        Who should receive emails and results for this sample
+                        submission?
+                      </label>
+                      <AdditionalEmails
+                        addedEmails={additionalEmails}
+                        defaultEmail={defaultEmail}
+                        clientEmail={clientInfo.email}
+                        onEmailAdded={this._onEmailAdded}
+                        onDeleteEmail={this._onDeleteEmail}
+                      />
+                    </div>
                 </div>
               )}
 
@@ -500,6 +520,10 @@ export default class OrderForm extends React.Component<
     if (!moment.isMoment(this.state.dateSampled))
         valid = false;
 
+      //check sample disposition is entered 
+    if (!this.state.sampleDisposition || !this.state.sampleDisposition.trim())
+        valid = false;
+
     // check special water requirements
     if (
       this.state.sampleType === "Water" &&
@@ -643,28 +667,30 @@ export default class OrderForm extends React.Component<
       return;
     }
     if (!this.state.clientInfoValid) {
-      this._focusInput(this.clientIdRef);
+        this._focusInput(this.clientIdRef);
     } else if (
-      this.state.payment.clientType === "uc" &&
-      (!this.state.payment.account ||
-        !this.state.payment.account.trim() ||
-        (this._checkUcChart(this.state.payment.account.charAt(0)) &&
-          this.state.payment.accountName == null))
+        this.state.payment.clientType === "uc" &&
+        (!this.state.payment.account ||
+            !this.state.payment.account.trim() ||
+            (this._checkUcChart(this.state.payment.account.charAt(0)) &&
+                this.state.payment.accountName == null))
     ) {
-      this._focusInput(this.ucAccountRef);
+        this._focusInput(this.ucAccountRef);
     } else if (
-      (this.state.payment.clientType === "other" &&
-        !this._checkOtherPaymentInfo()) ||
-      (this.state.payment.clientType === "uc" &&
-        !this._checkUcChart(this.state.payment.account.charAt(0)) &&
-        !this._checkOtherPaymentInfo())
+        (this.state.payment.clientType === "other" &&
+            !this._checkOtherPaymentInfo()) ||
+        (this.state.payment.clientType === "uc" &&
+            !this._checkUcChart(this.state.payment.account.charAt(0)) &&
+            !this._checkOtherPaymentInfo())
     ) {
-      this._focusInput(this.otherPaymentInfoRef);
+        this._focusInput(this.otherPaymentInfoRef);
     } else if (!this.state.project || !this.state.project.trim()) {
         this._focusInput(this.projectRef);
     } else if (!moment.isMoment(this.state.dateSampled)) {
         this._focusInput(this.sampleDateRef);
         this.sampleDateRef.click();
+    } else if (!this.state.sampleDisposition || !this.state.sampleDisposition.trim()) {
+        this._focusInput(this.sampleDispositionRef);
     } else if (this.state.quantity <= 0 || this.state.quantity > 100) {
       this._focusInput(this.quantityRef);
     } else if (
@@ -798,6 +824,7 @@ export default class OrderForm extends React.Component<
       payment: this.state.payment,
       project: this.state.project,
       quantity: this.state.quantity,
+      sampleDisposition: this.state.sampleDisposition,
       sampleType: this.state.sampleType,
       sampleTypeQuestions: this.state.sampleTypeQuestions,
       selectedTests: this.state.selectedTests
