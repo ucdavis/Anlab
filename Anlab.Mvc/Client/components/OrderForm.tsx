@@ -172,8 +172,8 @@ export default class OrderForm extends React.Component<
           acPhone: orderInfo.OtherPaymentInfo.AcPhone,
           companyName: orderInfo.OtherPaymentInfo.CompanyName,
           paymentType: orderInfo.OtherPaymentInfo.PaymentType,
-          poNum: orderInfo.OtherPaymentInfo.PoNum,
-          agreementRequired: false
+          poNum: orderInfo.OtherPaymentInfo.PoNum ? orderInfo.OtherPaymentInfo.PoNum : "",
+          agreementRequired: orderInfo.OtherPaymentInfo.PaymentType === "Agreement"
         };
       }
       initialState.clientInfo = {
