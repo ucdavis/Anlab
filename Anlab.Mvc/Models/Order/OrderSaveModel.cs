@@ -37,6 +37,9 @@ namespace AnlabMvc.Models.Order
         [Required]
         public DateTime DateSampled { get; set; }
 
+        [Required]
+        public string SampleDisposition { get; set; }
+
         public Payment Payment { get; set; }
 
         public string[] AdditionalEmails { get; set; } = new string[0];
