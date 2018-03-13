@@ -39,6 +39,8 @@ namespace Anlab.Core.Models
         public decimal ExternalProcessingFee { get; set; }
 
         public decimal? RushMultiplier { get; set; }
+
+        public string LabworksSampleDisposition { get; set; } //TODO: This is a code, just overwrite the text in SampleDisposition above instead of a new field?
     }
 
 }

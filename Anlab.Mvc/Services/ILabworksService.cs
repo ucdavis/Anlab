@@ -106,12 +106,12 @@ namespace AnlabMvc.Services
             var rtValue = new OrderUpdateFromDbModel();
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {
-                var sql = $"{QueryResource.AnlabTestsRunForOrder};{QueryResource.AnlabQuantityClientId};{QueryResource.AnlabRushMultiplierForOrder}";
+                var sql = $"{QueryResource.AnlabTestsRunForOrder};{QueryResource.AnlabSampleDetails};{QueryResource.AnlabRushMultiplierForOrder}";
 
                 using (var multi = await db.Connection.QueryMultipleAsync(sql, new {RequestNum}))
                 {
                     IEnumerable<string> codes = await multi.ReadAsync<string>();
-                    var quantityAndClientId = await multi.ReadAsync<OrderUpdateFromDbModel>();
+                    var sampleDetails = await multi.ReadAsync<OrderUpdateFromDbModel>();
                     var rush = await multi.ReadAsync<OrderUpdateFromDbModel>();
 
                     //TODO: maybe we should only return tests with a $ amount
@@ -120,12 +120,13 @@ namespace AnlabMvc.Services
                         throw new Exception("No codes found");
                     }
                     rtValue.TestCodes = codes as IList<string>;
-                    if (quantityAndClientId.Count() != 1)
+                    if (sampleDetails.Count() != 1)
                     {
-                        throw new Exception("Client Id / Quantity not found");
+                        throw new Exception("(Sample Details) Client Id / Quantity not found");
                     }
-                    rtValue.ClientId = quantityAndClientId.ElementAtOrDefault(0).ClientId;
-                    rtValue.Quantity = quantityAndClientId.ElementAtOrDefault(0).Quantity;
+                    rtValue.ClientId = sampleDetails.ElementAtOrDefault(0).ClientId;
+                    rtValue.Quantity = sampleDetails.ElementAtOrDefault(0).Quantity;
+                    rtValue.Disposition = sampleDetails.ElementAtOrDefault(0).Disposition;
 
                     if (rush.Count() == 1)
                     {

@@ -157,6 +157,7 @@ namespace AnlabMvc.Services
 
             var orderDetails = orderToUpdate.GetOrderDetails();
             orderDetails.Quantity = orderFromDb.Quantity;
+            orderDetails.LabworksSampleDisposition = orderFromDb.Disposition; //Don't think this is doing anything
 
             var calcualtedTests = new List<TestDetails>();
             foreach (var test in tests)
@@ -168,6 +169,7 @@ namespace AnlabMvc.Services
             rtValue.ClientId = orderFromDb.ClientId;
             rtValue.Quantity = orderFromDb.Quantity;
             rtValue.RushMultiplier = orderFromDb.RushMultiplier;
+            rtValue.LabworksSampleDisposition = orderFromDb.Disposition;
 
             return rtValue;
         }

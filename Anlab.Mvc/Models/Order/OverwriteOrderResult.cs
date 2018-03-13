@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,6 +20,7 @@ namespace AnlabMvc.Models.Order
         public int Quantity { get; set; }
         
         public decimal RushMultiplier { get; set; }
+        public string LabworksSampleDisposition { get; set; }
 
         public bool WasError => MissingCodes.Count > 0;
     }
