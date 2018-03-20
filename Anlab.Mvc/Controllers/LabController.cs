@@ -186,6 +186,7 @@ namespace AnlabMvc.Controllers
             orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
             orderDetails.Total = orderDetails.Total * result.RushMultiplier;
             orderDetails.RushMultiplier = result.RushMultiplier;
+            orderDetails.LabworksSampleDisposition = result.LabworksSampleDisposition;
             
             order.SaveDetails(orderDetails);
 
@@ -278,7 +279,8 @@ namespace AnlabMvc.Controllers
             orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
             orderDetails.Total = orderDetails.Total * result.RushMultiplier;
             orderDetails.RushMultiplier = result.RushMultiplier;
-            
+            orderDetails.LabworksSampleDisposition = result.LabworksSampleDisposition;
+
             order.SaveDetails(orderDetails);
 
             var model = new OrderReviewModel();
@@ -330,6 +332,7 @@ namespace AnlabMvc.Controllers
             orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
             orderDetails.Total = orderDetails.Total * result.RushMultiplier;
             orderDetails.RushMultiplier = result.RushMultiplier;
+            orderDetails.LabworksSampleDisposition = result.LabworksSampleDisposition;
 
             orderDetails.LabComments = model.LabComments;
             orderDetails.AdjustmentAmount = model.AdjustmentAmount;

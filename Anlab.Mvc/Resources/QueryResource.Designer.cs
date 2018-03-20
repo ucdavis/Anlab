@@ -109,22 +109,22 @@ namespace AnlabMvc.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT COUNT(LOCCODE) AS Quantity, LOCCODE as ClientId FROM dbo.SAMPLE
-        ///GROUP BY LOGBATCH, LOCCODE 
-        ///HAVING (LOGBATCH = @RequestNum).
-        /// </summary>
-        internal static string AnlabQuantityClientId {
-            get {
-                return ResourceManager.GetString("AnlabQuantityClientId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to SELECT DISTINCT([RUSHYNP]) as RushMultiplier FROM [dbo].[SUSERFLDS] where RUSHYNP != &apos;N&apos; and WORK_REQ = @RequestNum.
         /// </summary>
         internal static string AnlabRushMultiplierForOrder {
             get {
                 return ResourceManager.GetString("AnlabRushMultiplierForOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT COUNT(LOCCODE) AS Quantity, LOCCODE as ClientId, SAMPCOL as Disposition FROM dbo.SAMPLE
+        ///GROUP BY LOGBATCH, LOCCODE, SAMPCOL  
+        ///HAVING (LOGBATCH = @RequestNum).
+        /// </summary>
+        internal static string AnlabSampleDetails {
+            get {
+                return ResourceManager.GetString("AnlabSampleDetails", resourceCulture);
             }
         }
         
