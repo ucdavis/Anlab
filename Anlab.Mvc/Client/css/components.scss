@@ -225,7 +225,7 @@
   margin-bottom: 24px;
   .pagetitle_banner_contents {
     @include boundary;
-    height: 80px;
+    min-height: 80px;
     display: flex;
     align-items: flex-end;
     padding-bottom: 8px;
