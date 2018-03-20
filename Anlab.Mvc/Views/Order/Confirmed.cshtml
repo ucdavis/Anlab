@@ -122,6 +122,10 @@
               <strong>Date Sampled</strong>
               <span>@Model.OrderDetails.DateSampled.ToLongDateString()</span>
           </div>
+          <div class="form-group">
+              <strong>Sample Disposition</strong>
+              <span>@Model.OrderDetails.SampleDisposition</span>
+          </div>
          <div class="form-group">
             <strong>Number of Samples Submitted:</strong>
             <span>@Model.OrderDetails.Quantity</span>

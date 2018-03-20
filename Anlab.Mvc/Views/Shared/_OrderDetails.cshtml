@@ -56,10 +56,20 @@
 
 }
 
-    <div class="form-group">
-        <strong>Date Sampled</strong>
-        <span>@Model.OrderDetails.DateSampled.ToShortDateString()</span>
-    </div>
+<div class="form-group">
+    <strong>Date Sampled</strong>
+    <span>@Model.OrderDetails.DateSampled.ToShortDateString()</span>
+</div>
+<div class="form-group">
+    <strong>Sample Disposition</strong>
+    <span>
+        @Model.OrderDetails.SampleDisposition
+        @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.LabworksSampleDisposition) && (User != null && User.IsInRole(RoleCodes.Admin)))
+        {
+            <span> (<strong>LabCode:</strong> @Model.OrderDetails.LabworksSampleDisposition)</span>
+        }
+    </span>
+</div>
 
 @if (Model.Order.AdditionalEmails.Length > 0)
 {
