@@ -87,7 +87,7 @@ export default class OrderForm extends React.Component<
     super(props);
 
     const initialState: IOrderFormState = {
-        additionalEmails: this.props.defaultCopyEmail ? [this.props.defaultCopyEmail] : [],
+        additionalEmails: (this.props.defaultCopyEmail && this.props.defaultCopyEmail !== this.props.defaultEmail) ? [this.props.defaultCopyEmail] : [],
       additionalInfo: "",
       additionalInfoList: {},
       commodity: "",
@@ -625,7 +625,8 @@ export default class OrderForm extends React.Component<
       {
           newState[keys[i]] = values[i];
       }
-      if (!!copyToEmail && this.state.additionalEmails.indexOf(copyToEmail) === -1) {
+      if (!!copyToEmail && copyToEmail !== this.props.defaultEmail &&
+          this.state.additionalEmails.indexOf(copyToEmail) === -1) {
           newAdditionalEmails = [...newAdditionalEmails, copyToEmail];
       }
       this.setState({
