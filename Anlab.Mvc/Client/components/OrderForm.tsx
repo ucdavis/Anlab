@@ -87,7 +87,7 @@ export default class OrderForm extends React.Component<
     super(props);
 
     const initialState: IOrderFormState = {
-      additionalEmails: [],
+        additionalEmails: (this.props.defaultCopyEmail && this.props.defaultCopyEmail !== this.props.defaultEmail) ? [this.props.defaultCopyEmail] : [],
       additionalInfo: "",
       additionalInfoList: {},
       commodity: "",
@@ -106,7 +106,6 @@ export default class OrderForm extends React.Component<
             ? this.props.defaultClientIdName
             : "",
         phoneNumber: "",
-        copyEmail: this.props.defaultCopyEmail ? this.props.defaultCopyEmail : "",
       },
       clientInfoValid: (this.props.defaultClientId && this.props.defaultClientIdName) ? true: false,
       payment: { clientType: "uc", account: "" },
@@ -188,7 +187,6 @@ export default class OrderForm extends React.Component<
         department: orderInfo.ClientInfo.Department,
         name: orderInfo.ClientInfo.Name,
         phoneNumber: orderInfo.ClientInfo.PhoneNumber,
-        copyEmail: orderInfo.ClientInfo.CopyEmail,
       };
       initialState.clientInfoValid = true;
       initialState.additionalInfoList = orderInfo.AdditionalInfoList;
@@ -358,7 +356,6 @@ export default class OrderForm extends React.Component<
                       <AdditionalEmails
                         addedEmails={additionalEmails}
                         defaultEmail={defaultEmail}
-                        copyEmail={clientInfo.copyEmail}
                         clientEmail={clientInfo.email}
                         onEmailAdded={this._onEmailAdded}
                         onDeleteEmail={this._onDeleteEmail}
@@ -621,14 +618,19 @@ export default class OrderForm extends React.Component<
     this.setState({ quantity }, this._validate);
   };
 
-  private _updateClientInfo = (keys: string[], values: string[]) => {
+  private _updateClientInfo = (keys: string[], values: string[], copyToEmail?: string) => {
       let newState = { ...this.state.clientInfo }
+      let newAdditionalEmails = [...this.state.additionalEmails];
       for (var i = 0; i < keys.length; i++)
       {
           newState[keys[i]] = values[i];
       }
+      if (!!copyToEmail && copyToEmail !== this.props.defaultEmail &&
+          this.state.additionalEmails.indexOf(copyToEmail) === -1) {
+          newAdditionalEmails = [...newAdditionalEmails, copyToEmail];
+      }
       this.setState({
-          ...this.state, clientInfo: newState,
+          ...this.state, clientInfo: newState, additionalEmails: newAdditionalEmails
       }, this._validate);
   }
 
@@ -640,8 +642,6 @@ export default class OrderForm extends React.Component<
             name: "",
             email: "",
             phoneNumber: "",
-            subEmail: "",
-            copyEmail: "",
         };
       this.setState({
           ...this.state, clientInfo: clearInfo, clientInfoValid: false,

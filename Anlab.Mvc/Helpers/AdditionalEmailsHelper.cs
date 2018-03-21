@@ -15,14 +15,6 @@ namespace AnlabMvc.Helpers
             if (order.AdditionalEmails != null)
                 addEmailList = order.AdditionalEmails.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList();
 
-            if (!string.IsNullOrWhiteSpace(clientInfo.CopyEmail))
-            {
-                if (clientInfo.CopyEmail != order.Creator.Email && !addEmailList.Contains(clientInfo.CopyEmail))
-                {
-                    addEmailList.Add(clientInfo.CopyEmail);
-                }
-            }
-
             if (!string.IsNullOrWhiteSpace(clientInfo.Email))
             {
                 if (clientInfo.Email != order.Creator.Email && !addEmailList.Contains(clientInfo.Email))
