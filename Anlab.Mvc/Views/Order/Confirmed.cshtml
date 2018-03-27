@@ -48,12 +48,7 @@
                      <strong>Email:</strong>
                      <span>@Model.OrderDetails.ClientInfo.Email</span>
                  }
-                 @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.CopyEmail))
-                 {
-                     <br/>
-                     <strong>Copy To Email:</strong>
-                     <span>@Model.OrderDetails.ClientInfo.CopyEmail</span>
-                 }
+
                  @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.PhoneNumber))
                  {
                      <br/>
