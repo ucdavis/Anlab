@@ -24,6 +24,8 @@ namespace AnlabMvc.Services
         Task<OverwriteOrderResult> OverwiteOrderFromDb(Order orderToUpdate);
 
         Task UpdateTestsAndPrices(Order orderToUpdate);
+
+        Task<Order> DuplicateOrder(Order orderToCopy);
     }
 
     public class OrderService : IOrderService
@@ -124,6 +126,43 @@ namespace AnlabMvc.Services
             orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
 
             orderToUpdate.SaveDetails(orderDetails);
+        }
+
+        public async Task<Order> DuplicateOrder(Order orderToCopy)
+        {
+            var order = new Order();
+            order.Status = OrderStatusCodes.Created;
+            var allTests = await PopulateTestItemModel();
+            order.SaveTestDetails(allTests);
+
+            order.Project = orderToCopy.Project;
+            order.ClientId = order.ClientId;
+            order.ClientName = order.ClientName;
+            order.JsonDetails = orderToCopy.JsonDetails;
+            var orderDetails = order.GetOrderDetails();
+            var tests = CalculateTestDetails(order);
+
+            orderDetails.SelectedTests = tests.ToArray();
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
+
+            order.SaveDetails(orderDetails);
+
+            order.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails);
+
+            //order.AdditionalEmails = AdditionalEmailsHelper.AddClientInfoEmails(order, orderDetails.ClientInfo); //Maybe need to add person duplicating?
+
+            order.PaymentType = orderToCopy.PaymentType;
+
+            //May not need this because of the CalculateTestDetailsAbove. TODO: Test 1) When test is missing, 2) when test code is different price, 3) when test is not public.
+            //foreach (var orderDetailsSelectedTest in orderDetails.SelectedTests)
+            //{
+            //    if (!tests.Any(a => a.Id == orderDetailsSelectedTest.Id && a.Public))
+            //    {
+            //        orderDetails.SelectedTests.Remove(orderDetailsSelectedTest);
+            //    }
+            //}
+
+            return order;
         }
 
         /// <summary>

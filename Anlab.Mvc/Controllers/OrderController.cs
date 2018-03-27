@@ -126,6 +126,27 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> Copy(int id)
+        {
+            var orderToCopy = await _context.Orders.SingleOrDefaultAsync(o => o.Id == id);
+            if (orderToCopy == null)
+            {
+                return NotFound();
+            }
+
+            var user = _context.Users.Single(a => a.Id == CurrentUserId);
+
+            var order = await _orderService.DuplicateOrder(orderToCopy);
+            order.CreatorId = CurrentUserId;
+            order.Creator = user;
+            order.ShareIdentifier = Guid.NewGuid();
+
+            _context.Add(order);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Edit", new {id = order.Id});
+
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Save(OrderSaveModel model)
