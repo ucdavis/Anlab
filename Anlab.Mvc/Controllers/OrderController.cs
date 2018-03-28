@@ -126,9 +126,9 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Copy(int id)
+        public async Task<IActionResult> Copy(Guid id)
         {
-            var orderToCopy = await _context.Orders.SingleOrDefaultAsync(o => o.Id == id);
+            var orderToCopy = await _context.Orders.SingleOrDefaultAsync(o => o.ShareIdentifier == id);
             if (orderToCopy == null)
             {
                 return NotFound();

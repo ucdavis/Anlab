@@ -4,6 +4,18 @@
 @{
     ViewData["Title"] = "Details";
 }
+
+@section ActionButtons
+{
+    <p>
+        <a asp-action="Index" class="btn btn-default">Back to Orders</a>
+        <form asp-action="Copy" asp-controller="Order" method="post" autocomplete="off" style="margin-right: 3px; margin-left: 3px">
+            <input type="hidden" name="id" value="@Model.Order.ShareIdentifier" />
+            <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-files-o" aria-hidden="true"></i> Duplicate</button>
+        </form>
+    </p>
+}
+
 <div class="col">
 
 @Html.Partial("_OrderDetails")
