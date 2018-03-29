@@ -6,39 +6,51 @@
 }
 @section ActionButtons
 {
-    <p>
-        @if (Model.ShowCreditCardPayment)
-        {
-            <form action="@Model.CyberSourceUrl" method="post" autocomplete="off" style="margin-right: 3px">
-                @foreach (var pair in Model.PaymentDictionary)
-                {
-                    <input type="hidden" name="@pair.Key" value="@pair.Value"/>
-                }
-                <input type="hidden" name="signature" value="@ViewBag.Signature"/>
-                <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-credit-card" aria-hidden="true"></i> @(String.Format("{0:C}", Model.OrderReviewModel.OrderDetails.GrandTotal)) Pay Now</button>
-            </form>
-        }
-        else
-        {
-            if (!Model.OrderReviewModel.Order.Paid)
+<p>
+    @if (Model.ShowCreditCardPayment)
+    {
+        <form action="@Model.CyberSourceUrl" method="post" autocomplete="off" style="margin-right: 3px">
+            @foreach (var pair in Model.PaymentDictionary)
             {
-                @*<form asp-controller="Results" asp-action="ConfirmPayment" method="post" autocomplete="off" style="margin-right: 3px">
+                <input type="hidden" name="@pair.Key" value="@pair.Value" />
+            }
+            <input type="hidden" name="signature" value="@ViewBag.Signature" />
+            <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-credit-card" aria-hidden="true"></i> @(String.Format("{0:C}", Model.OrderReviewModel.OrderDetails.GrandTotal)) Pay Now</button>
+        </form>
+    }
+    else
+    {
+        if (!Model.OrderReviewModel.Order.Paid)
+        {
+            @*<form asp-controller="Results" asp-action="ConfirmPayment" method="post" autocomplete="off" style="margin-right: 3px">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" value="@Model.OrderReviewModel.Order.ShareIdentifier"/>
                     <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-money" aria-hidden="true"></i> Confirm Payment</button>
                 </form>*@
-                <a class="btn btn-small" asp-action="ConfirmPayment" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier">
-                    <i class="fa fa-money" aria-hidden="true"></i> Confirm Payment
-                </a>
-             }
-        }
-        @if (Model.OrderReviewModel.Order.Paid)
-        {
-            <a class="btn btn-small" asp-action="Download" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier">
-                <i class="fa fa-download" aria-hidden="true"></i> Download
+            <a class="btn btn-small" asp-action="ConfirmPayment" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier" style="margin-right: 3px">
+                <i class="fa fa-money" aria-hidden="true"></i> Confirm Payment
             </a>
         }
-    </p>
+    }
+    @if (Model.OrderReviewModel.Order.Paid)
+    {
+        <a class="btn btn-small" asp-action="Download" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier" style="margin-right: 3px">
+            <i class="fa fa-download" aria-hidden="true"></i> Download
+        </a>
+        @if (User.Identity.IsAuthenticated)
+         {
+             <form asp-action="Copy" asp-controller="Order" method="post" autocomplete="off">
+                 <input type="hidden" name="id" value="@Model.OrderReviewModel.Order.ShareIdentifier" />
+                 <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-files-o" aria-hidden="true"></i> Duplicate</button>
+             </form>
+         }
+         else
+         {
+             <button id="sign-in" class="btn btn-primary" aria-hidden="true"><i class="fa fa-files-o" aria-hidden="true"></i> Duplicate</button>
+         }
+    }
+
+</p>
 }
 
     
@@ -58,6 +70,9 @@
     <script type="text/javascript">
         $(function() {
             $("#table").dataTable();
+        });
+        $("#sign-in").on("click",function() {
+                alert("Please sign in first to duplicate the order");
         });
     </script>
 
