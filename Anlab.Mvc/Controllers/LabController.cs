@@ -155,6 +155,17 @@ namespace AnlabMvc.Controllers
                 ErrorMessage = $"Warning!!! Client Id is changing from {order.ClientId} to {result.ClientId}";
             }
 
+            order = await UpdateOrderFromLabworksResult(order, result);
+
+            await _dbContext.SaveChangesAsync();
+
+            Message = "Order updated from work request number";
+            return RedirectToAction("Confirmation", new { id = id });
+
+        }
+
+        private async Task<Order> UpdateOrderFromLabworksResult(Order order, OverwriteOrderResult result, LabFinalizeModel finalizeModel = null)
+        {
             order.ClientId = result.ClientId;
             order.ClientName = "[Not Found]"; //Updated below if we find it
             var orderDetails = order.GetOrderDetails();
@@ -186,14 +197,16 @@ namespace AnlabMvc.Controllers
             orderDetails.Total = orderDetails.Total * result.RushMultiplier;
             orderDetails.RushMultiplier = result.RushMultiplier;
             orderDetails.LabworksSampleDisposition = result.LabworksSampleDisposition;
-            
+
+            if (finalizeModel != null)
+            {
+                orderDetails.LabComments = finalizeModel.LabComments;
+                orderDetails.AdjustmentAmount = finalizeModel.AdjustmentAmount;
+            }
+
             order.SaveDetails(orderDetails);
 
-            await _dbContext.SaveChangesAsync();
-
-            Message = "Order updated from work request number";
-            return RedirectToAction("Confirmation", new { id = id });
-
+            return order;
         }
 
         public async Task<IActionResult> Confirmation(int id)
@@ -271,16 +284,7 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Orders");
             }
 
-            order.ClientId = result.ClientId;
-            var orderDetails = order.GetOrderDetails();
-            orderDetails.Quantity = result.Quantity;
-            orderDetails.SelectedTests = result.SelectedTests;
-            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
-            orderDetails.Total = orderDetails.Total * result.RushMultiplier;
-            orderDetails.RushMultiplier = result.RushMultiplier;
-            orderDetails.LabworksSampleDisposition = result.LabworksSampleDisposition;
-
-            order.SaveDetails(orderDetails);
+            order = await UpdateOrderFromLabworksResult(order, result);
 
             var model = new OrderReviewModel();
             model.Order = order;
@@ -323,20 +327,7 @@ namespace AnlabMvc.Controllers
             //File Upload
             order.ResultsFileIdentifier = await _fileStorageService.UploadFile(model.UploadFile);
 
-            order.ClientId = result.ClientId;
-            var orderDetails = order.GetOrderDetails();
-
-            orderDetails.Quantity = result.Quantity;
-            orderDetails.SelectedTests = result.SelectedTests;
-            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
-            orderDetails.Total = orderDetails.Total * result.RushMultiplier;
-            orderDetails.RushMultiplier = result.RushMultiplier;
-            orderDetails.LabworksSampleDisposition = result.LabworksSampleDisposition;
-
-            orderDetails.LabComments = model.LabComments;
-            orderDetails.AdjustmentAmount = model.AdjustmentAmount;
-
-            order.SaveDetails(orderDetails);
+            order = await UpdateOrderFromLabworksResult(order, result, model);
 
             await _orderMessageService.EnqueueFinalizedMessage(order, model.BypassEmail);
             var extraMessage = string.Empty;
