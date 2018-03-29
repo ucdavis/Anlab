@@ -173,11 +173,14 @@
     </tr>
     </thead>
     <tbody>
+    @{ var hiddenCosts = 0M; }
     @foreach (var test in @Model.OrderDetails.SelectedTests)
     {
+
         var temp = Model.Order.GetTestDetails().Where(a => a.Id == test.Id).FirstOrDefault();
         if (Model.HideLabDetails && !temp.Public)
         {
+            hiddenCosts += test.Total;
             continue;
         }
         <tr>
@@ -219,6 +222,14 @@
                 <span>@(String.Format("{0:C}", Model.OrderDetails.ExternalProcessingFee))</span>
             }</td>
         </tr>
+        @if (hiddenCosts > 0M)
+        {
+            <tr>
+                <th>Other Costs</th>
+                <td colSpan="3" />
+                <td><span>@(String.Format("{0:C}", hiddenCosts))</span></td>
+            </tr>
+        }
         @if (Model.OrderDetails.AdjustmentAmount != 0)
         {
             <tr>
