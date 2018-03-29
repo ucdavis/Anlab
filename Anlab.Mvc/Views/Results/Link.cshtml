@@ -37,18 +37,19 @@
         <a class="btn btn-small" asp-action="Download" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier" style="margin-right: 3px">
             <i class="fa fa-download" aria-hidden="true"></i> Download
         </a>
+        @if (User.Identity.IsAuthenticated)
+         {
+             <form asp-action="Copy" asp-controller="Order" method="post" autocomplete="off">
+                 <input type="hidden" name="id" value="@Model.OrderReviewModel.Order.ShareIdentifier" />
+                 <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-files-o" aria-hidden="true"></i> Duplicate</button>
+             </form>
+         }
+         else
+         {
+             <button id="sign-in" class="btn btn-primary" aria-hidden="true"><i class="fa fa-files-o" aria-hidden="true"></i> Duplicate</button>
+         }
     }
-    @if (User.Identity.IsAuthenticated)
-    {
-        <form asp-action="Copy" asp-controller="Order" method="post" autocomplete="off">
-            <input type="hidden" name="id" value="@Model.OrderReviewModel.Order.ShareIdentifier" />
-            <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-files-o" aria-hidden="true"></i> Duplicate</button>
-        </form>
-    }
-    else
-    {
-        <button id="sign-in" class="btn btn-primary" aria-hidden="true"><i class="fa fa-files-o" aria-hidden="true"></i> Duplicate</button>
-    }
+
 </p>
 }
 
