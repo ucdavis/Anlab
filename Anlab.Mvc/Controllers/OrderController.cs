@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Text.RegularExpressions;
 using AnlabMvc.Extensions;
+using AnlabMvc.Models.Roles;
 using Serilog;
 
 namespace AnlabMvc.Controllers
@@ -126,7 +127,7 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Copy(Guid id)
+        public async Task<IActionResult> Copy(Guid id, bool adminCopy = false)
         {
             var orderToCopy = await _context.Orders.SingleOrDefaultAsync(o => o.ShareIdentifier == id);
             if (orderToCopy == null)
@@ -141,8 +142,30 @@ namespace AnlabMvc.Controllers
             order.Creator = user;
             order.ShareIdentifier = Guid.NewGuid();
 
+            if (adminCopy) 
+            {
+                if (!User.IsInRole(RoleCodes.Admin))
+                {
+                    throw new Exception("Permissions Missing");
+                }
+                order.CreatorId = orderToCopy.CreatorId;
+                order.Creator = orderToCopy.Creator;
+                order.Status = OrderStatusCodes.Confirmed;
+                var orderDetails = order.GetOrderDetails();
+                var labComments = new StringBuilder(orderDetails.LabComments);
+                labComments.AppendLine();
+                labComments.AppendLine($"Duplicated from {orderToCopy.Id}");
+                orderDetails.LabComments = labComments.ToString();
+                order.SaveDetails(orderDetails);
+                order.SavedTestDetails = orderToCopy.SavedTestDetails; //Use the test codes the original order was created from
+            }
+
             _context.Add(order);
             await _context.SaveChangesAsync();
+            if (adminCopy)
+            {
+                return RedirectToAction("AddRequestNumber", "Lab", new {id = order.Id});
+            }
             return RedirectToAction("Edit", new {id = order.Id});
 
         }
