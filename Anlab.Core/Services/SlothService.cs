@@ -82,11 +82,12 @@ namespace Anlab.Core.Services
                 }
                 else
                 {
-                    Log.Information($"Sloth Response didn't have a success code for order {order.Id}");
+                    Log.Information("Sloth Response didn't have a success code for order {id}", order.Id);
+                    var badContent = await response.Content.ReadAsStringAsync();
+                    var slothMessage = JsonConvert.DeserializeObject(badContent);
+                    Log.ForContext("data", slothMessage, true).Information("Sloth message response");
                 }
 
-                //var content2 = await response.Content.ReadAsStringAsync();
-                //var xxx = JsonConvert.DeserializeObject(content2);
 
             }
 
