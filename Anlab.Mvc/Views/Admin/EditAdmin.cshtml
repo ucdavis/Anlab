@@ -1,0 +1,66 @@
+@using AnlabMvc.Models.Roles
+@model AnlabMvc.Models.User.UserRolesModel
+
+@{
+    ViewData["Title"] = "Edit Admin Roles";
+}
+
+<div class="col">
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.User.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.User.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.Email)
+        </dd>
+    </dl>
+
+    @if (Model.IsAdmin)
+    {
+        <form method="post" asp-action="AddUserToRole" asp-route-userId="@Model.User.Id" asp-route-role=@RoleCodes.Admin asp-route-add="false" asp-antiforgery="true" style="margin: 3px">
+            <button class="btn btn-red" type="submit"><i class="fa fa-trash"></i> Admin</button>
+        </form>
+    }
+    else
+    {
+        <form method="post" asp-action="AddUserToRole" asp-route-userId="@Model.User.Id" asp-route-role=@RoleCodes.Admin asp-route-add="true" asp-antiforgery="true" style="margin: 3px">
+            <button class="btn btn-default" type="submit"><i class="fa fa-plus"></i> Admin</button>
+        </form>
+    }
+    @if (Model.IsLabUser)
+    {
+        <form method="post" asp-action="AddUserToRole" asp-route-userId="@Model.User.Id" asp-route-role=@RoleCodes.LabUser asp-route-add="false" asp-antiforgery="true" style="margin: 3px">
+            <button class="btn btn-red" type="submit"><i class="fa fa-trash"></i> Lab User</button>
+        </form>
+
+    }
+    else
+    {
+        <form method="post" asp-action="AddUserToRole" asp-route-userId="@Model.User.Id" asp-route-role=@RoleCodes.LabUser asp-route-add="true" asp-antiforgery="true" style="margin: 3px">
+            <button class="btn btn-default" type="submit"><i class="fa fa-plus"></i> Lab User</button>
+        </form>
+    }
+    @if (Model.IsReports)
+    {
+        <form method="post" asp-action="AddUserToRole" asp-route-userId="@Model.User.Id" asp-route-role=@RoleCodes.Reports asp-route-add="false" asp-antiforgery="true" style="margin: 3px">
+            <button class="btn btn-red" type="submit"><i class="fa fa-trash"></i> Reports</button>
+        </form>
+    }
+    else
+    {
+        <form method="post" asp-action="AddUserToRole" asp-route-userId="@Model.User.Id" asp-route-role=@RoleCodes.Reports asp-route-add="true" asp-antiforgery="true" style="margin: 3px">
+            <button class="btn btn-default" type="submit"><i class="fa fa-plus"></i> Reports</button>
+        </form>
+    }
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>
+

@@ -21,45 +21,7 @@
     {
         <tr>
             <td>
-                @if (user.IsAdmin)
-                {
-                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role=@RoleCodes.Admin asp-route-add="false" asp-antiforgery="true">
-                        <button class="btn btn-red" type="submit"><i class="fa fa-trash"></i> Admin</button>
-                    </form>
-                }
-                else
-                {
-                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role=@RoleCodes.Admin asp-route-add="true" asp-antiforgery="true">
-                        <button class="btn btn-default" type="submit"><i class="fa fa-plus"></i> Admin</button>
-                    </form>
-                }
-                @if (user.IsLabUser)
-                {
-                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role=@RoleCodes.LabUser asp-route-add="false" asp-antiforgery="true">
-                        <button class="btn btn-red" type="submit"><i class="fa fa-trash"></i> Lab User</button>
-                    </form>
-
-                }
-                else
-                {
-                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role=@RoleCodes.LabUser asp-route-add="true" asp-antiforgery="true">
-                        <button class="btn btn-default" type="submit"><i class="fa fa-plus"></i> Lab User</button>
-                    </form>
-                }
-                @if (user.IsReports)
-                {
-                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role=@RoleCodes.Reports asp-route-add="false" asp-antiforgery="true">
-                        <button class="btn btn-red" type="submit"><i class="fa fa-trash"></i> Reports</button>
-                    </form>
-                }
-                else
-                {
-                    <form method="post" asp-action="AddUserToRole" asp-route-userId="@user.User.Id" asp-route-role=@RoleCodes.Reports asp-route-add="true" asp-antiforgery="true">
-                        <button class="btn btn-default" type="submit"><i class="fa fa-plus"></i> Reports</button>
-                    </form>
-                }
-
-
+                <a asp-action="EditAdmin" asp-route-id="@user.User.Id" class="btn btn-primary">Edit Roles</a>
             </td>
             <td>@user.User.Name</td>
             <td>@user.User.Email</td>

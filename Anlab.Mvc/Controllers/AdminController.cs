@@ -49,6 +49,19 @@ namespace AnlabMvc.Controllers
             return View(usersInRoles);
         }
 
+        [Authorize(Roles = RoleCodes.Admin)]
+        [HttpGet]
+        public async Task<IActionResult> EditAdmin(string id)
+        {
+            var model = new UserRolesModel();
+            model.User = _dbContext.Users.Single(a => a.Id == id);
+            model.IsAdmin = await _userManager.IsInRoleAsync(model.User, RoleCodes.Admin);
+            model.IsLabUser = await _userManager.IsInRoleAsync(model.User, RoleCodes.LabUser);
+            model.IsReports = await _userManager.IsInRoleAsync(model.User, RoleCodes.Reports);
+
+            return View(model);
+        }
+
         public async Task<IActionResult> ListClients()
         {
             // TODO: filter out admin and lab users
@@ -120,7 +133,7 @@ namespace AnlabMvc.Controllers
                 await _userManager.RemoveFromRoleAsync(user, role);
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("EditAdmin", new {id=user.Id});
         }
 
         [Authorize(Roles =  RoleCodes.Admin)]
