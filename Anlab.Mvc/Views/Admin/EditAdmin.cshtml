@@ -1,0 +1,36 @@
+@using AnlabMvc.Models.Roles
+@using AnlabMvc.Models.User
+@model AnlabMvc.Models.User.UserRolesModel
+
+@{
+    ViewData["Title"] = "Edit Admin Roles";
+}
+
+<div class="col">
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.User.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.User.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.Email)
+        </dd>
+    </dl>
+
+
+    @Html.Partial("_EditAdminForm", new EditAdminModel { User = Model.User, RoleCode = RoleCodes.Admin, IsActive = Model.IsAdmin })
+    @Html.Partial("_EditAdminForm", new EditAdminModel { User = Model.User, RoleCode = RoleCodes.LabUser, IsActive = Model.IsLabUser })
+    @Html.Partial("_EditAdminForm", new EditAdminModel { User = Model.User, RoleCode = RoleCodes.Reports, IsActive = Model.IsReports })
+
+   
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>
+
