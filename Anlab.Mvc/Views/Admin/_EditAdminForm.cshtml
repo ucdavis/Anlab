@@ -1,0 +1,6 @@
+@using Humanizer
+@model AnlabMvc.Models.User.EditAdminModel
+
+<form method="post" asp-action="AddUserToRole" asp-route-userId="@Model.User.Id" asp-route-role="@Model.RoleCode" asp-route-add="@(Model.IsActive ? "false" : "true")" asp-antiforgery="true" style="margin: 3px">
+    <button class="btn @(Model.IsActive ? "btn-red" : "btn-default")" type="submit"><i class="fa @(Model.IsActive ? "fa-trash" : "fa-plus")"></i> @Model.RoleCode.Humanize()</button>
+</form>
