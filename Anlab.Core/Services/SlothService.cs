@@ -84,8 +84,8 @@ namespace Anlab.Core.Services
                 {
                     Log.Information("Sloth Response didn't have a success code for order {id}", order.Id);
                     var badContent = await response.Content.ReadAsStringAsync();
-                    //var slothMessage = JsonConvert.DeserializeObject(badContent);
-                    Log.ForContext("data", badContent, true).Information("Sloth message response");
+                    var slothMessage = JsonConvert.DeserializeObject(badContent);
+                    Log.ForContext("data", slothMessage, false).Information("Sloth message response");
                 }
 
 
