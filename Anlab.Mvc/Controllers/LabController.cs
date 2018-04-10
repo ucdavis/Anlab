@@ -343,7 +343,7 @@ namespace AnlabMvc.Controllers
                 }
                 else
                 {
-                    ErrorMessage = "There was a problem processing the payment for this account.";
+                    ErrorMessage = $"There was a problem processing the payment for this account. {slothResult.Message}";
                     return RedirectToAction("Finalize");
                 }
             }
