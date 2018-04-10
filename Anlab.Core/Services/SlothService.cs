@@ -80,17 +80,17 @@ namespace Anlab.Core.Services
                     return JsonConvert.DeserializeObject<SlothResponseModel>(content);
 
                 }
-                else
-                {
-                    Log.Information("Sloth Response didn't have a success code for order {id}", order.Id);
-                    var badContent = await response.Content.ReadAsStringAsync();                    
-                    Log.ForContext("data", badContent, true).Information("Sloth message response");
-                }
 
 
-            }
+                Log.Information("Sloth Response didn't have a success code for order {id}", order.Id);
+                var badContent = await response.Content.ReadAsStringAsync();                    
+                Log.ForContext("data", badContent, true).Information("Sloth message response");
+                var rtValue = JsonConvert.DeserializeObject<SlothResponseModel>(badContent);
+                rtValue.Success = false;
 
-            return new SlothResponseModel { Success = false };
+                return rtValue;
+                
+            }           
         }
 
         public async Task MoneyHasMoved()

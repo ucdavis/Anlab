@@ -1,4 +1,4 @@
-﻿
+
 using System;
 
 namespace Anlab.Jobs.MoneyMovement
@@ -10,5 +10,6 @@ namespace Anlab.Jobs.MoneyMovement
         public string Status { get; set; }
 
         public bool Success { get; set; } = true;
+        public string Message { get; set; } //Error Message
     }
 }
