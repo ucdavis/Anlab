@@ -28,12 +28,12 @@ namespace AnlabMvc.Services
             string url;
             if (!String.IsNullOrWhiteSpace(accountModel.SubAccount))
             {
-                url = String.Format("{0}/subaccount/{1}/{2}/{3}", _appSettings.FinancialLookupUrl,
-                    accountModel.Chart, accountModel.Account, accountModel.SubAccount);
+                url = String.Format("{0}/subaccount/{1}/{2}/{3}/name", _appSettings.FinancialLookupUrl,
+                    accountModel.Chart, accountModel.Account, accountModel.SubAccount); //This fails
             }
             else
             {
-                url = String.Format("{0}/account/{1}/{2}", _appSettings.FinancialLookupUrl, accountModel.Chart,
+                url = String.Format("{0}/account/{1}/{2}/name", _appSettings.FinancialLookupUrl, accountModel.Chart,
                     accountModel.Account);
             }
             using (var client = new HttpClient())
@@ -43,22 +43,10 @@ namespace AnlabMvc.Services
 
 
                 var contents = await response.Content.ReadAsStringAsync();
-                var kfsDetails = JsonConvert.DeserializeObject<KfsLookup>(contents);
-                if (kfsDetails.Closed || kfsDetails.AccountExpirationDate != null && kfsDetails.AccountExpirationDate.Value <= DateTime.UtcNow.ToPacificTime())
-                {
-                    throw new Exception("Closed or expired");
-                }
-                return JsonConvert.SerializeObject(kfsDetails.AccountName);
+                return contents;
             }
 
         }
     }
 
-    public class KfsLookup
-    {
-        public string AccountName { get; set; }
-        public DateTime? AccountExpirationDate { get; set; }
-
-        public bool Closed { get; set; }
-    }
 }
