@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Anlab.Core.Domain;
 using Test.Helpers;
+using TestHelpers.Helpers;
 using Xunit;
 
 namespace Test.TestsDatabase

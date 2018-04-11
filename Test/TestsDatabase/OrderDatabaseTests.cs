@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Shouldly;
 using System.Linq;
 using System.Threading.Tasks;
+using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Test.Helpers;
+using TestHelpers.Helpers;
 using Xunit;
 
 namespace Test.TestsDatabase
@@ -15,7 +17,7 @@ namespace Test.TestsDatabase
         [Fact]
         public void OrdersCanBeWrittenToDatabaseWithExistingUser()
         {
-            using (var contextHelper = new ContextHelper())
+            using (var contextHelper = new ContextHelper<ApplicationDbContext>())
             {
 
                 contextHelper.Context.Orders.Count().ShouldBe(0);
@@ -40,7 +42,7 @@ namespace Test.TestsDatabase
         [Fact]
         public void OrdersCanBeWrittenToDatabaseWithNewUser()
         {
-            using (var contextHelper = new ContextHelper())
+            using (var contextHelper = new ContextHelper<ApplicationDbContext>())
             {
                 contextHelper.Context.Orders.Count().ShouldBe(0);
 
@@ -67,7 +69,7 @@ namespace Test.TestsDatabase
         [Fact]
         public async Task TestTestAsyncSave()
         {
-            using (var contextHelper = new ContextHelper())
+            using (var contextHelper = new ContextHelper<ApplicationDbContext>())
             {
 
                 (await contextHelper.Context.Orders.CountAsync()).ShouldBe(0);
@@ -94,7 +96,7 @@ namespace Test.TestsDatabase
         [InlineData(6)]
         public void OrdersCanBeWrittenToDatabaseWithTheoryWithHelper(int value)
         {
-            using (var contextHelper = new ContextHelper())
+            using (var contextHelper = new ContextHelper<ApplicationDbContext>())
             {
                 contextHelper.Context.Orders.Count().ShouldBe(0);
 
