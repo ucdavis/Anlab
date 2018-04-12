@@ -126,5 +126,57 @@ namespace Test.TestsModel
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(LabFinalizeModel));
         }
+
+        [Fact]
+        public void TestLabReceiveModelFieldsHaveExpectedAttributes()
+        {
+            #region Arrange
+            var expectedFields = new List<NameAndType>();
+            expectedFields.Add(new NameAndType("AdjustmentAmount", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("BypassEmail", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("Confirm", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("LabComments", "System.String", new List<string>()));
+            #endregion Arrange
+
+            AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(LabReceiveModel));
+        }
+
+        [Fact]
+        public void TestOrderDetailsFieldsHaveExpectedAttributes()
+        {
+            #region Arrange
+            var expectedFields = new List<NameAndType>();
+            expectedFields.Add(new NameAndType("AdditionalEmails", "System.String[]", new List<string>()));
+            expectedFields.Add(new NameAndType("AdditionalInfo", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DataTypeAttribute((System.ComponentModel.DataAnnotations.DataType)9)]"
+            }));
+            expectedFields.Add(new NameAndType("AdditionalInfoList", "System.Collections.Generic.Dictionary`2[System.String,System.String]", new List<string>()));
+            expectedFields.Add(new NameAndType("AdjustmentAmount", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("ClientInfo", "Anlab.Core.Models.ClientInfo", new List<string>()));
+            expectedFields.Add(new NameAndType("Commodity", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("DateSampled", "System.DateTime", new List<string>()));
+            expectedFields.Add(new NameAndType("ExternalProcessingFee", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("GrandTotal", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("InternalProcessingFee", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("LabComments", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DataTypeAttribute((System.ComponentModel.DataAnnotations.DataType)9)]"
+            }));
+            expectedFields.Add(new NameAndType("LabworksSampleDisposition", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("OtherPaymentInfo", "Anlab.Core.Models.OtherPaymentInfo", new List<string>()));
+            expectedFields.Add(new NameAndType("Payment", "Anlab.Core.Models.Payment", new List<string>()));
+            expectedFields.Add(new NameAndType("Project", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Quantity", "System.Int32", new List<string>()));
+            expectedFields.Add(new NameAndType("RushMultiplier", "System.Nullable`1[System.Decimal]", new List<string>()));
+            expectedFields.Add(new NameAndType("SampleDisposition", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("SampleType", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("SampleTypeQuestions", "Anlab.Core.Models.SampleTypeQuestions", new List<string>()));
+            expectedFields.Add(new NameAndType("SelectedTests", "System.Collections.Generic.IList`1[Anlab.Core.Models.TestDetails]", new List<string>()));
+            expectedFields.Add(new NameAndType("Total", "System.Decimal", new List<string>()));
+            #endregion Arrange
+
+            AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(OrderDetails));
+        }
     }
 }
