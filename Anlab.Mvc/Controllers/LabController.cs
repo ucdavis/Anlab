@@ -67,6 +67,7 @@ namespace AnlabMvc.Controllers
                     Paid = c.Paid,
                     ClientName = c.ClientName
                 })
+            .OrderByDescending(a => a.Updated)
             .Take(_maxShownOrders)
             .ToList();
 
