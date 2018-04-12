@@ -133,6 +133,7 @@ namespace Anlab.Core.Services
                     {
                         var content = await response.Content.ReadAsStringAsync();
                         var slothResponse = JsonConvert.DeserializeObject<SlothResponseModel>(content);
+                        Log.Information($"Order {order.Id} SlothResponseModel status {slothResponse.Status}. SlothTransactionId {order.SlothTransactionId.ToString()}");
                         if (slothResponse.Status == "Completed")
                         {
                             updatedCount++;
