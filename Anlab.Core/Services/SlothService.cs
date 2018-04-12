@@ -121,10 +121,12 @@ namespace Anlab.Core.Services
                     var response = await client.GetAsync(order.SlothTransactionId.ToString());
                     if (response.StatusCode == HttpStatusCode.NotFound)
                     {
+                        Log.Information($"Order {order.Id} NotFound. SlothTransactionId {order.SlothTransactionId.ToString()}"); //TODO: Log it
                         continue;
                     }
                     if (response.StatusCode == HttpStatusCode.NoContent)
                     {
+                        Log.Information($"Order {order.Id} NoContent. SlothTransactionId {order.SlothTransactionId.ToString()}"); //TODO: Log it
                         continue;
                     }
                     if (response.IsSuccessStatusCode)
@@ -142,8 +144,11 @@ namespace Anlab.Core.Services
                             Log.Information($"Order {order.Id} was cancelled. Setting back to unpaid");
                             roledBackCount++;
                             //TODO: Write to the notes field? Trigger off an email?
-                        }
-                        
+                        }                        
+                    }
+                    else
+                    {
+                        Log.Information($"Order {order.Id} Not Successful. Response code {response.StatusCode}. SlothTransactionId {order.SlothTransactionId.ToString()}"); //TODO: Log it
                     }
                 }
 
