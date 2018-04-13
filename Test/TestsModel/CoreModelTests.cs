@@ -178,5 +178,67 @@ namespace Test.TestsModel
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(OrderDetails));
         }
+        
+        [Fact]
+        public void TestOtherPaymentInfoFieldsHaveExpectedAttributes()
+        {
+            #region Arrange
+            var expectedFields = new List<NameAndType>();
+            expectedFields.Add(new NameAndType("AcAddr", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Account Contact Address\")]",
+                "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+            }));
+            expectedFields.Add(new NameAndType("AcEmail", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Account Contact Email\")]",
+                "[System.ComponentModel.DataAnnotations.EmailAddressAttribute()]",
+                "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+            }));
+            expectedFields.Add(new NameAndType("AcName", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Account Contact Name\")]",
+                "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+            }));
+            expectedFields.Add(new NameAndType("AcPhone", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Account Contact Phone Number\")]",
+                "[System.ComponentModel.DataAnnotations.PhoneAttribute()]",
+                "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+            }));
+            expectedFields.Add(new NameAndType("CompanyName", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Company/Campus Name\")]",
+                "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
+            }));
+            expectedFields.Add(new NameAndType("PaymentType", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Payment Type\")]"
+            }));
+            expectedFields.Add(new NameAndType("PoNum", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"PO #\")]"
+            }));
+            #endregion Arrange
+
+            AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(OtherPaymentInfo));
+        }
+
+        [Fact]
+        public void TestPaymentFieldsHaveExpectedAttributes()
+        {
+            #region Arrange
+            var expectedFields = new List<NameAndType>();
+            expectedFields.Add(new NameAndType("Account", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("AccountName", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("ClientType", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.RequiredAttribute(ErrorMessage = \"You must select the payment method.\")]"
+            }));
+            expectedFields.Add(new NameAndType("IsInternalClient", "System.Boolean", new List<string>()));
+            #endregion Arrange
+
+            AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(Payment));
+        }
     }
 }
