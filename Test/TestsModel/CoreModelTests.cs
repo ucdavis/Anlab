@@ -10,20 +10,6 @@ namespace Test.TestsModel
     public class CoreModelTests
     {
         [Fact]
-        public void TestSlothResponseModelFieldsHaveExpectedAttributes()
-        {
-            #region Arrange
-            var expectedFields = new List<NameAndType>();
-            expectedFields.Add(new NameAndType("Id", "System.Guid", new List<string>()));
-            expectedFields.Add(new NameAndType("KfsTrackingNumber", "System.String", new List<string>()));
-            expectedFields.Add(new NameAndType("Message", "System.String", new List<string>()));
-            expectedFields.Add(new NameAndType("Status", "System.String", new List<string>()));
-            expectedFields.Add(new NameAndType("Success", "System.Boolean", new List<string>()));
-            #endregion Arrange
-
-            AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(SlothResponseModel));
-        }
-        [Fact]
         public void TestAccountModelFieldsHaveExpectedAttributes()
         {
             #region Arrange
@@ -239,6 +225,77 @@ namespace Test.TestsModel
             #endregion Arrange
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(Payment));
+        }
+
+        [Fact]
+        public void TestSampleTypeQuestionsFieldsHaveExpectedAttributes()
+        {
+            #region Arrange
+            var expectedFields = new List<NameAndType>();
+            expectedFields.Add(new NameAndType("PlantReportingBasis", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("SoilImported", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("WaterFiltered", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("WaterPreservativeAdded", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("WaterPreservativeInfo", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("WaterReportedInMgL", "System.Boolean", new List<string>()));
+            #endregion Arrange
+
+            AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(SampleTypeQuestions));
+        }
+        [Fact]
+        public void TestSlothResponseModelFieldsHaveExpectedAttributes()
+        {
+            #region Arrange
+            var expectedFields = new List<NameAndType>();
+            expectedFields.Add(new NameAndType("Id", "System.Guid", new List<string>()));
+            expectedFields.Add(new NameAndType("KfsTrackingNumber", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Message", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Status", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Success", "System.Boolean", new List<string>()));
+            #endregion Arrange
+
+            AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(SlothResponseModel));
+        }
+        [Fact]
+        public void TestTestDetailsFieldsHaveExpectedAttributes()
+        {
+            #region Arrange
+            var expectedFields = new List<NameAndType>();
+            expectedFields.Add(new NameAndType("Analysis", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Cost", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("Id", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("SetupCost", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("SubTotal", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("Total", "System.Decimal", new List<string>()));
+            #endregion Arrange
+
+            AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(TestDetails));
+        }
+        [Fact]
+        public void TestTestItemModelFieldsHaveExpectedAttributes()
+        {
+            #region Arrange
+            var expectedFields = new List<NameAndType>();
+            expectedFields.Add(new NameAndType("AdditionalInfoPrompt", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Analysis", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Categories", "System.String[]", new List<string>()));
+            expectedFields.Add(new NameAndType("Category", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Code", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Description", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("ExternalCost", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("ExternalSetupCost", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("Group", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Id", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("InternalCost", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("InternalSetupCost", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("LabOrder", "System.Int32", new List<string>()));
+            expectedFields.Add(new NameAndType("Notes", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Public", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("RequestOrder", "System.Int32", new List<string>()));
+            expectedFields.Add(new NameAndType("Sop", "System.String", new List<string>()));
+            #endregion Arrange
+
+            AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(TestItemModel));
         }
     }
 }
