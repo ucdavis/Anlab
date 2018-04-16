@@ -297,5 +297,35 @@ namespace Test.TestsModel
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(TestItemModel));
         }
+        [Fact]
+        public void TestTransactionViewModelFieldsHaveExpectedAttributes()
+        {
+            #region Arrange
+            var expectedFields = new List<NameAndType>();
+            expectedFields.Add(new NameAndType("MerchantTrackingNumber", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Source", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("SourceType", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("TransactionDate", "System.DateTime", new List<string>()));
+            expectedFields.Add(new NameAndType("Transfers", "System.Collections.Generic.IList`1[Anlab.Jobs.MoneyMovement.TransferViewModel]", new List<string>()));
+            #endregion Arrange
+
+            AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(TransactionViewModel));
+        }
+        [Fact]
+        public void TestTransferViewModelFieldsHaveExpectedAttributes()
+        {
+            #region Arrange
+            var expectedFields = new List<NameAndType>();
+            expectedFields.Add(new NameAndType("Account", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Amount", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("Chart", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Description", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Direction", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("ObjectCode", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("SubAccount", "System.String", new List<string>()));
+            #endregion Arrange
+
+            AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(TransferViewModel));
+        }
     }
 }
