@@ -1,12 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
-using Anlab.Jobs.MoneyMovement;
-using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace AnlabMvc.Controllers
 {
