@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AnlabMvc.Controllers
@@ -11,8 +11,6 @@ namespace AnlabMvc.Controllers
         }
         public IActionResult SamplingAndPreparation()
         {
-            ViewData["Message"] = "Si .";
-
             return View();
         }
 
