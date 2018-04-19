@@ -2,12 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
+using Anlab.Core.Data;
+using Anlab.Core.Domain;
+using AnlabMvc;
 using AnlabMvc.Controllers;
 using AnlabMvc.Models.Roles;
+using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Moq;
 using Shouldly;
+using Test.Helpers;
 using TestHelpers.Helpers;
 using Xunit;
 using Xunit.Abstractions;
@@ -17,7 +27,114 @@ namespace Test.TestsController
     [Trait("Category", "ControllerTests")]
     public class OrderControllerTests
     {
-         //TODO
+        public Mock<ApplicationDbContext> MockDbContext { get; set; }
+        public Mock<HttpContext> MockHttpContext { get; set; }
+        public Mock<IOrderService> MockOrderService { get; set; }
+        public Mock<IOrderMessageService> MockOrderMessagingService { get; set; }
+        public Mock<ILabworksService> MockLabworksService { get; set; }
+        public Mock<IFinancialService> MockFinancialService { get; set; }
+        public Mock<IOptions<AppSettings>> MockAppSettings { get; set; }
+        public OrderControllerTests()
+        {
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, "Creator1"),
+            }));
+
+            //To return the user so can check identity.
+            MockHttpContext = new Mock<HttpContext>();
+            MockHttpContext.Setup(m => m.User).Returns(user);
+
+            MockOrderService = new Mock<IOrderService>();
+            MockOrderMessagingService = new Mock<IOrderMessageService>();
+            MockLabworksService = new Mock<ILabworksService>();
+            MockFinancialService = new Mock<IFinancialService>();
+            MockAppSettings = new Mock<IOptions<AppSettings>>();
+            MockDbContext = new Mock<ApplicationDbContext>();
+        }
+        [Fact]
+        public async Task OrderIndexReturnsView()
+        {
+            //Arrange
+            var data = new List<Order>
+            {
+                CreateValidEntities.Order(1),
+                CreateValidEntities.Order(2),
+                CreateValidEntities.Order(3)
+            };
+            data[2].CreatorId = "Creator1";
+            data[0].CreatorId = "Creator1";
+
+            //Mock context for Database
+            
+            MockDbContext.Setup(m => m.Orders).Returns(data.AsQueryable().MockAsyncDbSet().Object);
+            
+
+            var controller = new OrderController(MockDbContext.Object,
+                MockOrderService.Object,
+                MockOrderMessagingService.Object,
+                MockLabworksService.Object,
+                MockFinancialService.Object,
+                MockAppSettings.Object );
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = MockHttpContext.Object
+            };
+
+            //Act
+            var controllerResult = await controller.Index();
+
+            //Assert
+            var result = Assert.IsType<ViewResult>(controllerResult);
+            var model = Assert.IsType<Order[]>(result.Model);
+            model.Length.ShouldBe(2);
+            model[0].CreatorId.ShouldBe("Creator1");
+            model[1].CreatorId.ShouldBe("Creator1");
+        }
+
+        [Fact]
+        public async Task OrderIndexReturnsView2()
+        {
+            //Arrange
+            var data = new List<Order>
+            {
+                CreateValidEntities.Order(1),
+                CreateValidEntities.Order(2),
+                CreateValidEntities.Order(3)
+            };
+            data[2].CreatorId = "Creator1";
+            data[0].CreatorId = "Creator1";
+
+            //Mock context for Database
+
+            MockDbContext.Setup(m => m.Orders).Returns(data.AsQueryable().MockAsyncDbSet().Object);
+
+
+            var controller = new OrderController(MockDbContext.Object,
+                MockOrderService.Object,
+                MockOrderMessagingService.Object,
+                MockLabworksService.Object,
+                MockFinancialService.Object,
+                MockAppSettings.Object);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = MockHttpContext.Object
+            };
+
+            //Act
+            var controllerResult = await controller.Index();
+
+            //Assert
+            var result = Assert.IsType<ViewResult>(controllerResult);
+            var model = Assert.IsType<Order[]>(result.Model);
+            model.Length.ShouldBe(2);
+            model[0].CreatorId.ShouldBe("Creator1");
+            model[1].CreatorId.ShouldBe("Creator1");
+        }
+
+
+
+        //TODO
     }
 
     [Trait("Category", "Controller Reflection")]
