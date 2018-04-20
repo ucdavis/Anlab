@@ -41,6 +41,8 @@ namespace Test.TestsController
         //Setup Data
         public List<Order> OrderData { get; set; }
         public List<TestItemModel> TestItemModelData { get; set; }
+        public List<User> UserData { get; set; }
+        
 
 
         //Controller
@@ -78,10 +80,28 @@ namespace Test.TestsController
                 OrderData.Add(CreateValidEntities.Order(i + 1));
             }
 
+            var proc = new TestItemPrices();
+            proc.Id = "PROC";
+            proc.InternalCost = 6m;
+
+            var appSettings = new AppSettings();
+            appSettings.NonUcRate = 1.9m;
+
+            UserData = new List<User>()
+            {
+                CreateValidEntities.User(1, true),
+                CreateValidEntities.User(2, true)
+            };
+            UserData[0].Id = "Creator1";          
+
+
             //Setups
             MockHttpContext.Setup(m => m.User).Returns(user);
             MockDbContext.Setup(m => m.Orders).Returns(OrderData.AsQueryable().MockAsyncDbSet().Object);
+            MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);
             MockOrderService.Setup(a => a.PopulateTestItemModel(It.IsAny<bool>())).ReturnsAsync(TestItemModelData);
+            MockLabworksService.Setup(a => a.GetPrice("PROC")).ReturnsAsync(proc);
+            MockAppSettings.Setup(a => a.Value).Returns(appSettings);
 
             //The controller
             Controller = new OrderController(MockDbContext.Object,
@@ -121,38 +141,15 @@ namespace Test.TestsController
         [Fact]
         public async Task CreateCallsOrderService()
         {
+            var controllerResult = await Controller.Create();
+            MockOrderService.Verify(a => a.PopulateTestItemModel(It.IsAny<bool>()), Times.Once);
+        }
 
-            
-
-            var proc = new TestItemPrices();
-            proc.Id = "PROC";
-            proc.InternalCost = 6m;
-            MockLabworksService.Setup(a => a.GetPrice("PROC")).ReturnsAsync(proc);
-            var appSettings = new AppSettings();
-            appSettings.NonUcRate = 1.9m;
-
-            MockAppSettings.Setup(a => a.Value).Returns(appSettings);
-
-            var users = new List<User>()
-            {
-                CreateValidEntities.User(1, true)
-            };
-            users[0].Id = "Creator1";
-
-            MockDbContext.Setup(a => a.Users).Returns(users.AsQueryable().MockAsyncDbSet().Object);
-
-            var controller = new OrderController(MockDbContext.Object,
-                MockOrderService.Object,
-                MockOrderMessagingService.Object,
-                MockLabworksService.Object,
-                MockFinancialService.Object,
-                MockAppSettings.Object);
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = MockHttpContext.Object
-            };
-
-            var controllerResult = await controller.Create();
+        [Fact]
+        public async Task CreateCallsLabworksServiceGetPrice()
+        {
+            var controllerResult = await Controller.Create();
+            MockLabworksService.Verify(a => a.GetPrice("PROC"), Times.Once);
         }
 
 
