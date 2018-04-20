@@ -101,6 +101,7 @@ namespace Test.TestsController
             MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);
             MockOrderService.Setup(a => a.PopulateTestItemModel(It.IsAny<bool>())).ReturnsAsync(TestItemModelData);
             MockLabworksService.Setup(a => a.GetPrice("PROC")).ReturnsAsync(proc);
+            MockLabworksService.Setup(a => a.GetClientDetails(It.IsAny<string>())).ReturnsAsync(CreateValidEntities.ClientDetailsLookupModel(3));
             MockAppSettings.Setup(a => a.Value).Returns(appSettings);
 
             //The controller
@@ -152,7 +153,31 @@ namespace Test.TestsController
             MockLabworksService.Verify(a => a.GetPrice("PROC"), Times.Once);
         }
 
+        [Fact]
+        public async Task CreateDoesNotCallLabworksGetClientDetails()
+        {
+            UserData[0].ClientId = null;
+            var controllerResult = await Controller.Create();
+            MockLabworksService.Verify(a => a.GetClientDetails(It.IsAny<string>()), Times.Never);
+        }
 
+        [Fact]
+        public async Task CreateDoesCallLabworksGetClientDetails()
+        {
+            UserData[0].ClientId = "12345";
+            var controllerResult = await Controller.Create();
+            MockLabworksService.Verify(a => a.GetClientDetails("12345"), Times.Once);
+            MockLabworksService.Verify(a => a.GetClientDetails(It.IsAny<string>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task CreateReturnsViewWithExpectedData1()
+        {
+            UserData[0].ClientId = "12345";
+            var controllerResult = await Controller.Create();
+
+            //TODO
+        }
         //TODO
     }
 

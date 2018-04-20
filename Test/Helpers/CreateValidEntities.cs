@@ -67,5 +67,21 @@ namespace Test.Helpers
 
             return rtValue;
         }
+
+        public static ClientDetailsLookupModel ClientDetailsLookupModel(int? counter, bool populateAllFields = false)
+        {
+            var rtValue = new ClientDetailsLookupModel();
+            rtValue.CopyEmail = $"CopyEmail{counter}@test.com";
+            rtValue.ClientId = $"ClientId{counter}";
+            rtValue.CopyPhone = $"CopyPhone{counter}";
+            rtValue.DefaultAccount = $"DefaultAccount{counter}";
+            rtValue.Department = $"Department{counter}";
+            rtValue.Name = $"Name{counter}";
+            rtValue.SubEmail = $"CopyEmail{counter}@test.com";
+            rtValue.SubPhone = $"SubPhone{counter}";
+
+            return rtValue;
+
+        }
     }
 }
