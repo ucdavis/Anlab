@@ -4,12 +4,14 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using AnlabMvc;
 using AnlabMvc.Controllers;
+using AnlabMvc.Extensions;
 using AnlabMvc.Models.Order;
 using AnlabMvc.Models.Roles;
 using AnlabMvc.Services;
@@ -39,6 +41,7 @@ namespace Test.TestsController
         public Mock<ILabworksService> MockLabworksService { get; set; }
         public Mock<IFinancialService> MockFinancialService { get; set; }
         public Mock<IOptions<AppSettings>> MockAppSettings { get; set; }
+        public Mock<ClaimsPrincipal> MockClaimsPrincipal { get; set; }
 
         //Setup Data
         public List<Order> OrderData { get; set; }
@@ -57,12 +60,15 @@ namespace Test.TestsController
         {
             //To return the user so can check identity.
             MockHttpContext = new Mock<HttpContext>();
+
             MockOrderService = new Mock<IOrderService>();
             MockOrderMessagingService = new Mock<IOrderMessageService>();
             MockLabworksService = new Mock<ILabworksService>();
             MockFinancialService = new Mock<IFinancialService>();
             MockAppSettings = new Mock<IOptions<AppSettings>>();
             MockDbContext = new Mock<ApplicationDbContext>();
+            MockClaimsPrincipal = new Mock<ClaimsPrincipal>();
+            var mockDataProvider = new Mock<SessionStateTempDataProvider>();
 
             //Default data
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
@@ -79,7 +85,7 @@ namespace Test.TestsController
             OrderData = new List<Order>();
             for (int i = 0; i < 3; i++)
             {
-                var order = CreateValidEntities.Order(i + 1);
+                var order = CreateValidEntities.Order(i + 1, true);
                 order.Creator = CreateValidEntities.User(2);
                 OrderData.Add(order);
             }
@@ -98,14 +104,17 @@ namespace Test.TestsController
             };
             UserData[0].Id = "Creator1";
 
-            var tempDataProvider = new Mock<SessionStateTempDataProvider>();
-
             //Setups
-            MockHttpContext.Setup(m => m.User).Returns(user);
-            
+            MockClaimsPrincipal.Setup(a => a.Claims).Returns(user.Claims);
+            MockClaimsPrincipal.Setup(a => a.IsInRole(RoleCodes.Admin)).Returns(false);
+            MockClaimsPrincipal.Setup(a => a.FindFirst(It.IsAny<string>())).Returns(new Claim(ClaimTypes.NameIdentifier, "Creator1"));
+
+            MockHttpContext.Setup(m => m.User).Returns(MockClaimsPrincipal.Object);
+
+
 
             MockDbContext.Setup(m => m.Orders).Returns(OrderData.AsQueryable().MockAsyncDbSet().Object);
-            MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);
+            MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);            
             MockOrderService.Setup(a => a.PopulateTestItemModel(It.IsAny<bool>())).ReturnsAsync(TestItemModelData);
             MockLabworksService.Setup(a => a.GetPrice("PROC")).ReturnsAsync(proc);
             MockLabworksService.Setup(a => a.GetClientDetails(It.IsAny<string>())).ReturnsAsync(CreateValidEntities.ClientDetailsLookupModel(3));
@@ -123,7 +132,7 @@ namespace Test.TestsController
                 {
                     HttpContext = MockHttpContext.Object
                 },
-                TempData = new TempDataDictionary(MockHttpContext.Object, tempDataProvider.Object) 
+                TempData = new TempDataDictionary(MockHttpContext.Object, mockDataProvider.Object) 
             };
         }
         [Fact]
@@ -240,6 +249,166 @@ namespace Test.TestsController
             redirectResult.ActionName.ShouldBe("Index");
             redirectResult.ControllerName.ShouldBeNull();
         }
+
+        [Fact]
+        public async Task TestEditRedirectsToIndexWhenNotNotInCreatedStatus()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            OrderData[1].CreatorId = "Creator1";
+            Controller.ErrorMessage = null; //Clear just in case
+
+            // Act
+
+            var controllerResult = await Controller.Edit(2);
+            Controller.ErrorMessage.ShouldBe("You can\'t edit an order that has been confirmed.");
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Index");
+            redirectResult.ControllerName.ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task TestEditReturnsViewWithExpectedResults()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "Creator1";
+            OrderData[1].Status = OrderStatusCodes.Created;
+            OrderData[1].Creator = CreateValidEntities.User(7);
+
+            // Act
+            var controllerResult = await Controller.Edit(2);
+
+            // Assert
+            MockOrderService.Verify(a => a.PopulateTestItemModel(It.IsAny<bool>()), Times.Once);
+            MockLabworksService.Verify(a => a.GetPrice("PROC"), Times.Once);
+
+            var result = Assert.IsType<ViewResult>(controllerResult);
+            var model = Assert.IsType<OrderEditModel>(result.Model);
+            model.Order.ShouldNotBeNull();
+            model.Order.Id.ShouldBe(2);
+            model.TestItems.Length.ShouldBe(10);
+            model.InternalProcessingFee.ShouldBe(6m);
+            model.ExternalProcessingFee.ShouldBe(12m);
+            model.Defaults.DefaultEmail.ShouldBe("test7@testy.com");
+        }
+
+        [Fact]
+        public async Task TestCopyReturnsNotFoundIfOrderNotFound()
+        {
+            // Arrange
+            
+
+
+            // Act
+            var controllerResult = await Controller.Copy(Guid.NewGuid());
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+        }
+
+        [Fact]
+        public async Task TestCopySetsTheCreatorToCurrectUserWhenNotAdmin()
+        {
+            // Arrange
+            Order savedResult = null;
+            MockDbContext.Setup(a => a.Add(It.IsAny<Order>())).Callback<Order>(r => savedResult = r);
+
+
+            var copiedOrder = CreateValidEntities.Order(7);
+            copiedOrder.Creator = CreateValidEntities.User(5, true);
+            OrderData[1].CreatorId = "xxx";
+            OrderData[1].Creator = CreateValidEntities.User(5);
+            MockOrderService.Setup(a => a.DuplicateOrder(OrderData[1])).ReturnsAsync(copiedOrder);
+            // Act
+            var controllerResult = await Controller.Copy(SpecificGuid.GetGuid(2));
+
+            // Assert
+            MockOrderService.Verify(a => a.DuplicateOrder(OrderData[1]), Times.Once);
+            MockDbContext.Verify(a => a.Add(It.IsAny<Order>()), Times.Once);
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+
+            savedResult.ShouldNotBeNull();
+            savedResult.CreatorId.ShouldBe("Creator1");
+            savedResult.Creator.Id.ShouldBe("Creator1");
+            savedResult.ShareIdentifier.ShouldNotBe(SpecificGuid.GetGuid(2));
+
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Edit");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(savedResult.Id);
+        }
+
+        [Fact]
+        public void TestCopySetsTheCreatorToCurrectUserWhenAdminIsTrueButNotAdminRole()
+        {
+            // Arrange
+            Order savedResult = null;
+            MockDbContext.Setup(a => a.Add(It.IsAny<Order>())).Callback<Order>(r => savedResult = r);
+
+
+            var copiedOrder = CreateValidEntities.Order(7);
+            copiedOrder.Creator = CreateValidEntities.User(5, true);
+            OrderData[1].CreatorId = "xxx";
+            OrderData[1].Creator = CreateValidEntities.User(5);
+            MockOrderService.Setup(a => a.DuplicateOrder(OrderData[1])).ReturnsAsync(copiedOrder);
+
+            // Act
+            var ex = Assert.ThrowsAsync<Exception>(async () => await Controller.Copy(SpecificGuid.GetGuid(2), true));
+
+            // Assert
+
+            ex.Result.Message.ShouldBe("Permissions Missing");
+
+
+            MockOrderService.Verify(a => a.DuplicateOrder(OrderData[1]), Times.Once);
+            MockDbContext.Verify(a => a.Add(It.IsAny<Order>()), Times.Never);
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Never);
+        }
+
+        [Fact]
+        public async Task TestCopySetsTheCreatorToCurrectUserWhenAdminIsTrue()
+        {
+            MockClaimsPrincipal.Setup(a => a.IsInRole(RoleCodes.Admin)).Returns(true);
+
+            Order savedResult = null;
+            MockDbContext.Setup(a => a.Add(It.IsAny<Order>())).Callback<Order>(r => savedResult = r);
+
+
+            var copiedOrder = CreateValidEntities.Order(7, true);
+            var testItemModel = new List<TestItemModel>();
+            for (int i = 0; i < 5; i++)
+            {
+                testItemModel.Add(CreateValidEntities.TestItemModel(1));
+            }
+            copiedOrder.SaveTestDetails(testItemModel);
+
+            copiedOrder.Creator = CreateValidEntities.User(5, true);
+            OrderData[1].CreatorId = "xxx";
+            OrderData[1].Creator = CreateValidEntities.User(5);
+            MockOrderService.Setup(a => a.DuplicateOrder(OrderData[1])).ReturnsAsync(copiedOrder);
+            // Act
+            var controllerResult = await Controller.Copy(SpecificGuid.GetGuid(2), true);
+
+            // Assert
+            MockOrderService.Verify(a => a.DuplicateOrder(OrderData[1]), Times.Once);
+            MockDbContext.Verify(a => a.Add(It.IsAny<Order>()), Times.Once);
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+
+            savedResult.ShouldNotBeNull();
+            savedResult.CreatorId.ShouldBe("xxx");
+            savedResult.Creator.Id.ShouldBe("5");
+            savedResult.ShareIdentifier.ShouldNotBe(SpecificGuid.GetGuid(2));
+
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("AddRequestNumber");
+            redirectResult.ControllerName.ShouldBe("Lab");
+            redirectResult.RouteValues["id"].ShouldBe(savedResult.Id);
+
+            MockClaimsPrincipal.Verify(a => a.IsInRole(RoleCodes.Admin), Times.Once);
+
+            //DEBUG through this to see what else needs shoulding
+        }
+
 
         //TODO
     }

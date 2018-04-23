@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
+using TestHelpers.Helpers;
 
 namespace Test.Helpers
 {
@@ -14,19 +15,28 @@ namespace Test.Helpers
             rtValue.CreatorId = string.Format("CreatorId{0}", counter);
             rtValue.Project = string.Format("Project{0}", counter);
             rtValue.Creator = new User(); //Meh? test later
+            rtValue.ShareIdentifier = SpecificGuid.GetGuid(counter ?? 99);
 
             if (populateAllFields)
             {                
                 rtValue.LabId = string.Format("LabId{0}", counter);
                 rtValue.ClientId = string.Format("ClientId{0}", counter);
                 rtValue.AdditionalEmails = string.Format("AdditionalEmails{0}", counter);
-                rtValue.JsonDetails = string.Format("JsonDetails{0}", counter);
+                var orderDetails = CreateValidEntities.OrderDetails(counter);
+                rtValue.SaveDetails(orderDetails);
                 rtValue.Created = DateTime.Now;
                 rtValue.Updated = DateTime.Now;
             }
 
 
             rtValue.Id = counter ?? 99;
+
+            return rtValue;
+        }
+
+        public static OrderDetails OrderDetails(int? counter, bool populateAllFields = false)
+        {
+            var rtValue = new OrderDetails();
 
             return rtValue;
         }
@@ -63,6 +73,7 @@ namespace Test.Helpers
             var rtValue = new TestItemModel();
             rtValue.Id = $"{counter ?? 99}";
             rtValue.Code = $"Code{counter ?? 99}";
+            rtValue.Category = "Soil|Plant";
             //Add more if needed
 
             return rtValue;
