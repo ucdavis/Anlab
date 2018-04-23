@@ -10,6 +10,7 @@ using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using AnlabMvc;
 using AnlabMvc.Controllers;
+using AnlabMvc.Models.Order;
 using AnlabMvc.Models.Roles;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -176,7 +177,38 @@ namespace Test.TestsController
             UserData[0].ClientId = "12345";
             var controllerResult = await Controller.Create();
 
-            //TODO
+            var result = Assert.IsType<ViewResult>(controllerResult);
+            var model = Assert.IsType<OrderEditModel>(result.Model);
+            model.TestItems.Length.ShouldBe(10);
+            model.InternalProcessingFee.ShouldBe(6m);
+            model.ExternalProcessingFee.ShouldBe(12m);
+            var defaults = Assert.IsType<OrderEditDefaults>(model.Defaults);
+            defaults.DefaultAccount.ShouldBe("ACCOUNT1"); //Uppercase
+            defaults.DefaultEmail.ShouldBe("test1@test.com");
+            defaults.DefaultCompanyName.ShouldBe("CompanyName1");
+            defaults.DefaultAcAddr.ShouldBe("BillingContactAddress1");
+            defaults.DefaultAcEmail.ShouldBe("BillingContactEmail1@test.com");
+            defaults.DefaultAcName.ShouldBe("BillingContactName1");
+            defaults.DefaultAcPhone.ShouldBe("BillingContactPhone1");
+
+            defaults.DefaultClientId.ShouldBe("ClientId3"); //In reality, this would be the same as the user client id.
+            defaults.DefaultClientIdName.ShouldBe("Name3");
+            defaults.DefaultSubEmail.ShouldBe("SubEmail3@test.com");
+            defaults.DefaultCopyEmail.ShouldBe("CopyEmail3@test.com");
+        }
+
+        [Fact]
+        public async Task CreateReturnsViewWithExpectedData2()
+        {
+            UserData[0].ClientId = "12345";
+            UserData[0].Account = null; //Default account will be from labworks
+
+            var controllerResult = await Controller.Create();
+
+            var result = Assert.IsType<ViewResult>(controllerResult);
+            var model = Assert.IsType<OrderEditModel>(result.Model);
+            var defaults = Assert.IsType<OrderEditDefaults>(model.Defaults);
+            defaults.DefaultAccount.ShouldBe("DefaultAccount3"); 
         }
         //TODO
     }

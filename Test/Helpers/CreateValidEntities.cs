@@ -77,7 +77,7 @@ namespace Test.Helpers
             rtValue.DefaultAccount = $"DefaultAccount{counter}";
             rtValue.Department = $"Department{counter}";
             rtValue.Name = $"Name{counter}";
-            rtValue.SubEmail = $"CopyEmail{counter}@test.com";
+            rtValue.SubEmail = $"SubEmail{counter}@test.com";
             rtValue.SubPhone = $"SubPhone{counter}";
 
             return rtValue;
