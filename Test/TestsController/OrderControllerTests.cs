@@ -16,6 +16,7 @@ using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Options;
 using Moq;
 using Shouldly;
@@ -78,7 +79,9 @@ namespace Test.TestsController
             OrderData = new List<Order>();
             for (int i = 0; i < 3; i++)
             {
-                OrderData.Add(CreateValidEntities.Order(i + 1));
+                var order = CreateValidEntities.Order(i + 1);
+                order.Creator = CreateValidEntities.User(2);
+                OrderData.Add(order);
             }
 
             var proc = new TestItemPrices();
@@ -93,11 +96,14 @@ namespace Test.TestsController
                 CreateValidEntities.User(1, true),
                 CreateValidEntities.User(2, true)
             };
-            UserData[0].Id = "Creator1";          
+            UserData[0].Id = "Creator1";
 
+            var tempDataProvider = new Mock<SessionStateTempDataProvider>();
 
             //Setups
             MockHttpContext.Setup(m => m.User).Returns(user);
+            
+
             MockDbContext.Setup(m => m.Orders).Returns(OrderData.AsQueryable().MockAsyncDbSet().Object);
             MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);
             MockOrderService.Setup(a => a.PopulateTestItemModel(It.IsAny<bool>())).ReturnsAsync(TestItemModelData);
@@ -116,7 +122,8 @@ namespace Test.TestsController
                 ControllerContext = new ControllerContext
                 {
                     HttpContext = MockHttpContext.Object
-                }
+                },
+                TempData = new TempDataDictionary(MockHttpContext.Object, tempDataProvider.Object) 
             };
         }
         [Fact]
@@ -210,6 +217,30 @@ namespace Test.TestsController
             var defaults = Assert.IsType<OrderEditDefaults>(model.Defaults);
             defaults.DefaultAccount.ShouldBe("DefaultAccount3"); 
         }
+
+        [Fact]
+        public async Task EditReturnsNotFoundWhenOrderIdNotFound()
+        {
+            var controllerResult = await Controller.Edit(99);
+            Assert.IsType<NotFoundResult>(controllerResult);
+        }
+
+        [Fact]
+        public async Task TestEditRedirectsToIndexWhenNotCreatedByCurrentUser()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "XXX";
+            Controller.ErrorMessage = null; //Clear just in case
+
+            // Act
+
+            var controllerResult = await Controller.Edit(2);
+            Controller.ErrorMessage.ShouldBe("You don't have access to this order.");
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Index");
+            redirectResult.ControllerName.ShouldBeNull();
+        }
+
         //TODO
     }
 
@@ -289,4 +320,7 @@ namespace Test.TestsController
         }
 
     }
+
+
+
 }
