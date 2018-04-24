@@ -900,7 +900,140 @@ namespace Test.TestsController
 
         }
 
-        //TODO
+        [Fact]
+        public async Task TestConfirmedReturnsNotFound()
+        {
+            // Arrange
+
+            // Act
+            var controllerResult = await Controller.Confirmed(99);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+        }
+
+        [Fact]
+        public async Task TestConfirmedReturnsNotFoundWhenYouDoNotHaveAccess()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "XXX";
+            Controller.ErrorMessage = null;
+
+            // Act
+            var controllerResult = await Controller.Confirmed(2);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+            Controller.ErrorMessage.ShouldBe("You don't have access to this order.");
+        }
+
+        [Fact]
+        public async Task TestConfirmedReturnsView()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "Creator1";
+            var orderDetails = CreateValidEntities.OrderDetails(2);
+            orderDetails.Quantity = 5;
+            OrderData[1].SaveDetails(orderDetails);
+
+            // Act
+            var controllerResult = await Controller.Confirmation(2);
+
+            // Assert
+            var result = Assert.IsType<ViewResult>(controllerResult);
+            var resultModel = Assert.IsType<OrderReviewModel>(result.Model);
+            resultModel.Order.ShouldBe(OrderData[1]);
+            resultModel.OrderDetails.Quantity.ShouldBe(5);
+
+            MockOrderService.Verify(a => a.UpdateTestsAndPrices(OrderData[1]), Times.Once);
+        }
+
+        [Fact]
+        public async Task TestDeleteReturnsNotFound()
+        {
+            // Arrange
+
+            // Act
+            var controllerResult = await Controller.Delete(99);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+            MockDbContext.Verify(a => a.Remove(It.IsAny<Order>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task TestDeleteReturnsNotFoundWhenYouDoNotHaveAccess()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "XXX";
+            Controller.ErrorMessage = null;
+
+            // Act
+            var controllerResult = await Controller.Delete(2);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+            Controller.ErrorMessage.ShouldBe("You don't have access to this order.");
+            MockDbContext.Verify(a => a.Remove(It.IsAny<Order>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task TestDeleteRedirectsWhenAlreadyConfirmed()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "Creator1";
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            Controller.ErrorMessage = null;
+
+            // Act
+            var controllerResult = await Controller.Delete(2);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Index");
+            redirectResult.ControllerName.ShouldBeNull();
+            Controller.ErrorMessage.ShouldBe("Can't delete confirmed orders.");
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Never);
+            MockDbContext.Verify(a => a.Remove(It.IsAny<Order>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task TestDeleteRedirectsAndDeletes()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "Creator1";
+            OrderData[1].Status = OrderStatusCodes.Created;
+            Controller.Message = null;
+
+            // Act
+            var controllerResult = await Controller.Delete(2);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Index");
+            redirectResult.ControllerName.ShouldBeNull();
+            Controller.Message.ShouldBe("Order deleted");
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+            MockDbContext.Verify(a => a.Remove(OrderData[1]), Times.Once);
+        }
+
+
+        [Fact]
+        public async Task TestLookupClinetIdReturnsExpectedValues()
+        {
+            // Arrange           
+
+
+            // Act
+            var controllerResult = await Controller.LookupClientId("Test");
+
+            // Assert
+            var result = Assert.IsType<ClientDetailsLookupModel>(controllerResult);
+            result.Name.ShouldBe("Name3");
+
+            MockLabworksService.Verify(a => a.GetClientDetails("Test"), Times.Once);
+
+        }
     }
 
     [Trait("Category", "Controller Reflection")]
