@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Options;
 using Moq;
+using Newtonsoft.Json;
 using Shouldly;
 using Test.Helpers;
 using Test.TestsDatabase;
@@ -410,10 +411,23 @@ namespace Test.TestsController
             redirectResult.RouteValues["id"].ShouldBe(savedResult.Id);
 
             MockClaimsPrincipal.Verify(a => a.IsInRole(RoleCodes.Admin), Times.Once);
-
-            //DEBUG through this to see what else needs shoulding
         }
 
+        //[Fact]
+        //public async Task TestSaveReturnsJsonWhenModelStateInvalid()
+        //{
+        //    // Arrange
+        //    Controller.ModelState.AddModelError("Fake", "FakeError");
+
+
+        //    // Act
+        //    var controllerResult = await Controller.Save(null);
+
+        //    // Assert
+        //    var result = Assert.IsType<JsonResult>(controllerResult);
+            
+
+        //}
 
         //TODO
     }
