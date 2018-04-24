@@ -118,6 +118,7 @@ namespace Test.TestsController
             MockDbContext.Setup(m => m.Orders).Returns(OrderData.AsQueryable().MockAsyncDbSet().Object);
             MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);            
             MockOrderService.Setup(a => a.PopulateTestItemModel(It.IsAny<bool>())).ReturnsAsync(TestItemModelData);
+            MockOrderService.Setup(a => a.PopulateOrder(It.IsAny<OrderSaveModel>(), It.IsAny<Order>()));
             MockLabworksService.Setup(a => a.GetPrice("PROC")).ReturnsAsync(proc);
             MockLabworksService.Setup(a => a.GetClientDetails(It.IsAny<string>())).ReturnsAsync(CreateValidEntities.ClientDetailsLookupModel(3));
             MockAppSettings.Setup(a => a.Value).Returns(appSettings);
@@ -430,6 +431,108 @@ namespace Test.TestsController
             ((string)data.message).ShouldBe("There were problems with your order. Unable to save. Errors: FakeError");
             ((bool)data.success).ShouldBe(false);
 
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Never);
+        }
+
+        [Fact]
+        public async Task TestSaveChecksIfItIsYourOrder()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "XXX";
+            var model = new OrderSaveModel();
+            model.OrderId = 2;
+
+
+            // Act
+            var controllerResult = await Controller.Save(model);
+
+            // Assert
+            var result = Assert.IsType<JsonResult>(controllerResult);
+            dynamic data = JObject.FromObject(result.Value);
+            ((string)data.message).ShouldBe("This is not your order.");
+            ((bool)data.success).ShouldBe(false);
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Never);
+        }
+
+        [Fact]
+        public async Task TestSaveChecksIfYourOrderIsInCreatedStatus()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            OrderData[1].CreatorId = "Creator1";
+            var model = new OrderSaveModel();
+            model.OrderId = 2;
+
+
+            // Act
+            var controllerResult = await Controller.Save(model);
+
+            // Assert
+            var result = Assert.IsType<JsonResult>(controllerResult);
+            dynamic data = JObject.FromObject(result.Value);
+            ((string)data.message).ShouldBe("This has been confirmed and may not be updated.");
+            ((bool)data.success).ShouldBe(false);
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Never);
+        }
+
+        [Fact]
+        public async Task TestSaveWhenEditAndSuccess()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Created;
+            OrderData[1].CreatorId = "Creator1";
+            var model = new OrderSaveModel();
+            model.OrderId = 2;
+
+            OrderData[1].SavedTestDetails.ShouldBeNull();
+
+            // Act
+            var controllerResult = await Controller.Save(model);
+
+            // Assert
+            var result = Assert.IsType<JsonResult>(controllerResult);
+            dynamic data = JObject.FromObject(result.Value);
+            ((bool)data.success).ShouldBe(true);
+            ((int)data.id).ShouldBe(2);
+
+            MockOrderService.Verify(a => a.PopulateTestItemModel(It.IsAny<bool>()), Times.Once);
+            MockOrderService.Verify(a => a.PopulateOrder(model, OrderData[1]), Times.Once);
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+            OrderData[1].SavedTestDetails.ShouldNotBeNull();
+            OrderData[1].GetTestDetails().Count.ShouldBe(10);
+        }
+
+        [Fact]
+        public async Task TestSaveWhenCreateAndSuccess()
+        {
+            // Arrange
+            var model = new OrderSaveModel();
+            model.OrderId = null;
+
+            Order savedResult = null;
+            MockDbContext.Setup(a => a.Add(It.IsAny<Order>())).Callback<Order>(r => savedResult = r);
+
+            // Act
+            var controllerResult = await Controller.Save(model);
+
+            // Assert
+            var result = Assert.IsType<JsonResult>(controllerResult);
+            dynamic data = JObject.FromObject(result.Value);
+            ((bool)data.success).ShouldBe(true);
+            ((int)data.id).ShouldBe(0); //Because it would be set in the DB
+
+            MockOrderService.Verify(a => a.PopulateTestItemModel(It.IsAny<bool>()), Times.Once);
+            MockOrderService.Verify(a => a.PopulateOrder(model, It.IsAny<Order>()), Times.Once);
+            MockDbContext.Verify(a => a.Add(It.IsAny<Order>()), Times.Once);
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+
+            savedResult.CreatorId.ShouldBe("Creator1");
+            savedResult.Creator.ShouldNotBeNull();
+            savedResult.Creator.Id.ShouldBe("Creator1");
+            savedResult.Status.ShouldBe(OrderStatusCodes.Created);
+            savedResult.ShareIdentifier.ShouldNotBeNull();
         }
 
         //TODO
