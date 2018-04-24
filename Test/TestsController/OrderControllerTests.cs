@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Options;
 using Moq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Shouldly;
 using Test.Helpers;
 using Test.TestsDatabase;
@@ -413,21 +414,23 @@ namespace Test.TestsController
             MockClaimsPrincipal.Verify(a => a.IsInRole(RoleCodes.Admin), Times.Once);
         }
 
-        //[Fact]
-        //public async Task TestSaveReturnsJsonWhenModelStateInvalid()
-        //{
-        //    // Arrange
-        //    Controller.ModelState.AddModelError("Fake", "FakeError");
+        [Fact]
+        public async Task TestSaveReturnsJsonWhenModelStateInvalid()
+        {
+            // Arrange
+            Controller.ModelState.AddModelError("Fake", "FakeError");
 
 
-        //    // Act
-        //    var controllerResult = await Controller.Save(null);
+            // Act
+            var controllerResult = await Controller.Save(null);
 
-        //    // Assert
-        //    var result = Assert.IsType<JsonResult>(controllerResult);
-            
+            // Assert
+            var result = Assert.IsType<JsonResult>(controllerResult);
+            dynamic data = JObject.FromObject(result.Value);
+            ((string)data.message).ShouldBe("There were problems with your order. Unable to save. Errors: FakeError");
+            ((bool)data.success).ShouldBe(false);
 
-        //}
+        }
 
         //TODO
     }
