@@ -535,6 +535,70 @@ namespace Test.TestsController
             savedResult.ShareIdentifier.ShouldNotBeNull();
         }
 
+        [Fact]
+        public async Task TestDetailsReturnsNotFound()
+        {
+            // Arrange
+            
+            // Act
+            var controllerResult = await Controller.Details(99);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+        }
+
+        [Fact]
+        public async Task TestDetailsReturnsNotFoundWhenYouDoNotHaveAccess()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "XXX";
+            Controller.ErrorMessage = null;
+
+            // Act
+            var controllerResult = await Controller.Details(2);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+            Controller.ErrorMessage.ShouldBe("You don't have access to this order.");
+        }
+
+        [Fact]
+        public async Task TestDetailsRedirectsWhenInCreatedStatus()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "Creator1";
+            OrderData[1].Status = OrderStatusCodes.Created;
+            Controller.ErrorMessage = null;
+
+            // Act
+            var controllerResult = await Controller.Details(2);
+
+            // Assert
+            var redirectRoute = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectRoute.ActionName.ShouldBe("Index");
+            redirectRoute.ControllerName.ShouldBeNull();
+            Controller.ErrorMessage.ShouldBe("Must confirm order before viewing details.");
+        }
+
+        [Fact]
+        public async Task TestDetailsReturnsView()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "Creator1";
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            var orderDetails = CreateValidEntities.OrderDetails(2);
+            orderDetails.Quantity = 3;
+            OrderData[1].SaveDetails(orderDetails);
+
+            // Act
+            var controllerResult = await Controller.Details(2);
+
+            // Assert
+            var result = Assert.IsType<ViewResult>(controllerResult);
+            var resultModel = Assert.IsType<OrderReviewModel>(result.Model);
+            resultModel.Order.ShouldBe(OrderData[1]);
+            resultModel.OrderDetails.Quantity.ShouldBe(3);
+        }
         //TODO
     }
 
