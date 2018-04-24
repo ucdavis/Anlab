@@ -37,6 +37,9 @@ namespace Test.Helpers
         public static OrderDetails OrderDetails(int? counter, bool populateAllFields = false)
         {
             var rtValue = new OrderDetails();
+            rtValue.Payment = new Payment();
+            rtValue.OtherPaymentInfo = new OtherPaymentInfo();
+            rtValue.ClientInfo = new ClientInfo();
 
             return rtValue;
         }

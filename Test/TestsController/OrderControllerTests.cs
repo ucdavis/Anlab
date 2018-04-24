@@ -1,17 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Claims;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using AnlabMvc;
 using AnlabMvc.Controllers;
-using AnlabMvc.Extensions;
 using AnlabMvc.Models.Order;
 using AnlabMvc.Models.Roles;
 using AnlabMvc.Services;
@@ -21,11 +12,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Options;
 using Moq;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shouldly;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
 using Test.Helpers;
-using Test.TestsDatabase;
 using TestHelpers.Helpers;
 using Xunit;
 using Xunit.Abstractions;
@@ -599,6 +595,311 @@ namespace Test.TestsController
             resultModel.Order.ShouldBe(OrderData[1]);
             resultModel.OrderDetails.Quantity.ShouldBe(3);
         }
+
+        [Fact]
+        public async Task TestConfirmationGetReturnsNotFound()
+        {
+            // Arrange
+
+            // Act
+            var controllerResult = await Controller.Confirmation(99);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+        }
+
+        [Fact]
+        public async Task TestConfirmationGetReturnsNotFoundWhenYouDoNotHaveAccess()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "XXX";
+            Controller.ErrorMessage = null;
+
+            // Act
+            var controllerResult = await Controller.Confirmation(2);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+            Controller.ErrorMessage.ShouldBe("You don't have access to this order.");
+        }
+
+        [Fact]
+        public async Task TestConfirmationGetReturnsView()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "Creator1";
+            var orderDetails = CreateValidEntities.OrderDetails(2);
+            orderDetails.Quantity = 5;
+            OrderData[1].SaveDetails(orderDetails);
+
+            // Act
+            var controllerResult = await Controller.Confirmation(2);
+            
+            // Assert
+            var result = Assert.IsType<ViewResult>(controllerResult);
+            var resultModel = Assert.IsType<OrderReviewModel>(result.Model);
+            resultModel.Order.ShouldBe(OrderData[1]);
+            resultModel.OrderDetails.Quantity.ShouldBe(5);
+
+            MockOrderService.Verify(a => a.UpdateTestsAndPrices(OrderData[1]), Times.Once);
+        }
+
+        [Fact]
+        public async Task TestConfirmationPostReturnsNotFound()
+        {
+            // Arrange
+
+            // Act
+            var controllerResult = await Controller.Confirmation(99, true);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Never);
+        }
+
+        [Fact]
+        public async Task TestConfirmationPostReturnsNotFoundWhenYouDoNotHaveAccess()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "XXX";
+            Controller.ErrorMessage = null;
+
+            // Act
+            var controllerResult = await Controller.Confirmation(2, true);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+            Controller.ErrorMessage.ShouldBe("You don't have access to this order.");
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Never);
+        }
+
+        [Fact]
+        public async Task TestConfirmationPostRedirectsWhenAlreadyConfirmed()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "Creator1";
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            Controller.ErrorMessage = null;
+
+            // Act
+            var controllerResult = await Controller.Confirmation(2, true);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Index");
+            redirectResult.ControllerName.ShouldBeNull();
+            Controller.ErrorMessage.ShouldBe("Already confirmed");
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Never);
+        }
+
+        [Fact]
+        public async Task TestConfirmationPostWhenUcdAccountNotVerified1()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "Creator1";
+            OrderData[1].Status = OrderStatusCodes.Created;
+            OrderData[1].PaymentType = PaymentTypeCodes.UcDavisAccount;
+            Controller.ErrorMessage = null;
+
+
+            var orderDetails = CreateValidEntities.OrderDetails(2);
+            orderDetails.Payment.Account = "3-1234567";
+            orderDetails.Payment.AccountName = "WHAT!";
+            OrderData[1].SaveDetails(orderDetails);
+
+            MockFinancialService.Setup(a => a.GetAccountName(It.IsAny<string>())).Throws(new Exception("Fake"));
+
+            // Act
+            var controllerResult = await Controller.Confirmation(2, true);
+
+            // Assert
+            Controller.ErrorMessage.ShouldBe("Unable to verify UC Account number. Please edit your order and re-enter the UC account number. Then try again.");
+            OrderData[1].GetOrderDetails().Payment.AccountName.ShouldBeEmpty();
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+            MockFinancialService.Verify(a => a.GetAccountName("3-1234567"), Times.Once);
+        }
+
+        [Fact]
+        public async Task TestConfirmationPostWhenUcdAccountNotVerified2()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "Creator1";
+            OrderData[1].Status = OrderStatusCodes.Created;
+            OrderData[1].PaymentType = PaymentTypeCodes.UcDavisAccount;
+            Controller.ErrorMessage = null;
+
+
+            var orderDetails = CreateValidEntities.OrderDetails(2);
+            orderDetails.Payment.Account = "3-1234567";
+            orderDetails.Payment.AccountName = "WHAT!";
+            OrderData[1].SaveDetails(orderDetails);
+
+            MockFinancialService.Setup(a => a.GetAccountName(It.IsAny<string>())).ReturnsAsync(string.Empty);
+
+            // Act
+            var controllerResult = await Controller.Confirmation(2, true);
+
+            // Assert
+            Controller.ErrorMessage.ShouldBe("Unable to verify UC Account number. Please edit your order and re-enter the UC account number. Then try again.");
+            OrderData[1].GetOrderDetails().Payment.AccountName.ShouldBeEmpty();
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+            MockFinancialService.Verify(a => a.GetAccountName("3-1234567"), Times.Once);
+
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Confirmation");
+            redirectResult.RouteValues["id"].ShouldBe(2);
+            redirectResult.ControllerName.ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task TestConfirmationPostWhenUcdAccountVerified()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "Creator1";
+            OrderData[1].Status = OrderStatusCodes.Created;
+            OrderData[1].PaymentType = PaymentTypeCodes.UcDavisAccount;            
+            Controller.ErrorMessage = null;
+
+
+            var orderDetails = CreateValidEntities.OrderDetails(2);
+            orderDetails.Payment.Account = "3-1234567";
+            orderDetails.Payment.AccountName = "WHAT!";
+            orderDetails.ClientInfo.ClientId = null;
+            OrderData[1].SaveDetails(orderDetails);
+
+            MockFinancialService.Setup(a => a.GetAccountName(It.IsAny<string>())).ReturnsAsync("My Fake Account");
+
+            // Act
+            var controllerResult = await Controller.Confirmation(2, true);
+
+            // Assert
+            Controller.ErrorMessage.ShouldBeNull();
+            OrderData[1].GetOrderDetails().Payment.AccountName.ShouldBe("My Fake Account");
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+            MockFinancialService.Verify(a => a.GetAccountName("3-1234567"), Times.Once);
+            MockOrderService.Verify(a => a.UpdateAdditionalInfo(OrderData[1]), Times.Once);
+            MockOrderService.Verify(a => a.UpdateTestsAndPrices(OrderData[1]), Times.Once);
+
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Confirmed");
+            redirectResult.RouteValues["id"].ShouldBe(2);
+            redirectResult.ControllerName.ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task TestConfirmationPostWhenPaymentOther1()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "Creator1";
+            OrderData[1].Status = OrderStatusCodes.Created;
+            OrderData[1].PaymentType = PaymentTypeCodes.Other;
+            Controller.ErrorMessage = null;
+
+
+            var orderDetails = CreateValidEntities.OrderDetails(2);
+            orderDetails.OtherPaymentInfo.PaymentType = "AGReemeNT";
+            orderDetails.ClientInfo.ClientId = null;
+            OrderData[1].SaveDetails(orderDetails);
+
+            // Act
+            var controllerResult = await Controller.Confirmation(2, true);
+
+            // Assert
+            Controller.ErrorMessage.ShouldBeNull();
+            OrderData[1].GetOrderDetails().Payment.AccountName.ShouldBeNull();
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+            MockFinancialService.Verify(a => a.GetAccountName(It.IsAny<string>()), Times.Never);
+            MockOrderMessagingService.Verify(a => a.EnqueueBillingMessage(OrderData[1], "Anlab Work Order Billing Info -- Agreement"), Times.Once);
+            MockOrderService.Verify(a => a.UpdateTestsAndPrices(OrderData[1]), Times.Once);
+            MockOrderService.Verify(a => a.UpdateAdditionalInfo(OrderData[1]), Times.Once);
+            MockLabworksService.Verify(a => a.GetClientDetails(It.IsAny<string>()), Times.Never);
+            MockOrderMessagingService.Verify(a => a.EnqueueCreatedMessage(OrderData[1]), Times.Once);
+
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Confirmed");
+            redirectResult.RouteValues["id"].ShouldBe(2);
+            redirectResult.ControllerName.ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task TestConfirmationPostWhenPaymentOther2()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "Creator1";
+            OrderData[1].Status = OrderStatusCodes.Created;
+            OrderData[1].PaymentType = PaymentTypeCodes.Other;
+            Controller.ErrorMessage = null;
+
+
+            var orderDetails = CreateValidEntities.OrderDetails(2);
+            orderDetails.OtherPaymentInfo.PaymentType = "SomethingElse";
+            orderDetails.ClientInfo.ClientId = null;
+            OrderData[1].SaveDetails(orderDetails);
+
+            // Act
+            var controllerResult = await Controller.Confirmation(2, true);
+
+            // Assert
+            Controller.ErrorMessage.ShouldBeNull();
+            OrderData[1].GetOrderDetails().Payment.AccountName.ShouldBeNull();
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+            MockFinancialService.Verify(a => a.GetAccountName(It.IsAny<string>()), Times.Never);
+            MockOrderMessagingService.Verify(a => a.EnqueueBillingMessage(OrderData[1], It.IsAny<string>()), Times.Never);
+            MockOrderService.Verify(a => a.UpdateTestsAndPrices(OrderData[1]), Times.Once);
+            MockOrderService.Verify(a => a.UpdateAdditionalInfo(OrderData[1]), Times.Once);
+            MockLabworksService.Verify(a => a.GetClientDetails(It.IsAny<string>()), Times.Never);
+            MockOrderMessagingService.Verify(a => a.EnqueueCreatedMessage(OrderData[1]), Times.Once);
+
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Confirmed");
+            redirectResult.RouteValues["id"].ShouldBe(2);
+            redirectResult.ControllerName.ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task TestConfirmationPostWhenClientIdHasValue()
+        {
+            // Arrange
+            OrderData[1].CreatorId = "Creator1";
+            OrderData[1].Status = OrderStatusCodes.Created;
+            OrderData[1].PaymentType = PaymentTypeCodes.Other;
+            Controller.ErrorMessage = null;
+
+
+            var orderDetails = CreateValidEntities.OrderDetails(2);
+            orderDetails.OtherPaymentInfo.PaymentType = "SomethingElse";
+            orderDetails.ClientInfo.ClientId = "FAKE1";
+            OrderData[1].SaveDetails(orderDetails);
+            
+            MockLabworksService.Setup(a => a.GetClientDetails(It.IsAny<string>())).ReturnsAsync(CreateValidEntities.ClientDetailsLookupModel(2));
+
+            // Act
+            var controllerResult = await Controller.Confirmation(2, true);
+
+            // Assert
+            Controller.ErrorMessage.ShouldBeNull();
+            OrderData[1].GetOrderDetails().Payment.AccountName.ShouldBeNull();
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+            MockFinancialService.Verify(a => a.GetAccountName(It.IsAny<string>()), Times.Never);
+            MockOrderMessagingService.Verify(a => a.EnqueueBillingMessage(OrderData[1], It.IsAny<string>()), Times.Never);
+            MockOrderService.Verify(a => a.UpdateTestsAndPrices(OrderData[1]), Times.Once);
+            MockOrderService.Verify(a => a.UpdateAdditionalInfo(OrderData[1]), Times.Once);
+            MockLabworksService.Verify(a => a.GetClientDetails("FAKE1"), Times.Once);
+            MockOrderMessagingService.Verify(a => a.EnqueueCreatedMessage(OrderData[1]), Times.Once);
+
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Confirmed");
+            redirectResult.RouteValues["id"].ShouldBe(2);
+            redirectResult.ControllerName.ShouldBeNull();
+
+            var od = OrderData[1].GetOrderDetails();
+            od.ClientInfo.Email.ShouldBe("SubEmail2@test.com");
+            od.ClientInfo.PhoneNumber.ShouldBe("SubPhone2");
+            od.ClientInfo.CopyPhone.ShouldBe("CopyPhone2");
+            od.ClientInfo.Department.ShouldBe("Department2");
+
+        }
+
         //TODO
     }
 
