@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Anlab.Core.Models;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace Anlab.Core.Domain
 {
@@ -86,7 +87,15 @@ namespace Anlab.Core.Domain
 
         public IList<TestItemModel> GetTestDetails()
         {
-            return JsonConvert.DeserializeObject<IList<TestItemModel>>(SavedTestDetails);
+            try
+            {
+                return JsonConvert.DeserializeObject<IList<TestItemModel>>(SavedTestDetails);
+            }
+            catch (JsonSerializationException)
+            {
+                Log.Error("Get Test Details error");
+                return new List<TestItemModel>();
+            }
         }
 
         public void SaveTestDetails(IList<TestItemModel> tests)
