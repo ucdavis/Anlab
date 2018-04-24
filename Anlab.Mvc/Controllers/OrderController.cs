@@ -254,7 +254,7 @@ namespace AnlabMvc.Controllers
 
             if (order.Status == OrderStatusCodes.Created)
             {
-                ErrorMessage = "Must confim order before viewing details.";
+                ErrorMessage = "Must confirm order before viewing details.";
                 return RedirectToAction("Index");
             }
             var model = new OrderReviewModel();
