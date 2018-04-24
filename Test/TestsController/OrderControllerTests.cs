@@ -331,6 +331,7 @@ namespace Test.TestsController
             savedResult.CreatorId.ShouldBe("Creator1");
             savedResult.Creator.Id.ShouldBe("Creator1");
             savedResult.ShareIdentifier.ShouldNotBe(SpecificGuid.GetGuid(2));
+            savedResult.SavedTestDetails.ShouldBeNull();
 
             var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
             redirectResult.ActionName.ShouldBe("Edit");
@@ -381,6 +382,7 @@ namespace Test.TestsController
                 testItemModel.Add(CreateValidEntities.TestItemModel(1));
             }
             copiedOrder.SaveTestDetails(testItemModel);
+            OrderData[1].SaveTestDetails(testItemModel);
 
             copiedOrder.Creator = CreateValidEntities.User(5, true);
             OrderData[1].CreatorId = "xxx";
@@ -398,6 +400,9 @@ namespace Test.TestsController
             savedResult.CreatorId.ShouldBe("xxx");
             savedResult.Creator.Id.ShouldBe("5");
             savedResult.ShareIdentifier.ShouldNotBe(SpecificGuid.GetGuid(2));
+            savedResult.Status.ShouldBe(OrderStatusCodes.Confirmed);
+            savedResult.GetOrderDetails().LabComments.ShouldContain("Duplicated from 2");
+            savedResult.GetTestDetails().Count.ShouldBe(5);
 
             var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
             redirectResult.ActionName.ShouldBe("AddRequestNumber");
