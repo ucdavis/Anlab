@@ -91,7 +91,7 @@ namespace AnlabMvc.Controllers
 
             if (order.PaymentType == PaymentTypeCodes.CreditCard)
             {
-                ErrorMessage = "Order requires Credit Card or Other Payment type, not a UC Account payment";
+                ErrorMessage = "Order requires Other Payment type or UC Account, not a Credit Card Payment type.";
                 return RedirectToAction("Link", new { id });
             }
 
@@ -116,7 +116,7 @@ namespace AnlabMvc.Controllers
 
             if (order.PaymentType == PaymentTypeCodes.CreditCard)
             {
-                ErrorMessage = "Order requires Credit Card or Other Payment type, not a UC Account payment";
+                ErrorMessage = "Order requires Other Payment type or UC Account, not a Credit Card Payment type.";
                 return RedirectToAction("Link", new { id = id });
             }
 
