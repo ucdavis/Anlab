@@ -77,6 +77,7 @@ namespace Test.Helpers
             rtValue.Id = $"{counter ?? 99}";
             rtValue.Code = $"Code{counter ?? 99}";
             rtValue.Category = "Soil|Plant";
+            rtValue.Public = true;
             //Add more if needed
 
             return rtValue;
