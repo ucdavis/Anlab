@@ -1,29 +1,24 @@
-using System;
-using System.Collections.Generic;
+using Anlab.Core.Models;
+using AnlabMvc.Services;
+using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
-using Anlab.Core.Data;
-using Anlab.Core.Models;
-using Microsoft.AspNetCore.Mvc;
-using AnlabMvc.Services;
 
 namespace AnlabMvc.Controllers
 {
     public class PricesController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IOrderService _orderService;
 
-        public PricesController(ApplicationDbContext context, IOrderService orderService)
+        public PricesController(IOrderService orderService)
         {
-            _context = context;
             _orderService = orderService;
         }
         
         public async Task<IActionResult> Index()
         {
             var joined = await _orderService.PopulateTestItemModel(false);
-            TestItemModel[] publicTests = joined.Where(a => a.Public).ToArray();
+            TestItemModel[] publicTests = joined.Where(a => a.Public).ToArray(); //Don't really need this as the service with false only returns public.
             return View(publicTests);
         }
     }
