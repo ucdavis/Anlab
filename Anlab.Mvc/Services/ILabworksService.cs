@@ -188,6 +188,11 @@ namespace AnlabMvc.Services
                         }
                     }
 
+                    if (rtValue.DefaultAccount != null)
+                    {
+                        rtValue.DefaultAccount = rtValue.DefaultAccount.ToUpper(); //Force uppercase account
+                    }
+
                     return rtValue;
                 }
             }

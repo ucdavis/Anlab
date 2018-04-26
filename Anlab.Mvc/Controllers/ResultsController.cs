@@ -74,6 +74,10 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> Download(Guid id)
         {
             var order = await _context.Orders.SingleOrDefaultAsync(o => o.ShareIdentifier == id);
+            if (order == null)
+            {
+                return NotFound();
+            }
 
             var result = await _fileStorageService.GetSharedAccessSignature(order.ResultsFileIdentifier);
             return Redirect(result.AccessUrl);
@@ -83,15 +87,20 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> ConfirmPayment(Guid id)
         {
             var order = await _context.Orders.SingleOrDefaultAsync(o => o.ShareIdentifier == id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
             if (order.Paid)
             {
-                ErrorMessage = "Payment has already been confirmed";
+                ErrorMessage = "Payment has already been confirmed.";
                 return RedirectToAction("Link", new {id });
             }
 
             if (order.PaymentType == PaymentTypeCodes.CreditCard)
             {
-                ErrorMessage = "Order requires Credit Card or Other Payment type, not a UC Account payment";
+                ErrorMessage = "Order requires Other Payment type or UC Account, not a Credit Card Payment type.";
                 return RedirectToAction("Link", new { id });
             }
 
@@ -108,15 +117,20 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> ConfirmPayment(Guid id, OtherPaymentInfo otherPaymentInfo) //Put in model
         {
             var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.ShareIdentifier == id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
             if (order.Paid)
             {
-                ErrorMessage = "Payment has already been confirmed";
+                ErrorMessage = "Payment has already been confirmed.";
                 return RedirectToAction("Link", new {id = id});
             }
 
             if (order.PaymentType == PaymentTypeCodes.CreditCard)
             {
-                ErrorMessage = "Order requires Credit Card or Other Payment type, not a UC Account payment";
+                ErrorMessage = "Order requires Other Payment type or UC Account, not a Credit Card Payment type.";
                 return RedirectToAction("Link", new { id = id });
             }
 

@@ -254,7 +254,7 @@ namespace AnlabMvc.Controllers
 
             if (order.Status == OrderStatusCodes.Created)
             {
-                ErrorMessage = "Must confim order before viewing details.";
+                ErrorMessage = "Must confirm order before viewing details.";
                 return RedirectToAction("Index");
             }
             var model = new OrderReviewModel();
@@ -359,7 +359,7 @@ namespace AnlabMvc.Controllers
 
             }
 
-            UpdateAdditionalInfo(order);
+            _orderService.UpdateAdditionalInfo(order);
             order.Status = OrderStatusCodes.Confirmed;
 
             await _orderMessageService.EnqueueCreatedMessage(order);
@@ -432,52 +432,7 @@ namespace AnlabMvc.Controllers
             }
             return result;
         }
-
-        private void UpdateAdditionalInfo(Order order)
-        {
-            var orderDetails = order.GetOrderDetails();
-
-            StringBuilder sb = new StringBuilder();
-
-            if(!String.IsNullOrWhiteSpace(orderDetails.AdditionalInfo))
-            {
-                sb.AppendLine(orderDetails.AdditionalInfo);
-            }
-
-            if (orderDetails.SampleType == TestCategories.Plant)
-            {
-                sb.AppendFormat("{0}: {1}{2}", "Plant reporting basis", orderDetails.SampleTypeQuestions.PlantReportingBasis, Environment.NewLine);
-            }
-
-            //To do this now, we have to look at the selected tests...
-            if (orderDetails.SampleType == TestCategories.Soil)
-            {
-                sb.AppendFormat("{0}: {1}{2}", "Soil is imported", orderDetails.SelectedTests.Any(a => a.Id == "SP-FOR" || a.Analysis.Equals("Imported Soil", StringComparison.InvariantCultureIgnoreCase)), Environment.NewLine);
-            }
-
-            if (orderDetails.SampleType == TestCategories.Water)
-            {
-                sb.AppendFormat("{0}: {1}{2}", "Water filtered", orderDetails.SampleTypeQuestions.WaterFiltered.ToYesNoString(), Environment.NewLine);
-                sb.AppendFormat("{0}: {1} {2}{3}", "Water preservative added", orderDetails.SampleTypeQuestions.WaterPreservativeAdded.ToYesNoString(), orderDetails.SampleTypeQuestions.WaterPreservativeInfo, Environment.NewLine);
-                sb.AppendFormat("{0}: {1}{2}", "Water reported in mg/L", orderDetails.SampleTypeQuestions.WaterReportedInMgL.ToYesNoString(), Environment.NewLine);
-            }
-
-            if (orderDetails.AdditionalInfoList != null)
-            {
-                foreach (var item in orderDetails.AdditionalInfoList)
-                {
-                    if (orderDetails.SelectedTests.Any(a => a.Id == item.Key))
-                    {
-                        sb.AppendFormat("{0}: {1}{2}", item.Key, item.Value, Environment.NewLine);
-                    }
-                }
-                orderDetails.AdditionalInfoList = new Dictionary<string, string>();
-            }
-
-            orderDetails.AdditionalInfo = sb.ToString();
-
-            order.SaveDetails(orderDetails);
-        }
+  
     }
    
 }
