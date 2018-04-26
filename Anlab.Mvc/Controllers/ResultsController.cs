@@ -74,6 +74,10 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> Download(Guid id)
         {
             var order = await _context.Orders.SingleOrDefaultAsync(o => o.ShareIdentifier == id);
+            if (order == null)
+            {
+                return NotFound();
+            }
 
             var result = await _fileStorageService.GetSharedAccessSignature(order.ResultsFileIdentifier);
             return Redirect(result.AccessUrl);
