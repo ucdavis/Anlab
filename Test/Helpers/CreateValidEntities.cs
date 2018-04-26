@@ -38,8 +38,22 @@ namespace Test.Helpers
         {
             var rtValue = new OrderDetails();
             rtValue.Payment = new Payment();
-            rtValue.OtherPaymentInfo = new OtherPaymentInfo();
+            rtValue.OtherPaymentInfo = CreateValidEntities.OtherPaymentInfo(counter);
             rtValue.ClientInfo = new ClientInfo();
+
+            return rtValue;
+        }
+
+        public static OtherPaymentInfo OtherPaymentInfo(int? counter)
+        {
+            var rtValue = new OtherPaymentInfo();
+            rtValue.CompanyName = $"CompanyName{counter}";
+            rtValue.AcAddr = $"AcAddr{counter}";
+            rtValue.AcEmail = $"AcEmail{counter}@test.com";
+            rtValue.AcName = $"AcName{counter}";
+            rtValue.AcPhone = $"AcPhone{counter}";
+            rtValue.PaymentType = $"PaymentType{counter}";
+            rtValue.PoNum = $"PoNum{counter}";
 
             return rtValue;
         }

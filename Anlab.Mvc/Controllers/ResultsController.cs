@@ -74,6 +74,10 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> Download(Guid id)
         {
             var order = await _context.Orders.SingleOrDefaultAsync(o => o.ShareIdentifier == id);
+            if (order == null)
+            {
+                return NotFound();
+            }
 
             var result = await _fileStorageService.GetSharedAccessSignature(order.ResultsFileIdentifier);
             return Redirect(result.AccessUrl);
@@ -83,9 +87,14 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> ConfirmPayment(Guid id)
         {
             var order = await _context.Orders.SingleOrDefaultAsync(o => o.ShareIdentifier == id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
             if (order.Paid)
             {
-                ErrorMessage = "Payment has already been confirmed";
+                ErrorMessage = "Payment has already been confirmed.";
                 return RedirectToAction("Link", new {id });
             }
 
@@ -108,9 +117,14 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> ConfirmPayment(Guid id, OtherPaymentInfo otherPaymentInfo) //Put in model
         {
             var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.ShareIdentifier == id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
             if (order.Paid)
             {
-                ErrorMessage = "Payment has already been confirmed";
+                ErrorMessage = "Payment has already been confirmed.";
                 return RedirectToAction("Link", new {id = id});
             }
 

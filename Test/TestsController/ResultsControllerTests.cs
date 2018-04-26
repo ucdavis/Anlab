@@ -1,24 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using AnlabMvc;
 using AnlabMvc.Controllers;
 using AnlabMvc.Models.Configuration;
+using AnlabMvc.Models.FileUploadModels;
 using AnlabMvc.Models.Order;
 using AnlabMvc.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Options;
 using Moq;
 using Shouldly;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Test.Helpers;
 using TestHelpers.Helpers;
 using Xunit;
@@ -349,6 +347,277 @@ namespace Test.TestsController
             var modelResult = Assert.IsType<OrderResultsModel>(result.Model);
             modelResult.CyberSourceUrl.ShouldBe("Http://FakeUrl.com");
         }
+
+        [Fact]
+        public async Task TestDownloadReturnsNotFound()
+        {
+            // Arrange
+            
+
+            // Act
+            var controllerResult = await Controller.Download(SpecificGuid.GetGuid(15));
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+        }
+
+        [Fact]
+        public async Task TestDownloadCallsFileStorageToGetRedirectUrl()
+        {
+            // Arrange
+            var response = new SasResponse();
+            response.AccessUrl = "Http://FakeUrl";
+            MockFileStorageService.Setup(a => a.GetSharedAccessSignature(It.IsAny<string>())).ReturnsAsync(response);
+
+            OrderData[1].ResultsFileIdentifier = "FakeId";
+
+            // Act
+            var controllerResult = await Controller.Download(OrderData[1].ShareIdentifier);
+
+            // Assert
+            MockFileStorageService.Verify(a => a.GetSharedAccessSignature("FakeId"), Times.Once);
+            var redirctResult = Assert.IsType<RedirectResult>(controllerResult);
+            redirctResult.Url.ShouldBe("Http://FakeUrl");
+        }
+
+        [Fact]
+        public async Task TestConfirmPaymentGetReturnsNotFound()
+        {
+            // Arrange
+            
+            // Act
+            var controllerResult = await Controller.ConfirmPayment(SpecificGuid.GetGuid(15));
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+        }
+
+        [Fact]
+        public async Task TestConfirmPaymentGetRedirectsWhenPaid()
+        {
+            // Arrange
+            OrderData[1].Paid = true;
+            Controller.ErrorMessage = null;
+
+            // Act
+            var controllerResult = await Controller.ConfirmPayment(OrderData[1].ShareIdentifier);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Link");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(OrderData[1].ShareIdentifier);
+
+            Controller.ErrorMessage.ShouldBe("Payment has already been confirmed.");
+        }
+
+        [Fact]
+        public async Task TestConfirmPaymentGetRedirectsWhenCreditCard()
+        {
+            // Arrange
+            OrderData[1].Paid = false;
+            OrderData[1].PaymentType = PaymentTypeCodes.CreditCard;
+            Controller.ErrorMessage = null;
+
+            // Act
+            var controllerResult = await Controller.ConfirmPayment(OrderData[1].ShareIdentifier);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Link");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(OrderData[1].ShareIdentifier);
+
+            Controller.ErrorMessage.ShouldBe("Order requires Other Payment type or UC Account, not a Credit Card Payment type.");
+        }
+
+        [Theory]
+        [InlineData(PaymentTypeCodes.Other)]
+        [InlineData(PaymentTypeCodes.UcDavisAccount)]
+        [InlineData(PaymentTypeCodes.UcOtherAccount)]
+        public async Task TestConfirmPaymentGetReturnsView(string paymentType)
+        {
+            // Arrange
+            OrderData[1].Paid = false;
+            OrderData[1].PaymentType = paymentType;
+            var od = OrderData[1].GetOrderDetails();
+            od.OtherPaymentInfo.CompanyName = "Testing";
+            OrderData[1].SaveDetails(od);
+            Controller.ErrorMessage = null;
+
+            // Act
+            var controllerResult = await Controller.ConfirmPayment(OrderData[1].ShareIdentifier);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<PaymentConfirmationModel>(viewResult.Model);
+            modelResult.Order.ShouldNotBeNull();
+            modelResult.Order.ShareIdentifier.ShouldBe(OrderData[1].ShareIdentifier);
+            modelResult.OtherPaymentInfo.ShouldNotBeNull();
+            modelResult.OtherPaymentInfo.CompanyName.ShouldBe("Testing");
+            Controller.ErrorMessage.ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task TestConfirmPaymentPostReturnsNotFound()
+        {
+            // Arrange
+
+            // Act
+            var controllerResult = await Controller.ConfirmPayment(SpecificGuid.GetGuid(15), new OtherPaymentInfo());
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+        }
+        [Fact]
+        public async Task TestConfirmPaymentPostRedirectsWhenPaid()
+        {
+            // Arrange
+            OrderData[1].Paid = true;
+            Controller.ErrorMessage = null;
+            var op = CreateValidEntities.OtherPaymentInfo(5);
+
+            // Act
+            var controllerResult = await Controller.ConfirmPayment(OrderData[1].ShareIdentifier, op);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Link");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(OrderData[1].ShareIdentifier);
+
+            Controller.ErrorMessage.ShouldBe("Payment has already been confirmed.");
+        }
+
+        [Fact]
+        public async Task TestConfirmPaymentPostRedirectsWhenCreditCard()
+        {
+            // Arrange
+            OrderData[1].Paid = false;
+            OrderData[1].PaymentType = PaymentTypeCodes.CreditCard;
+            Controller.ErrorMessage = null;
+            var op = CreateValidEntities.OtherPaymentInfo(5);
+
+            // Act
+            var controllerResult = await Controller.ConfirmPayment(OrderData[1].ShareIdentifier, op);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Link");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(OrderData[1].ShareIdentifier);
+
+            Controller.ErrorMessage.ShouldBe("Order requires Other Payment type or UC Account, not a Credit Card Payment type.");
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public async Task TestConfirmPaymentPostRedirectsWhenOtherAndNoPo(string po)
+        {
+            // Arrange
+            OrderData[1].Paid = false;
+            OrderData[1].PaymentType = PaymentTypeCodes.Other;
+            Controller.ErrorMessage = null;
+            var op = CreateValidEntities.OtherPaymentInfo(5);
+            op.PaymentType = "Changed";
+            op.PoNum = po;
+
+            // Act
+            var controllerResult = await Controller.ConfirmPayment(OrderData[1].ShareIdentifier, op);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<PaymentConfirmationModel>(viewResult.Model);
+            modelResult.Order.ShouldNotBeNull();
+            modelResult.Order.ShareIdentifier.ShouldBe(OrderData[1].ShareIdentifier);
+            modelResult.OtherPaymentInfo.ShouldNotBeNull();
+            modelResult.OtherPaymentInfo.AcAddr.ShouldBe("AcAddr5");
+            modelResult.OtherPaymentInfo.AcEmail.ShouldBe("AcEmail5@test.com");
+            modelResult.OtherPaymentInfo.AcName.ShouldBe("AcName5");
+            modelResult.OtherPaymentInfo.AcPhone.ShouldBe("AcPhone5");
+            modelResult.OtherPaymentInfo.CompanyName.ShouldBe("CompanyName5");
+            modelResult.OtherPaymentInfo.PaymentType.ShouldNotBe("Changed"); //NOT
+            modelResult.OtherPaymentInfo.PoNum.ShouldBe(po);
+
+
+            Controller.ModelState.IsValid.ShouldBe(false);
+            Controller.ModelState.ErrorCount.ShouldBe(1);
+            Controller.ModelState.Keys.ElementAt(0).ShouldBe("OtherPaymentInfo.PoNum");
+            Controller.ModelState.Values.ElementAt(0).Errors.Count.ShouldBe(1);
+            Controller.ModelState.Values.ElementAt(0).Errors[0].ErrorMessage.ShouldBe("PO # is required");
+            Controller.ErrorMessage.ShouldBe("There were errors trying to save that.");
+        }
+
+        [Theory]
+        [InlineData(PaymentTypeCodes.Other)]
+        [InlineData(PaymentTypeCodes.UcOtherAccount)]
+        [InlineData(PaymentTypeCodes.UcDavisAccount)] //Probably will not happen
+        public async Task TestConfirmPaymentPostRedirectsWhenError(string paymentType)
+        {
+            // Arrange
+            OrderData[1].Paid = false;
+            OrderData[1].PaymentType = paymentType;
+            Controller.ErrorMessage = null;
+            var op = CreateValidEntities.OtherPaymentInfo(5);
+            op.PaymentType = "Changed";
+            Controller.ModelState.AddModelError("Fake", "FakeError");
+
+            // Act
+            var controllerResult = await Controller.ConfirmPayment(OrderData[1].ShareIdentifier, op);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<PaymentConfirmationModel>(viewResult.Model);
+            modelResult.Order.ShouldNotBeNull();
+            modelResult.Order.ShareIdentifier.ShouldBe(OrderData[1].ShareIdentifier);
+            modelResult.OtherPaymentInfo.ShouldNotBeNull();
+            modelResult.OtherPaymentInfo.AcAddr.ShouldBe("AcAddr5");
+            modelResult.OtherPaymentInfo.AcEmail.ShouldBe("AcEmail5@test.com");
+            modelResult.OtherPaymentInfo.AcName.ShouldBe("AcName5");
+            modelResult.OtherPaymentInfo.AcPhone.ShouldBe("AcPhone5");
+            modelResult.OtherPaymentInfo.CompanyName.ShouldBe("CompanyName5");
+            modelResult.OtherPaymentInfo.PaymentType.ShouldNotBe("Changed"); //NOT
+            modelResult.OtherPaymentInfo.PoNum.ShouldBe("PoNum5");
+
+
+            Controller.ModelState.IsValid.ShouldBe(false);
+            Controller.ModelState.ErrorCount.ShouldBe(1);
+            Controller.ModelState.Keys.ElementAt(0).ShouldBe("Fake");
+            Controller.ModelState.Values.ElementAt(0).Errors.Count.ShouldBe(1);
+            Controller.ModelState.Values.ElementAt(0).Errors[0].ErrorMessage.ShouldBe("FakeError");
+            Controller.ErrorMessage.ShouldBe("There were errors trying to save that.");
+        }
+
+        [Theory]
+        [InlineData(PaymentTypeCodes.Other)]
+        [InlineData(PaymentTypeCodes.UcOtherAccount)]
+        [InlineData(PaymentTypeCodes.UcDavisAccount)] //Probably will not happen
+        public async Task TestConfirmPaymentPostWhenSuccess(string paymentType)
+        {
+            // Arrange
+            OrderData[1].Paid = false;
+            OrderData[1].PaymentType = paymentType;
+            Controller.ErrorMessage = null;
+            var op = CreateValidEntities.OtherPaymentInfo(5);
+            op.PaymentType = "Changed";
+
+
+            // Act
+            var controllerResult = await Controller.ConfirmPayment(OrderData[1].ShareIdentifier, op);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Link");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(OrderData[1].ShareIdentifier);
+
+            MockOrderMessageService.Verify(a => a.EnqueueBillingMessage(It.IsAny<Order>(), It.IsAny<string>()), Times.Once); //TODO: Examine passed Parameters
+
+            //TODO: Check Save, examine saved order
+        }
+
     }
     [Trait("Category", "Controller Reflection")]
     public class ResultsControllerReflectionTests
