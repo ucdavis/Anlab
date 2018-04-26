@@ -10,6 +10,7 @@ using Anlab.Core.Models;
 using AnlabMvc;
 using AnlabMvc.Controllers;
 using AnlabMvc.Models.Configuration;
+using AnlabMvc.Models.FileUploadModels;
 using AnlabMvc.Models.Order;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -349,6 +350,40 @@ namespace Test.TestsController
             var modelResult = Assert.IsType<OrderResultsModel>(result.Model);
             modelResult.CyberSourceUrl.ShouldBe("Http://FakeUrl.com");
         }
+
+        [Fact]
+        public async Task TestDownloadReturnsNotFound()
+        {
+            // Arrange
+            
+
+            // Act
+            var controllerResult = await Controller.Download(SpecificGuid.GetGuid(15));
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+        }
+
+        [Fact]
+        public async Task TestDownloadCallsFileStorageToGetRedirectUrl()
+        {
+            // Arrange
+            var response = new SasResponse();
+            response.AccessUrl = "Http://FakeUrl";
+            MockFileStorageService.Setup(a => a.GetSharedAccessSignature(It.IsAny<string>())).ReturnsAsync(response);
+
+            OrderData[1].ResultsFileIdentifier = "FakeId";
+
+            // Act
+            var controllerResult = await Controller.Download(OrderData[1].ShareIdentifier);
+
+            // Assert
+            MockFileStorageService.Verify(a => a.GetSharedAccessSignature("FakeId"), Times.Once);
+            var redirctResult = Assert.IsType<RedirectResult>(controllerResult);
+            redirctResult.Url.ShouldBe("Http://FakeUrl");
+        }
+
+
     }
     [Trait("Category", "Controller Reflection")]
     public class ResultsControllerReflectionTests
