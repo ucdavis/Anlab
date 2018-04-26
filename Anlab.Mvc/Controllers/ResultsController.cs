@@ -87,6 +87,11 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> ConfirmPayment(Guid id)
         {
             var order = await _context.Orders.SingleOrDefaultAsync(o => o.ShareIdentifier == id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
             if (order.Paid)
             {
                 ErrorMessage = "Payment has already been confirmed";
