@@ -3,6 +3,9 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <AssemblyVersion>1.0.0.1</AssemblyVersion>
+    <IsWebJobProject>true</IsWebJobProject>
+    <WebJobName>Anlab.Jobs.SendMail</WebJobName>
+    <WebJobType>Triggered</WebJobType>
     <UserSecretsId>f3c999a5-2304-44e0-a49e-f43333bf9ccf</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
