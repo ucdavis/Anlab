@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
+using AnlabMvc.Models.Roles;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -12,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AnlabMvc.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = RoleCodes.Admin)]
     public class SystemController : ApplicationController
     {
         private readonly IDbInitializationService _dbInitializationService;
