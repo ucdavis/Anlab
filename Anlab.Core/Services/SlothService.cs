@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Anlab.Core.Extensions;
 using Serilog;
 
 namespace Anlab.Core.Services
@@ -52,8 +53,8 @@ namespace Anlab.Core.Services
 
             var model = new TransactionViewModel();
             model.MerchantTrackingNumber = order.Id.ToString();
-            model.Transfers.Add(new TransferViewModel { Account = debitAccount.Account , Amount = orderDetails.GrandTotal, Chart = debitAccount.Chart, SubAccount = debitAccount.SubAccount, Description = $"{order.Project} - {order.RequestNum}", Direction = "Debit", ObjectCode = _appSettings.DebitObjectCode });
-            model.Transfers.Add(new TransferViewModel { Account = creditAccount.Account, Amount = orderDetails.GrandTotal, Chart = creditAccount.Chart, SubAccount = creditAccount.SubAccount, Description = $"{order.Project} - {order.RequestNum}", Direction = "Credit", ObjectCode = _appSettings.CreditObjectCode });
+            model.Transfers.Add(new TransferViewModel { Account = debitAccount.Account.SafeToUpper() , Amount = orderDetails.GrandTotal, Chart = debitAccount.Chart.SafeToUpper(), SubAccount = debitAccount.SubAccount.SafeToUpper(), Description = $"{order.Project} - {order.RequestNum}", Direction = "Debit", ObjectCode = _appSettings.DebitObjectCode });
+            model.Transfers.Add(new TransferViewModel { Account = creditAccount.Account.SafeToUpper(), Amount = orderDetails.GrandTotal, Chart = creditAccount.Chart.SafeToUpper(), SubAccount = creditAccount.SubAccount.SafeToUpper(), Description = $"{order.Project} - {order.RequestNum}", Direction = "Credit", ObjectCode = _appSettings.CreditObjectCode });
 
             using (var client = new HttpClient())
             {
