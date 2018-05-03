@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
+using Anlab.Core.Extensions;
 using Anlab.Core.Models;
 using Anlab.Jobs.MoneyMovement;
 using AnlabMvc.Extensions;
@@ -248,6 +249,7 @@ namespace AnlabMvc.Services
 
             orderToUpdate.JsonDetails = JsonConvert.SerializeObject(model);
             var orderDetails = orderToUpdate.GetOrderDetails();
+            orderDetails.Payment.Account = orderDetails.Payment.Account.SafeToUpper(); //Make sure any account is all upper case
 
             var tests = CalculateTestDetails(orderToUpdate);
 
@@ -263,7 +265,7 @@ namespace AnlabMvc.Services
             if (orderDetails.Payment.IsInternalClient)
             {
                 var account = new AccountModel(orderDetails.Payment.Account);
-                if (account.Chart == "3" || account.Chart == "L" || account.Chart == "S" || account.Chart == "M")
+                if (account.Chart == "3" || account.Chart == "L" || account.Chart == "H" || account.Chart == "M") //Removed S as a choice and added H to match _checkUcChart in react code
                 {
                     orderToUpdate.PaymentType = PaymentTypeCodes.UcDavisAccount;
                 }
