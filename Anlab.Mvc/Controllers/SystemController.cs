@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace AnlabMvc.Controllers
 {
@@ -18,24 +19,18 @@ namespace AnlabMvc.Controllers
     {
         private readonly IDbInitializationService _dbInitializationService;
         private readonly SignInManager<User> _signInManager;
-        private readonly ApplicationDbContext _context;
         private UserManager<User> _userManager;
 
-        public SystemController(IDbInitializationService dbInitializationService, ApplicationDbContext context, SignInManager<User> signInManager, UserManager<User> userManager)
+        public SystemController(IDbInitializationService dbInitializationService, SignInManager<User> signInManager, UserManager<User> userManager)
         {
             _dbInitializationService = dbInitializationService;
             _signInManager = signInManager;
             _userManager = userManager;
-            _context = context;
-        }
-
-        public IActionResult Index()
-        {
-            return View();
         }
 
         public async Task<IActionResult> Emulate(string id)
         {
+            var saveUser = User.Identity.Name;
             var user = await _userManager.FindByNameAsync(id);
 
             if (user == null) return NotFound();
@@ -45,6 +40,7 @@ namespace AnlabMvc.Controllers
             await _signInManager.SignInAsync(user, false); // sign in new user
 
             Message = $"Signed in as {id}";
+            Log.Information($"{saveUser} Emulation of {id}");
 
             return RedirectToAction("Index", "Home");
         }
