@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using AnlabMvc.Controllers;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -21,20 +22,20 @@ namespace Test.TestsController
     public class FakeControllerTests
     {
         public Mock<ApplicationDbContext> MockDbContext { get; set; }
-        public Mock<UserManager<User>> MockUserManager { get; set; }
 
-        public Mock<FakeUserManager> fakeUserM { get; set; }
+        public Mock<FakeUserManager> FakeUserManager { get; set; }
+        public Mock<FakeSignInManager> FakeSignInmanager { get; set; }
 
         public List<User> UserData { get; set; }
         public FakeController Controller { get; set; }
 
         public FakeControllerTests()
         {
-            fakeUserM = new Mock<FakeUserManager>();
+            FakeUserManager = new Mock<FakeUserManager>();
+            FakeSignInmanager = new Mock<FakeSignInManager>();
 
 
             MockDbContext = new Mock<ApplicationDbContext>();
-            MockUserManager = new Mock<UserManager<User>>();
             UserData = new List<User>()
             {
                 CreateValidEntities.User(1, true),
@@ -45,21 +46,24 @@ namespace Test.TestsController
             MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);
 
             //Controller = new FakeController(new FakeUserManager());
-            Controller = new FakeController(fakeUserM.Object);
+            Controller = new FakeController(FakeUserManager.Object, FakeSignInmanager.Object);
         }
 
         [Fact]
         public async Task TestDescription()
         {
             // Arrange
-            
-
+            var user = CreateValidEntities.User(3);
+            FakeUserManager.Setup(a => a.IsInRoleAsync(It.IsAny<User>(), "Test")).ReturnsAsync(true);
+            FakeUserManager.Setup(a => a.FindByNameAsync("test@test.com")).ReturnsAsync(user);
 
             // Act
             var controllerresult = await Controller.Index();
 
             // Assert
-            fakeUserM.Verify(a => a.FindByNameAsync("test@test.com"), Times.Once);
+            FakeUserManager.Verify(a => a.FindByNameAsync("test@test.com"), Times.Once);
+            FakeSignInmanager.Verify(a => a.SignOutAsync(), Times.Once);
+            FakeSignInmanager.Verify(a => a.SignInAsync(user, false, It.IsAny<string>()), Times.Once);
         }
     }
 
@@ -76,26 +80,18 @@ namespace Test.TestsController
                 new Mock<IServiceProvider>().Object,
                 new Mock<ILogger<UserManager<User>>>().Object)
         { }
-
-        public override Task<User> FindByEmailAsync(string email)
-        {
-            return Task.FromResult(new User { Email = email });
-        }
-
-        public override Task<User> FindByNameAsync(string email)
-        {
-            return Task.FromResult(new User { Email = email });
-        }
-
-        public override Task<bool> IsEmailConfirmedAsync(User user)
-        {
-            return Task.FromResult(user.Email == "test@test.com");
-        }
-
-        public override Task<string> GeneratePasswordResetTokenAsync(User user)
-        {
-            return Task.FromResult("---------------");
-        }
-
     }
+
+    public class FakeSignInManager : SignInManager<User>
+    {
+        public FakeSignInManager()
+            : base(new Mock<FakeUserManager>().Object,
+                new Mock<IHttpContextAccessor>().Object,
+                new Mock<IUserClaimsPrincipalFactory<User>>().Object,
+                new Mock<IOptions<IdentityOptions>>().Object,
+                new Mock<ILogger<SignInManager<User>>>().Object,
+                new Mock<IAuthenticationSchemeProvider>().Object)
+        { }
+    }
+
 }
