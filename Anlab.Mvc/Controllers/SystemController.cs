@@ -1,3 +1,4 @@
+using System;
 using AnlabMvc.Models.Roles;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -19,6 +20,8 @@ namespace AnlabMvc.Controllers
         {
 #if DEBUG
             await _dbInitializationService.RecreateAndInitialize();
+#else
+            throw new NotImplementedException("WHAT!!! Don't reset DB in Release!");
 #endif
             return RedirectToAction("LogoutDirect", "Account");
         }
