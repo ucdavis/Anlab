@@ -16,6 +16,7 @@ using Shouldly;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Test.Helpers;
 using TestHelpers.Helpers;
@@ -602,7 +603,17 @@ namespace Test.TestsController
             Controller.ErrorMessage = null;
             var op = CreateValidEntities.OtherPaymentInfo(5);
             op.PaymentType = "Changed";
-
+            Order savedOrder = null;
+            string savedSubject = null;            
+            MockOrderMessageService.Setup(a => a.EnqueueBillingMessage(It.IsAny<Order>(), It.IsAny<string>()))
+                .Callback<Order, string>((or, sub) =>
+                {
+                    savedOrder = or;
+                    savedSubject = sub;
+                }).Returns(Task.CompletedTask);
+            
+            savedOrder.ShouldBeNull();
+            savedSubject.ShouldBeNull();
 
             // Act
             var controllerResult = await Controller.ConfirmPayment(OrderData[1].ShareIdentifier, op);
@@ -612,10 +623,15 @@ namespace Test.TestsController
             redirectResult.ActionName.ShouldBe("Link");
             redirectResult.ControllerName.ShouldBeNull();
             redirectResult.RouteValues["id"].ShouldBe(OrderData[1].ShareIdentifier);
-
+            
             MockOrderMessageService.Verify(a => a.EnqueueBillingMessage(It.IsAny<Order>(), It.IsAny<string>()), Times.Once); //TODO: Examine passed Parameters
+            savedOrder.ShouldNotBeNull();
+            savedOrder.Id.ShouldBe(OrderData[1].Id);
+            savedSubject.ShouldBe("Anlab Work Order Billing Info");
 
-            //TODO: Check Save, examine saved order
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+            OrderData[1].Paid.ShouldBe(true);
+            OrderData[1].Status.ShouldBe(OrderStatusCodes.Complete);
         }
 
     }
