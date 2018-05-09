@@ -57,7 +57,7 @@ namespace AnlabMvc.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken] //Not really needed. Class inherits the Auto version, but it doesn't hurt
         public async Task<IActionResult> Create([Bind("Id,Analysis,Categories,Group,Public,Notes,AdditonalInfoPrompt,LabOrder,RequestOrder")] TestItem testItem)
         {
             ModelState.Clear();
