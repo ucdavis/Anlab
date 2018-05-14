@@ -5,11 +5,20 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Anlab.Core.Data;
+using Anlab.Core.Domain;
+using Anlab.Core.Models;
+using Anlab.Core.Services;
 using AnlabMvc.Controllers;
 using AnlabMvc.Models.Roles;
+using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Moq;
 using Shouldly;
+using Test.Helpers;
 using TestHelpers.Helpers;
 using Xunit;
 using Xunit.Abstractions;
@@ -19,6 +28,107 @@ namespace Test.TestsController
     [Trait("Category", "ControllerTests")]
     public class LabControllerTests
     {
+        public Mock<ApplicationDbContext> MockDbContext { get; set; }
+        public Mock<HttpContext> MockHttpContext { get; set; }
+        public Mock<IOrderService> MockOrderService { get; set; }
+        public Mock<ILabworksService> MockLabworksService { get; set; }
+        public Mock<IOrderMessageService> MockOrderMessagingService { get; set; }
+        public Mock<IFileStorageService> MockFileStorageService { get; set; }
+        public Mock<ISlothService> MockSlothService { get; set; }
+
+
+        //Setup Data
+        public List<Order> OrderData { get; set; }
+
+        //Controller
+        public LabController Controller { get; set; }
+
+
+
+
+
+        public LabControllerTests()
+        {
+            MockDbContext = new Mock<ApplicationDbContext>();
+            MockHttpContext = new Mock<HttpContext>();
+            MockOrderService = new Mock<IOrderService>();
+            MockLabworksService = new Mock<ILabworksService>();
+            MockOrderMessagingService = new Mock<IOrderMessageService>();
+            MockFileStorageService = new Mock<IFileStorageService>();
+            MockSlothService = new Mock<ISlothService>();
+
+            var mockDataProvider = new Mock<SessionStateTempDataProvider>();
+
+
+
+            //Default Data
+            OrderData = new List<Order>();
+            for (int i = 0; i < 5; i++)
+            {
+                var order = CreateValidEntities.Order(i + 1, true);
+                order.Creator = CreateValidEntities.User(2);
+                OrderData.Add(order);
+            }
+
+
+
+            //Setups
+            MockDbContext.Setup(m => m.Orders).Returns(OrderData.AsQueryable().MockAsyncDbSet().Object);
+
+
+            Controller = new LabController(MockDbContext.Object, MockOrderService.Object, MockLabworksService.Object,
+                MockOrderMessagingService.Object, MockFileStorageService.Object, MockSlothService.Object)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = MockHttpContext.Object
+                },
+                TempData = new TempDataDictionary(MockHttpContext.Object, mockDataProvider.Object)
+            };
+        }
+
+
+        [Theory]
+        [InlineData(OrderStatusCodes.Confirmed, false)]
+        [InlineData(OrderStatusCodes.Received, false)]
+        [InlineData(OrderStatusCodes.Finalized, false)]
+        [InlineData(OrderStatusCodes.Confirmed, true)]
+        [InlineData(OrderStatusCodes.Received, true)]
+        [InlineData(OrderStatusCodes.Finalized, true)]
+        [InlineData(OrderStatusCodes.Complete, true)]
+        [InlineData(OrderStatusCodes.Complete, false)]
+        public void TestOrderReturnsExpectedResults1(string value, bool showComplete)
+        {
+            // Arrange
+            foreach (var order in OrderData)
+            {
+                order.Status = OrderStatusCodes.Created;               
+            }
+
+            OrderData[1].Status = value;
+            OrderData[2].Status = value;
+
+            // Act
+            var controllerResult = Controller.Orders(showComplete);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<List<Order>>(viewResult.Model);
+            if (value == OrderStatusCodes.Complete && showComplete == false)
+            {
+                modelResult.Count.ShouldBe(0);
+            }
+            else
+            {
+                modelResult.Count.ShouldBe(2);
+
+            }
+
+            Controller.ViewBag.ShowComplete = showComplete;
+        }
+
+
+
         //TODO
     }
 
