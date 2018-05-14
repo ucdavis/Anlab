@@ -40,6 +40,7 @@ namespace Test.Helpers
             rtValue.Payment = new Payment();
             rtValue.OtherPaymentInfo = CreateValidEntities.OtherPaymentInfo(counter);
             rtValue.ClientInfo = new ClientInfo();
+            rtValue.ClientInfo.ClientId = $"ClientId{counter}";
 
             return rtValue;
         }

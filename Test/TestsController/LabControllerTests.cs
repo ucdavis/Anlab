@@ -5,11 +5,13 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using Anlab.Core.Services;
 using AnlabMvc.Controllers;
+using AnlabMvc.Models.Order;
 using AnlabMvc.Models.Roles;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -106,7 +108,10 @@ namespace Test.TestsController
             }
 
             OrderData[1].Status = value;
+            OrderData[1].RequestNum = "Blah";
+            OrderData[1].ClientName = "Hup";
             OrderData[2].Status = value;
+            OrderData[2].Paid = true;
 
             // Act
             var controllerResult = Controller.Orders(showComplete);
@@ -121,13 +126,97 @@ namespace Test.TestsController
             else
             {
                 modelResult.Count.ShouldBe(2);
+                modelResult[0].Id.ShouldBe(3); //Sorted by updated date
+                modelResult[1].Id.ShouldBe(2); //Sorted by updated date
 
+                modelResult[1].ClientId.ShouldBe("ClientId2");
+                modelResult[1].Creator.ShouldNotBeNull();
+                modelResult[1].Creator.Email.ShouldBe("test2@testy.com");
+                modelResult[1].Created.ShouldNotBeNull();
+                modelResult[1].Updated.ShouldNotBeNull();
+                modelResult[1].RequestNum.ShouldBe("Blah");
+                modelResult[1].Status.ShouldBe(value);
+                modelResult[1].ShareIdentifier.ShouldBe(SpecificGuid.GetGuid(2));
+                modelResult[1].Paid.ShouldBeFalse();
+
+                modelResult[0].Paid.ShouldBeTrue();
+
+                modelResult[1].ClientName.ShouldBe("Hup");
             }
 
-            Controller.ViewBag.ShowComplete = showComplete;
+            Controller.ViewBag.ShowComplete = showComplete;            
+
         }
 
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void TestOrdersReturnsMax1000Orders(bool value)
+        {
+            // Arrange
+            for (int i = 0; i < 1200; i++)
+            {
+                var order = CreateValidEntities.Order(i + 10);
+                order.Status = OrderStatusCodes.Finalized;
+                OrderData.Add(order);
+            }
 
+
+            // Act
+            var controllerResult = Controller.Orders(value);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<List<Order>>(viewResult.Model);
+            modelResult.Count.ShouldBe(1000);
+        }
+
+        [Fact]
+        public async Task TestDetailsReturnsNotFound1()
+        {
+            // Arrange
+            
+
+
+            // Act
+            var controllerResult = await Controller.Details(9);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+        }
+        [Fact]
+        public async Task TestDetailsReturnsNotFound2()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Created;
+
+
+            // Act
+            var controllerResult = await Controller.Details(OrderData[1].Id);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+        }
+
+        [Theory]
+        [InlineData(OrderStatusCodes.Received)]
+        public async Task TestDetailsReturnsView(string value)
+        {
+            // Arrange
+            OrderData[1].Status = value;
+
+            // Act
+            var controllerResult = await Controller.Details(OrderData[1].Id);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<OrderReviewModel>(viewResult.Model);
+
+            modelResult.Order.ShouldNotBeNull();
+            modelResult.Order.Id.ShouldBe(OrderData[1].Id);
+            modelResult.OrderDetails.ShouldNotBeNull();
+            modelResult.OrderDetails.ClientInfo.ClientId.ShouldBe("ClientId1");
+        }
 
         //TODO
     }
