@@ -49,7 +49,7 @@ namespace Test.TestsController
         [Fact]
         public void TestControllerMethodCount()
         {
-            ControllerReflection.ControllerPublicMethods(11);
+            ControllerReflection.ControllerPublicMethods(13);
         }
 
         [Fact]
@@ -96,6 +96,11 @@ namespace Test.TestsController
             ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("JsonDetails", 2 + countAdjustment, "JsonDetails-1", false, showListOfAttributes: false);
             var jsonDetailsAuth = ControllerReflection.MethodExpectedAttribute<AuthorizeAttribute>("JsonDetails", 2 + countAdjustment, "JsonDetails-2", false, showListOfAttributes: false);
             jsonDetailsAuth.ElementAt(0).Roles.ShouldBe(RoleCodes.Admin);
+
+            //12 & 13
+            ControllerReflection.MethodExpectedNoAttribute("Search", "SearchGet");
+            ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("Search", 2 + countAdjustment, "SearchPost-1", true, showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Search", 2 + countAdjustment, "SearchPost-2", true, showListOfAttributes: false);
         }
 
 
