@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Anlab.Core.Domain;
+using Anlab.Core.Extensions;
 using Anlab.Core.Services;
 using Serilog;
 using AnlabMvc.Helpers;
@@ -418,6 +419,43 @@ namespace AnlabMvc.Controllers
             }
 
             return RedirectToAction("Details", new{id});
+        }
+
+        public ActionResult Search()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Search(string term)
+        {
+            Order order = null;
+            try
+            {
+                var shar = Guid.Parse(term);
+                order = await _dbContext.Orders.SingleOrDefaultAsync(a => a.ShareIdentifier == shar);
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    var id = Convert.ToInt32(term);
+                    order = await _dbContext.Orders.SingleOrDefaultAsync(a => a.Id == id);
+                }
+                catch (Exception)
+                {
+                    order = await _dbContext.Orders.FirstOrDefaultAsync(a => a.RequestNum == term.SafeToUpper());
+                }
+            }
+
+            if (order == null)
+            {
+                ErrorMessage = "Order Not Found";
+                return RedirectToAction("Search");
+            }
+
+            return RedirectToAction("Details", new {id = order.Id});
+
         }
 
         [Authorize(Roles = RoleCodes.Admin)]

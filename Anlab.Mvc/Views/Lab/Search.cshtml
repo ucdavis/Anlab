@@ -1,0 +1,19 @@
+@{
+    ViewBag.Title = "Search";
+}
+
+
+<div class="col">
+    <form asp-controller="Lab" asp-action="Search">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-md-2 control-label">Search By Id, Request Num, or Share Identifier</label>
+                <div class="col-md-10">
+                    <input id="term" class="form-control" name="term" />
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-danger"><i class="fa fa-search" aria-hidden="true"></i> Search</button>
+        </div>
+    </form>
+</div>
