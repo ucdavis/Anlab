@@ -430,22 +430,20 @@ namespace AnlabMvc.Controllers
         public async Task<ActionResult> Search(string term)
         {
             Order order = null;
-            try
+            Guid guidSearch = Guid.Empty;
+            int intSearch = 0;
+
+            if (Guid.TryParse(term, out guidSearch))
             {
-                var shar = Guid.Parse(term);
-                order = await _dbContext.Orders.SingleOrDefaultAsync(a => a.ShareIdentifier == shar);
+                order = await _dbContext.Orders.SingleOrDefaultAsync(a => a.ShareIdentifier == guidSearch);
             }
-            catch (Exception)
+            else if(int.TryParse(term, out intSearch))
             {
-                try
-                {
-                    var id = Convert.ToInt32(term);
-                    order = await _dbContext.Orders.SingleOrDefaultAsync(a => a.Id == id);
-                }
-                catch (Exception)
-                {
-                    order = await _dbContext.Orders.FirstOrDefaultAsync(a => a.RequestNum == term.SafeToUpper());
-                }
+                order = await _dbContext.Orders.SingleOrDefaultAsync(a => a.Id == intSearch);
+            }
+            else
+            {
+                order = await _dbContext.Orders.FirstOrDefaultAsync(a => a.RequestNum == term.SafeToUpper());
             }
 
             if (order == null)
