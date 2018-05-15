@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Shouldly;
 using Test.Helpers;
@@ -200,6 +201,9 @@ namespace Test.TestsController
 
         [Theory]
         [InlineData(OrderStatusCodes.Received)]
+        [InlineData(OrderStatusCodes.Confirmed)]
+        [InlineData(OrderStatusCodes.Finalized)]
+        [InlineData(OrderStatusCodes.Complete)]
         public async Task TestDetailsReturnsView(string value)
         {
             // Arrange
@@ -215,10 +219,185 @@ namespace Test.TestsController
             modelResult.Order.ShouldNotBeNull();
             modelResult.Order.Id.ShouldBe(OrderData[1].Id);
             modelResult.OrderDetails.ShouldNotBeNull();
-            modelResult.OrderDetails.ClientInfo.ClientId.ShouldBe("ClientId1");
+            modelResult.OrderDetails.ClientInfo.ClientId.ShouldBe("ClientId2");
+            modelResult.HideLabDetails.ShouldBeFalse();
         }
 
-        //TODO
+        [Fact]
+        public async Task TestAddRequestNumberGetReturnsNotFound()
+        {
+            // Arrange
+            
+            // Act
+            var cr = await Controller.AddRequestNumber(9);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(cr);
+        }
+
+        [Theory]
+        [InlineData(OrderStatusCodes.Received)]
+        [InlineData(OrderStatusCodes.Created)]
+        [InlineData(OrderStatusCodes.Finalized)]
+        [InlineData(OrderStatusCodes.Complete)]
+        public async Task TestAddRequestNumberGetRedirectsWhenStatusNotConfirmed(string value)
+        {
+            // Arrange
+            OrderData[1].Status = value;
+
+
+            // Act
+            var cr = await Controller.AddRequestNumber(OrderData[1].Id);
+
+            // Assert
+            var rd = Assert.IsType<RedirectToActionResult>(cr);
+            rd.ActionName.ShouldBe("Orders");
+            rd.ControllerName.ShouldBeNull();
+            Controller.ErrorMessage.ShouldBe("You can only receive a confirmed order");
+        }
+        [Fact]
+        public async Task TestAddRequestNumberGetReturnsView()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+
+            // Act
+            var controllerResult = await Controller.Details(OrderData[1].Id);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<OrderReviewModel>(viewResult.Model);
+
+            modelResult.Order.ShouldNotBeNull();
+            modelResult.Order.Id.ShouldBe(OrderData[1].Id);
+            modelResult.OrderDetails.ShouldNotBeNull();
+            modelResult.OrderDetails.ClientInfo.ClientId.ShouldBe("ClientId2");
+            modelResult.HideLabDetails.ShouldBeFalse();
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public async Task TestAddRequestNumberPostRedirectsWhenRequestNumMissing(string value)
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            
+            // Act
+            var cr = await Controller.AddRequestNumber(OrderData[1].Id, true, value);
+
+            // Assert
+            var rr = Assert.IsType<RedirectToActionResult>(cr);
+            rr.ActionName.ShouldBe("AddRequestNumber");
+            Controller.ErrorMessage.ShouldBe("A request number is required");
+        }
+
+        [Fact]
+        public async Task TestAddRequestNumberPostUppersValueAndChecksForDups1()
+        {
+            // Arrange
+            OrderData[0].RequestNum = "ABC123";
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+
+            // Act
+            var cr = await Controller.AddRequestNumber(9, true, "AbC123");
+
+            // Assert
+#if DEBUG
+            Assert.IsType<NotFoundResult>(cr); //Because it falls through to the check if the order exists.
+#else
+            var rr = Assert.IsType<RedirectToActionResult>(cr);
+            rr.ActionName.ShouldBe("AddRequestNumber");
+            rr.ControllerName.ShouldBeNull();
+#endif
+            Controller.ErrorMessage.ShouldBe("That request number is already in use");            
+        }
+
+        [Fact]
+        public async Task TestAddRequestNumberPostUppersValueAndChecksForDups2()
+        {
+            // Arrange
+            OrderData[0].RequestNum = "AbC123";
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+
+            // Act
+            var cr = await Controller.AddRequestNumber(9, true, OrderData[0].RequestNum);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(cr); //Because it didn't find the lower case match.
+
+            Controller.ErrorMessage.ShouldBeNull(); 
+        }
+
+        [Fact]
+        public async Task TestAddRequestNumberPostReturnsNotFound()
+        {
+            // Arrange
+
+            // Act
+            var cr = await Controller.AddRequestNumber(9, true, "AAABBB");
+
+            // Assert
+            Assert.IsType<NotFoundResult>(cr);
+            Controller.ErrorMessage.ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task TestAddRequestNumberPostWhenOverwriteOrderFromDbReturnsSpecificError()
+        {
+            // Arrange
+            var overWriteResult = new OverwriteOrderResult();
+            overWriteResult.ErrorMessage = "The Fake Error has arrived.";
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(overWriteResult);
+
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+
+            // Act
+            var cr = await Controller.AddRequestNumber(OrderData[1].Id, true, "abc");
+
+            // Assert
+            var rr = Assert.IsType<RedirectToActionResult>(cr);
+            rr.ActionName.ShouldBe("Orders");
+            rr.ControllerName.ShouldBeNull();
+            Controller.ErrorMessage.ShouldBe("Error. Unable to continue. Error looking up on Labworks: The Fake Error has arrived.");
+        }
+
+        [Fact]
+        public async Task TestAddRequestNumberPostWhenOverwriteOrderFromDbReturnsErrorWithMissingCodes()
+        {
+            // Arrange
+            var overWriteResult = new OverwriteOrderResult();
+            overWriteResult.MissingCodes = new List<string>();
+            overWriteResult.MissingCodes.Add("A123");
+            overWriteResult.MissingCodes.Add("B345");
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(overWriteResult);
+
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+
+            // Act
+            var cr = await Controller.AddRequestNumber(OrderData[1].Id, true, "abc");
+
+            // Assert
+            var rr = Assert.IsType<RedirectToActionResult>(cr);
+            rr.ActionName.ShouldBe("Orders");
+            rr.ControllerName.ShouldBeNull();
+            Controller.ErrorMessage.ShouldBe("Error. Unable to continue. The following codes were not found locally: A123,B345");
+        }
+
+
+        [Fact(Skip = "Reminder to test the rest")]
+        public void TestTheRestReminder()
+        {
+            // Arrange
+            
+
+
+            // Act
+
+
+            // Assert		
+        }
     }
 
     [Trait("Category", "Controller Reflection")]
