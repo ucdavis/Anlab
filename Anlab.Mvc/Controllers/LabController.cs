@@ -153,7 +153,7 @@ namespace AnlabMvc.Controllers
 
 
             order.RequestNum = requestNum;
-            var result = await _orderService.OverwiteOrderFromDb(order);
+            var result = await _orderService.OverwriteOrderFromDb(order);
             if (result.WasError)
             {
                 if (result.ErrorMessage != null)
@@ -297,7 +297,7 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
 
-            var result = await _orderService.OverwiteOrderFromDb(order);
+            var result = await _orderService.OverwriteOrderFromDb(order);
             if (result.WasError)
             {
                 if (result.ErrorMessage != null)
@@ -344,7 +344,7 @@ namespace AnlabMvc.Controllers
 
             order.Status = OrderStatusCodes.Finalized;
 
-            var result = await _orderService.OverwiteOrderFromDb(order);
+            var result = await _orderService.OverwriteOrderFromDb(order);
             if (result.WasError)
             {
                 if (result.ErrorMessage != null)

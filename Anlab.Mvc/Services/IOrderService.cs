@@ -25,7 +25,7 @@ namespace AnlabMvc.Services
 
         Task<List<TestItemModel>> PopulateTestItemModel(bool showAll = false);
 
-        Task<OverwriteOrderResult> OverwiteOrderFromDb(Order orderToUpdate);
+        Task<OverwriteOrderResult> OverwriteOrderFromDb(Order orderToUpdate);
 
         Task UpdateTestsAndPrices(Order orderToUpdate);
 
@@ -174,7 +174,7 @@ namespace AnlabMvc.Services
         /// </summary>
         /// <param name="orderToUpdate"></param>
         /// <returns></returns>
-        public async Task<OverwriteOrderResult> OverwiteOrderFromDb(Order orderToUpdate)
+        public async Task<OverwriteOrderResult> OverwriteOrderFromDb(Order orderToUpdate)
         {
             var rtValue = new OverwriteOrderResult();
             if (string.IsNullOrWhiteSpace(orderToUpdate.RequestNum))
