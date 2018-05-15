@@ -182,7 +182,16 @@ namespace AnlabMvc.Services
                 throw new Exception("RequestNum not populated"); //TODO: Something better
             }
 
-            var orderFromDb = await _labworksService.GetRequestDetails(orderToUpdate.RequestNum);
+            OrderUpdateFromDbModel orderFromDb = null;
+            try
+            {
+                orderFromDb = await _labworksService.GetRequestDetails(orderToUpdate.RequestNum);
+            }
+            catch (Exception e)
+            {
+                rtValue.ErrorMessage = e.Message;
+                return rtValue;
+            }
 
             var allTests = orderToUpdate.GetTestDetails();
 
@@ -197,6 +206,7 @@ namespace AnlabMvc.Services
                 
                 return rtValue;
             }
+
 
             var orderDetails = orderToUpdate.GetOrderDetails();
             orderDetails.Quantity = orderFromDb.Quantity;

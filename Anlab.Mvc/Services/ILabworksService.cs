@@ -117,7 +117,7 @@ namespace AnlabMvc.Services
                     //TODO: maybe we should only return tests with a $ amount
                     if (codes.Count() <= 0)
                     {
-                        throw new Exception("No codes found");
+                        throw new Exception($"No codes found (Request number not found? {RequestNum})");
                     }
                     rtValue.TestCodes = codes as IList<string>;
                     if (sampleDetails.Count() != 1)

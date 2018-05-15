@@ -103,6 +103,12 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
 
+            if (order.Status != OrderStatusCodes.Confirmed) //Have this here too because 
+            {
+                ErrorMessage = "You can only receive a confirmed order";
+                return RedirectToAction("Orders");
+            }
+
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
@@ -120,6 +126,8 @@ namespace AnlabMvc.Controllers
                 ErrorMessage = "A request number is required";
                 return RedirectToAction("AddRequestNumber");
             }
+
+            requestNum = requestNum.SafeToUpper();  //Force Uppercase
 
             var checkReqNum = await _dbContext.Orders.AnyAsync(i => i.Id != id && i.RequestNum == requestNum);
             if (checkReqNum)
@@ -148,7 +156,17 @@ namespace AnlabMvc.Controllers
             var result = await _orderService.OverwiteOrderFromDb(order);
             if (result.WasError)
             {
-                ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
+                if (result.ErrorMessage != null)
+                {
+                    ErrorMessage = $"Error. Unable to continue. Error looking up on Labworks: {result.ErrorMessage}";
+                }
+                else
+                {
+                    ErrorMessage =
+                        string.Format("Error. Unable to continue. The following codes were not found locally: {0}",
+                            string.Join(",", result.MissingCodes));
+                }
+
                 return RedirectToAction("Orders");
             }
 
@@ -282,7 +300,14 @@ namespace AnlabMvc.Controllers
             var result = await _orderService.OverwiteOrderFromDb(order);
             if (result.WasError)
             {
-                ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
+                if (result.ErrorMessage != null)
+                {
+                    ErrorMessage = $"Error. Unable to continue. Error looking up on Labworks: {result.ErrorMessage}";
+                }
+                else
+                {
+                    ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
+                }
                 return RedirectToAction("Orders");
             }
 
@@ -322,7 +347,14 @@ namespace AnlabMvc.Controllers
             var result = await _orderService.OverwiteOrderFromDb(order);
             if (result.WasError)
             {
-                ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
+                if (result.ErrorMessage != null)
+                {
+                    ErrorMessage = $"Error. Unable to continue. Error looking up on Labworks: {result.ErrorMessage}";
+                }
+                else
+                {
+                    ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
+                }
                 return RedirectToAction("Orders");
             }
 

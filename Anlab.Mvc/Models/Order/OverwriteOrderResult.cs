@@ -15,6 +15,7 @@ namespace AnlabMvc.Models.Order
         }
         public IList<TestDetails> SelectedTests { get; set; }
         public IList<String> MissingCodes { get; set; }
+        public string ErrorMessage { get; set; }
         
         public string ClientId { get; set; }
         public int Quantity { get; set; }
@@ -22,6 +23,6 @@ namespace AnlabMvc.Models.Order
         public decimal RushMultiplier { get; set; }
         public string LabworksSampleDisposition { get; set; }
 
-        public bool WasError => MissingCodes.Count > 0;
+        public bool WasError => MissingCodes.Count > 0 || ErrorMessage != null;
     }
 }
