@@ -213,7 +213,7 @@ namespace AnlabMvc.Controllers
 
             orderDetails.Quantity = result.Quantity;
             orderDetails.SelectedTests = result.SelectedTests;
-            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.IsInternalClient ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
             orderDetails.Total = orderDetails.Total * result.RushMultiplier;
             orderDetails.RushMultiplier = result.RushMultiplier;
             orderDetails.LabworksSampleDisposition = result.LabworksSampleDisposition;
