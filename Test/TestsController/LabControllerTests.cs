@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
@@ -343,6 +344,26 @@ namespace Test.TestsController
             Controller.ErrorMessage.ShouldBeNull();
         }
 
+        [Theory]
+        [InlineData(OrderStatusCodes.Received)]
+        [InlineData(OrderStatusCodes.Created)]
+        [InlineData(OrderStatusCodes.Finalized)]
+        [InlineData(OrderStatusCodes.Complete)]
+        public async Task TestAddRequestNumberWhenWrongStatus(string value)
+        {
+            // Arrange
+            OrderData[1].Status = value;
+
+            // Act
+            var cr = await Controller.AddRequestNumber(OrderData[1].Id, true, "abc");
+
+            // Assert
+            var rr = Assert.IsType<RedirectToActionResult>(cr);
+            rr.ActionName.ShouldBe("Orders");
+            rr.ControllerName.ShouldBeNull();
+            Controller.ErrorMessage.ShouldBe("You can only receive a confirmed order");
+        }
+
         [Fact]
         public async Task TestAddRequestNumberPostWhenOverwriteOrderFromDbReturnsSpecificError()
         {
@@ -385,6 +406,435 @@ namespace Test.TestsController
             Controller.ErrorMessage.ShouldBe("Error. Unable to continue. The following codes were not found locally: A123,B345");
         }
 
+
+        [Fact]
+        public async Task TestAddRequestNumberPostWarnsWhenClientIdChanged()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            OrderData[1].ClientId = "FAKED";
+            var overWriteResult = new OverwriteOrderResult();
+            overWriteResult.ClientId = "NotFaked";
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(overWriteResult);
+
+            // Act
+            var cr = await Controller.AddRequestNumber(OrderData[1].Id, true, "abc");
+
+            // Assert
+            var rr = Assert.IsType<RedirectToActionResult>(cr);
+            rr.ActionName.ShouldBe("Confirmation");
+            rr.ControllerName.ShouldBeNull();
+            rr.RouteValues["id"].ShouldBe(2);
+            Controller.ErrorMessage.ShouldBe("Warning!!! Client Id is changing from FAKED to NotFaked");
+            Controller.Message.ShouldBe("Order updated from work request number");
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public async Task TestAddRequestNumberPostDoesNotWarnWhenClientIdChangedFrom(string value)
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            OrderData[1].ClientId = value;
+            var overWriteResult = new OverwriteOrderResult();
+            overWriteResult.ClientId = "NotFaked";
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(overWriteResult);
+
+            // Act
+            var cr = await Controller.AddRequestNumber(OrderData[1].Id, true, "abc");
+
+            // Assert
+            var rr = Assert.IsType<RedirectToActionResult>(cr);
+            rr.ActionName.ShouldBe("Confirmation");
+            rr.ControllerName.ShouldBeNull();
+            rr.RouteValues["id"].ShouldBe(2);
+            Controller.ErrorMessage.ShouldBeNull();
+            Controller.Message.ShouldBe("Order updated from work request number");
+        }
+
+        [Theory]
+        [InlineData("AdditionalEmails2")]
+        [InlineData("AdditionalEmails2;Email-xx")]
+        public async Task TestAddRequestNumberPostUpdatesOrderAdditionalEmails(string value) 
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            var overWriteResult = new OverwriteOrderResult();
+            overWriteResult.ClientId = "NotFaked";
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(overWriteResult);
+            //MockLabworksService.Setup(a => a.GetClientDetails(It.IsAny<string>())).ReturnsAsync(new ClientDetailsLookupModel());
+
+            //Verify what it looks like before
+            OrderData[1].AdditionalEmails = value;
+            var od = OrderData[1].GetOrderDetails();
+            od.ClientInfo = new ClientInfo();
+            od.ClientInfo.Email = "Email-xx";
+            OrderData[1].SaveDetails(od);
+
+            // Act
+            var cr = await Controller.AddRequestNumber(OrderData[1].Id, true, "abc");
+
+            // Assert
+            var rr = Assert.IsType<RedirectToActionResult>(cr);
+            rr.ActionName.ShouldBe("Confirmation");
+            rr.ControllerName.ShouldBeNull();
+            rr.RouteValues["id"].ShouldBe(2);
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+            MockLabworksService.Verify(a => a.GetClientDetails("NotFaked"), Times.Once);
+
+            //Verify Changed
+            OrderData[1].AdditionalEmails.ShouldBe("AdditionalEmails2;Email-xx");
+        }
+
+        [Fact]
+        public async Task TestAddRequestNumberPostUpdatesOrderWithExpectedValues1() //Null value for GetClientDetails
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            OrderData[1].ClientId = null;
+            var overWriteResult = new OverwriteOrderResult();
+            overWriteResult.ClientId = "NotFaked";
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(overWriteResult);
+            //MockLabworksService.Setup(a => a.GetClientDetails(It.IsAny<string>())).ReturnsAsync(new ClientDetailsLookupModel());
+
+            //Verify what it looks like before
+            OrderData[1].ClientName.ShouldBeNull();
+            OrderData[1].ClientId.ShouldNotBe("NotFaked");
+            OrderData[1].AdditionalEmails.ShouldBe("AdditionalEmails2");
+            var od = OrderData[1].GetOrderDetails();
+            od.ClientInfo = new ClientInfo();
+            od.ClientInfo.ClientId = "ClientId-xx";
+            od.ClientInfo.Email = "Email-xx";
+            od.ClientInfo.Name = "Name-xx";
+            od.ClientInfo.PhoneNumber = "PhoneNumber-xx";
+            od.ClientInfo.CopyPhone = "CopyPhone-xx";
+            od.ClientInfo.Department = "Department-xx";
+
+            od.Quantity = 0;
+            OrderData[1].SaveDetails(od);
+
+            // Act
+            var cr = await Controller.AddRequestNumber(OrderData[1].Id, true, "abc");
+
+            // Assert
+            var rr = Assert.IsType<RedirectToActionResult>(cr);
+            rr.ActionName.ShouldBe("Confirmation");
+            rr.ControllerName.ShouldBeNull();
+            rr.RouteValues["id"].ShouldBe(2);
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+            MockLabworksService.Verify(a => a.GetClientDetails("NotFaked"), Times.Once);
+
+            //Verify Changed
+            OrderData[1].ClientName.ShouldBe("[Not Found]");
+            OrderData[1].ClientId.ShouldBe("NotFaked");
+            var notUpdatedDetails = OrderData[1].GetOrderDetails();
+            notUpdatedDetails.ClientInfo.ClientId.ShouldBe("ClientId-xx");
+            notUpdatedDetails.ClientInfo.Email.ShouldBe("Email-xx");
+            notUpdatedDetails.ClientInfo.Name.ShouldBe("Name-xx");
+            notUpdatedDetails.ClientInfo.PhoneNumber.ShouldBe("PhoneNumber-xx");
+            notUpdatedDetails.ClientInfo.CopyPhone.ShouldBe("CopyPhone-xx");
+            notUpdatedDetails.ClientInfo.Department.ShouldBe("Department-xx");
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+
+            Controller.ErrorMessage.ShouldBeNull();
+            Controller.Message.ShouldBe("Order updated from work request number");
+        }
+
+
+        [Fact]
+        public async Task TestAddRequestNumberPostUpdatesOrderWithExpectedValues2() 
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            OrderData[1].ClientId = null;
+            var overWriteResult = new OverwriteOrderResult();
+            overWriteResult.ClientId = "NotFaked";
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(overWriteResult);
+            MockLabworksService.Setup(a => a.GetClientDetails(It.IsAny<string>())).ReturnsAsync(CreateValidEntities.ClientDetailsLookupModel(5, true));
+
+            //Verify what it looks like before
+            OrderData[1].ClientName.ShouldBeNull();
+            OrderData[1].ClientId.ShouldNotBe("NotFaked");
+            OrderData[1].AdditionalEmails.ShouldBe("AdditionalEmails2");
+            var od = OrderData[1].GetOrderDetails();
+            od.ClientInfo = new ClientInfo();
+            od.ClientInfo.ClientId = "ClientId-xx";
+            od.ClientInfo.Email = "Email-xx";
+            od.ClientInfo.Name = "Name-xx";
+            od.ClientInfo.PhoneNumber = "PhoneNumber-xx";
+            od.ClientInfo.CopyPhone = "CopyPhone-xx";
+            od.ClientInfo.Department = "Department-xx";
+
+            od.Quantity = 0;
+            OrderData[1].SaveDetails(od);
+
+            // Act
+            var cr = await Controller.AddRequestNumber(OrderData[1].Id, true, "abc");
+
+            // Assert
+            var rr = Assert.IsType<RedirectToActionResult>(cr);
+            rr.ActionName.ShouldBe("Confirmation");
+            rr.ControllerName.ShouldBeNull();
+            rr.RouteValues["id"].ShouldBe(2);
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+            MockLabworksService.Verify(a => a.GetClientDetails("NotFaked"), Times.Once);
+
+            //Verify Changed
+            OrderData[1].ClientName.ShouldBe("Name5");
+            OrderData[1].ClientId.ShouldBe("NotFaked");
+            var updatedDetails = OrderData[1].GetOrderDetails();
+            updatedDetails.ClientInfo.ClientId.ShouldBe("NotFaked");
+            updatedDetails.ClientInfo.Email.ShouldBe("SubEmail5@test.com");
+            updatedDetails.ClientInfo.Name.ShouldBe("Name5");
+            updatedDetails.ClientInfo.PhoneNumber.ShouldBe("SubPhone5");
+            updatedDetails.ClientInfo.CopyPhone.ShouldBe("CopyPhone5");
+            updatedDetails.ClientInfo.Department.ShouldBe("Department5");
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+
+            Controller.ErrorMessage.ShouldBeNull();
+            Controller.Message.ShouldBe("Order updated from work request number");
+        }
+
+        [Fact]
+        public async Task TestAddRequestNumberPostUpdatesOrderWithExpectedValues3()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            OrderData[1].ClientId = null;
+            var overWriteResult = new OverwriteOrderResult();
+            overWriteResult.ClientId = "NotFaked";
+            overWriteResult.Quantity = 3;
+            overWriteResult.SelectedTests = new List<TestDetails>();
+            for (int i = 0; i < 5; i++)
+            {
+                overWriteResult.SelectedTests.Add(CreateValidEntities.TestDetails(i+1));
+            }
+
+            overWriteResult.LabworksSampleDisposition = "toast it";
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(overWriteResult);
+            //MockLabworksService.Setup(a => a.GetClientDetails(It.IsAny<string>())).ReturnsAsync(CreateValidEntities.ClientDetailsLookupModel(5, true));
+
+            //Verify what it looks like before
+            OrderData[1].ClientName.ShouldBeNull();
+            OrderData[1].ClientId.ShouldNotBe("NotFaked");
+            OrderData[1].AdditionalEmails.ShouldBe("AdditionalEmails2");
+            var od = OrderData[1].GetOrderDetails();
+            od.Quantity = 0;
+            od.SelectedTests = new List<TestDetails>();
+            od.SelectedTests.Count.ShouldBe(0);
+
+            OrderData[1].SaveDetails(od);
+
+            // Act
+            var cr = await Controller.AddRequestNumber(OrderData[1].Id, true, "abc");
+
+            // Assert
+            var rr = Assert.IsType<RedirectToActionResult>(cr);
+            rr.ActionName.ShouldBe("Confirmation");
+            rr.ControllerName.ShouldBeNull();
+            rr.RouteValues["id"].ShouldBe(2);
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+            MockLabworksService.Verify(a => a.GetClientDetails("NotFaked"), Times.Once);
+
+            //Verify Changed
+            var updatedDetails = OrderData[1].GetOrderDetails();
+            updatedDetails.Quantity.ShouldBe(3);
+            updatedDetails.SelectedTests.Count.ShouldBe(5);
+            updatedDetails.LabworksSampleDisposition.ShouldBe("toast it");
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+
+            Controller.ErrorMessage.ShouldBeNull();
+            Controller.Message.ShouldBe("Order updated from work request number");
+        }
+
+        [Fact]
+        public async Task TestAddRequestNumberPostUpdatesOrderWithExpectedTotals1()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            OrderData[1].ClientId = null;
+            var overWriteResult = new OverwriteOrderResult();
+            overWriteResult.ClientId = "NotFaked";
+            overWriteResult.Quantity = 3;
+            overWriteResult.SelectedTests = new List<TestDetails>();
+            overWriteResult.RushMultiplier = 1;
+            for (int i = 0; i < 5; i++)
+            {
+                overWriteResult.SelectedTests.Add(CreateValidEntities.TestDetails(i + 1));
+            }
+
+            overWriteResult.LabworksSampleDisposition = "toast it";
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(overWriteResult);
+            //MockLabworksService.Setup(a => a.GetClientDetails(It.IsAny<string>())).ReturnsAsync(CreateValidEntities.ClientDetailsLookupModel(5, true));
+
+            //Verify what it looks like before
+            var od = OrderData[1].GetOrderDetails();
+            od.Quantity = 0;
+            od.InternalProcessingFee = 10;
+            od.ExternalProcessingFee = 20;
+            od.Payment.ClientType = "uc";
+            od.SelectedTests = new List<TestDetails>();
+            od.SelectedTests.Count.ShouldBe(0);
+
+            OrderData[1].SaveDetails(od);
+
+            // Act
+            var cr = await Controller.AddRequestNumber(OrderData[1].Id, true, "abc");
+
+            // Assert
+            var rr = Assert.IsType<RedirectToActionResult>(cr);
+            rr.ActionName.ShouldBe("Confirmation");
+            rr.ControllerName.ShouldBeNull();
+            rr.RouteValues["id"].ShouldBe(2);
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+            MockLabworksService.Verify(a => a.GetClientDetails("NotFaked"), Times.Once);
+
+            //Verify Changed
+            var updatedDetails = OrderData[1].GetOrderDetails();
+            updatedDetails.Quantity.ShouldBe(3);
+            updatedDetails.SelectedTests.Count.ShouldBe(5);
+
+            updatedDetails.Total.ShouldBe(26.5m); //(10 + 1.1 + 2.2 + 3.3 + 4.4 + 5.5 ) * 1
+            updatedDetails.RushMultiplier.ShouldBe(1);
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+
+            Controller.ErrorMessage.ShouldBeNull();
+            Controller.Message.ShouldBe("Order updated from work request number");
+        }
+
+        [Theory]
+        [InlineData("uc")]
+        [InlineData("UC")]
+        [InlineData("Uc")]
+        [InlineData("uC")]
+        public async Task TestAddRequestNumberPostUpdatesOrderWithExpectedTotals2(string value)
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            OrderData[1].ClientId = null;
+            var overWriteResult = new OverwriteOrderResult();
+            overWriteResult.ClientId = "NotFaked";
+            overWriteResult.Quantity = 3;
+            overWriteResult.SelectedTests = new List<TestDetails>();
+            overWriteResult.RushMultiplier = 1.5m;
+            for (int i = 0; i < 5; i++)
+            {
+                overWriteResult.SelectedTests.Add(CreateValidEntities.TestDetails(i + 1));
+            }
+
+            overWriteResult.LabworksSampleDisposition = "toast it";
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(overWriteResult);
+            //MockLabworksService.Setup(a => a.GetClientDetails(It.IsAny<string>())).ReturnsAsync(CreateValidEntities.ClientDetailsLookupModel(5, true));
+
+            //Verify what it looks like before
+            var od = OrderData[1].GetOrderDetails();
+            od.Quantity = 0;
+            od.InternalProcessingFee = 10;
+            od.ExternalProcessingFee = 20;
+            od.Payment.ClientType = value;
+            od.SelectedTests = new List<TestDetails>();
+            od.SelectedTests.Count.ShouldBe(0);
+
+            OrderData[1].SaveDetails(od);
+
+            // Act
+            var cr = await Controller.AddRequestNumber(OrderData[1].Id, true, "abc");
+
+            // Assert
+            var rr = Assert.IsType<RedirectToActionResult>(cr);
+            rr.ActionName.ShouldBe("Confirmation");
+            rr.ControllerName.ShouldBeNull();
+            rr.RouteValues["id"].ShouldBe(2);
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+            MockLabworksService.Verify(a => a.GetClientDetails("NotFaked"), Times.Once);
+
+            //Verify Changed
+            var updatedDetails = OrderData[1].GetOrderDetails();
+            updatedDetails.Quantity.ShouldBe(3);
+            updatedDetails.SelectedTests.Count.ShouldBe(5);
+
+            updatedDetails.Total.ShouldBe(39.75m); //(10 + 1.1 + 2.2 + 3.3 + 4.4 + 5.5 ) * 1.5
+            updatedDetails.RushMultiplier.ShouldBe(1.5m);
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+
+            Controller.ErrorMessage.ShouldBeNull();
+            Controller.Message.ShouldBe("Order updated from work request number");
+        }
+
+
+        [Theory]
+        [InlineData("x")]
+        [InlineData("xx")]
+        [InlineData("1")]
+        [InlineData(" ")]
+        public async Task TestAddRequestNumberPostUpdatesOrderWithExpectedTotals3(string value)
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            OrderData[1].ClientId = null;
+            var overWriteResult = new OverwriteOrderResult();
+            overWriteResult.ClientId = "NotFaked";
+            overWriteResult.Quantity = 3;
+            overWriteResult.SelectedTests = new List<TestDetails>();
+            overWriteResult.RushMultiplier = 1.5m;
+            for (int i = 0; i < 5; i++)
+            {
+                overWriteResult.SelectedTests.Add(CreateValidEntities.TestDetails(i + 1));
+            }
+
+            overWriteResult.LabworksSampleDisposition = "toast it";
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(overWriteResult);
+            //MockLabworksService.Setup(a => a.GetClientDetails(It.IsAny<string>())).ReturnsAsync(CreateValidEntities.ClientDetailsLookupModel(5, true));
+
+            //Verify what it looks like before
+            var od = OrderData[1].GetOrderDetails();
+            od.Quantity = 0;
+            od.InternalProcessingFee = 10;
+            od.ExternalProcessingFee = 20;
+            od.Payment.ClientType = value;
+            od.SelectedTests = new List<TestDetails>();
+            od.SelectedTests.Count.ShouldBe(0);
+
+            OrderData[1].SaveDetails(od);
+
+            // Act
+            var cr = await Controller.AddRequestNumber(OrderData[1].Id, true, "abc");
+
+            // Assert
+            var rr = Assert.IsType<RedirectToActionResult>(cr);
+            rr.ActionName.ShouldBe("Confirmation");
+            rr.ControllerName.ShouldBeNull();
+            rr.RouteValues["id"].ShouldBe(2);
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+            MockLabworksService.Verify(a => a.GetClientDetails("NotFaked"), Times.Once);
+
+            //Verify Changed
+            var updatedDetails = OrderData[1].GetOrderDetails();
+            updatedDetails.Quantity.ShouldBe(3);
+            updatedDetails.SelectedTests.Count.ShouldBe(5);
+
+            updatedDetails.Total.ShouldBe(54.75m); //(20 + 1.1 + 2.2 + 3.3 + 4.4 + 5.5 ) * 1.5
+            updatedDetails.RushMultiplier.ShouldBe(1.5m);
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+
+            Controller.ErrorMessage.ShouldBeNull();
+            Controller.Message.ShouldBe("Order updated from work request number");
+        }
 
         [Fact(Skip = "Reminder to test the rest")]
         public void TestTheRestReminder()
