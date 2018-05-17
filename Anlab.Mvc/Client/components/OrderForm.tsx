@@ -428,8 +428,9 @@ export default class OrderForm extends React.Component<
                   What tests would you like?
                 </label>
                 <p className="help-block">
-                  Note: Tests selected are assigned to all the samples in the
-                  order
+                    Note: Tests selected can only be from one sample type and 
+                    are assigned to all the samples in the order.  Write in test 
+                    requests from the other sample types in the comment section
                 </p>
                 <TestList
                   items={filteredTests}
