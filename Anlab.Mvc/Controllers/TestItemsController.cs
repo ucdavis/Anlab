@@ -65,7 +65,7 @@ namespace AnlabMvc.Controllers
 
             if (ModelState.IsValid)
             {
-                testItem.Id = testItem.Id.ToUpper();
+                testItem.Id = testItem.Id.Trim().ToUpper();
                 if (TestItemExists(testItem.Id))
                 {
                     ErrorMessage = "Code already in use";
