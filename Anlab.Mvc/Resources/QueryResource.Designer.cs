@@ -85,7 +85,7 @@ namespace AnlabMvc.Resources {
         ///SELECT[ANL_LIST].[ACODE] as Id,[APRICE] as InternalCost,[ANAME] as &apos;Name&apos;,[WORKUNIT] as Multiplier, @setup as SetupCost , CAST(SUBSTRING(CASNUMB, 0, 4) as INT) as SOP, 
         ///CASE WHEN [NONREP] = &apos;0&apos; THEN 0 ELSE 1 END as NONREP , 
         ///CASE WHEN [NONINV] = &apos;0&apos; THEN 0 ELSE 1 END as NONINV
-        ///FROM [ANL_LIST] INNER JOIN [ANALYTES] ON [ANL_LIST].[ACODE] = [ANALYTES].[ACODE]    
+        ///FROM [ANL_LIST] LEFT OUTER JOIN [ANALYTES] ON [ANL_LIST].[ACODE] = [ANALYTES].[ACODE] 
         ///where ANL_LIST.ACODE in @codes.
         /// </summary>
         internal static string AnlabItemPrices {
@@ -118,8 +118,8 @@ namespace AnlabMvc.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT COUNT(LOCCODE) AS Quantity, LOCCODE as ClientId, SAMPCOL as Disposition FROM dbo.SAMPLE
-        ///GROUP BY LOGBATCH, LOCCODE, SAMPCOL  
+        ///   Looks up a localized string similar to SELECT COUNT(LOCCODE) AS Quantity, LOCCODE as ClientId, SAMPCOL as Disposition, REPDATE as ReportDate FROM dbo.SAMPLE
+        ///GROUP BY LOGBATCH, LOCCODE, SAMPCOL, REPDATE  
         ///HAVING (LOGBATCH = @RequestNum).
         /// </summary>
         internal static string AnlabSampleDetails {

@@ -137,7 +137,7 @@ SELECT @setup = APRICE from dbo.ANL_LIST where ACODE = 'SETUP'
 SELECT[ANL_LIST].[ACODE] as Id,[APRICE] as InternalCost,[ANAME] as 'Name',[WORKUNIT] as Multiplier, @setup as SetupCost , CAST(SUBSTRING(CASNUMB, 0, 4) as INT) as SOP, 
 CASE WHEN [NONREP] = '0' THEN 0 ELSE 1 END as NONREP , 
 CASE WHEN [NONINV] = '0' THEN 0 ELSE 1 END as NONINV
-FROM [ANL_LIST] INNER JOIN [ANALYTES] ON [ANL_LIST].[ACODE] = [ANALYTES].[ACODE]    
+FROM [ANL_LIST] LEFT OUTER JOIN [ANALYTES] ON [ANL_LIST].[ACODE] = [ANALYTES].[ACODE] 
 where ANL_LIST.ACODE in @codes</value>
     <comment>List of prices related values from Anlab.</comment>
   </data>
