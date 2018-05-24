@@ -189,7 +189,6 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("AcPhone", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Account Contact Phone Number\")]",
-                "[System.ComponentModel.DataAnnotations.PhoneAttribute()]",
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
             expectedFields.Add(new NameAndType("CompanyName", "System.String", new List<string>
