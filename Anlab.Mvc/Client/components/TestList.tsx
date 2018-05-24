@@ -121,7 +121,7 @@ export class TestList extends React.PureComponent<ITestListProps, ITestListState
                     />
                 </td>
                 <td>
-                    {item.sop === "0" ? "---" : <a href={url} target="_blank" >{item.sop}</a>} </td>
+                    {!item.sop || item.sop === "0" ? "---" : <a href={url} target="_blank" >{item.sop}</a>} </td>
                 <td>
                     <NumberFormat
                         value={priceDisplay}
