@@ -199,7 +199,7 @@
             <td>
                 @if (Model.HideLabDetails)
                 {
-                    if (temp.Sop == "0")
+                    if (temp.Sop == null || temp.Sop == "0")
                     {
                         <span>---</span>
                     }
