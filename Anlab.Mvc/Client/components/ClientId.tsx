@@ -118,10 +118,10 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     //validate modal contents via props, not client id
     private _validateModal = () => {
         const emailre = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        const phoneRe = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
 
-        let valid = (this.props.clientInfo.employer && !!this.props.clientInfo.employer.trim()) && (this.props.clientInfo.name && !!this.props.clientInfo.name.trim())
-            && emailre.test((this.props.clientInfo.email)) && phoneRe.test((this.props.clientInfo.phoneNumber));
+        let valid = (this.props.clientInfo.employer && !!this.props.clientInfo.employer.trim())
+            && (this.props.clientInfo.name && !!this.props.clientInfo.name.trim())
+            && emailre.test((this.props.clientInfo.email));
         if (!valid) {
             this.setState({ error: this._modalError, modalValid: false });
             this.props.updateClientInfoValid("clientInfoValid", false);
