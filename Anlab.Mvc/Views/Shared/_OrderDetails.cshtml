@@ -199,7 +199,14 @@
             <td>
                 @if (Model.HideLabDetails)
                 {
-                    <a asp-controller="Analysis" asp-action="@Model.OrderDetails.SampleType" asp-route-id="@temp.Sop" target="_blank">@temp.Sop</a>
+                    if (temp.Sop == "0")
+                    {
+                        <span>---</span>
+                    }
+                    else
+                    {
+                        <a asp-controller="Analysis" asp-action="@Model.OrderDetails.SampleType" asp-route-id="@temp.Sop" target="_blank">@temp.Sop</a>
+                    }
                 }
                 else
                 {
