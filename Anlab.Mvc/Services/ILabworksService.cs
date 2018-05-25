@@ -25,6 +25,8 @@ namespace AnlabMvc.Services
         Task<OrderUpdateFromDbModel> GetRequestDetails(string RequestNum);
         Task<ClientDetailsLookupModel> GetClientDetails(string clientId);
 
+        Task<IList<string>> GetAllCodes();
+
     }
 
     public class LabworksService : ILabworksService
@@ -202,6 +204,16 @@ namespace AnlabMvc.Services
             }
 
         }
+
+        public async Task<IList<string>> GetAllCodes()
+        {
+            using (var db = new DbManager(_connectionSettings.AnlabConnection))
+            {
+                IEnumerable<string> codes = await db.Connection.QueryAsync<string>(QueryResource.AllCodes);
+
+                return codes as IList<string>;
+            }
+        }
     }
     
     
@@ -325,5 +337,9 @@ namespace AnlabMvc.Services
             return await Task.FromResult(rtValue);
         }
 
+        public Task<IList<string>> GetAllCodes()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
