@@ -58,10 +58,7 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("NormalizedEmail", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("NormalizedUserName", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("PasswordHash", "System.String", new List<string>()));
-            expectedFields.Add(new NameAndType("Phone", "System.String", new List<string>
-            {
-                "[System.ComponentModel.DataAnnotations.PhoneAttribute()]"
-            }));
+            expectedFields.Add(new NameAndType("Phone", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("PhoneNumber", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("PhoneNumberConfirmed", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Roles", "System.Collections.Generic.ICollection`1[Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserRole`1[System.String]]", new List<string>()));
