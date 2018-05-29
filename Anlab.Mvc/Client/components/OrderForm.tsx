@@ -368,6 +368,9 @@ export default class OrderForm extends React.Component<
                 <label className="form_header">
                   How many samples will you be submitting?
                 </label>
+                <p className="help-block">
+                    Note: 100 sample limit per work order. If submitting more than 100 sample please create additional work orders.
+                </p>
                 <Quantity
                   quantity={quantity}
                   onQuantityChanged={this._onQuantityChanged}
@@ -425,8 +428,9 @@ export default class OrderForm extends React.Component<
                   What tests would you like?
                 </label>
                 <p className="help-block">
-                  Note: Tests selected are assigned to all the samples in the
-                  order
+                    Note: Tests selected can only be from one sample type and 
+                    are assigned to all the samples in the order.  Write in test 
+                    requests from the other sample types in the comment section
                 </p>
                 <TestList
                   items={filteredTests}

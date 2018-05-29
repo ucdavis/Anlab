@@ -10,6 +10,9 @@ namespace Anlab.Core.Models
     public class TestItemPrices
     {
         public string Id { get; set; }
+        /// <summary>
+        /// This is the test price per sample, Except when PROC which is the processing fee per order
+        /// </summary>
         public decimal Cost
         {
             get
@@ -25,6 +28,9 @@ namespace Anlab.Core.Models
                 return InternalCost;
             }
         }
+        /// <summary>
+        /// This is the setup fee per test
+        /// </summary>
         public decimal SetupPrice
         {
             get

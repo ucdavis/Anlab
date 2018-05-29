@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,7 +12,7 @@ namespace Anlab.Core.Domain
         [Key]
         [StringLength(128)]
         [Display(Name = "Code")]
-        [RegularExpression(@"([A-Z0-9a-z\-#_])+", ErrorMessage = "Codes can only contain alphanumerics, #, _, and dashes.")]
+        [RegularExpression(@"([A-Z0-9a-z\-#_%])+", ErrorMessage = "Codes can only contain alphanumerics, #, _, %, and dashes.")]
         public string Id { get; set; }
 
         [Required]
