@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -47,7 +48,8 @@ namespace AnlabMvc
             }
 
             builder.AddEnvironmentVariables();
-            Configuration = builder.Build();
+
+            Configuration = builder.Build();            
 
             StackifyLib.Config.Environment = env.EnvironmentName;
             _environment = env;
@@ -115,6 +117,7 @@ namespace AnlabMvc
 #endif
             });
 
+
             // app services
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
 
@@ -146,6 +149,11 @@ namespace AnlabMvc
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             app.ConfigureStackifyLogging(Configuration);
+#if !DEBUG
+            var options = new RewriteOptions()
+                .AddRedirectToHttps();
+            app.UseRewriter(options);
+#endif
 
             _directorySearchService = app.ApplicationServices.GetService<IDirectorySearchService>();
 
