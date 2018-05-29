@@ -61,6 +61,18 @@ namespace AnlabMvc.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SELECT distinct [ACODE] as Id
+        ///       FROM [LABWORKS].[dbo].[ANALYSIS]
+        ///	   WHERE        [ACODE] != &apos;()&apos; and SUBSTRING(ACODE, 1, 1) != &apos;-&apos; and AMODDATE &gt; &apos;2017-01-01&apos;
+        ///	   ORDER BY ACODE.
+        /// </summary>
+        internal static string AllCodes {
+            get {
+                return ResourceManager.GetString("AllCodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SELECT	dbo.USERFLDS.LOCCODE AS ClientId, 
         ///	USERFLDS.CPYEMAIL AS CopyEmail, 
         ///	USERFLDS.SUBEMAIL AS SubEmail, 

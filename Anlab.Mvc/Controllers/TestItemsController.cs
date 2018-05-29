@@ -10,6 +10,7 @@ using Anlab.Core.Data;
 using Microsoft.AspNetCore.Authorization;
 using AnlabMvc.Models.Roles;
 using System.Text.Encodings.Web;
+using AnlabMvc.Services;
 
 namespace AnlabMvc.Controllers
 {
@@ -17,16 +18,43 @@ namespace AnlabMvc.Controllers
     public class TestItemsController : ApplicationController
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILabworksService _labworksService;
 
-        public TestItemsController(ApplicationDbContext context)
+        public TestItemsController(ApplicationDbContext context, ILabworksService labworksService)
         {
             _context = context;
+            _labworksService = labworksService;
         }
 
         // GET: TestItems
         public async Task<IActionResult> Index()
         {
             return View(await _context.TestItems.ToListAsync());
+        }
+
+
+        public async Task<IActionResult> CheckForMissingCodes()
+        {
+            var existingCodes = _context.TestItems.Select(s => s.Id).ToArray();
+
+            var allCodes = await _labworksService.GetAllCodes();
+            var missingCodes = allCodes.Except(existingCodes);
+
+            if (missingCodes.Any())
+            {
+                ErrorMessage = $"Number Missing: {missingCodes.Count()}";
+
+                foreach (var missingCode in missingCodes)
+                {
+                    ErrorMessage = $"{ErrorMessage} {missingCode}" ;
+                }
+            }
+            else
+            {
+                Message = "All there";
+            }
+
+            return RedirectToAction("Index");
         }
 
         // GET: TestItems/Details/5
