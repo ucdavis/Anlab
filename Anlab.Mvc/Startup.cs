@@ -47,7 +47,8 @@ namespace AnlabMvc
             }
 
             builder.AddEnvironmentVariables();
-            Configuration = builder.Build();
+
+            Configuration = builder.Build();            
 
             StackifyLib.Config.Environment = env.EnvironmentName;
             _environment = env;
@@ -110,8 +111,11 @@ namespace AnlabMvc
             // TODO: require HTTPS in production.  In development it is only needed for federated auth
             services.AddMvc(options =>
             {
-                // options.Filters.Add(new RequireHttpsAttribute());
+#if !DEBUG
+                options.Filters.Add(new RequireHttpsAttribute());
+#endif
             });
+
 
             // app services
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
