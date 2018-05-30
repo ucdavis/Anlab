@@ -836,6 +836,55 @@ namespace Test.TestsController
             Controller.Message.ShouldBe("Order updated from work request number");
         }
 
+        [Fact]
+        public async Task TestAddRequestNumberPostDoesNotModifyLabFinalizeStuff()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            OrderData[1].ClientId = null;
+            var overWriteResult = new OverwriteOrderResult();
+            overWriteResult.ClientId = "NotFaked";
+            overWriteResult.Quantity = 3;
+            overWriteResult.SelectedTests = new List<TestDetails>();
+            overWriteResult.RushMultiplier = 1.5m;
+            for (int i = 0; i < 5; i++)
+            {
+                overWriteResult.SelectedTests.Add(CreateValidEntities.TestDetails(i + 1));
+            }
+
+            overWriteResult.LabworksSampleDisposition = "toast it";
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(overWriteResult);
+            //MockLabworksService.Setup(a => a.GetClientDetails(It.IsAny<string>())).ReturnsAsync(CreateValidEntities.ClientDetailsLookupModel(5, true));
+
+            //Verify what it looks like before
+            var od = OrderData[1].GetOrderDetails();
+            od.Quantity = 0;
+            od.InternalProcessingFee = 10;
+            od.ExternalProcessingFee = 20;
+            od.Payment.ClientType = "x";
+            od.SelectedTests = new List<TestDetails>();
+            od.SelectedTests.Count.ShouldBe(0);
+            od.LabComments = "fake1";
+            od.AdjustmentAmount = 1.2m;
+
+            OrderData[1].SaveDetails(od);
+            // Act
+            var cr = await Controller.AddRequestNumber(OrderData[1].Id, true, "abc");
+
+            // Assert
+            var rr = Assert.IsType<RedirectToActionResult>(cr);
+            rr.ActionName.ShouldBe("Confirmation");
+            rr.ControllerName.ShouldBeNull();
+            rr.RouteValues["id"].ShouldBe(2);
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+            MockLabworksService.Verify(a => a.GetClientDetails("NotFaked"), Times.Once);
+
+            var updatedDetails = OrderData[1].GetOrderDetails();
+            updatedDetails.AdjustmentAmount.ShouldBe(1.2m);
+            updatedDetails.LabComments.ShouldBe("fake1");
+        }
+
         [Fact(Skip = "Reminder to test the rest")]
         public void TestTheRestReminder()
         {
