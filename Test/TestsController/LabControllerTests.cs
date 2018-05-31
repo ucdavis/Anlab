@@ -885,6 +885,40 @@ namespace Test.TestsController
             updatedDetails.LabComments.ShouldBe("fake1");
         }
 
+        [Fact]
+        public async Task TestConfirmationGetReturnsNotFound1()
+        {
+            // Arrange
+
+
+
+            // Act
+            var controllerResult = await Controller.Confirmation(9);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+        }
+
+        [Theory]
+        [InlineData(OrderStatusCodes.Received)]
+        [InlineData(OrderStatusCodes.Created)]
+        [InlineData(OrderStatusCodes.Finalized)]
+        [InlineData(OrderStatusCodes.Complete)]
+        public async Task TestConfirmationGetRedirectsWhenNotConfirmed(string value)
+        {
+            // Arrange
+            OrderData[1].Status = value;
+
+            // Act
+            var controllerResult = await Controller.Confirmation(OrderData[1].Id);
+
+            // Assert
+            var rdResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            rdResult.ActionName.ShouldBe("Orders");
+            rdResult.ControllerName.ShouldBeNull();
+            Controller.ErrorMessage.ShouldBe("You can only receive a confirmed order");
+        }
+
         [Fact(Skip = "Reminder to test the rest")]
         public void TestTheRestReminder()
         {
