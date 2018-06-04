@@ -302,6 +302,12 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
 
+            if (order.Status != OrderStatusCodes.Received)
+            {
+                ErrorMessage = "You can only Complete a Received order";
+                return RedirectToAction("Orders");
+            }
+
             var result = await _orderService.OverwriteOrderFromDb(order);
             if (result.WasError)
             {
@@ -338,7 +344,7 @@ namespace AnlabMvc.Controllers
             if (order.Status != OrderStatusCodes.Received)
             {
                 ErrorMessage = "You can only Complete a Received order";
-                //return RedirectToAction("Orders");
+                return RedirectToAction("Orders");
             }
 
             if (model.UploadFile == null || model.UploadFile.Length <= 0)
