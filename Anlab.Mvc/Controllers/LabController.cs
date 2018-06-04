@@ -184,6 +184,13 @@ namespace AnlabMvc.Controllers
 
         }
 
+        /// <summary>
+        /// This should probably be moved to a service...
+        /// </summary>
+        /// <param name="order"></param>
+        /// <param name="result"></param>
+        /// <param name="finalizeModel"></param>
+        /// <returns></returns>
         private async Task<Order> UpdateOrderFromLabworksResult(Order order, OverwriteOrderResult result, LabFinalizeModel finalizeModel = null)
         {
             order.ClientId = result.ClientId;
@@ -373,8 +380,7 @@ namespace AnlabMvc.Controllers
             order.ResultsFileIdentifier = await _fileStorageService.UploadFile(model.UploadFile);
 
             order = await UpdateOrderFromLabworksResult(order, result, model);
-
-            await _orderMessageService.EnqueueFinalizedMessage(order, model.BypassEmail);
+            
             var extraMessage = string.Empty;
             if (order.PaymentType == PaymentTypeCodes.UcDavisAccount)
             {
@@ -392,7 +398,8 @@ namespace AnlabMvc.Controllers
                     return RedirectToAction("Finalize");
                 }
             }
-
+            //Only send email if there wasn't a problem with sloth.
+            await _orderMessageService.EnqueueFinalizedMessage(order, model.BypassEmail);
             await _dbContext.SaveChangesAsync();
 
             Message = $"Order marked as Finalized{extraMessage}";
