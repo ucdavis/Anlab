@@ -11,6 +11,7 @@ using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using Anlab.Core.Services;
+using Anlab.Jobs.MoneyMovement;
 using AnlabMvc.Controllers;
 using AnlabMvc.Models.Order;
 using AnlabMvc.Models.Roles;
@@ -1197,6 +1198,7 @@ namespace Test.TestsController
 
             // Assert
             Assert.IsType<NotFoundResult>(controllerResult);
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Theory]
@@ -1217,6 +1219,7 @@ namespace Test.TestsController
             rdResult.ActionName.ShouldBe("Orders");
             rdResult.ControllerName.ShouldBeNull();
             Controller.ErrorMessage.ShouldBe("You can only Complete a Received order");
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Fact]
@@ -1234,6 +1237,7 @@ namespace Test.TestsController
             rdResult.ControllerName.ShouldBeNull();
             rdResult.RouteValues["id"].ShouldBe(2);
             Controller.ErrorMessage.ShouldBe("You need to upload the results at this time.");
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Fact]
@@ -1262,6 +1266,7 @@ namespace Test.TestsController
             Controller.ErrorMessage.ShouldBe("Error. Unable to continue. Error looking up on Labworks: Fake Error");
 
             MockOrderService.Verify(a => a.OverwriteOrderFromDb(OrderData[1]), Times.Once);
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
 
         }
 
@@ -1292,9 +1297,189 @@ namespace Test.TestsController
             Controller.ErrorMessage.ShouldBe("Error. Unable to continue. The following codes were not found locally: Fake1,Fake4");
 
             MockOrderService.Verify(a => a.OverwriteOrderFromDb(OrderData[1]), Times.Once);
-
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         }
 
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task TestFinalizePostCallsUploadFileAndSaves(bool value)
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Received;
+            OrderData[1].PaymentType = PaymentTypeCodes.Other;
+            var overWriteResult = new OverwriteOrderResult();
+            overWriteResult.ClientId = "NotFaked";
+            overWriteResult.Quantity = 3;
+            overWriteResult.SelectedTests = new List<TestDetails>();
+            overWriteResult.RushMultiplier = 1.5m;
+            for (int i = 0; i < 5; i++)
+            {
+                overWriteResult.SelectedTests.Add(CreateValidEntities.TestDetails(i + 1));
+            }
+
+            overWriteResult.LabworksSampleDisposition = "toast it";
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(overWriteResult);
+
+            var model = new LabFinalizeModel();
+            model.BypassEmail = value;
+            MockFormFile.Setup(a => a.Length).Returns(100);
+            model.UploadFile = MockFormFile.Object;
+            model.AdjustmentAmount = 10.5m;
+            model.LabComments = "These be some comments";
+
+
+            MockFileStorageService.Setup(a => a.UploadFile(model.UploadFile)).ReturnsAsync("FakeFileId");
+
+
+            // Act
+            var controllerResult = await Controller.Finalize(OrderData[1].Id, model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Orders");
+            redirectResult.ControllerName.ShouldBeNull();
+
+            OrderData[1].Status.ShouldBe(OrderStatusCodes.Finalized);
+            OrderData[1].ResultsFileIdentifier.ShouldBe("FakeFileId");
+            var savedOrderDetails = OrderData[1].GetOrderDetails();
+            savedOrderDetails.LabComments.ShouldBe("These be some comments");
+            savedOrderDetails.AdjustmentAmount.ShouldBe(10.5m);
+
+            Controller.ErrorMessage.ShouldBeNull();
+            Controller.Message.ShouldBe("Order marked as Finalized");
+
+            MockOrderService.Verify(a => a.OverwriteOrderFromDb(OrderData[1]), Times.Once);
+            MockOrderMessagingService.Verify(a => a.EnqueueFinalizedMessage(OrderData[1], value), Times.Once);
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+            MockFileStorageService.Verify(a => a.UploadFile(It.IsAny<IFormFile>()), Times.Once);
+            MockSlothService.Verify(a => a.MoveMoney(It.IsAny<Order>()), Times.Never);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task TestFinalizePostCallsUploadFileAndSavesWhenUcDavisAccount1(bool value)
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Received;
+            OrderData[1].PaymentType = PaymentTypeCodes.UcDavisAccount;
+            var overWriteResult = new OverwriteOrderResult();
+            overWriteResult.ClientId = "NotFaked";
+            overWriteResult.Quantity = 3;
+            overWriteResult.SelectedTests = new List<TestDetails>();
+            overWriteResult.RushMultiplier = 1.5m;
+            for (int i = 0; i < 5; i++)
+            {
+                overWriteResult.SelectedTests.Add(CreateValidEntities.TestDetails(i + 1));
+            }
+
+            overWriteResult.LabworksSampleDisposition = "toast it";
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(overWriteResult);
+
+            var model = new LabFinalizeModel();
+            model.BypassEmail = value;
+            MockFormFile.Setup(a => a.Length).Returns(100);
+            model.UploadFile = MockFormFile.Object;
+            model.AdjustmentAmount = 10.5m;
+            model.LabComments = "These be some comments";
+
+
+            MockFileStorageService.Setup(a => a.UploadFile(model.UploadFile)).ReturnsAsync("FakeFileId");
+
+            var slothResponse = new SlothResponseModel();
+            slothResponse.Success = false;
+            slothResponse.Message = "Fake message";
+            MockSlothService.Setup(a => a.MoveMoney(OrderData[1])).ReturnsAsync(slothResponse);
+
+            // Act
+            var controllerResult = await Controller.Finalize(OrderData[1].Id, model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Finalize");
+            redirectResult.ControllerName.ShouldBeNull();
+
+            OrderData[1].Status.ShouldBe(OrderStatusCodes.Finalized);
+            OrderData[1].ResultsFileIdentifier.ShouldBe("FakeFileId");
+            //var savedOrderDetails = OrderData[1].GetOrderDetails();
+            //savedOrderDetails.LabComments.ShouldBe("These be some comments");
+            //savedOrderDetails.AdjustmentAmount.ShouldBe(10.5m);
+
+            Controller.ErrorMessage.ShouldBe("There was a problem processing the payment for this account. Fake message");
+            Controller.Message.ShouldBeNull();
+
+            MockOrderService.Verify(a => a.OverwriteOrderFromDb(OrderData[1]), Times.Once);
+            MockOrderMessagingService.Verify(a => a.EnqueueFinalizedMessage(OrderData[1], value), Times.Never);
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+            MockFileStorageService.Verify(a => a.UploadFile(It.IsAny<IFormFile>()), Times.Once);
+            MockSlothService.Verify(a => a.MoveMoney(It.IsAny<Order>()), Times.Once);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task TestFinalizePostCallsUploadFileAndSavesWhenUcDavisAccount2(bool value)
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Received;
+            OrderData[1].PaymentType = PaymentTypeCodes.UcDavisAccount;
+            var overWriteResult = new OverwriteOrderResult();
+            overWriteResult.ClientId = "NotFaked";
+            overWriteResult.Quantity = 3;
+            overWriteResult.SelectedTests = new List<TestDetails>();
+            overWriteResult.RushMultiplier = 1.5m;
+            for (int i = 0; i < 5; i++)
+            {
+                overWriteResult.SelectedTests.Add(CreateValidEntities.TestDetails(i + 1));
+            }
+
+            overWriteResult.LabworksSampleDisposition = "toast it";
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(overWriteResult);
+
+            var model = new LabFinalizeModel();
+            model.BypassEmail = value;
+            MockFormFile.Setup(a => a.Length).Returns(100);
+            model.UploadFile = MockFormFile.Object;
+            model.AdjustmentAmount = 10.5m;
+            model.LabComments = "These be some comments";
+
+
+            MockFileStorageService.Setup(a => a.UploadFile(model.UploadFile)).ReturnsAsync("FakeFileId");
+
+            var slothResponse = new SlothResponseModel();
+            slothResponse.Success = true;
+            slothResponse.KfsTrackingNumber = "FakeKfs";
+            slothResponse.Id = SpecificGuid.GetGuid(6);
+            MockSlothService.Setup(a => a.MoveMoney(OrderData[1])).ReturnsAsync(slothResponse);
+
+            // Act
+            var controllerResult = await Controller.Finalize(OrderData[1].Id, model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Orders");
+            redirectResult.ControllerName.ShouldBeNull();
+
+            OrderData[1].Status.ShouldBe(OrderStatusCodes.Finalized);
+            OrderData[1].ResultsFileIdentifier.ShouldBe("FakeFileId");
+            var savedOrderDetails = OrderData[1].GetOrderDetails();
+            savedOrderDetails.LabComments.ShouldBe("These be some comments");
+            savedOrderDetails.AdjustmentAmount.ShouldBe(10.5m);
+
+            OrderData[1].KfsTrackingNumber.ShouldBe("FakeKfs");
+            OrderData[1].SlothTransactionId.ShouldBe(SpecificGuid.GetGuid(6));
+            OrderData[1].Paid.ShouldBeTrue();
+
+            Controller.ErrorMessage.ShouldBeNull();
+            Controller.Message.ShouldBe("Order marked as Finalized and UC Davis account marked as paid");
+
+            MockOrderService.Verify(a => a.OverwriteOrderFromDb(OrderData[1]), Times.Once);
+            MockOrderMessagingService.Verify(a => a.EnqueueFinalizedMessage(OrderData[1], value), Times.Once);
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+            MockFileStorageService.Verify(a => a.UploadFile(It.IsAny<IFormFile>()), Times.Once);
+            MockSlothService.Verify(a => a.MoveMoney(It.IsAny<Order>()), Times.Once);
+        }
 
         #endregion Finalize
         [Fact(Skip = "Reminder to test the rest")]
