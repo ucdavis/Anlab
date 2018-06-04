@@ -350,7 +350,7 @@ namespace AnlabMvc.Controllers
             if (model.UploadFile == null || model.UploadFile.Length <= 0)
             {
                 ErrorMessage = "You need to upload the results at this time.";
-                return RedirectToAction("Finalize");
+                return RedirectToAction("Finalize", new{id});
             }
 
             order.Status = OrderStatusCodes.Finalized;
