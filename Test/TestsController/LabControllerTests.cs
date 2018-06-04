@@ -1282,7 +1282,7 @@ namespace Test.TestsController
             model.UploadFile = MockFormFile.Object;
 
             // Act
-            var controllerResult = await Controller.Finalize(OrderData[1].Id, model));
+            var controllerResult = await Controller.Finalize(OrderData[1].Id, model);
 
             // Assert
             var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
