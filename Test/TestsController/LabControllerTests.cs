@@ -17,6 +17,7 @@ using AnlabMvc.Models.Roles;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +41,8 @@ namespace Test.TestsController
         public Mock<IFileStorageService> MockFileStorageService { get; set; }
         public Mock<ISlothService> MockSlothService { get; set; }
 
+        public Mock<IFormFile> MockFormFile { get; set; }
+
 
         //Setup Data
         public List<Order> OrderData { get; set; }
@@ -60,6 +63,7 @@ namespace Test.TestsController
             MockOrderMessagingService = new Mock<IOrderMessageService>();
             MockFileStorageService = new Mock<IFileStorageService>();
             MockSlothService = new Mock<ISlothService>();
+            MockFormFile = new Mock<IFormFile>();
 
             var mockDataProvider = new Mock<SessionStateTempDataProvider>();
 
@@ -91,7 +95,8 @@ namespace Test.TestsController
             };
         }
 
-
+        #region Orders
+        
         [Theory]
         [InlineData(OrderStatusCodes.Confirmed, false)]
         [InlineData(OrderStatusCodes.Received, false)]
@@ -172,6 +177,9 @@ namespace Test.TestsController
             var modelResult = Assert.IsType<List<Order>>(viewResult.Model);
             modelResult.Count.ShouldBe(1000);
         }
+        #endregion Orders
+
+        #region Details
 
         [Fact]
         public async Task TestDetailsReturnsNotFound1()
@@ -223,6 +231,9 @@ namespace Test.TestsController
             modelResult.OrderDetails.ClientInfo.ClientId.ShouldBe("ClientId2");
             modelResult.HideLabDetails.ShouldBeFalse();
         }
+        #endregion Details
+
+        #region AddRequestNumber
 
         [Fact]
         public async Task TestAddRequestNumberGetReturnsNotFound()
@@ -884,6 +895,9 @@ namespace Test.TestsController
             updatedDetails.AdjustmentAmount.ShouldBe(1.2m);
             updatedDetails.LabComments.ShouldBe("fake1");
         }
+        #endregion AddRequestNumber
+
+        #region Confirmation
 
         [Fact]
         public async Task TestConfirmationGetReturnsNotFound1()
@@ -919,6 +933,370 @@ namespace Test.TestsController
             Controller.ErrorMessage.ShouldBe("You can only receive a confirmed order");
         }
 
+        [Fact]
+        public async Task TestConfirmationGetReturnsView()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+
+
+            // Act
+            var controllerResult = await Controller.Confirmation(OrderData[1].Id);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<OrderReviewModel>(viewResult.Model);
+            modelResult.ShouldNotBeNull();
+            modelResult.Order.ShouldNotBeNull();
+            modelResult.Order.Id.ShouldBe(OrderData[1].Id);
+            modelResult.OrderDetails.ShouldNotBeNull();
+            modelResult.OrderDetails.ClientInfo.ClientId.ShouldBe("ClientId2");
+            modelResult.HideLabDetails.ShouldBeFalse();
+
+            Controller.ErrorMessage.ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task TestConfirmationPostReturnsNotFound1()
+        {
+            // Arrange
+
+
+
+            // Act
+            var controllerResult = await Controller.Confirmation(9, new LabReceiveModel());
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+
+            MockOrderService.Verify(a => a.SendOrderToAnlab(It.IsAny<Order>()), Times.Never); //This currently does nothing
+            MockOrderMessagingService.Verify(a => a.EnqueueReceivedMessage(It.IsAny<Order>(), It.IsAny<bool>()), Times.Never);
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Theory]
+        [InlineData(OrderStatusCodes.Received)]
+        [InlineData(OrderStatusCodes.Created)]
+        [InlineData(OrderStatusCodes.Finalized)]
+        [InlineData(OrderStatusCodes.Complete)]
+        public async Task TestConfirmationPostRedirectsWhenNotConfirmed(string value)
+        {
+            // Arrange
+            OrderData[1].Status = value;
+
+            // Act
+            var controllerResult = await Controller.Confirmation(OrderData[1].Id, new LabReceiveModel());
+
+            // Assert
+            var rdResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            rdResult.ActionName.ShouldBe("Orders");
+            rdResult.ControllerName.ShouldBeNull();
+            Controller.ErrorMessage.ShouldBe("You can only receive a confirmed order");
+
+            MockOrderService.Verify(a => a.SendOrderToAnlab(It.IsAny<Order>()), Times.Never); //This currently does nothing
+            MockOrderMessagingService.Verify(a => a.EnqueueReceivedMessage(It.IsAny<Order>(), It.IsAny<bool>()), Times.Never);
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Theory]
+        [InlineData(" ")]
+        [InlineData(null)]
+        [InlineData("")]        
+        public async Task TestConfirmationPostRedirectsWhenNoRequestNumber(string value)
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            OrderData[1].RequestNum = value;
+
+            // Act
+            var controllerResult = await Controller.Confirmation(OrderData[1].Id, new LabReceiveModel());
+
+            // Assert
+            var rdResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            rdResult.ActionName.ShouldBe("AddRequestNumber");
+            rdResult.ControllerName.ShouldBeNull();
+            rdResult.RouteValues.ShouldNotBeNull();
+            rdResult.RouteValues["id"].ShouldBe(OrderData[1].Id);
+            Controller.ErrorMessage.ShouldBe("You must add a request number first");
+
+            MockOrderService.Verify(a => a.SendOrderToAnlab(It.IsAny<Order>()), Times.Never); //This currently does nothing
+            MockOrderMessagingService.Verify(a => a.EnqueueReceivedMessage(It.IsAny<Order>(), It.IsAny<bool>()), Times.Never);
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task TestConfirmationPostRedirectsWhenSuccessfull(bool value)
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            OrderData[1].RequestNum = "Fake123";
+            var od = OrderData[1].GetOrderDetails();
+            od.LabComments = null;
+            od.AdjustmentAmount = 0;
+            OrderData[1].SaveDetails(od);
+
+            var model = new LabReceiveModel();
+            model.LabComments = "Lab Updated Jason was here";
+            model.AdjustmentAmount = 10.5m;
+            model.BypassEmail = value;
+
+
+            // Act
+            var controllerResult = await Controller.Confirmation(OrderData[1].Id, model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ShouldNotBeNull();
+            redirectResult.ActionName.ShouldBe("Orders");
+            redirectResult.ControllerName.ShouldBeNull();
+            Controller.Message.ShouldBe("Order marked as received");
+
+            var savedDetails = OrderData[1].GetOrderDetails();
+            savedDetails.LabComments.ShouldBe("Lab Updated Jason was here");
+            savedDetails.AdjustmentAmount.ShouldBe(10.5m);
+
+            MockOrderService.Verify(a => a.SendOrderToAnlab(OrderData[1]), Times.Once); //This currently does nothing
+            MockOrderMessagingService.Verify(a => a.EnqueueReceivedMessage(OrderData[1], value), Times.Once);
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        #endregion Confirmation
+
+        #region Finalize
+        [Fact]
+        public async Task TestFinalizeGetReturnsNotFound1()
+        {
+            // Arrange
+
+
+
+            // Act
+            var controllerResult = await Controller.Finalize(9);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+        }
+
+        [Theory]
+        [InlineData(OrderStatusCodes.Confirmed)]
+        [InlineData(OrderStatusCodes.Created)]
+        [InlineData(OrderStatusCodes.Finalized)]
+        [InlineData(OrderStatusCodes.Complete)]
+        public async Task TestFinalizeGetRedirectsWhenNotReceived(string value)
+        {
+            // Arrange
+            OrderData[1].Status = value;
+
+            // Act
+            var controllerResult = await Controller.Finalize(OrderData[1].Id);
+
+            // Assert
+            var rdResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            rdResult.ActionName.ShouldBe("Orders");
+            rdResult.ControllerName.ShouldBeNull();
+            Controller.ErrorMessage.ShouldBe("You can only Complete a Received order");
+        }
+
+        [Fact]
+        public async Task TestFinalizeGetRedirectsWhenOrderServiceReturnsError1()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Received;
+            var returnResult = new OverwriteOrderResult();
+            returnResult.ErrorMessage = "Fake Error";
+
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(returnResult);
+
+            // Act
+            var controllerResult = await Controller.Finalize(OrderData[1].Id);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Orders");
+            redirectResult.ControllerName.ShouldBeNull();
+
+            Controller.ErrorMessage.ShouldBe("Error. Unable to continue. Error looking up on Labworks: Fake Error");
+
+            MockOrderService.Verify(a => a.OverwriteOrderFromDb(OrderData[1]), Times.Once);
+
+        }
+
+        [Fact]
+        public async Task TestFinalizeGetRedirectsWhenOrderServiceReturnsError2()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Received;
+            var returnResult = new OverwriteOrderResult();
+            returnResult.MissingCodes = new List<string>();
+            returnResult.MissingCodes.Add("Fake1");
+            returnResult.MissingCodes.Add("Fake4");
+
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(returnResult);
+
+            // Act
+            var controllerResult = await Controller.Finalize(OrderData[1].Id);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Orders");
+            redirectResult.ControllerName.ShouldBeNull();
+
+            Controller.ErrorMessage.ShouldBe("Error. Unable to continue. The following codes were not found locally: Fake1,Fake4");
+
+            MockOrderService.Verify(a => a.OverwriteOrderFromDb(OrderData[1]), Times.Once);
+
+        }
+
+        [Fact]
+        public async Task TestFinalizeGetReturnsView()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Received;
+            var overWriteResult = new OverwriteOrderResult();
+            overWriteResult.ClientId = "NotFaked";
+            overWriteResult.Quantity = 3;
+            overWriteResult.SelectedTests = new List<TestDetails>();
+            overWriteResult.RushMultiplier = 1.5m;
+            for (int i = 0; i < 5; i++)
+            {
+                overWriteResult.SelectedTests.Add(CreateValidEntities.TestDetails(i + 1));
+            }
+
+            overWriteResult.LabworksSampleDisposition = "toast it";
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(overWriteResult);
+
+
+            // Act
+            var controllerResult = await Controller.Finalize(OrderData[1].Id);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<OrderReviewModel>(viewResult.Model);
+            modelResult.Order.Id.ShouldBe(OrderData[1].Id);
+            modelResult.OrderDetails.ShouldNotBeNull();
+            modelResult.HideLabDetails.ShouldBeFalse();
+
+            Controller.ErrorMessage.ShouldBeNull();
+        }
+
+
+
+
+
+        [Fact]
+        public async Task TestFinalizePostReturnsNotFound1()
+        {
+            // Arrange
+
+
+
+            // Act
+            var controllerResult = await Controller.Finalize(9, new LabFinalizeModel());
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+        }
+
+        [Theory]
+        [InlineData(OrderStatusCodes.Confirmed)]
+        [InlineData(OrderStatusCodes.Created)]
+        [InlineData(OrderStatusCodes.Finalized)]
+        [InlineData(OrderStatusCodes.Complete)]
+        public async Task TestFinalizePostRedirectsWhenNotReceived(string value)
+        {
+            // Arrange
+            OrderData[1].Status = value;
+
+            // Act
+            var controllerResult = await Controller.Finalize(OrderData[1].Id, new LabFinalizeModel());
+
+            // Assert
+            var rdResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            rdResult.ActionName.ShouldBe("Orders");
+            rdResult.ControllerName.ShouldBeNull();
+            Controller.ErrorMessage.ShouldBe("You can only Complete a Received order");
+        }
+
+        [Fact]
+        public async Task TestFinalizePostRedirectsWhenNoFileUploaded()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Received;
+
+            // Act
+            var controllerResult = await Controller.Finalize(OrderData[1].Id, new LabFinalizeModel());
+
+            // Assert
+            var rdResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            rdResult.ActionName.ShouldBe("Finalize");
+            rdResult.ControllerName.ShouldBeNull();
+            rdResult.RouteValues["id"].ShouldBe(2);
+            Controller.ErrorMessage.ShouldBe("You need to upload the results at this time.");
+        }
+
+        [Fact]
+        public async Task TestFinalizePostRedirectsWhenOrderServiceReturnsError1()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Received;
+            var returnResult = new OverwriteOrderResult();
+            returnResult.ErrorMessage = "Fake Error";
+
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(returnResult);
+
+
+            var model = new LabFinalizeModel();
+            MockFormFile.Setup(a => a.Length).Returns(100);
+            model.UploadFile = MockFormFile.Object;
+
+            // Act
+            var controllerResult = await Controller.Finalize(OrderData[1].Id, model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Orders");
+            redirectResult.ControllerName.ShouldBeNull();
+
+            Controller.ErrorMessage.ShouldBe("Error. Unable to continue. Error looking up on Labworks: Fake Error");
+
+            MockOrderService.Verify(a => a.OverwriteOrderFromDb(OrderData[1]), Times.Once);
+
+        }
+
+        [Fact]
+        public async Task TestFinalizePostRedirectsWhenOrderServiceReturnsError2()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Received;
+            var returnResult = new OverwriteOrderResult();
+            returnResult.MissingCodes = new List<string>();
+            returnResult.MissingCodes.Add("Fake1");
+            returnResult.MissingCodes.Add("Fake4");
+
+            MockOrderService.Setup(a => a.OverwriteOrderFromDb(It.IsAny<Order>())).ReturnsAsync(returnResult);
+
+            var model = new LabFinalizeModel();
+            MockFormFile.Setup(a => a.Length).Returns(100);
+            model.UploadFile = MockFormFile.Object;
+
+            // Act
+            var controllerResult = await Controller.Finalize(OrderData[1].Id, model));
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Orders");
+            redirectResult.ControllerName.ShouldBeNull();
+
+            Controller.ErrorMessage.ShouldBe("Error. Unable to continue. The following codes were not found locally: Fake1,Fake4");
+
+            MockOrderService.Verify(a => a.OverwriteOrderFromDb(OrderData[1]), Times.Once);
+
+        }
+
+
+        #endregion Finalize
         [Fact(Skip = "Reminder to test the rest")]
         public void TestTheRestReminder()
         {
