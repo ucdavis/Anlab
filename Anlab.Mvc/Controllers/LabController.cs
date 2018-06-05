@@ -445,6 +445,15 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
 
+            if (orderToUpdate.Status != model.Status)
+            {
+                if (!OrderStatusCodes.All.Contains(model.Status))
+                {
+                    ErrorMessage = $"Unexpected Status Value: {model.Status}";
+                    return RedirectToAction("OverrideOrder", new {id});
+                }
+            }
+
             orderToUpdate.Paid = model.Paid;
             orderToUpdate.Status = model.Status;
             orderToUpdate.IsDeleted = model.IsDeleted;
