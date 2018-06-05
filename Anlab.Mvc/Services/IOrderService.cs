@@ -301,11 +301,13 @@ namespace AnlabMvc.Services
         {
             var orderDetails = order.GetOrderDetails();
 
+            StringBuilder sbPre = new StringBuilder();
             StringBuilder sb = new StringBuilder();
 
-            if (!String.IsNullOrWhiteSpace(orderDetails.AdditionalInfo))
+            if (!string.IsNullOrWhiteSpace(orderDetails.AdditionalInfo))
             {
-                sb.AppendLine(orderDetails.AdditionalInfo);
+                sbPre.AppendFormat("{0}{1}", "Client Comments:", Environment.NewLine);
+                sbPre.AppendLine(orderDetails.AdditionalInfo);
             }
 
             if (orderDetails.SampleType == TestCategories.Plant)
@@ -338,7 +340,11 @@ namespace AnlabMvc.Services
                 orderDetails.AdditionalInfoList = new Dictionary<string, string>();
             }
 
-            orderDetails.AdditionalInfo = sb.ToString();
+            if (sb.Length > 0)
+            {
+                sbPre.AppendFormat("{0}{1}", "Automatically Added:", Environment.NewLine);
+            }
+            orderDetails.AdditionalInfo = sbPre.ToString() + sb.ToString();
 
             order.SaveDetails(orderDetails);
         }
