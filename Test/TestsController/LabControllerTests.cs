@@ -1,12 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
@@ -18,12 +9,15 @@ using AnlabMvc.Models.Roles;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using Shouldly;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using Test.Helpers;
 using TestHelpers.Helpers;
 using Xunit;
@@ -1482,6 +1476,253 @@ namespace Test.TestsController
         }
 
         #endregion Finalize
+
+        #region OverrideOrder
+
+        [Fact]
+        public async Task TestOverrideOrderGetReturnsNotFound()
+        {
+            // Arrange
+            
+            // Act
+            var controllerResult = await Controller.OverrideOrder(9);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task TestOverrideOrderGetReturnsView1(bool value)
+        {
+            // Arrange
+            OrderData[1].IsDeleted = value;
+            // Act
+            var controllerResult = await Controller.OverrideOrder(OrderData[1].Id);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<OverrideOrderModel>(viewResult.Model);
+
+            modelResult.OrderReviewModel.Order.Id.ShouldBe(OrderData[1].Id);
+            modelResult.OrderReviewModel.OrderDetails.ShouldNotBeNull();
+            modelResult.OrderReviewModel.HideLabDetails.ShouldBeFalse();
+            modelResult.IsDeleted.ShouldBe(value);
+            modelResult.Paid.ShouldBe(OrderData[1].Paid);
+            modelResult.Status.ShouldBe(OrderData[1].Status);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task TestOverrideOrderGetReturnsView2(bool value)
+        {
+            // Arrange
+            OrderData[1].Paid = value;
+            // Act
+            var controllerResult = await Controller.OverrideOrder(OrderData[1].Id);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<OverrideOrderModel>(viewResult.Model);
+
+            modelResult.OrderReviewModel.Order.Id.ShouldBe(OrderData[1].Id);
+            modelResult.OrderReviewModel.OrderDetails.ShouldNotBeNull();
+            modelResult.OrderReviewModel.HideLabDetails.ShouldBeFalse();
+            modelResult.IsDeleted.ShouldBe(OrderData[1].IsDeleted);
+            modelResult.Paid.ShouldBe(value);
+            modelResult.Status.ShouldBe(OrderData[1].Status);
+        }
+        [Theory]
+        [InlineData(OrderStatusCodes.Confirmed)]
+        [InlineData(OrderStatusCodes.Created)]
+        [InlineData(OrderStatusCodes.Received)]
+        [InlineData(OrderStatusCodes.Finalized)]
+        [InlineData(OrderStatusCodes.Complete)]        
+        public async Task TestOverrideOrderGetReturnsView3(string value)
+        {
+            // Arrange
+            OrderData[1].Status = value;
+            // Act
+            var controllerResult = await Controller.OverrideOrder(OrderData[1].Id);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<OverrideOrderModel>(viewResult.Model);
+
+            modelResult.OrderReviewModel.Order.Id.ShouldBe(OrderData[1].Id);
+            modelResult.OrderReviewModel.OrderDetails.ShouldNotBeNull();
+            modelResult.OrderReviewModel.HideLabDetails.ShouldBeFalse();
+            modelResult.IsDeleted.ShouldBe(OrderData[1].Paid);
+            modelResult.Paid.ShouldBe(OrderData[1].Paid);
+            modelResult.Status.ShouldBe(value);
+        }
+
+
+        [Fact]
+        public async Task TestOverrideOrderPostReturnsNotFound()
+        {
+            // Arrange
+
+            // Act
+            var controllerResult = await Controller.OverrideOrder(9, new OverrideOrderModel());
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task TestOverrideOrderPostWhenInvalidStatus()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Confirmed;
+            var model = new OverrideOrderModel();
+            model.Status = "Invalid";
+            // Act
+            var controllerResult = await Controller.OverrideOrder(OrderData[1].Id, model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("OverrideOrder");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(2);
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+
+            Controller.ErrorMessage.ShouldBe("Unexpected Status Value: Invalid");
+        }
+
+        [Theory]
+        [InlineData(true, true)]
+        [InlineData(false, false)]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        public async Task TestOverrideOrderPostUpdatesPaid(bool value, bool newValue)
+        {
+            // Arrange
+            OrderData[1].Paid = value;
+            OrderData[1].Status = OrderStatusCodes.Finalized;
+            OrderData[1].ResultsFileIdentifier = "NotChanged";
+            var model = new OverrideOrderModel();
+            model.Paid = newValue;
+
+            // Act
+            var controllerResult = await Controller.OverrideOrder(OrderData[1].Id, model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Details");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(2);
+
+            OrderData[1].ResultsFileIdentifier.ShouldBe("NotChanged");
+            OrderData[1].Paid.ShouldBe(newValue);
+
+            Controller.ErrorMessage.ShouldBeNull();
+            Controller.Message.ShouldBe("Order Updated");
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task TestOverrideOrderPostUpdatesIsDeleted()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Finalized;
+            OrderData[1].ResultsFileIdentifier = "NotChanged";
+            var model = new OverrideOrderModel();
+            model.IsDeleted = true;
+
+            // Act
+            var controllerResult = await Controller.OverrideOrder(OrderData[1].Id, model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Orders");
+            redirectResult.ControllerName.ShouldBeNull();
+
+            OrderData[1].ResultsFileIdentifier.ShouldBe("NotChanged");
+            OrderData[1].IsDeleted.ShouldBe(true);
+
+            Controller.ErrorMessage.ShouldBe("Order deleted!!!");
+            Controller.Message.ShouldBeNull();
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Theory]
+        [InlineData(OrderStatusCodes.Confirmed)]
+        [InlineData(OrderStatusCodes.Created)]
+        [InlineData(OrderStatusCodes.Received)]
+        [InlineData(OrderStatusCodes.Finalized)]
+        [InlineData(OrderStatusCodes.Complete)]
+        public async Task TestOverrideOrderPostUpdatesStatus(string value)
+        {
+            // Arrange
+            OrderData[1].Status = "XXX";
+            OrderData[1].ResultsFileIdentifier = "NotChanged";
+            var model = new OverrideOrderModel();
+            model.Status = value;
+
+            // Act
+            var controllerResult = await Controller.OverrideOrder(OrderData[1].Id, model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            if (value != OrderStatusCodes.Created)
+            {
+                redirectResult.ActionName.ShouldBe("Details");
+                redirectResult.ControllerName.ShouldBeNull();
+                redirectResult.RouteValues["id"].ShouldBe(2);
+            }
+            else
+            {
+                redirectResult.ActionName.ShouldBe("Index");
+                redirectResult.ControllerName.ShouldBe("Home");
+            }
+
+            OrderData[1].ResultsFileIdentifier.ShouldBe("NotChanged");
+            OrderData[1].Status.ShouldBe(value);
+
+            Controller.ErrorMessage.ShouldBeNull();
+            Controller.Message.ShouldBe("Order Updated");
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task TestOverrideOrderPostUpdatesFileUpload()
+        {
+            // Arrange
+
+            OrderData[1].Status = OrderStatusCodes.Finalized;
+            OrderData[1].ResultsFileIdentifier = "NotChanged";
+            var model = new OverrideOrderModel();
+            model.UploadFile = MockFormFile.Object;
+            MockFileStorageService.Setup(a => a.UploadFile(model.UploadFile)).ReturnsAsync("FakeFileId");
+
+
+
+            // Act
+            var controllerResult = await Controller.OverrideOrder(OrderData[1].Id, model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Details");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(2);
+
+            OrderData[1].ResultsFileIdentifier.ShouldBe("FakeFileId");
+
+            Controller.ErrorMessage.ShouldBeNull();
+            Controller.Message.ShouldBe("Order Updated");
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+            MockFileStorageService.Verify(a => a.UploadFile(model.UploadFile), Times.Once);            
+        }
+        #endregion OverrideOrder
+
         [Fact(Skip = "Reminder to test the rest")]
         public void TestTheRestReminder()
         {
