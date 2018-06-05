@@ -40,6 +40,7 @@ namespace Test.Helpers
             rtValue.Payment = new Payment();
             rtValue.OtherPaymentInfo = CreateValidEntities.OtherPaymentInfo(counter);
             rtValue.ClientInfo = new ClientInfo();
+            rtValue.ClientInfo.ClientId = $"ClientId{counter}";
 
             return rtValue;
         }
@@ -111,6 +112,19 @@ namespace Test.Helpers
 
             return rtValue;
 
+        }
+
+        public static TestDetails TestDetails(int? counter)
+        {
+            var rtValue = new TestDetails();
+            rtValue.Id = $"Id{counter}";
+            rtValue.Analysis = $"Analysis{counter}";
+            rtValue.Cost = 1.0m * counter ?? 9;
+            rtValue.SetupCost = 2.0m * counter ?? 9;
+            rtValue.SubTotal = 3.0m * counter ?? 9;
+            rtValue.Total = 1.1m * counter ?? 9;
+
+            return rtValue;
         }
     }
 }
