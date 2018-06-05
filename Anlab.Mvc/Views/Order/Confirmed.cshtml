@@ -88,6 +88,12 @@
          </div>
          }
           <div class="form-group">
+              <h4>Submitter Info:</h4>
+              <strong>Name:</strong><span> @Model.Order.Creator.Name</span><br/>
+              <strong>Email:</strong><span> @Model.Order.Creator.Email</span><br/>
+              <strong>Phone:</strong><span> @Model.Order.Creator.Phone</span>
+          </div>
+          <div class="form-group">
               <strong>Payment Method:</strong>
               @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
               {
@@ -146,7 +152,7 @@
    <p>
       The following estimate of charges is based on routine testing.  Should non-routine testing be required you will be contacted to discuss any additional costs.
    </p>
-   <table id="t">
+   <table id="t" class="avoidBreak">
       <thead>
          <tr>
             <th>Test(s)</th>
@@ -208,7 +214,7 @@
       </tfoot>
    </table>
    <br /><br />
-   <div class="row">
+   <div class="row avoidBreak">
       <div class="col-6">
          <span>Work Authorized By:</span>
          <div style="width: 100%; height: 40px">&nbsp;</div>
@@ -276,6 +282,10 @@
             display: none !important;
         }
 
+        .avoidBreak {
+            page-break-inside: avoid;
+        }
+
         .nopadding {
             padding: 0 !important;
             margin: 0 !important;
@@ -283,6 +293,7 @@
 
         th {
             padding: 5px;
+            padding-top: 20px;
         }
         td {
             padding: 5px;
