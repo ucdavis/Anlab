@@ -23,6 +23,6 @@ namespace AnlabMvc.Models.Order
         public decimal RushMultiplier { get; set; }
         public string LabworksSampleDisposition { get; set; }
 
-        public bool WasError => MissingCodes.Count > 0 || ErrorMessage != null;
+        public bool WasError => MissingCodes.Count > 0 || !string.IsNullOrWhiteSpace(ErrorMessage);
     }
 }
