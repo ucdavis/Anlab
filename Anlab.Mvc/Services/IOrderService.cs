@@ -25,7 +25,7 @@ namespace AnlabMvc.Services
 
         Task<List<TestItemModel>> PopulateTestItemModel(bool showAll = false);
 
-        Task<OverwriteOrderResult> OverwiteOrderFromDb(Order orderToUpdate);
+        Task<OverwriteOrderResult> OverwriteOrderFromDb(Order orderToUpdate);
 
         Task UpdateTestsAndPrices(Order orderToUpdate);
 
@@ -127,7 +127,7 @@ namespace AnlabMvc.Services
 
             var orderDetails = orderToUpdate.GetOrderDetails();
             orderDetails.SelectedTests = tests.ToArray();
-            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.IsInternalClient ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
 
             orderToUpdate.SaveDetails(orderDetails);
         }
@@ -147,7 +147,7 @@ namespace AnlabMvc.Services
             var tests = CalculateTestDetails(order);
 
             orderDetails.SelectedTests = tests.ToArray();
-            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.IsInternalClient ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
 
             order.SaveDetails(orderDetails);
 
@@ -174,7 +174,7 @@ namespace AnlabMvc.Services
         /// </summary>
         /// <param name="orderToUpdate"></param>
         /// <returns></returns>
-        public async Task<OverwriteOrderResult> OverwiteOrderFromDb(Order orderToUpdate)
+        public async Task<OverwriteOrderResult> OverwriteOrderFromDb(Order orderToUpdate)
         {
             var rtValue = new OverwriteOrderResult();
             if (string.IsNullOrWhiteSpace(orderToUpdate.RequestNum))
@@ -182,7 +182,16 @@ namespace AnlabMvc.Services
                 throw new Exception("RequestNum not populated"); //TODO: Something better
             }
 
-            var orderFromDb = await _labworksService.GetRequestDetails(orderToUpdate.RequestNum);
+            OrderUpdateFromDbModel orderFromDb = null;
+            try
+            {
+                orderFromDb = await _labworksService.GetRequestDetails(orderToUpdate.RequestNum);
+            }
+            catch (Exception e)
+            {
+                rtValue.ErrorMessage = e.Message;
+                return rtValue;
+            }
 
             var allTests = orderToUpdate.GetTestDetails();
 
@@ -197,6 +206,7 @@ namespace AnlabMvc.Services
                 
                 return rtValue;
             }
+
 
             var orderDetails = orderToUpdate.GetOrderDetails();
             orderDetails.Quantity = orderFromDb.Quantity;
@@ -254,7 +264,7 @@ namespace AnlabMvc.Services
             var tests = CalculateTestDetails(orderToUpdate);
 
             orderDetails.SelectedTests = tests.ToArray();
-            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.IsInternalClient ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
 
             orderToUpdate.SaveDetails(orderDetails);
 
