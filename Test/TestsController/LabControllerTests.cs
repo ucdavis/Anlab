@@ -1606,6 +1606,7 @@ namespace Test.TestsController
             OrderData[1].ResultsFileIdentifier = "NotChanged";
             var model = new OverrideOrderModel();
             model.Paid = newValue;
+            model.Status = OrderData[1].Status;
 
             // Act
             var controllerResult = await Controller.OverrideOrder(OrderData[1].Id, model);
@@ -1632,6 +1633,7 @@ namespace Test.TestsController
             OrderData[1].Status = OrderStatusCodes.Finalized;
             OrderData[1].ResultsFileIdentifier = "NotChanged";
             var model = new OverrideOrderModel();
+            model.Status = OrderData[1].Status;
             model.IsDeleted = true;
 
             // Act
@@ -1699,6 +1701,7 @@ namespace Test.TestsController
             OrderData[1].Status = OrderStatusCodes.Finalized;
             OrderData[1].ResultsFileIdentifier = "NotChanged";
             var model = new OverrideOrderModel();
+            model.Status = OrderData[1].Status;
             model.UploadFile = MockFormFile.Object;
             MockFileStorageService.Setup(a => a.UploadFile(model.UploadFile)).ReturnsAsync("FakeFileId");
 
