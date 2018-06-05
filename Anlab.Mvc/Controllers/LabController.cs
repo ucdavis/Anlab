@@ -103,7 +103,7 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
 
-            if (order.Status != OrderStatusCodes.Confirmed) //Have this here too because 
+            if (order.Status != OrderStatusCodes.Confirmed) 
             {
                 ErrorMessage = "You can only receive a confirmed order";
                 return RedirectToAction("Orders");
