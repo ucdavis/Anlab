@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Anlab.Core.Domain;
 using Anlab.Core.Extensions;
 using Anlab.Core.Services;
+using AnlabMvc.Extensions;
 using Serilog;
 using AnlabMvc.Helpers;
 
@@ -428,7 +429,8 @@ namespace AnlabMvc.Controllers
                 },
                 IsDeleted = order.IsDeleted,
                 Paid = order.Paid,
-                Status = order.Status
+                Status = order.Status,
+                Emails = order.AdditionalEmails
             };
 
             return View(model);
@@ -451,6 +453,39 @@ namespace AnlabMvc.Controllers
                 {
                     ErrorMessage = $"Unexpected Status Value: {model.Status}";
                     return RedirectToAction("OverrideOrder", new {id});
+                }
+            }
+
+            //TODO: Parse emails to validate
+            if (orderToUpdate.AdditionalEmails != model.Emails)
+            {
+                if (string.IsNullOrWhiteSpace(model.Emails))
+                {
+                    orderToUpdate.AdditionalEmails = string.Empty;
+                }
+                else
+                {
+                    var filteredEmailList = new List<string>();
+                    var emailList = model.Emails.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var em in emailList)
+                    {
+                        var em1 = em.ToLower().Trim();
+                        if (em1.IsEmailValid())
+                        {
+                            if (!filteredEmailList.Contains(em1))
+                            {
+                                filteredEmailList.Add(em1);
+                            }
+                        }
+                        else
+                        {
+                            ErrorMessage = $"Invalid email detected: {em1}";
+                            return RedirectToAction("OverrideOrder", new { id });
+                        }
+
+                    }
+
+                    orderToUpdate.AdditionalEmails = string.Join(';', filteredEmailList);
                 }
             }
 
