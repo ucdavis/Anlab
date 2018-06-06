@@ -38,14 +38,15 @@
     }
     @if (User != null && User.IsInRole(RoleCodes.Admin))
     {
-        <div class="row no-margin">
-            <div class="form-group no-margin">
-                <h4>Admin Actions</h4>
-                <p><a asp-controller="Lab" asp-action="OverrideOrder" asp-route-id="@Model.Order.Id">Override</a></p>
-                <p><a asp-controller="Admin" asp-action="MailQueue" asp-route-id="@Model.Order.Id" target="_blank">View Emails</a></p>
-                <p><a asp-action="EditUser" asp-controller="Admin" asp-route-id="@Model.Order.CreatorId" target="_blank">Edit Submitter</a></p>
-            </div>
+        <div class="dropdown">
+            <a href="#" class="dropdown-toggle btn" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin Actions <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li><a asp-controller="Lab" asp-action="OverrideOrder" asp-route-id="@Model.Order.Id">Override</a></li>
+                <li><a asp-controller="Admin" asp-action="MailQueue" asp-route-id="@Model.Order.Id" target="_blank">View Emails</a></li>
+                <li><a asp-action="EditUser" asp-controller="Admin" asp-route-id="@Model.Order.CreatorId" target="_blank">Edit Submitter</a></li>
+            </ul>
         </div>
+
     }
 
 </div>
