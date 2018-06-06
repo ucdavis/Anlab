@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Models;
+using AnlabMvc.Extensions;
 using AnlabMvc.Helpers;
 using AnlabMvc.Resources;
 using Dapper;
@@ -143,10 +143,6 @@ namespace AnlabMvc.Services
 
         public async Task<ClientDetailsLookupModel> GetClientDetails(string clientId)
         {
-            //TODO: Check this. copied the JS one and edited a little. Original:
-            // const regex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-            var regex = @"^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
-
             try
             {
                 using (var db = new DbManager(_connectionSettings.AnlabConnection))
@@ -168,7 +164,7 @@ namespace AnlabMvc.Services
                     var rtValue = clientInfo.ElementAt(0);
                     if (rtValue.CopyEmail != null)
                     {
-                        if (Regex.IsMatch(rtValue.CopyEmail.ToLower(), regex))
+                        if(rtValue.CopyEmail.IsEmailValid())
                         {
                             rtValue.CopyEmail = rtValue.CopyEmail.ToLower();
                         }
@@ -180,7 +176,7 @@ namespace AnlabMvc.Services
 
                     if (rtValue.SubEmail != null)
                     {
-                        if (Regex.IsMatch(rtValue.SubEmail.ToLower(), regex))
+                        if (rtValue.SubEmail.IsEmailValid())
                         {
                             rtValue.SubEmail = rtValue.SubEmail.ToLower();
                         }
