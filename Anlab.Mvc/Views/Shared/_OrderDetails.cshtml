@@ -27,7 +27,8 @@
             <p>@Model.Order.Status</p>
         </div>
     </div>
-    @if (!string.IsNullOrWhiteSpace(Model.Order.RequestNum)) {
+    @if (!string.IsNullOrWhiteSpace(Model.Order.RequestNum))
+    {
         <div class="row no-margin">
             <div class="form-group no-margin">
                 <h4>WR Num</h4>
@@ -35,18 +36,30 @@
             </div>
         </div>
     }
-    @if (User != null && User.IsInRole(RoleCodes.Admin) )
+    @if (User != null && User.IsInRole(RoleCodes.Admin))
     {
         <div class="row no-margin">
             <div class="form-group no-margin">
                 <h4>Admin Actions</h4>
                 <p><a asp-controller="Lab" asp-action="OverrideOrder" asp-route-id="@Model.Order.Id">Override</a></p>
                 <p><a asp-controller="Admin" asp-action="MailQueue" asp-route-id="@Model.Order.Id" target="_blank">View Emails</a></p>
+                <p><a asp-action="EditUser" asp-controller="Admin" asp-route-id="@Model.Order.CreatorId" target="_blank">Edit Submitter</a></p>
             </div>
         </div>
     }
 
 </div>
+@if (!String.IsNullOrWhiteSpace(Model.Order.ClientId))
+{
+    <div class="form-group">
+        <strong>Client Id</strong>
+        <span>@Model.Order.ClientId</span>
+    </div>
+    <div class="form-group">
+        <strong>Client Name</strong>
+        <span>@Model.OrderDetails.ClientInfo.Name</span>
+    </div>
+}
 @if (!String.IsNullOrWhiteSpace(Model.OrderDetails.Commodity))
 {
     <div class="form-group">
@@ -79,7 +92,8 @@
     </div>
 }
 
-@if (!string.IsNullOrWhiteSpace(Model.OrderDetails.AdditionalInfo)) {
+@if (!string.IsNullOrWhiteSpace(Model.OrderDetails.AdditionalInfo))
+{
     <div class="form-group">
         <strong>Additional Info</strong>
         <div class="well well-sm" style="white-space: pre-wrap">@Model.OrderDetails.AdditionalInfo</div>
@@ -114,7 +128,7 @@
     }
     @if (Model.Order.PaymentType == PaymentTypeCodes.UcOtherAccount)
     {
-        <span>UC Account: @Model.OrderDetails.Payment.Account</span><br/>
+        <span>UC Account: @Model.OrderDetails.Payment.Account</span><br />
         <strong>Campus Name: </strong><span>@Model.OrderDetails.OtherPaymentInfo.CompanyName</span><br />
         <strong>Account Contact Name: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcName</span><br />
         <strong>Account Contact Address: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcAddr</span><br />
@@ -150,89 +164,92 @@
 
 <table class="table">
     <thead>
-    <tr>
-        <th>Analysis</th>
-        <th>
-            @if(Model.HideLabDetails)
-            {
-                @:SOP
-            }
-            else
-            {
-                @:Code
-            }
-        </th>
-        <th>Price 
-            <i class="analysisTooltip fa fa-info-circle"
-               aria-hidden="true"
-               data-toggle="tooltip"
-               title="Fee Per Sample * Quantity" />
-        </th>
-        <th>Setup</th>
-        <th>Total 
-            <i class="analysisTooltip fa fa-info-circle"
-               aria-hidden="true"
-               data-toggle="tooltip"
-               title="Price + Setup" />
-        </th>
-    </tr>
-    </thead>
-    <tbody>
-    @{ var hiddenCosts = 0M; }
-    @foreach (var test in @Model.OrderDetails.SelectedTests)
-    {
-
-        var temp = Model.Order.GetTestDetails().Where(a => a.Id == test.Id).FirstOrDefault();
-        if (Model.HideLabDetails && !temp.Public)
-        {
-            hiddenCosts += test.Total;
-            continue;
-        }
         <tr>
-            <td>
-                @test.Analysis
-                @if (temp != null && !String.IsNullOrEmpty(temp.Notes))
-                {
-                    <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@temp.Notes')" title="@temp.Notes" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
-                }
-            </td>
-            <td>
+            <th>Analysis</th>
+            <th>
                 @if (Model.HideLabDetails)
                 {
-                    if (temp.Sop == null || temp.Sop == "0")
-                    {
-                        <span>---</span>
-                    }
-                    else
-                    {
-                        <a asp-controller="Analysis" asp-action="@Model.OrderDetails.SampleType" asp-route-id="@temp.Sop" target="_blank">@temp.Sop</a>
-                    }
+                    @:SOP
                 }
                 else
                 {
-                    @test.Id
-
+                    @:Code
                 }
-            </td>
-            <td>@test.SubTotal.ToString("C")</td>
-            <td>@test.SetupCost.ToString("C")</td>
-            <td>@test.Total.ToString("C")</td>
+            </th>
+            <th>
+                Price
+                <i class="analysisTooltip fa fa-info-circle"
+                   aria-hidden="true"
+                   data-toggle="tooltip"
+                   title="Fee Per Sample * Quantity" />
+            </th>
+            <th>Setup</th>
+            <th>
+                Total
+                <i class="analysisTooltip fa fa-info-circle"
+                   aria-hidden="true"
+                   data-toggle="tooltip"
+                   title="Price + Setup" />
+            </th>
         </tr>
-    }
+    </thead>
+    <tbody>
+        @{ var hiddenCosts = 0M; }
+        @foreach (var test in @Model.OrderDetails.SelectedTests)
+        {
+
+            var temp = Model.Order.GetTestDetails().Where(a => a.Id == test.Id).FirstOrDefault();
+            if (Model.HideLabDetails && !temp.Public)
+            {
+                hiddenCosts += test.Total;
+                continue;
+            }
+            <tr>
+                <td>
+                    @test.Analysis
+                    @if (temp != null && !String.IsNullOrEmpty(temp.Notes))
+                    {
+                        <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@temp.Notes')" title="@temp.Notes" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
+                    }
+                </td>
+                <td>
+                    @if (Model.HideLabDetails)
+                    {
+                        if (temp.Sop == null || temp.Sop == "0")
+                        {
+                            <span>---</span>
+                        }
+                        else
+                        {
+                            <a asp-controller="Analysis" asp-action="@Model.OrderDetails.SampleType" asp-route-id="@temp.Sop" target="_blank">@temp.Sop</a>
+                        }
+                    }
+                    else
+                    {
+                        @test.Id
+
+                    }
+                </td>
+                <td>@test.SubTotal.ToString("C")</td>
+                <td>@test.SetupCost.ToString("C")</td>
+                <td>@test.Total.ToString("C")</td>
+            </tr>
+        }
     </tbody>
     <tfoot>
         <tr>
             <th>Processing Fee</th>
             <td colSpan="3" />
             <td>
-            @if (Model.OrderDetails.Payment.IsInternalClient)
-            {
-                <span>@(String.Format("{0:C}", Model.OrderDetails.InternalProcessingFee))</span>
-            }
-            else
-            {
-                <span>@(String.Format("{0:C}", Model.OrderDetails.ExternalProcessingFee))</span>
-            }</td>
+                @if (Model.OrderDetails.Payment.IsInternalClient)
+                {
+                    <span>@(String.Format("{0:C}", Model.OrderDetails.InternalProcessingFee))</span>
+                }
+                else
+                {
+                    <span>@(String.Format("{0:C}", Model.OrderDetails.ExternalProcessingFee))</span>
+                }
+            </td>
         </tr>
         @if (hiddenCosts > 0M)
         {
