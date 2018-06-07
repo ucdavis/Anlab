@@ -1958,18 +1958,37 @@ namespace Test.TestsController
 
         #endregion Search
 
-        [Fact(Skip = "Reminder to test the rest")]
-        public void TestTheRestReminder()
+        #region JsonDetails
+
+        [Fact]
+        public async Task TestJsonDetailsReturnsNotFound()
         {
             // Arrange
             
 
 
             // Act
+            var controllerResult = await Controller.JsonDetails(9);
 
-
-            // Assert		
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
         }
+
+        [Fact]
+        public async Task TestJsonDetailsReturnsView()
+        {
+            // Arrange
+            
+            
+            // Act
+            var controllerResult = await Controller.JsonDetails(2);
+
+            // Assert
+            var jsonResult = Assert.IsType<JsonResult>(controllerResult);
+            var details = Assert.IsType<OrderDetails>(jsonResult.Value);
+            details.ClientInfo.ClientId.ShouldBe("ClientId2");
+        }
+        #endregion JsonDetails
     }
 
     [Trait("Category", "Controller Reflection")]
