@@ -91,6 +91,44 @@ namespace Test.TestsController
             var modelResult = Assert.IsType<List<UserRolesModel>>(viewResult.Model);
             modelResult.ShouldNotBeNull();
             modelResult.Count.ShouldBe(5);
+            foreach (var userRolesModel in modelResult)
+            {
+                userRolesModel.IsAdmin.ShouldBeTrue();
+                userRolesModel.IsLabUser.ShouldBeTrue();
+                userRolesModel.IsReports.ShouldBeTrue();
+            }
+        }
+
+        [Fact]
+        public async Task TestIndexReturnsViewWithExpectedResults2()
+        {
+            // Arrange            
+            MockUserManager.Setup(a => a.IsInRoleAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(false);
+            MockUserManager.Setup(a => a.IsInRoleAsync(UserData[1], It.IsAny<string>())).ReturnsAsync(true);
+            MockUserManager.Setup(a => a.IsInRoleAsync(UserData[2], RoleCodes.Admin)).ReturnsAsync(true);
+
+            // Act
+            var controllerResult = await Controller.Index();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<List<UserRolesModel>>(viewResult.Model);
+            modelResult.ShouldNotBeNull();
+            modelResult.Count.ShouldBe(5);
+            modelResult.Single(a => a.User.Id == UserData[1].Id).IsLabUser.ShouldBeTrue();
+            modelResult.Single(a => a.User.Id == UserData[1].Id).IsAdmin.ShouldBeTrue();
+            modelResult.Single(a => a.User.Id == UserData[1].Id).IsReports.ShouldBeTrue();
+
+            modelResult.Single(a => a.User.Id == UserData[2].Id).IsLabUser.ShouldBeFalse();
+            modelResult.Single(a => a.User.Id == UserData[2].Id).IsAdmin.ShouldBeTrue();
+            modelResult.Single(a => a.User.Id == UserData[2].Id).IsReports.ShouldBeFalse();
+
+            foreach (var ur in modelResult.Where(a => a.User.Id != UserData[1].Id && a.User.Id != UserData[2].Id).ToArray())
+            {
+                ur.IsReports.ShouldBeFalse();
+                ur.IsAdmin.ShouldBeFalse();
+                ur.IsLabUser.ShouldBeFalse();
+            }
         }
     }
 
