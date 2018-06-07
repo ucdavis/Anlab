@@ -76,6 +76,8 @@ namespace Test.TestsController
             };
         }
 
+        #region Index
+        
         [Fact]
         public async Task TestIndexReturnsViewWithExpectedResults1()
         {
@@ -129,7 +131,47 @@ namespace Test.TestsController
                 ur.IsAdmin.ShouldBeFalse();
                 ur.IsLabUser.ShouldBeFalse();
             }
+
+            MockUserManager.Verify(a => a.IsInRoleAsync(It.IsAny<User>(), It.IsAny<string>()), Times.Exactly(15));
         }
+        #endregion Index
+
+        #region EditAdmin
+
+        [Fact]
+        public async Task TestEditAdminReturnsNotFound()
+        {
+            // Arrange
+            
+            // Act
+            var controllerResult = await Controller.EditAdmin("XXX");
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+        }
+
+        [Fact]
+        public async Task TestEditAdminReturnsExpectedResults()
+        {
+            // Arrange
+            MockUserManager.Setup(a => a.IsInRoleAsync(UserData[1], RoleCodes.LabUser)).ReturnsAsync(true);
+
+            // Act
+            var controllerResult = await Controller.EditAdmin(UserData[1].Id);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<UserRolesModel>(viewResult.Model);
+            modelResult.User.Id.ShouldBe(UserData[1].Id);
+            modelResult.IsLabUser.ShouldBeTrue();
+            modelResult.IsAdmin.ShouldBeFalse();
+            modelResult.IsReports.ShouldBeFalse();
+
+            MockUserManager.Verify(a => a.IsInRoleAsync(UserData[1], It.IsAny<string>()), Times.Exactly(3));
+        }
+        
+
+        #endregion EditAdmin
     }
 
     [Trait("Category", "Controller Reflection")]
