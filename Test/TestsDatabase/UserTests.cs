@@ -45,7 +45,6 @@ namespace Test.TestsDatabase
             expectedFields.Add(new NameAndType("BillingContactPhone", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Billing Contact Phone\")]",
-                "[System.ComponentModel.DataAnnotations.PhoneAttribute()]"
             }));
             //expectedFields.Add(new NameAndType("Claims", "System.Collections.Generic.ICollection`1[Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim`1[System.String]]", new List<string>()));
             expectedFields.Add(new NameAndType("ClientId", "System.String", new List<string>
@@ -91,7 +90,6 @@ namespace Test.TestsDatabase
             expectedFields.Add(new NameAndType("PasswordHash", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Phone", "System.String", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.PhoneAttribute()]",
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)256)]"
             }));
             expectedFields.Add(new NameAndType("PhoneNumber", "System.String", new List<string>()));

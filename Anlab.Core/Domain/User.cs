@@ -25,7 +25,6 @@ namespace Anlab.Core.Domain
         [Display(Name = "Client ID")]
         public string ClientId { get; set; }
 
-        [Phone]
         [StringLength(256)]
         public string Phone { get; set; } //Note, there is also a "PhoneNumber" field in the DB...
 
@@ -41,7 +40,6 @@ namespace Anlab.Core.Domain
         [StringLength(2000)]
         [Display(Name = "Billing Contact Address")]
         public string BillingContactAddress { get; set; }
-        [Phone]
         [Display(Name = "Billing Contact Phone")]
         public string BillingContactPhone { get; set; }
         [EmailAddress]
