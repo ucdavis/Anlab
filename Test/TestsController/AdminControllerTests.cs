@@ -5,11 +5,20 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
+using Anlab.Core.Data;
+using Anlab.Core.Domain;
 using AnlabMvc.Controllers;
 using AnlabMvc.Models.Roles;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Moq;
 using Shouldly;
+using Test.Helpers;
+using TestHelpers.Helpers;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,7 +27,66 @@ namespace Test.TestsController
     [Trait("Category", "ControllerTests")]
     public class AdminControllerTests
     {
-        //TODO
+        public Mock<ApplicationDbContext> MockDbContext { get; set; }
+        public Mock<HttpContext> MockHttpContext { get; set; }
+
+        public Mock<FakeUserManager> MockUserManager { get; set; }
+
+        public Mock<RoleManager<IdentityRole>> MockRolemanager { get; set; }
+
+        //Setup Data
+        public List<User> UserData { get; set; }
+
+
+        //Controller
+        public AdminController Controller { get; set; }
+
+        public AdminControllerTests()
+        {
+            MockDbContext = new Mock<ApplicationDbContext>();
+            MockHttpContext = new Mock<HttpContext>();
+
+            MockUserManager = new Mock<FakeUserManager>();
+            MockRolemanager = new Mock<RoleManager<IdentityRole>>();
+
+
+            var mockDataProvider = new Mock<SessionStateTempDataProvider>();
+
+
+            //Default Data
+            UserData = new List<User>();
+            for (int i = 0; i < 5; i++)
+            {
+                var user = CreateValidEntities.User(i + 1, true);
+                UserData.Add(user);
+            }
+
+
+            //Setups
+            MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockDbSet().Object);
+
+            Controller = new AdminController(MockDbContext.Object, MockUserManager.Object, MockRolemanager.Object)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = MockHttpContext.Object
+                },
+                TempData = new TempDataDictionary(MockHttpContext.Object, mockDataProvider.Object)
+            };
+        }
+
+        [Fact]
+        public async Task TestDescription()
+        {
+            // Arrange
+            MockUserManager.Setup(a => a.IsInRoleAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(true);
+
+
+            // Act
+            var controllerResult = await Controller.Index();
+
+            // Assert		
+        }
     }
 
     [Trait("Category", "Controller Reflection")]
