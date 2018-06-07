@@ -1868,6 +1868,96 @@ namespace Test.TestsController
 
         #endregion OverrideOrder
 
+        #region Search
+
+        [Fact]
+        public void TestSearchGetReturnsView()
+        {
+            // Arrange
+            
+            // Act
+            var controllerResult = Controller.Search();
+
+            // Assert
+            Assert.IsType<ViewResult>(controllerResult);
+        }
+
+        [Fact]
+        public async Task TestSearchPostRedirectsWhenNotFound()
+        {
+            // Arrange
+            
+            // Act
+            var controllerResult = await Controller.Search("99");
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Search");
+            redirectResult.ControllerName.ShouldBeNull();
+
+            Controller.ErrorMessage.ShouldBe("Order Not Found");
+        }
+
+        [Theory]
+        [InlineData("2", 2)]
+        [InlineData("3", 3)]
+        public async Task TestTestSearchRedirectsToDetailsWhenFound1(string value, int expectedOrderId)
+        {
+            // Arrange
+
+            // Act
+            var controllerResult = await Controller.Search(value);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Details");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(expectedOrderId);
+
+            Controller.ErrorMessage.ShouldBeNull();
+        }
+        [Theory]
+        [InlineData(2)]
+        [InlineData(3)]
+        public async Task TestTestSearchRedirectsToDetailsWhenFound2(int value)
+        {
+            // Arrange
+
+            // Act
+            var controllerResult = await Controller.Search(SpecificGuid.GetGuid(value).ToString());
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Details");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(value);
+
+            Controller.ErrorMessage.ShouldBeNull();
+        }
+
+        [Theory]
+        [InlineData("Fake123")]
+        [InlineData("Fake124")]
+        [InlineData("FAKE124")]
+        public async Task TestTestSearchRedirectsToDetailsWhenFound3(string value)
+        {
+            // Arrange
+            OrderData[1].RequestNum = value.ToUpper();
+
+            // Act
+            var controllerResult = await Controller.Search(value);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Details");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(2);
+
+            Controller.ErrorMessage.ShouldBeNull();
+        }
+
+        #endregion Search
+
         [Fact(Skip = "Reminder to test the rest")]
         public void TestTheRestReminder()
         {
