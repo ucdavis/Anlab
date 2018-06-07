@@ -10,6 +10,7 @@ using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using AnlabMvc.Controllers;
 using AnlabMvc.Models.Roles;
+using AnlabMvc.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -32,7 +33,7 @@ namespace Test.TestsController
 
         public Mock<FakeUserManager> MockUserManager { get; set; }
 
-        public Mock<RoleManager<IdentityRole>> MockRolemanager { get; set; }
+        public Mock<FakeRoleManager> MockRolemanager { get; set; }
 
         //Setup Data
         public List<User> UserData { get; set; }
@@ -47,7 +48,7 @@ namespace Test.TestsController
             MockHttpContext = new Mock<HttpContext>();
 
             MockUserManager = new Mock<FakeUserManager>();
-            MockRolemanager = new Mock<RoleManager<IdentityRole>>();
+            MockRolemanager = new Mock<FakeRoleManager>();
 
 
             var mockDataProvider = new Mock<SessionStateTempDataProvider>();
@@ -76,16 +77,20 @@ namespace Test.TestsController
         }
 
         [Fact]
-        public async Task TestDescription()
+        public async Task TestIndexReturnsViewWithExpectedResults1()
         {
             // Arrange
+            //All 5 users are in all roles.
             MockUserManager.Setup(a => a.IsInRoleAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(true);
-
-
+            
             // Act
             var controllerResult = await Controller.Index();
 
-            // Assert		
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<List<UserRolesModel>>(viewResult.Model);
+            modelResult.ShouldNotBeNull();
+            modelResult.Count.ShouldBe(5);
         }
     }
 
