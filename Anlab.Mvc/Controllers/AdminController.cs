@@ -53,7 +53,11 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> EditAdmin(string id)
         {
             var model = new UserRolesModel();
-            model.User = _dbContext.Users.Single(a => a.Id == id);
+            model.User = _dbContext.Users.SingleOrDefault(a => a.Id == id);
+            if (model.User == null)
+            {
+                return NotFound();
+            }
             model.IsAdmin = await _userManager.IsInRoleAsync(model.User, RoleCodes.Admin);
             model.IsLabUser = await _userManager.IsInRoleAsync(model.User, RoleCodes.LabUser);
             model.IsReports = await _userManager.IsInRoleAsync(model.User, RoleCodes.Reports);
