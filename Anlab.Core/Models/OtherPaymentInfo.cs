@@ -28,7 +28,6 @@ namespace Anlab.Core.Models
         [Display(Name = "Account Contact Email")]
         public string AcEmail { get; set; }
         
-        [Phone]
         [Required]
         [Display(Name = "Account Contact Phone Number")]
         public string AcPhone { get; set; }

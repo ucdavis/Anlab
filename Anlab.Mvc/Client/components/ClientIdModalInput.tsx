@@ -32,20 +32,14 @@ export class ClientIdModalInput extends React.Component<IClientIdModalInputProps
     _validate = (v: string) => {
         let error = null;
         const emailRe = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        const phoneRe = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
 
         if (this.props.required === true && (!v || v.trim() === "")) {
             error = "This field is required";
-        }
-        else if (this.props.property == "email" && !emailRe.test(v))
+        } else if (this.props.property === "email" && !emailRe.test(v))
         {
             error = "Invalid email";
         }
-        else if (this.props.property == "phoneNumber" && !phoneRe.test(v))
-        {
-            error = "Invalid phone number";
-        }
-        this.setState({ error: error });
+        this.setState({ error });
     }
 
     onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
