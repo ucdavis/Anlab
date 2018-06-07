@@ -10,7 +10,8 @@
     ViewData["Title"] = "Sign in";
 }
 <div class="col">
-<h2>Choose how you would like to sign in</h2>
+    <h2>Choose how you would like to sign in</h2>
+    <h3>If you have a UC Davis account, please sign in with that.</h3>
 
         @{
             var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();

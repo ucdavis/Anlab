@@ -47,7 +47,7 @@ namespace Test.TestsController
         [Fact]
         public void TestControllerMethodCount()
         {
-            ControllerReflection.ControllerPublicMethods(8);
+            ControllerReflection.ControllerPublicMethods(9);
         }
 
         [Fact]

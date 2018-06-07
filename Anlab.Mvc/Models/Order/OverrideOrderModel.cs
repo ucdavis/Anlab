@@ -12,6 +12,7 @@ namespace AnlabMvc.Models.Order
         public bool IsDeleted { get; set; }
         public bool Paid { get; set; }
         public string Status { get; set; }
+        public string Emails { get; set; }
 
         public IFormFile UploadFile { get; set; }
     }

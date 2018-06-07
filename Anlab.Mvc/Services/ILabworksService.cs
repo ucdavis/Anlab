@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Models;
+using AnlabMvc.Extensions;
 using AnlabMvc.Helpers;
 using AnlabMvc.Resources;
 using Dapper;
@@ -24,6 +24,8 @@ namespace AnlabMvc.Services
         Task<IList<string>> GetTestCodesCompletedForOrder(string RequestNum);
         Task<OrderUpdateFromDbModel> GetRequestDetails(string RequestNum);
         Task<ClientDetailsLookupModel> GetClientDetails(string clientId);
+
+        Task<IList<string>> GetAllCodes();
 
     }
 
@@ -117,7 +119,7 @@ namespace AnlabMvc.Services
                     //TODO: maybe we should only return tests with a $ amount
                     if (codes.Count() <= 0)
                     {
-                        throw new Exception("No codes found");
+                        throw new Exception($"No codes found (Request number not found? {RequestNum})");
                     }
                     rtValue.TestCodes = codes as IList<string>;
                     if (sampleDetails.Count() != 1)
@@ -141,10 +143,6 @@ namespace AnlabMvc.Services
 
         public async Task<ClientDetailsLookupModel> GetClientDetails(string clientId)
         {
-            //TODO: Check this. copied the JS one and edited a little. Original:
-            // const regex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-            var regex = @"^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
-
             try
             {
                 using (var db = new DbManager(_connectionSettings.AnlabConnection))
@@ -166,7 +164,7 @@ namespace AnlabMvc.Services
                     var rtValue = clientInfo.ElementAt(0);
                     if (rtValue.CopyEmail != null)
                     {
-                        if (Regex.IsMatch(rtValue.CopyEmail.ToLower(), regex))
+                        if(rtValue.CopyEmail.IsEmailValid())
                         {
                             rtValue.CopyEmail = rtValue.CopyEmail.ToLower();
                         }
@@ -178,7 +176,7 @@ namespace AnlabMvc.Services
 
                     if (rtValue.SubEmail != null)
                     {
-                        if (Regex.IsMatch(rtValue.SubEmail.ToLower(), regex))
+                        if (rtValue.SubEmail.IsEmailValid())
                         {
                             rtValue.SubEmail = rtValue.SubEmail.ToLower();
                         }
@@ -201,6 +199,16 @@ namespace AnlabMvc.Services
                 return new ClientDetailsLookupModel {Name = "Unknown"};
             }
 
+        }
+
+        public async Task<IList<string>> GetAllCodes()
+        {
+            using (var db = new DbManager(_connectionSettings.AnlabConnection))
+            {
+                IEnumerable<string> codes = await db.Connection.QueryAsync<string>(QueryResource.AllCodes);
+
+                return codes as IList<string>;
+            }
         }
     }
     
@@ -325,5 +333,9 @@ namespace AnlabMvc.Services
             return await Task.FromResult(rtValue);
         }
 
+        public Task<IList<string>> GetAllCodes()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

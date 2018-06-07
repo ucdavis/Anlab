@@ -41,7 +41,12 @@
     <script type="text/javascript">
         $(function () {
             $("#table").dataTable({
-                "sorting": [[2, "desc"]]
+                "sorting": [[2, "desc"]],
+                "pageLength": 100,
+                "columnDefs": [
+                    { "orderable": false, "targets": [0] },
+                    { "searchable":false, "targets": 0 }
+                ]
             });
         });
     </script>

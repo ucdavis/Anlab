@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Anlab.Core.Domain;
 using Anlab.Core.Extensions;
 using Anlab.Core.Services;
+using AnlabMvc.Extensions;
 using Serilog;
 using AnlabMvc.Helpers;
 
@@ -103,6 +104,12 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
 
+            if (order.Status != OrderStatusCodes.Confirmed) 
+            {
+                ErrorMessage = "You can only receive a confirmed order";
+                return RedirectToAction("Orders");
+            }
+
             var model = new OrderReviewModel();
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
@@ -120,6 +127,8 @@ namespace AnlabMvc.Controllers
                 ErrorMessage = "A request number is required";
                 return RedirectToAction("AddRequestNumber");
             }
+
+            requestNum = requestNum.SafeToUpper();  //Force Uppercase
 
             var checkReqNum = await _dbContext.Orders.AnyAsync(i => i.Id != id && i.RequestNum == requestNum);
             if (checkReqNum)
@@ -145,10 +154,20 @@ namespace AnlabMvc.Controllers
 
 
             order.RequestNum = requestNum;
-            var result = await _orderService.OverwiteOrderFromDb(order);
+            var result = await _orderService.OverwriteOrderFromDb(order);
             if (result.WasError)
             {
-                ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
+                if (result.ErrorMessage != null)
+                {
+                    ErrorMessage = $"Error. Unable to continue. Error looking up on Labworks: {result.ErrorMessage}";
+                }
+                else
+                {
+                    ErrorMessage =
+                        string.Format("Error. Unable to continue. The following codes were not found locally: {0}",
+                            string.Join(",", result.MissingCodes));
+                }
+
                 return RedirectToAction("Orders");
             }
 
@@ -166,6 +185,13 @@ namespace AnlabMvc.Controllers
 
         }
 
+        /// <summary>
+        /// This should probably be moved to a service...
+        /// </summary>
+        /// <param name="order"></param>
+        /// <param name="result"></param>
+        /// <param name="finalizeModel"></param>
+        /// <returns></returns>
         private async Task<Order> UpdateOrderFromLabworksResult(Order order, OverwriteOrderResult result, LabFinalizeModel finalizeModel = null)
         {
             order.ClientId = result.ClientId;
@@ -195,7 +221,7 @@ namespace AnlabMvc.Controllers
 
             orderDetails.Quantity = result.Quantity;
             orderDetails.SelectedTests = result.SelectedTests;
-            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.IsInternalClient ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
             orderDetails.Total = orderDetails.Total * result.RushMultiplier;
             orderDetails.RushMultiplier = result.RushMultiplier;
             orderDetails.LabworksSampleDisposition = result.LabworksSampleDisposition;
@@ -218,6 +244,11 @@ namespace AnlabMvc.Controllers
             if (order == null)
             {
                 return NotFound();
+            }
+            if (order.Status != OrderStatusCodes.Confirmed)
+            {
+                ErrorMessage = "You can only receive a confirmed order";
+                return RedirectToAction("Orders");
             }
 
             var model = new OrderReviewModel();
@@ -279,10 +310,23 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
 
-            var result = await _orderService.OverwiteOrderFromDb(order);
+            if (order.Status != OrderStatusCodes.Received)
+            {
+                ErrorMessage = "You can only Complete a Received order";
+                return RedirectToAction("Orders");
+            }
+
+            var result = await _orderService.OverwriteOrderFromDb(order);
             if (result.WasError)
             {
-                ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
+                if (result.ErrorMessage != null)
+                {
+                    ErrorMessage = $"Error. Unable to continue. Error looking up on Labworks: {result.ErrorMessage}";
+                }
+                else
+                {
+                    ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
+                }
                 return RedirectToAction("Orders");
             }
 
@@ -308,21 +352,28 @@ namespace AnlabMvc.Controllers
             if (order.Status != OrderStatusCodes.Received)
             {
                 ErrorMessage = "You can only Complete a Received order";
-                //return RedirectToAction("Orders");
+                return RedirectToAction("Orders");
             }
 
             if (model.UploadFile == null || model.UploadFile.Length <= 0)
             {
                 ErrorMessage = "You need to upload the results at this time.";
-                return RedirectToAction("Finalize");
+                return RedirectToAction("Finalize", new{id});
             }
 
             order.Status = OrderStatusCodes.Finalized;
 
-            var result = await _orderService.OverwiteOrderFromDb(order);
+            var result = await _orderService.OverwriteOrderFromDb(order);
             if (result.WasError)
             {
-                ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
+                if (result.ErrorMessage != null)
+                {
+                    ErrorMessage = $"Error. Unable to continue. Error looking up on Labworks: {result.ErrorMessage}";
+                }
+                else
+                {
+                    ErrorMessage = string.Format("Error. Unable to continue. The following codes were not found locally: {0}", string.Join(",", result.MissingCodes));
+                }
                 return RedirectToAction("Orders");
             }
 
@@ -330,8 +381,7 @@ namespace AnlabMvc.Controllers
             order.ResultsFileIdentifier = await _fileStorageService.UploadFile(model.UploadFile);
 
             order = await UpdateOrderFromLabworksResult(order, result, model);
-
-            await _orderMessageService.EnqueueFinalizedMessage(order, model.BypassEmail);
+            
             var extraMessage = string.Empty;
             if (order.PaymentType == PaymentTypeCodes.UcDavisAccount)
             {
@@ -349,7 +399,8 @@ namespace AnlabMvc.Controllers
                     return RedirectToAction("Finalize");
                 }
             }
-
+            //Only send email if there wasn't a problem with sloth.
+            await _orderMessageService.EnqueueFinalizedMessage(order, model.BypassEmail);
             await _dbContext.SaveChangesAsync();
 
             Message = $"Order marked as Finalized{extraMessage}";
@@ -378,7 +429,8 @@ namespace AnlabMvc.Controllers
                 },
                 IsDeleted = order.IsDeleted,
                 Paid = order.Paid,
-                Status = order.Status
+                Status = order.Status,
+                Emails = order.AdditionalEmails
             };
 
             return View(model);
@@ -393,6 +445,48 @@ namespace AnlabMvc.Controllers
             if (orderToUpdate == null)
             {
                 return NotFound();
+            }
+
+            if (orderToUpdate.Status != model.Status)
+            {
+                if (!OrderStatusCodes.All.Contains(model.Status))
+                {
+                    ErrorMessage = $"Unexpected Status Value: {model.Status}";
+                    return RedirectToAction("OverrideOrder", new {id});
+                }
+            }
+
+            //TODO: Parse emails to validate
+            if (orderToUpdate.AdditionalEmails != model.Emails)
+            {
+                if (string.IsNullOrWhiteSpace(model.Emails))
+                {
+                    orderToUpdate.AdditionalEmails = string.Empty;
+                }
+                else
+                {
+                    var filteredEmailList = new List<string>();
+                    var emailList = model.Emails.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var em in emailList)
+                    {
+                        var em1 = em.ToLower().Trim();
+                        if (em1.IsEmailValid())
+                        {
+                            if (!filteredEmailList.Contains(em1))
+                            {
+                                filteredEmailList.Add(em1);
+                            }
+                        }
+                        else
+                        {
+                            ErrorMessage = $"Invalid email detected: {em1}";
+                            return RedirectToAction("OverrideOrder", new { id });
+                        }
+
+                    }
+
+                    orderToUpdate.AdditionalEmails = string.Join(';', filteredEmailList);
+                }
             }
 
             orderToUpdate.Paid = model.Paid;

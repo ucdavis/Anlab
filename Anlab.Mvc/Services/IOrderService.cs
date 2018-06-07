@@ -25,7 +25,7 @@ namespace AnlabMvc.Services
 
         Task<List<TestItemModel>> PopulateTestItemModel(bool showAll = false);
 
-        Task<OverwriteOrderResult> OverwiteOrderFromDb(Order orderToUpdate);
+        Task<OverwriteOrderResult> OverwriteOrderFromDb(Order orderToUpdate);
 
         Task UpdateTestsAndPrices(Order orderToUpdate);
 
@@ -127,7 +127,7 @@ namespace AnlabMvc.Services
 
             var orderDetails = orderToUpdate.GetOrderDetails();
             orderDetails.SelectedTests = tests.ToArray();
-            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.IsInternalClient ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
 
             orderToUpdate.SaveDetails(orderDetails);
         }
@@ -147,7 +147,7 @@ namespace AnlabMvc.Services
             var tests = CalculateTestDetails(order);
 
             orderDetails.SelectedTests = tests.ToArray();
-            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.IsInternalClient ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
 
             order.SaveDetails(orderDetails);
 
@@ -174,7 +174,7 @@ namespace AnlabMvc.Services
         /// </summary>
         /// <param name="orderToUpdate"></param>
         /// <returns></returns>
-        public async Task<OverwriteOrderResult> OverwiteOrderFromDb(Order orderToUpdate)
+        public async Task<OverwriteOrderResult> OverwriteOrderFromDb(Order orderToUpdate)
         {
             var rtValue = new OverwriteOrderResult();
             if (string.IsNullOrWhiteSpace(orderToUpdate.RequestNum))
@@ -182,7 +182,16 @@ namespace AnlabMvc.Services
                 throw new Exception("RequestNum not populated"); //TODO: Something better
             }
 
-            var orderFromDb = await _labworksService.GetRequestDetails(orderToUpdate.RequestNum);
+            OrderUpdateFromDbModel orderFromDb = null;
+            try
+            {
+                orderFromDb = await _labworksService.GetRequestDetails(orderToUpdate.RequestNum);
+            }
+            catch (Exception e)
+            {
+                rtValue.ErrorMessage = e.Message;
+                return rtValue;
+            }
 
             var allTests = orderToUpdate.GetTestDetails();
 
@@ -197,6 +206,7 @@ namespace AnlabMvc.Services
                 
                 return rtValue;
             }
+
 
             var orderDetails = orderToUpdate.GetOrderDetails();
             orderDetails.Quantity = orderFromDb.Quantity;
@@ -254,7 +264,7 @@ namespace AnlabMvc.Services
             var tests = CalculateTestDetails(orderToUpdate);
 
             orderDetails.SelectedTests = tests.ToArray();
-            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.ClientType == "uc" ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
+            orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.IsInternalClient ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
 
             orderToUpdate.SaveDetails(orderDetails);
 
@@ -291,11 +301,13 @@ namespace AnlabMvc.Services
         {
             var orderDetails = order.GetOrderDetails();
 
+            StringBuilder sbPre = new StringBuilder();
             StringBuilder sb = new StringBuilder();
 
-            if (!String.IsNullOrWhiteSpace(orderDetails.AdditionalInfo))
+            if (!string.IsNullOrWhiteSpace(orderDetails.AdditionalInfo))
             {
-                sb.AppendLine(orderDetails.AdditionalInfo);
+                sbPre.AppendFormat("{0}{1}", "Client Comments:", Environment.NewLine);
+                sbPre.AppendLine(orderDetails.AdditionalInfo);
             }
 
             if (orderDetails.SampleType == TestCategories.Plant)
@@ -306,7 +318,7 @@ namespace AnlabMvc.Services
             //To do this now, we have to look at the selected tests...
             if (orderDetails.SampleType == TestCategories.Soil)
             {
-                sb.AppendFormat("{0}: {1}{2}", "Soil is imported", orderDetails.SelectedTests.Any(a => a.Id == "SP-FOR" || a.Analysis.Equals("Imported Soil", StringComparison.InvariantCultureIgnoreCase)), Environment.NewLine);
+                sb.AppendFormat("{0}: {1}{2}", "Soil is imported", orderDetails.SelectedTests.Any(a => a.Id == "SP-FOR" || a.Analysis.Equals("Imported Soil", StringComparison.InvariantCultureIgnoreCase)).ToYesNoString(), Environment.NewLine);
             }
 
             if (orderDetails.SampleType == TestCategories.Water)
@@ -328,7 +340,11 @@ namespace AnlabMvc.Services
                 orderDetails.AdditionalInfoList = new Dictionary<string, string>();
             }
 
-            orderDetails.AdditionalInfo = sb.ToString();
+            if (sb.Length > 0)
+            {
+                sbPre.AppendFormat("{0}{1}", "Automatically Added:", Environment.NewLine);
+            }
+            orderDetails.AdditionalInfo = sbPre.ToString() + sb.ToString();
 
             order.SaveDetails(orderDetails);
         }

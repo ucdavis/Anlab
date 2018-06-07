@@ -76,7 +76,7 @@ namespace AnlabMvc.Controllers
             if (user == null)
             {
                 ErrorMessage = "User Not Found";
-                return RedirectToAction("ListNonAdminUsers");
+                return RedirectToAction("ListClients");
             }
 
             return View(user);
@@ -89,7 +89,7 @@ namespace AnlabMvc.Controllers
             if (userToUpdate == null)
             {
                 ErrorMessage = "User Not Found";
-                return RedirectToAction("ListNonAdminUsers");
+                return RedirectToAction("ListClients");
             }
             if (ModelState.IsValid)
             {
@@ -108,7 +108,7 @@ namespace AnlabMvc.Controllers
                 _dbContext.Update(userToUpdate);
                 _dbContext.SaveChanges();
 
-                return RedirectToAction("ListNonAdminUsers");
+                return RedirectToAction("ListClients");
             }
 
             return View(user);
