@@ -64,7 +64,7 @@ namespace Test.TestsController
 
 
             //Setups
-            MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockDbSet().Object);
+            MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);
 
             Controller = new AdminController(MockDbContext.Object, MockUserManager.Object, MockRolemanager.Object)
             {
@@ -178,6 +178,80 @@ namespace Test.TestsController
             user.IsReports.ShouldBeTrue();
         }
         #endregion Index
+
+        #region SearchAminUser
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public async Task TestSearchAminUserRedirectsToIndex1(string value)
+        {
+            // Arrange
+            
+            // Act
+            var controllerResult = await Controller.SearchAminUser(value);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Index");
+            redirectResult.ControllerName.ShouldBeNull();
+
+            Controller.ErrorMessage.ShouldBe("Nothing entered to search.");
+        }
+
+        [Fact]
+        public async Task TestSearchAminUserRedirectsToIndex2()
+        {
+            // Arrange
+
+            // Act
+            var controllerResult = await Controller.SearchAminUser("xxx");
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Index");
+            redirectResult.ControllerName.ShouldBeNull();
+
+            Controller.ErrorMessage.ShouldBe("Email xxx not found.");
+        }
+
+        [Theory]
+        [InlineData("xxx@xx.com")]
+        [InlineData("XXX@XX.COM")]
+        [InlineData(" XXX@XX.COM ")]
+        public async Task TestSearchAminUserRedirectsToEditAdmin(string value)
+        {
+            // Arrange
+            UserData[1].NormalizedUserName = "XXX@XX.COM";
+            // Act
+            var controllerResult = await Controller.SearchAminUser(value);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("EditAdmin");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(UserData[1].Id);
+
+            Controller.ErrorMessage.ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task TestSearchAminUserThrowsExceptionIfDuplicate()
+        {
+            // Arrange
+            UserData[1].NormalizedUserName = "XXX@XX.COM"; 
+            UserData[2].NormalizedUserName = "XXX@XX.COM"; //Should never happen...
+
+            // Act
+            var ex = await Assert.ThrowsAsync<InvalidOperationException>(async () => await Controller.SearchAminUser("xxx@xx.com"));
+
+            // Assert
+            ex.ShouldNotBeNull();
+            ex.Message.ShouldBe("Sequence contains more than one matching element");
+        }
+
+        #endregion SearchAminUser
 
         #region EditAdmin
 

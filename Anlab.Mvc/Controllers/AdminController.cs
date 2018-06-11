@@ -63,7 +63,7 @@ namespace AnlabMvc.Controllers
             var user = await _dbContext.Users.SingleOrDefaultAsync(a => a.NormalizedUserName == id.ToUpper().Trim());
             if (user == null)
             {
-                ErrorMessage = $"Email {id} not found";
+                ErrorMessage = $"Email {id} not found.";
                 return RedirectToAction("Index");
             }
 
