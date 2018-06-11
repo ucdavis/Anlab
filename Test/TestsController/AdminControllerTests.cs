@@ -78,12 +78,26 @@ namespace Test.TestsController
 
         #region Index
         
-        [Fact(Skip = "Changing how these are done")]
+        [Fact]
         public async Task TestIndexReturnsViewWithExpectedResults1()
         {
             // Arrange
-            //All 5 users are in all roles.
-            MockUserManager.Setup(a => a.IsInRoleAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(true);
+            var adminUsers = new List<User>();
+            adminUsers.Add(UserData[1]);
+            adminUsers.Add(UserData[3]);
+
+            var labUsers = new List<User>();
+            labUsers.Add(UserData[1]);
+            labUsers.Add(UserData[2]);
+
+            var reportUsers = new List<User>();
+            reportUsers.Add(UserData[1]);
+            reportUsers.Add(UserData[4]);
+
+            MockUserManager.Setup(a => a.GetUsersInRoleAsync(RoleCodes.Admin)).ReturnsAsync(adminUsers);
+            MockUserManager.Setup(a => a.GetUsersInRoleAsync(RoleCodes.LabUser)).ReturnsAsync(labUsers);
+            MockUserManager.Setup(a => a.GetUsersInRoleAsync(RoleCodes.Reports)).ReturnsAsync(reportUsers);
+            
             
             // Act
             var controllerResult = await Controller.Index();
@@ -92,22 +106,49 @@ namespace Test.TestsController
             var viewResult = Assert.IsType<ViewResult>(controllerResult);
             var modelResult = Assert.IsType<List<UserRolesModel>>(viewResult.Model);
             modelResult.ShouldNotBeNull();
-            modelResult.Count.ShouldBe(5);
-            foreach (var userRolesModel in modelResult)
-            {
-                userRolesModel.IsAdmin.ShouldBeTrue();
-                userRolesModel.IsLabUser.ShouldBeTrue();
-                userRolesModel.IsReports.ShouldBeTrue();
-            }
+            modelResult.Count.ShouldBe(4);
+
+            var user = modelResult.SingleOrDefault(a => a.User.Id == UserData[1].Id);
+            user.ShouldNotBeNull();
+            user.IsAdmin.ShouldBeTrue();
+            user.IsLabUser.ShouldBeTrue();
+            user.IsReports.ShouldBeTrue();
+
+            user = modelResult.SingleOrDefault(a => a.User.Id == UserData[2].Id);
+            user.ShouldNotBeNull();
+            user.IsAdmin.ShouldBeFalse();
+            user.IsLabUser.ShouldBeTrue();
+            user.IsReports.ShouldBeFalse();
+
+            user = modelResult.SingleOrDefault(a => a.User.Id == UserData[3].Id);
+            user.ShouldNotBeNull();
+            user.IsAdmin.ShouldBeTrue();
+            user.IsLabUser.ShouldBeFalse();
+            user.IsReports.ShouldBeFalse();
+
+            user = modelResult.SingleOrDefault(a => a.User.Id == UserData[4].Id);
+            user.ShouldNotBeNull();
+            user.IsAdmin.ShouldBeFalse();
+            user.IsLabUser.ShouldBeFalse();
+            user.IsReports.ShouldBeTrue();
         }
 
-        [Fact(Skip = "Changing how these are done")]
+        [Fact]
         public async Task TestIndexReturnsViewWithExpectedResults2()
         {
-            // Arrange            
-            MockUserManager.Setup(a => a.IsInRoleAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(false);
-            MockUserManager.Setup(a => a.IsInRoleAsync(UserData[1], It.IsAny<string>())).ReturnsAsync(true);
-            MockUserManager.Setup(a => a.IsInRoleAsync(UserData[2], RoleCodes.Admin)).ReturnsAsync(true);
+            // Arrange
+            var adminUsers = new List<User>();
+
+            var labUsers = new List<User>();
+            labUsers.Add(UserData[2]);
+
+            var reportUsers = new List<User>();
+            reportUsers.Add(UserData[4]);
+
+            MockUserManager.Setup(a => a.GetUsersInRoleAsync(RoleCodes.Admin)).ReturnsAsync(adminUsers);
+            MockUserManager.Setup(a => a.GetUsersInRoleAsync(RoleCodes.LabUser)).ReturnsAsync(labUsers);
+            MockUserManager.Setup(a => a.GetUsersInRoleAsync(RoleCodes.Reports)).ReturnsAsync(reportUsers);
+
 
             // Act
             var controllerResult = await Controller.Index();
@@ -116,23 +157,25 @@ namespace Test.TestsController
             var viewResult = Assert.IsType<ViewResult>(controllerResult);
             var modelResult = Assert.IsType<List<UserRolesModel>>(viewResult.Model);
             modelResult.ShouldNotBeNull();
-            modelResult.Count.ShouldBe(5);
-            modelResult.Single(a => a.User.Id == UserData[1].Id).IsLabUser.ShouldBeTrue();
-            modelResult.Single(a => a.User.Id == UserData[1].Id).IsAdmin.ShouldBeTrue();
-            modelResult.Single(a => a.User.Id == UserData[1].Id).IsReports.ShouldBeTrue();
+            modelResult.Count.ShouldBe(2);
 
-            modelResult.Single(a => a.User.Id == UserData[2].Id).IsLabUser.ShouldBeFalse();
-            modelResult.Single(a => a.User.Id == UserData[2].Id).IsAdmin.ShouldBeTrue();
-            modelResult.Single(a => a.User.Id == UserData[2].Id).IsReports.ShouldBeFalse();
+            var user = modelResult.SingleOrDefault(a => a.User.Id == UserData[1].Id);
+            user.ShouldBeNull();
 
-            foreach (var ur in modelResult.Where(a => a.User.Id != UserData[1].Id && a.User.Id != UserData[2].Id).ToArray())
-            {
-                ur.IsReports.ShouldBeFalse();
-                ur.IsAdmin.ShouldBeFalse();
-                ur.IsLabUser.ShouldBeFalse();
-            }
+            user = modelResult.SingleOrDefault(a => a.User.Id == UserData[2].Id);
+            user.ShouldNotBeNull();
+            user.IsAdmin.ShouldBeFalse();
+            user.IsLabUser.ShouldBeTrue();
+            user.IsReports.ShouldBeFalse();
 
-            MockUserManager.Verify(a => a.IsInRoleAsync(It.IsAny<User>(), It.IsAny<string>()), Times.Exactly(15));
+            user = modelResult.SingleOrDefault(a => a.User.Id == UserData[3].Id);
+            user.ShouldBeNull();
+
+            user = modelResult.SingleOrDefault(a => a.User.Id == UserData[4].Id);
+            user.ShouldNotBeNull();
+            user.IsAdmin.ShouldBeFalse();
+            user.IsLabUser.ShouldBeFalse();
+            user.IsReports.ShouldBeTrue();
         }
         #endregion Index
 
