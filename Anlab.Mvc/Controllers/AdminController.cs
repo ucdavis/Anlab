@@ -35,7 +35,11 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> Index()
         {
             // TODO: find better way than super select
-            var usersInRoles = _dbContext.Users.Select(u => new UserRolesModel { User = u }).ToList();
+            var users = await _userManager.GetUsersInRoleAsync(RoleCodes.Admin);
+            users = users.Union(await _userManager.GetUsersInRoleAsync(RoleCodes.LabUser)).ToList();
+            users = users.Union(await _userManager.GetUsersInRoleAsync(RoleCodes.Reports)).ToList();
+
+            var usersInRoles = users.Select(u => new UserRolesModel { User = u }).ToList();
 
             foreach (var userRole in usersInRoles)
             {
@@ -46,6 +50,19 @@ namespace AnlabMvc.Controllers
             }
 
             return View(usersInRoles);
+        }
+        [Authorize(Roles = RoleCodes.Admin)]
+        [HttpPost]
+        public async Task<IActionResult> AddAminUser(string id)
+        {
+            var user = await _dbContext.Users.SingleOrDefaultAsync(a => a.NormalizedUserName == id.ToUpper().Trim());
+            if (user == null)
+            {
+                ErrorMessage = $"Email {id} not found";
+                return RedirectToAction("Index");
+            }
+
+            return RedirectToAction("EditAdmin", new {id = user.Id});
         }
 
         [Authorize(Roles = RoleCodes.Admin)]

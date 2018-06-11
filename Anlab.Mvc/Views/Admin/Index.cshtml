@@ -4,9 +4,26 @@
 @{
     ViewData["Title"] = "Admin Index";
 }
+
 <div class="col">
-<table id="table">
-    <thead>
+    <form asp-action="AddAminUser" method="post" asp-antiforgery="true">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-md-2 control-label">Email of user</label>
+                <div class="col-md-10">
+                    <input id="id" name="id" class="form-control" placeholder="Search Existing User"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Search" class="btn btn-default"/>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <table id="table">
+        <thead>
         <tr>
             <th></th>
             <th>Name</th>
@@ -15,37 +32,37 @@
             <th>Is Lab User</th>
             <th>Is Reports</th>
         </tr>
-    </thead>
-    <tbody>
-    @foreach (var user in Model)
-    {
-        <tr>
-            <td>
-                <a asp-action="EditAdmin" asp-route-id="@user.User.Id" class="btn btn-primary">Edit Roles</a>
-            </td>
-            <td>@user.User.Name</td>
-            <td>@user.User.Email</td>
-            <td>@user.IsAdmin</td>
-            <td>@user.IsLabUser</td>
-            <td>@user.IsReports</td>
-        </tr>
-    }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-action="EditAdmin" asp-route-id="@user.User.Id" class="btn btn-primary">Edit Roles</a>
+                </td>
+                <td>@user.User.Name</td>
+                <td>@user.User.Email</td>
+                <td>@user.IsAdmin</td>
+                <td>@user.IsLabUser</td>
+                <td>@user.IsReports</td>
+            </tr>
+        }
+        </tbody>
+    </table>
 </div>
-@section AdditionalStyles
-{
-    @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
-}
+    @section AdditionalStyles
+        {
+        @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+    }
 
-@section Scripts
-{
-    @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
-    <script type="text/javascript">
-        $(function () {
-            $("#table").dataTable({
-                "sorting": [[3, "desc"],[4,"desc"],[5,"desc"],[2,"asc"]]
+    @section Scripts
+        {
+        @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+        <script type="text/javascript">
+            $(function () {
+                $("#table").dataTable({
+                    "sorting": [[3, "desc"], [4, "desc"], [5, "desc"], [2, "asc"]]
+                });
             });
-        });
-    </script>
-}
+        </script>
+    }
