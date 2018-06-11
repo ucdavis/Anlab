@@ -43,7 +43,7 @@
                     <span data-toggle="tooltip" title='Pending: Created @message.CreatedAt.ToPacificTime().Format()'><i class="fa fa-refresh" aria-hidden="true"></i> Pending</span>
                 }
             </td>
-            <td>@message.Order.Id</td>
+            <td>@(message.Order != null ? message.Order.Id : 0)</td>
             <td>@message.SendTo.Replace(";", "; ")</td>
             <td>@message.Subject</td>
             <td>

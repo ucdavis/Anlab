@@ -102,7 +102,7 @@ namespace AnlabMvc.Controllers
             var user = await _dbContext.Users.SingleOrDefaultAsync(a => a.Id == id);
             if (user == null)
             {
-                ErrorMessage = "User Not Found";
+                ErrorMessage = "User Not Found.";
                 return RedirectToAction("ListClients");
             }
 
@@ -116,8 +116,13 @@ namespace AnlabMvc.Controllers
             var userToUpdate = await _dbContext.Users.SingleOrDefaultAsync(a => a.Id == id);
             if (userToUpdate == null)
             {
-                ErrorMessage = "User Not Found";
+                ErrorMessage = "User Not Found.";
                 return RedirectToAction("ListClients");
+            }
+
+            if (id != user.Id)
+            {
+                throw new Exception("User id did not match passed value.");
             }
             if (ModelState.IsValid)
             {
@@ -134,10 +139,14 @@ namespace AnlabMvc.Controllers
                 userToUpdate.BillingContactPhone = user.BillingContactPhone;
 
                 _dbContext.Update(userToUpdate);
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
+
+                Message = "User Updated.";
 
                 return RedirectToAction("ListClients");
             }
+
+            ErrorMessage = "The user had invalid data.";
 
             return View(user);
         }
