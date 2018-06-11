@@ -178,132 +178,77 @@ namespace Test.TestsController
     public class AdminControllerReflectionTests
     {
         private readonly ITestOutputHelper output;
+        public ControllerReflection ControllerReflection;
+
         public AdminControllerReflectionTests(ITestOutputHelper output)
         {
             this.output = output;
-        }
-        protected readonly Type ControllerClass = typeof(AdminController);
-
-        #region Controller Class Tests
-        [Fact]
-        public void TestControllerInheritsFromApplicationController()
-        {
-            #region Arrange
-            var controllerClass = ControllerClass.GetTypeInfo();
-            #endregion Arrange
-
-            #region Act
-            controllerClass.BaseType.ShouldNotBe(null);
-            var result = controllerClass.BaseType.Name;
-            #endregion Act
-
-            #region Assert
-            result.ShouldBe("ApplicationController");
-
-            #endregion Assert
+            ControllerReflection = new ControllerReflection(this.output, typeof(AdminController));
         }
 
         [Fact]
-        public void TestControllerExpectedNumberOfAttributes()
+        public void TestControllerClassAttributes()
         {
-            #region Arrange
-            var controllerClass = ControllerClass.GetTypeInfo();
-            #endregion Arrange
-
-            #region Act
-            var result = controllerClass.GetCustomAttributes(true);
-            #endregion Act
-
-            #region Assert
-            foreach (var o in result)
-            {
-                output.WriteLine(o.ToString()); //Output shows 
-            }
-            result.Count().ShouldBe(3);
-
-            #endregion Assert
+            ControllerReflection.ControllerInherits("ApplicationController");
+            var authAttribute = ControllerReflection.ClassExpectedAttribute<AuthorizeAttribute>(3);
+            authAttribute.ElementAt(0).Roles.ShouldBe($"{RoleCodes.Admin},{RoleCodes.LabUser}");
+            
+            ControllerReflection.ClassExpectedAttribute<AutoValidateAntiforgeryTokenAttribute>(3);
+            ControllerReflection.ClassExpectedAttribute<ControllerAttribute>(3);
         }
 
-        /// <summary>
-        /// #1
-        /// </summary>
         [Fact]
-        public void TestControllerHasControllerAttribute()
+        public void TestControllerMethodCount()
         {
-            #region Arrange
-            var controllerClass = ControllerClass.GetTypeInfo();
-            #endregion Arrange
-
-            #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<ControllerAttribute>();
-            #endregion Act
-
-            #region Assert
-            result.Count().ShouldBeGreaterThan(0, "ControllerAttribute not found.");
-
-            #endregion Assert
+            ControllerReflection.ControllerPublicMethods(9);
         }
 
-        /// <summary>
-        /// #2
-        /// </summary>
         [Fact]
-        public void TestControllerHasAuthorizeAttribute()
+        public void TestControllerMethodAttributes()
         {
-            #region Arrange
-            var controllerClass = ControllerClass.GetTypeInfo();
-            #endregion Arrange
 
-            #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
-            #endregion Act
+#if DEBUG
+            var countAdjustment = 1;
+#else
+            var countAdjustment = 0;
+#endif
+            //1
+            var indexAuth = ControllerReflection.MethodExpectedAttribute<AuthorizeAttribute>("Index", 2 + countAdjustment, "Index-1", false, showListOfAttributes: false);
+            indexAuth.ElementAt(0).Roles.ShouldBe(RoleCodes.Admin);
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Index", 2 + countAdjustment, "Index-1", false, showListOfAttributes: false);
 
-            #region Assert
-            result.Count().ShouldBeGreaterThan(0, "AuthorizeAttribute not found.");
-            result.ElementAt(0).Roles.ShouldBe($"{RoleCodes.Admin},{RoleCodes.LabUser}");
-            #endregion Assert
+            //2
+            var searchAminUserAuth = ControllerReflection.MethodExpectedAttribute<AuthorizeAttribute>("SearchAminUser", 3 + countAdjustment, "SearchAminUser-1", false, showListOfAttributes: false);
+            searchAminUserAuth.ElementAt(0).Roles.ShouldBe(RoleCodes.Admin);
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("SearchAminUser", 3 + countAdjustment, "SearchAminUser-2", false, showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<HttpGetAttribute>("SearchAminUser", 3 + countAdjustment, "SearchAminUser-3", false, showListOfAttributes: false);
+
+            //3
+            var editAdminAminUserAuth = ControllerReflection.MethodExpectedAttribute<AuthorizeAttribute>("EditAdmin", 3 + countAdjustment, "EditAdmin-1", false, showListOfAttributes: false);
+            editAdminAminUserAuth.ElementAt(0).Roles.ShouldBe(RoleCodes.Admin);
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("SearchAminUser", 3 + countAdjustment, "EditAdmin-2", false, showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<HttpGetAttribute>("EditAdmin", 3 + countAdjustment, "EditAdmin-3", false, showListOfAttributes: false);
+
+            //4
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("ListClients", 1 + countAdjustment, "ListClients-1", false, showListOfAttributes: false);
+
+            //5 & 6
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("EditUser", 1 + countAdjustment, "EditUserGet-1", false, showListOfAttributes: false);
+
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("EditUser", 2 + countAdjustment, "EditUserPost-1", true, showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("EditUser", 2 + countAdjustment, "EditUserPost-2", true, showListOfAttributes: false);
+
+            //7
+            var addUserToRoleAuth = ControllerReflection.MethodExpectedAttribute<AuthorizeAttribute>("AddUserToRole", 3 + countAdjustment, "AddUserToRole-1", false, showListOfAttributes: false);
+            addUserToRoleAuth.ElementAt(0).Roles.ShouldBe(RoleCodes.Admin);
+            ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("AddUserToRole", 3 + countAdjustment, "AddUserToRole-2", false, showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("AddUserToRole", 3 + countAdjustment, "AddUserToRole-3", false, showListOfAttributes: false);
+
+            //8 
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("MailQueue", 1 + countAdjustment, "MailQueue-1", false, showListOfAttributes: false);
+
+            //9
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("ViewMessage", 1 + countAdjustment, "ViewMessage-1", false, showListOfAttributes: false);
         }
-
-        /// <summary>
-        /// #3
-        /// </summary>
-        [Fact]
-        public void TestControllerHasAutoValidateAntiforgeryTokenAttribute()
-        {
-            #region Arrange
-            var controllerClass = ControllerClass.GetTypeInfo();
-            #endregion Arrange
-
-            #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<AutoValidateAntiforgeryTokenAttribute>();
-            #endregion Act
-
-            #region Assert
-            result.Count().ShouldBeGreaterThan(0, "AutoValidateAntiforgeryTokenAttribute not found.");
-
-            #endregion Assert
-        }
-        #endregion Controller Class Tests
-
-        #region Controller Method Tests
-
-        [Fact]//(Skip = "Tests are still being written. When done, remove this line.")]
-        public void TestControllerContainsExpectedNumberOfPublicMethods()
-        {
-            #region Arrange
-            var controllerClass = ControllerClass;
-            #endregion Arrange
-
-            #region Act
-            var result = controllerClass.GetMethods().Where(a => a.DeclaringType == controllerClass);
-            #endregion Act
-
-            #region Assert
-            result.Count().ShouldBe(10);
-
-            #endregion Assert
-        }
-
-        #endregion Controller Method Tests
     }
 }
