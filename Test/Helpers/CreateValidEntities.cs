@@ -69,6 +69,7 @@ namespace Test.Helpers
 
             if (populateAllFields)
             {
+                rtValue.NormalizedUserName = $"NormalizedUserName{counter}";
                 rtValue.ClientId = string.Format("ClientId{0}", counter);
                 rtValue.Phone = string.Format("Phone{0}", counter);
                 rtValue.Account = string.Format("Account{0}", counter);

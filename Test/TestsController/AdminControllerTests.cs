@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
@@ -15,6 +17,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using Shouldly;
@@ -34,6 +37,7 @@ namespace Test.TestsController
         public Mock<FakeUserManager> MockUserManager { get; set; }
 
         public Mock<FakeRoleManager> MockRolemanager { get; set; }
+        public Mock<ClaimsPrincipal> MockClaimsPrincipal { get; set; }
 
         //Setup Data
         public List<User> UserData { get; set; }
@@ -50,6 +54,8 @@ namespace Test.TestsController
             MockUserManager = new Mock<FakeUserManager>();
             MockRolemanager = new Mock<FakeRoleManager>();
 
+            MockClaimsPrincipal = new Mock<ClaimsPrincipal>();
+
 
             var mockDataProvider = new Mock<SessionStateTempDataProvider>();
 
@@ -62,9 +68,20 @@ namespace Test.TestsController
                 UserData.Add(user);
             }
 
+            var userIdent = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, UserData[2].Id),
+            }));
+
 
             //Setups
             MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);
+
+            MockClaimsPrincipal.Setup(a => a.Claims).Returns(userIdent.Claims);
+            MockClaimsPrincipal.Setup(a => a.IsInRole(RoleCodes.Admin)).Returns(false);
+            MockClaimsPrincipal.Setup(a => a.FindFirst(It.IsAny<string>())).Returns(new Claim(ClaimTypes.NameIdentifier, UserData[3].Id));
+
+            MockHttpContext.Setup(m => m.User).Returns(MockClaimsPrincipal.Object);
 
             Controller = new AdminController(MockDbContext.Object, MockUserManager.Object, MockRolemanager.Object)
             {
@@ -286,9 +303,273 @@ namespace Test.TestsController
 
             MockUserManager.Verify(a => a.IsInRoleAsync(UserData[1], It.IsAny<string>()), Times.Exactly(3));
         }
-        
+
 
         #endregion EditAdmin
+
+        #region ListClients
+
+        [Fact]
+        public async Task TestListClientsReturnsView()
+        {
+            // Arrange
+            
+            // Act
+            var controllerResult = await Controller.ListClients();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<List<User>>(viewResult.Model);
+
+            modelResult.ShouldNotBeNull();
+            modelResult.Count.ShouldBe(5);
+        }
+
+
+        #endregion Description
+
+        #region EditUser
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData("xxx")]
+        public async Task TestEditUserGetRedirectsWhenUserNotFound(string value)
+        {
+            // Arrange
+            
+            // Act
+            var controllerResult = await Controller.EditUser(value);
+
+            // Assert
+            var redrectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redrectResult.ActionName.ShouldBe("ListClients");
+            redrectResult.ControllerName.ShouldBeNull();
+
+            Controller.ErrorMessage.ShouldBe("User Not Found.");
+        }
+
+        [Fact]
+        public async Task TestEditUserGetReturnsView()
+        {
+            // Arrange
+
+            // Act
+            var controllerResult = await Controller.EditUser(UserData[1].Id);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<User>(viewResult.Model);
+            modelResult.ShouldNotBeNull();
+            modelResult.Id.ShouldBe(UserData[1].Id);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData("xxx")]
+        public async Task TestEditUserPostRedirectsWhenUserNotFound(string value)
+        {
+            // Arrange
+
+            // Act
+            var controllerResult = await Controller.EditUser(value, CreateValidEntities.User(7));
+
+            // Assert
+            var redrectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redrectResult.ActionName.ShouldBe("ListClients");
+            redrectResult.ControllerName.ShouldBeNull();
+
+            Controller.ErrorMessage.ShouldBe("User Not Found.");
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+            MockDbContext.Verify(a => a.Update(It.IsAny<User>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task TestEditUserPostThrowsExceptionIfIdDoesNotMatch()
+        {
+            // Arrange
+            var model = CreateValidEntities.User(7);
+            //model.Id = UserData[1].Id;
+            Controller.ModelState.AddModelError("Fake", "Fake Error");
+
+            // Act
+            var ex = await Assert.ThrowsAsync<Exception>(async () => await Controller.EditUser(UserData[1].Id, model));
+
+            // Assert
+            ex.ShouldNotBeNull();
+            ex.Message.ShouldBe("User id did not match passed value.");
+        }
+
+        [Fact]
+        public async Task TestEditUserPostReturnsViewIfModelStateInvalid()
+        {
+            // Arrange
+            var model = CreateValidEntities.User(7);
+            model.Id = UserData[1].Id;
+            Controller.ModelState.AddModelError("Fake", "Fake Error");
+
+            // Act
+            var controllerResult = await Controller.EditUser(UserData[1].Id, model);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<User>(viewResult.Model);
+            modelResult.ShouldNotBeNull();
+            modelResult.Id.ShouldBe(UserData[1].Id);
+
+            Controller.ErrorMessage.ShouldBe("The user had invalid data.");
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+            MockDbContext.Verify(a => a.Update(It.IsAny<User>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task TestEditUserPostSavesExpectedFields()
+        {
+            // Arrange
+            var model = CreateValidEntities.User(7, true);
+            model.Id = UserData[1].Id;
+
+            // Act
+            var controllerResult = await Controller.EditUser(UserData[1].Id, model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ShouldNotBeNull();
+            redirectResult.ActionName.ShouldBe("ListClients");
+            redirectResult.ControllerName.ShouldBeNull();
+
+            Controller.ErrorMessage.ShouldBeNull();
+            Controller.Message.ShouldBe("User Updated.");
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+            MockDbContext.Verify(a => a.Update(UserData[1]), Times.Once);
+
+            //Fields
+            UserData[1].FirstName.ShouldBe("FirstName7");
+            UserData[1].LastName.ShouldBe("LastName7");
+            UserData[1].Name.ShouldBe("FirstName7 LastName7");
+            UserData[1].Phone.ShouldBe("Phone7");
+            UserData[1].Account.ShouldBe("ACCOUNT7");
+            UserData[1].ClientId.ShouldBe("CLIENTID7");
+            UserData[1].CompanyName.ShouldBe("CompanyName7");
+            UserData[1].BillingContactName.ShouldBe("BillingContactName7");
+            UserData[1].BillingContactAddress.ShouldBe("BillingContactAddress7");
+            UserData[1].BillingContactEmail.ShouldBe("BillingContactEmail7@test.com");
+            UserData[1].BillingContactPhone.ShouldBe("BillingContactPhone7");
+
+            UserData[1].NormalizedUserName.ShouldBe("NormalizedUserName2"); //Unchanged
+        }
+
+        #endregion EditUser
+
+        #region AddUserToRole
+
+        [Theory]
+        [InlineData(RoleCodes.Admin, true)]
+        [InlineData(RoleCodes.Admin, false)]
+        [InlineData(RoleCodes.LabUser, true)]
+        [InlineData(RoleCodes.LabUser, false)]
+        [InlineData(RoleCodes.Reports, true)]
+        [InlineData(RoleCodes.Reports, false)]
+        public async Task TestAddUserToRoleThrowsExceptionWhenUserNotFound(string role, bool add)
+        {
+            // Arrange
+            
+            // Act
+            var ex = await Assert.ThrowsAsync<InvalidOperationException>(async () => await Controller.AddUserToRole("xxx", role, add));
+
+            // Assert
+            ex.ShouldNotBeNull();
+            ex.Message.ShouldBe("Sequence contains no matching element");
+
+            MockUserManager.Verify(a => a.AddToRoleAsync(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
+            MockUserManager.Verify(a => a.RemoveFromRoleAsync(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Theory]
+        [InlineData(RoleCodes.Admin)]
+        [InlineData(RoleCodes.LabUser)]
+        [InlineData(RoleCodes.Reports)]
+        public async Task TestAddUserToRoleWhenAdd(string role)
+        {
+            // Arrange
+            
+
+            // Act
+            var controllerResult = await Controller.AddUserToRole(UserData[1].Id, role, true);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ShouldNotBeNull();
+            redirectResult.ActionName.ShouldBe("EditAdmin");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(UserData[1].Id);
+
+            MockUserManager.Verify(a => a.AddToRoleAsync(UserData[1], role), Times.Once);
+            MockUserManager.Verify(a => a.RemoveFromRoleAsync(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
+
+            Controller.ErrorMessage.ShouldBeNull();
+        }
+
+        [Theory]
+        [InlineData(RoleCodes.Admin)]
+        [InlineData(RoleCodes.LabUser)]
+        [InlineData(RoleCodes.Reports)]
+        public async Task TestAddUserToRoleWhenRemoveOwnRole(string role)
+        {
+            // Arrange
+            //UserData[3] is configured above to be the CurrentUser
+
+
+            // Act
+            var controllerResult = await Controller.AddUserToRole(UserData[3].Id, role, false);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ShouldNotBeNull();
+            redirectResult.ActionName.ShouldBe("Index");
+            redirectResult.ControllerName.ShouldBeNull();
+
+            Controller.ErrorMessage.ShouldBe("Can't remove your own permissions.");
+
+            MockUserManager.Verify(a => a.AddToRoleAsync(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
+            MockUserManager.Verify(a => a.RemoveFromRoleAsync(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
+
+        }
+
+        [Theory]
+        [InlineData(RoleCodes.Admin)]
+        [InlineData(RoleCodes.LabUser)]
+        [InlineData(RoleCodes.Reports)]
+        public async Task TestAddUserToRoleWhenRemoveOtherRole(string role)
+        {
+            // Arrange
+            //UserData[3] is configured above to be the CurrentUser
+
+
+            // Act
+            var controllerResult = await Controller.AddUserToRole(UserData[2].Id, role, false);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ShouldNotBeNull();
+            redirectResult.ActionName.ShouldBe("EditAdmin");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(UserData[2].Id);
+
+            Controller.ErrorMessage.ShouldBeNull();
+
+            MockUserManager.Verify(a => a.AddToRoleAsync(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
+            MockUserManager.Verify(a => a.RemoveFromRoleAsync(UserData[2], role), Times.Once);
+
+        }
+
+        #endregion AddUserToRole
     }
 
     [Trait("Category", "Controller Reflection")]
