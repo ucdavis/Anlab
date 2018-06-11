@@ -34,27 +34,32 @@ namespace AnlabMvc.Controllers
         [Authorize(Roles = RoleCodes.Admin)]
         public async Task<IActionResult> Index()
         {
-            // TODO: find better way than super select
-            var users = await _userManager.GetUsersInRoleAsync(RoleCodes.Admin);
-            users = users.Union(await _userManager.GetUsersInRoleAsync(RoleCodes.LabUser)).ToList();
-            users = users.Union(await _userManager.GetUsersInRoleAsync(RoleCodes.Reports)).ToList();
+            var adminUsers = await _userManager.GetUsersInRoleAsync(RoleCodes.Admin);
+            var labUsers = await _userManager.GetUsersInRoleAsync(RoleCodes.LabUser);
+            var reportUsers = await _userManager.GetUsersInRoleAsync(RoleCodes.Reports);
 
-            var usersInRoles = users.Select(u => new UserRolesModel { User = u }).ToList();
+            var users = adminUsers.Union(labUsers).Union(reportUsers);
 
-            foreach (var userRole in usersInRoles)
+            var usersInRoles = users.Select(u => new UserRolesModel
             {
-
-                userRole.IsAdmin = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.Admin);
-                userRole.IsLabUser = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.LabUser);
-                userRole.IsReports = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.Reports);
-            }
+                User = u,
+                IsAdmin = adminUsers.Contains(u),
+                IsReports = reportUsers.Contains(u),
+                IsLabUser = labUsers.Contains(u)
+            }).ToList();
 
             return View(usersInRoles);
         }
+
         [Authorize(Roles = RoleCodes.Admin)]
-        [HttpPost]
-        public async Task<IActionResult> AddAminUser(string id)
+        [HttpGet]
+        public async Task<IActionResult> SearchAminUser(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                ErrorMessage = "Nothing entered to search.";
+                return RedirectToAction("Index");
+            }
             var user = await _dbContext.Users.SingleOrDefaultAsync(a => a.NormalizedUserName == id.ToUpper().Trim());
             if (user == null)
             {

@@ -78,7 +78,7 @@ namespace Test.TestsController
 
         #region Index
         
-        [Fact]
+        [Fact(Skip = "Changing how these are done")]
         public async Task TestIndexReturnsViewWithExpectedResults1()
         {
             // Arrange
@@ -101,7 +101,7 @@ namespace Test.TestsController
             }
         }
 
-        [Fact]
+        [Fact(Skip = "Changing how these are done")]
         public async Task TestIndexReturnsViewWithExpectedResults2()
         {
             // Arrange            
@@ -299,7 +299,7 @@ namespace Test.TestsController
             #endregion Act
 
             #region Assert
-            result.Count().ShouldBe(9);
+            result.Count().ShouldBe(10);
 
             #endregion Assert
         }

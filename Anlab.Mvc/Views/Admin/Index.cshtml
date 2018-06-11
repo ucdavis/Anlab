@@ -6,12 +6,12 @@
 }
 
 <div class="col">
-    <form asp-action="AddAminUser" method="post" asp-antiforgery="true">
+    <form asp-action="SearchAminUser" method="get" asp-antiforgery="true">
         <div class="form-horizontal">
             <div class="form-group">
                 <label class="col-md-2 control-label">Email of user</label>
                 <div class="col-md-10">
-                    <input id="id" name="id" class="form-control" placeholder="Search Existing User"/>
+                    <input id="id" name="id" class="form-control" placeholder="Search Existing User To Add"/>
                 </div>
             </div>
             <div class="form-group">
@@ -41,7 +41,13 @@
                     <a asp-action="EditAdmin" asp-route-id="@user.User.Id" class="btn btn-primary">Edit Roles</a>
                 </td>
                 <td>@user.User.Name</td>
-                <td>@user.User.Email</td>
+                <td>
+                    @user.User.Email
+                    @if (user.User.Email.ToLower() != user.User.NormalizedUserName.ToLower())
+                    {
+                        <span> (@user.User.NormalizedUserName.ToLower())</span>
+                    }
+                </td>
                 <td>@user.IsAdmin</td>
                 <td>@user.IsLabUser</td>
                 <td>@user.IsReports</td>
