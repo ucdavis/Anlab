@@ -22,31 +22,52 @@ namespace AnlabMvc.Controllers
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IOrderService _orderService;
 
-        public AdminController(ApplicationDbContext dbContext, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IOrderService orderService)
+
+        public AdminController(ApplicationDbContext dbContext, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
             _dbContext = dbContext;
             _userManager = userManager;
             _roleManager = roleManager;
-            _orderService = orderService;
         }
 
         [Authorize(Roles = RoleCodes.Admin)]
         public async Task<IActionResult> Index()
         {
-            // TODO: find better way than super select
-            var usersInRoles = _dbContext.Users.Select(u => new UserRolesModel { User = u }).ToList();
+            var adminUsers = await _userManager.GetUsersInRoleAsync(RoleCodes.Admin);
+            var labUsers = await _userManager.GetUsersInRoleAsync(RoleCodes.LabUser);
+            var reportUsers = await _userManager.GetUsersInRoleAsync(RoleCodes.Reports);
 
-            foreach (var userRole in usersInRoles)
+            var users = adminUsers.Union(labUsers).Union(reportUsers);
+
+            var usersInRoles = users.Select(u => new UserRolesModel
             {
-
-                userRole.IsAdmin = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.Admin);
-                userRole.IsLabUser = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.LabUser);
-                userRole.IsReports = await _userManager.IsInRoleAsync(userRole.User, RoleCodes.Reports);
-            }
+                User = u,
+                IsAdmin = adminUsers.Contains(u),
+                IsReports = reportUsers.Contains(u),
+                IsLabUser = labUsers.Contains(u)
+            }).ToList();
 
             return View(usersInRoles);
+        }
+
+        [Authorize(Roles = RoleCodes.Admin)]
+        [HttpGet]
+        public async Task<IActionResult> SearchAdminUser(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                ErrorMessage = "Nothing entered to search.";
+                return RedirectToAction("Index");
+            }
+            var user = await _dbContext.Users.SingleOrDefaultAsync(a => a.NormalizedUserName == id.ToUpper().Trim());
+            if (user == null)
+            {
+                ErrorMessage = $"Email {id} not found.";
+                return RedirectToAction("Index");
+            }
+
+            return RedirectToAction("EditAdmin", new {id = user.Id});
         }
 
         [Authorize(Roles = RoleCodes.Admin)]
@@ -54,7 +75,11 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> EditAdmin(string id)
         {
             var model = new UserRolesModel();
-            model.User = _dbContext.Users.Single(a => a.Id == id);
+            model.User = _dbContext.Users.SingleOrDefault(a => a.Id == id);
+            if (model.User == null)
+            {
+                return NotFound();
+            }
             model.IsAdmin = await _userManager.IsInRoleAsync(model.User, RoleCodes.Admin);
             model.IsLabUser = await _userManager.IsInRoleAsync(model.User, RoleCodes.LabUser);
             model.IsReports = await _userManager.IsInRoleAsync(model.User, RoleCodes.Reports);
@@ -62,6 +87,7 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
+        //Admin and Lab User Access
         public async Task<IActionResult> ListClients()
         {
             // TODO: filter out admin and lab users
@@ -70,26 +96,33 @@ namespace AnlabMvc.Controllers
             return View(users);
         }
 
-        public IActionResult EditUser(string id)
+        //Admin and Lab User Access
+        public async Task<IActionResult> EditUser(string id)
         {
-            var user = _dbContext.Users.SingleOrDefault(a => a.Id == id);
+            var user = await _dbContext.Users.SingleOrDefaultAsync(a => a.Id == id);
             if (user == null)
             {
-                ErrorMessage = "User Not Found";
+                ErrorMessage = "User Not Found.";
                 return RedirectToAction("ListClients");
             }
 
             return View(user);
         }
 
+        //Admin and Lab User Access
         [HttpPost]
-        public IActionResult EditUser(string id, User user)
+        public async Task<IActionResult> EditUser(string id, User user)
         {
-            var userToUpdate = _dbContext.Users.SingleOrDefault(a => a.Id == id);
+            var userToUpdate = await _dbContext.Users.SingleOrDefaultAsync(a => a.Id == id);
             if (userToUpdate == null)
             {
-                ErrorMessage = "User Not Found";
+                ErrorMessage = "User Not Found.";
                 return RedirectToAction("ListClients");
+            }
+
+            if (id != user.Id)
+            {
+                throw new Exception("User id did not match passed value.");
             }
             if (ModelState.IsValid)
             {
@@ -106,10 +139,14 @@ namespace AnlabMvc.Controllers
                 userToUpdate.BillingContactPhone = user.BillingContactPhone;
 
                 _dbContext.Update(userToUpdate);
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
+
+                Message = "User Updated.";
 
                 return RedirectToAction("ListClients");
             }
+
+            ErrorMessage = "The user had invalid data.";
 
             return View(user);
         }
@@ -118,7 +155,7 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUserToRole(string userId, string role, bool add)
         {
-            var user = _dbContext.Users.Single(a => a.Id == userId);
+            var user = await _dbContext.Users.SingleAsync(a => a.Id == userId);
             if (add)
             {
                 await _userManager.AddToRoleAsync(user, role);
@@ -136,12 +173,12 @@ namespace AnlabMvc.Controllers
             return RedirectToAction("EditAdmin", new {id=user.Id});
         }
 
-        [Authorize(Roles =  RoleCodes.Admin)]
-        public async Task<IActionResult> CreateRole(string role) //TODO: Remove after role created
-        {
-            await _roleManager.CreateAsync(new IdentityRole(role));
-            return Content($"Added {role} Role");
-        }
+        //[Authorize(Roles =  RoleCodes.Admin)] //Enable if we need to add roles
+        //public async Task<IActionResult> CreateRole(string role) 
+        //{
+        //    await _roleManager.CreateAsync(new IdentityRole(role));
+        //    return Content($"Added {role} Role");
+        //}
 
         public async Task<IActionResult> MailQueue(int? id = null)
         {
@@ -162,10 +199,13 @@ namespace AnlabMvc.Controllers
             return View(messages);
         }
 
-        public IActionResult ViewMessage(int id)
+        public async Task<IActionResult> ViewMessage(int id)
         {
-
-            var message = _dbContext.MailMessages.AsNoTracking().SingleOrDefault(x => x.Id == id);
+            var message = await _dbContext.MailMessages.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
+            if (message == null)
+            {
+                return NotFound();
+            }
             return View(message);
         }
     }

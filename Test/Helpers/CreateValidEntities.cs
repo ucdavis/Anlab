@@ -69,6 +69,7 @@ namespace Test.Helpers
 
             if (populateAllFields)
             {
+                rtValue.NormalizedUserName = $"NormalizedUserName{counter}";
                 rtValue.ClientId = string.Format("ClientId{0}", counter);
                 rtValue.Phone = string.Format("Phone{0}", counter);
                 rtValue.Account = string.Format("Account{0}", counter);
@@ -84,6 +85,26 @@ namespace Test.Helpers
 
             return rtValue;
 
+        }
+
+        public static MailMessage MailMessage(int? counter, bool populateAllFields = false)
+        {
+            var rtValue = new MailMessage();
+            rtValue.SendTo = $"SendTo{counter}";
+            rtValue.Subject = $"Subject{counter}";
+            rtValue.Body = $"Body{counter}";
+            
+            if (populateAllFields)
+            {
+                rtValue.Sent = true;
+                rtValue.FailureReason = $"FailureReason{counter}";
+                rtValue.SentAt = DateTime.Now;
+            }
+
+
+            rtValue.Id = counter ?? 99;
+
+            return rtValue;
         }
 
         public static TestItemModel TestItemModel(int? counter, bool populateAllFields = false)

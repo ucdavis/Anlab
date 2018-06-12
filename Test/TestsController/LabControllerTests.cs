@@ -1544,6 +1544,7 @@ namespace Test.TestsController
         {
             // Arrange
             OrderData[1].Status = value;
+            OrderData[1].AdditionalEmails = "1@2.com;test@3.com";
             // Act
             var controllerResult = await Controller.OverrideOrder(OrderData[1].Id);
 
@@ -1555,6 +1556,7 @@ namespace Test.TestsController
             modelResult.OrderReviewModel.OrderDetails.ShouldNotBeNull();
             modelResult.OrderReviewModel.HideLabDetails.ShouldBeFalse();
             modelResult.IsDeleted.ShouldBe(OrderData[1].Paid);
+            modelResult.Emails.ShouldBe("1@2.com;test@3.com");
             modelResult.Paid.ShouldBe(OrderData[1].Paid);
             modelResult.Status.ShouldBe(value);
         }
@@ -1724,20 +1726,269 @@ namespace Test.TestsController
             MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
             MockFileStorageService.Verify(a => a.UploadFile(model.UploadFile), Times.Once);            
         }
+
+        [Fact]
+        public async Task OverrideOrderPostRedirectsWithErrorWhenEmailsInvalid()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Finalized;
+            OrderData[1].AdditionalEmails = "Fake";
+            var model = new OverrideOrderModel();
+            model.Status = OrderData[1].Status;
+            model.Emails = "j@j.com;bad@1@com;test2@test.com>";
+
+            model.UploadFile = MockFormFile.Object;
+            MockFileStorageService.Setup(a => a.UploadFile(model.UploadFile)).ReturnsAsync("FakeFileId");
+
+
+            // Act
+            var controllerResult = await Controller.OverrideOrder(OrderData[1].Id, model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("OverrideOrder");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(2);
+
+            Controller.ErrorMessage.ShouldBe("Invalid email detected: bad@1@com");
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public async Task TestOverrideOrderPostClearsEmails(string value)
+        {
+            // Arrange
+
+            OrderData[1].Status = OrderStatusCodes.Finalized;
+            OrderData[1].ResultsFileIdentifier = "NotChanged";
+            OrderData[1].AdditionalEmails = "fake@test.com";
+            var model = new OverrideOrderModel();
+            model.Emails = value;
+            model.Status = OrderData[1].Status;
+            model.UploadFile = MockFormFile.Object;
+            MockFileStorageService.Setup(a => a.UploadFile(model.UploadFile)).ReturnsAsync("FakeFileId");
+
+
+
+            // Act
+            var controllerResult = await Controller.OverrideOrder(OrderData[1].Id, model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Details");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(2);
+
+            OrderData[1].ResultsFileIdentifier.ShouldBe("FakeFileId");
+            OrderData[1].AdditionalEmails.ShouldBe(string.Empty);
+
+            Controller.ErrorMessage.ShouldBeNull();
+            Controller.Message.ShouldBe("Order Updated");
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+            MockFileStorageService.Verify(a => a.UploadFile(model.UploadFile), Times.Once);
+        }
+
+        [Theory]
+        [InlineData("t1@t.com")]
+        [InlineData("t1@T.com")]
+        [InlineData("t1@t.com;TEST@test.com;Bahahah@t.eu")]
+        public async Task TestOverrideOrderPostSavesEmails1(string value)
+        {
+            // Arrange
+
+            OrderData[1].Status = OrderStatusCodes.Finalized;
+            OrderData[1].ResultsFileIdentifier = "NotChanged";
+            OrderData[1].AdditionalEmails = "fake@test.com";
+            var model = new OverrideOrderModel();
+            model.Emails = value;
+            model.Status = OrderData[1].Status;
+            model.UploadFile = MockFormFile.Object;
+            MockFileStorageService.Setup(a => a.UploadFile(model.UploadFile)).ReturnsAsync("FakeFileId");
+
+
+
+            // Act
+            var controllerResult = await Controller.OverrideOrder(OrderData[1].Id, model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Details");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(2);
+
+            OrderData[1].ResultsFileIdentifier.ShouldBe("FakeFileId");
+            OrderData[1].AdditionalEmails.ShouldBe(value.ToLower());
+
+            Controller.ErrorMessage.ShouldBeNull();
+            Controller.Message.ShouldBe("Order Updated");
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+            MockFileStorageService.Verify(a => a.UploadFile(model.UploadFile), Times.Once);
+        }
+
+        [Fact]
+        public async Task TestOverrideOrderPostSavesEmails2()
+        {
+            // Arrange
+
+            OrderData[1].Status = OrderStatusCodes.Finalized;
+            OrderData[1].ResultsFileIdentifier = "NotChanged";
+            OrderData[1].AdditionalEmails = "fake@test.com";
+            var model = new OverrideOrderModel();
+            model.Emails = "test1@test.com;dup1@test.com;DUP1@test.com;dup2@TEST.com;dup2@test.COM";
+            model.Status = OrderData[1].Status;
+            model.UploadFile = MockFormFile.Object;
+            MockFileStorageService.Setup(a => a.UploadFile(model.UploadFile)).ReturnsAsync("FakeFileId");
+
+
+
+            // Act
+            var controllerResult = await Controller.OverrideOrder(OrderData[1].Id, model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Details");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(2);
+
+            OrderData[1].ResultsFileIdentifier.ShouldBe("FakeFileId");
+            OrderData[1].AdditionalEmails.ShouldBe("test1@test.com;dup1@test.com;dup2@test.com");
+
+            Controller.ErrorMessage.ShouldBeNull();
+            Controller.Message.ShouldBe("Order Updated");
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+            MockFileStorageService.Verify(a => a.UploadFile(model.UploadFile), Times.Once);
+        }
+
         #endregion OverrideOrder
 
-        [Fact(Skip = "Reminder to test the rest")]
-        public void TestTheRestReminder()
+        #region Search
+
+        [Fact]
+        public void TestSearchGetReturnsView()
+        {
+            // Arrange
+            
+            // Act
+            var controllerResult = Controller.Search();
+
+            // Assert
+            Assert.IsType<ViewResult>(controllerResult);
+        }
+
+        [Fact]
+        public async Task TestSearchPostRedirectsWhenNotFound()
+        {
+            // Arrange
+            
+            // Act
+            var controllerResult = await Controller.Search("99");
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Search");
+            redirectResult.ControllerName.ShouldBeNull();
+
+            Controller.ErrorMessage.ShouldBe("Order Not Found");
+        }
+
+        [Theory]
+        [InlineData("2", 2)]
+        [InlineData("3", 3)]
+        public async Task TestTestSearchRedirectsToDetailsWhenFound1(string value, int expectedOrderId)
+        {
+            // Arrange
+
+            // Act
+            var controllerResult = await Controller.Search(value);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Details");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(expectedOrderId);
+
+            Controller.ErrorMessage.ShouldBeNull();
+        }
+        [Theory]
+        [InlineData(2)]
+        [InlineData(3)]
+        public async Task TestTestSearchRedirectsToDetailsWhenFound2(int value)
+        {
+            // Arrange
+
+            // Act
+            var controllerResult = await Controller.Search(SpecificGuid.GetGuid(value).ToString());
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Details");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(value);
+
+            Controller.ErrorMessage.ShouldBeNull();
+        }
+
+        [Theory]
+        [InlineData("Fake123")]
+        [InlineData("Fake124")]
+        [InlineData("FAKE124")]
+        public async Task TestTestSearchRedirectsToDetailsWhenFound3(string value)
+        {
+            // Arrange
+            OrderData[1].RequestNum = value.ToUpper();
+
+            // Act
+            var controllerResult = await Controller.Search(value);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
+            redirectResult.ActionName.ShouldBe("Details");
+            redirectResult.ControllerName.ShouldBeNull();
+            redirectResult.RouteValues["id"].ShouldBe(2);
+
+            Controller.ErrorMessage.ShouldBeNull();
+        }
+
+        #endregion Search
+
+        #region JsonDetails
+
+        [Fact]
+        public async Task TestJsonDetailsReturnsNotFound()
         {
             // Arrange
             
 
 
             // Act
+            var controllerResult = await Controller.JsonDetails(9);
 
-
-            // Assert		
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
         }
+
+        [Fact]
+        public async Task TestJsonDetailsReturnsView()
+        {
+            // Arrange
+            
+            
+            // Act
+            var controllerResult = await Controller.JsonDetails(2);
+
+            // Assert
+            var jsonResult = Assert.IsType<JsonResult>(controllerResult);
+            var details = Assert.IsType<OrderDetails>(jsonResult.Value);
+            details.ClientInfo.ClientId.ShouldBe("ClientId2");
+        }
+        #endregion JsonDetails
     }
 
     [Trait("Category", "Controller Reflection")]
