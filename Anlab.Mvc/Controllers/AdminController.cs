@@ -201,8 +201,11 @@ namespace AnlabMvc.Controllers
 
         public async Task<IActionResult> ViewMessage(int id)
         {
-
             var message = await _dbContext.MailMessages.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
+            if (message == null)
+            {
+                return NotFound();
+            }
             return View(message);
         }
     }
