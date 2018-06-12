@@ -53,7 +53,7 @@ namespace AnlabMvc.Controllers
 
         [Authorize(Roles = RoleCodes.Admin)]
         [HttpGet]
-        public async Task<IActionResult> SearchAminUser(string id)
+        public async Task<IActionResult> SearchAdminUser(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {

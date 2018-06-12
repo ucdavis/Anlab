@@ -196,18 +196,18 @@ namespace Test.TestsController
         }
         #endregion Index
 
-        #region SearchAminUser
+        #region SearchAdminUser
 
         [Theory]
         [InlineData(null)]
         [InlineData("")]
         [InlineData(" ")]
-        public async Task TestSearchAminUserRedirectsToIndex1(string value)
+        public async Task TestSearchAdminUserRedirectsToIndex1(string value)
         {
             // Arrange
             
             // Act
-            var controllerResult = await Controller.SearchAminUser(value);
+            var controllerResult = await Controller.SearchAdminUser(value);
 
             // Assert
             var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
@@ -218,12 +218,12 @@ namespace Test.TestsController
         }
 
         [Fact]
-        public async Task TestSearchAminUserRedirectsToIndex2()
+        public async Task TestSearchAdminUserRedirectsToIndex2()
         {
             // Arrange
 
             // Act
-            var controllerResult = await Controller.SearchAminUser("xxx");
+            var controllerResult = await Controller.SearchAdminUser("xxx");
 
             // Assert
             var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
@@ -237,12 +237,12 @@ namespace Test.TestsController
         [InlineData("xxx@xx.com")]
         [InlineData("XXX@XX.COM")]
         [InlineData(" XXX@XX.COM ")]
-        public async Task TestSearchAminUserRedirectsToEditAdmin(string value)
+        public async Task TestSearchAdminUserRedirectsToEditAdmin(string value)
         {
             // Arrange
             UserData[1].NormalizedUserName = "XXX@XX.COM";
             // Act
-            var controllerResult = await Controller.SearchAminUser(value);
+            var controllerResult = await Controller.SearchAdminUser(value);
 
             // Assert
             var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
@@ -254,21 +254,21 @@ namespace Test.TestsController
         }
 
         [Fact]
-        public async Task TestSearchAminUserThrowsExceptionIfDuplicate()
+        public async Task TestSearchAdminUserThrowsExceptionIfDuplicate()
         {
             // Arrange
             UserData[1].NormalizedUserName = "XXX@XX.COM"; 
             UserData[2].NormalizedUserName = "XXX@XX.COM"; //Should never happen...
 
             // Act
-            var ex = await Assert.ThrowsAsync<InvalidOperationException>(async () => await Controller.SearchAminUser("xxx@xx.com"));
+            var ex = await Assert.ThrowsAsync<InvalidOperationException>(async () => await Controller.SearchAdminUser("xxx@xx.com"));
 
             // Assert
             ex.ShouldNotBeNull();
             ex.Message.ShouldBe("Sequence contains more than one matching element");
         }
 
-        #endregion SearchAminUser
+        #endregion SearchAdminUser
 
         #region EditAdmin
 
@@ -797,15 +797,15 @@ namespace Test.TestsController
             ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Index", 2 + countAdjustment, "Index-1", false, showListOfAttributes: false);
 
             //2
-            var searchAminUserAuth = ControllerReflection.MethodExpectedAttribute<AuthorizeAttribute>("SearchAminUser", 3 + countAdjustment, "SearchAminUser-1", false, showListOfAttributes: false);
-            searchAminUserAuth.ElementAt(0).Roles.ShouldBe(RoleCodes.Admin);
-            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("SearchAminUser", 3 + countAdjustment, "SearchAminUser-2", false, showListOfAttributes: false);
-            ControllerReflection.MethodExpectedAttribute<HttpGetAttribute>("SearchAminUser", 3 + countAdjustment, "SearchAminUser-3", false, showListOfAttributes: false);
+            var searchAdminUserAuth = ControllerReflection.MethodExpectedAttribute<AuthorizeAttribute>("SearchAdminUser", 3 + countAdjustment, "SearchAdminUser-1", false, showListOfAttributes: false);
+            searchAdminUserAuth.ElementAt(0).Roles.ShouldBe(RoleCodes.Admin);
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("SearchAdminUser", 3 + countAdjustment, "SearchAdminUser-2", false, showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<HttpGetAttribute>("SearchAdminUser", 3 + countAdjustment, "SearchAdminUser-3", false, showListOfAttributes: false);
 
             //3
             var editAdminAminUserAuth = ControllerReflection.MethodExpectedAttribute<AuthorizeAttribute>("EditAdmin", 3 + countAdjustment, "EditAdmin-1", false, showListOfAttributes: false);
             editAdminAminUserAuth.ElementAt(0).Roles.ShouldBe(RoleCodes.Admin);
-            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("SearchAminUser", 3 + countAdjustment, "EditAdmin-2", false, showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("SearchAdminUser", 3 + countAdjustment, "EditAdmin-2", false, showListOfAttributes: false);
             ControllerReflection.MethodExpectedAttribute<HttpGetAttribute>("EditAdmin", 3 + countAdjustment, "EditAdmin-3", false, showListOfAttributes: false);
 
             //4
