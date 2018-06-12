@@ -570,6 +570,187 @@ namespace Test.TestsController
         }
 
         #endregion AddUserToRole
+
+        #region MailQueue
+
+        [Fact]
+        public async Task TestMailQueueReturnsView1()
+        {
+            // Arrange
+            var mail = new List<MailMessage>();
+            for (int i = 0; i < 10; i++)
+            {
+                var mm = CreateValidEntities.MailMessage(i + 1);
+                mm.Order = CreateValidEntities.Order(i + 1);
+                mm.User = UserData[i % 2];
+                mail.Add(mm);
+            }
+
+            MockDbContext.Setup(a => a.MailMessages).Returns(mail.AsQueryable().MockAsyncDbSet().Object);
+
+            for (int i = 0; i < 3; i++)
+            {
+                mail[i].Order = CreateValidEntities.Order(2);
+            }
+
+            // Act
+            var controllerResult = await Controller.MailQueue(mail[0].Order.Id);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<List<MailMessage>>(viewResult.Model);
+
+            modelResult.ShouldNotBeNull();
+            modelResult.Count.ShouldBe(3);
+            modelResult[0].Id.ShouldBe(1);
+            modelResult[0].Order.Id.ShouldBe(2);
+        }
+
+        [Fact]
+        public async Task TestMailQueueReturnsView2()
+        {
+            // Arrange
+            var mail = new List<MailMessage>();
+            for (int i = 0; i < 10; i++)
+            {
+                var mm = CreateValidEntities.MailMessage(i + 1);
+                mm.Order = CreateValidEntities.Order(i + 1);
+                mm.User = UserData[i % 2];
+                mm.Sent = null;
+                mm.SentAt = DateTime.UtcNow.AddDays(-35);
+                mail.Add(mm);
+            }
+
+            MockDbContext.Setup(a => a.MailMessages).Returns(mail.AsQueryable().MockAsyncDbSet().Object);
+
+            // Act
+            var controllerResult = await Controller.MailQueue();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<List<MailMessage>>(viewResult.Model);
+
+            modelResult.ShouldNotBeNull();
+            modelResult.Count.ShouldBe(10);
+        }
+
+        [Fact]
+        public async Task TestMailQueueReturnsView3()
+        {
+            // Arrange
+            var mail = new List<MailMessage>();
+            for (int i = 0; i < 10; i++)
+            {
+                var mm = CreateValidEntities.MailMessage(i + 1);
+                mm.Order = CreateValidEntities.Order(i + 1);
+                mm.User = UserData[i % 2];
+                mm.Sent = false;
+                mm.SentAt = DateTime.UtcNow.AddDays(-35);
+                mail.Add(mm);
+            }
+
+            MockDbContext.Setup(a => a.MailMessages).Returns(mail.AsQueryable().MockAsyncDbSet().Object);
+
+            // Act
+            var controllerResult = await Controller.MailQueue();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<List<MailMessage>>(viewResult.Model);
+
+            modelResult.ShouldNotBeNull();
+            modelResult.Count.ShouldBe(10);
+        }
+
+        [Fact]
+        public async Task TestMailQueueReturnsView4()
+        {
+            // Arrange
+            var mail = new List<MailMessage>();
+            for (int i = 0; i < 10; i++)
+            {
+                var mm = CreateValidEntities.MailMessage(i + 1);
+                mm.Order = CreateValidEntities.Order(i + 1);
+                mm.User = UserData[i % 2];
+                mm.Sent = true;
+                mm.SentAt = DateTime.UtcNow.AddDays(-35);
+                mail.Add(mm);
+            }
+
+            mail[1].SentAt = DateTime.UtcNow.AddDays(-28);
+
+            MockDbContext.Setup(a => a.MailMessages).Returns(mail.AsQueryable().MockAsyncDbSet().Object);
+
+            // Act
+            var controllerResult = await Controller.MailQueue();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<List<MailMessage>>(viewResult.Model);
+
+            modelResult.ShouldNotBeNull();
+            modelResult.Count.ShouldBe(1);
+        }
+
+        #endregion MailQueue
+
+        #region ViewMessage
+
+        [Fact]
+        public async Task TestViewMessageReturnsNotFound()
+        {
+            // Arrange
+            var mail = new List<MailMessage>();
+            for (int i = 0; i < 5; i++)
+            {
+                var mm = CreateValidEntities.MailMessage(i + 1);
+                mm.Order = CreateValidEntities.Order(i + 1);
+                mm.User = UserData[i % 2];
+                mm.Sent = null;
+                mm.SentAt = DateTime.UtcNow.AddDays(-35);
+                mail.Add(mm);
+            }
+
+            MockDbContext.Setup(a => a.MailMessages).Returns(mail.AsQueryable().MockAsyncDbSet().Object);
+
+
+
+            // Act
+            var controllerResult = await Controller.ViewMessage(9);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(controllerResult);
+        }
+
+        [Fact]
+        public async Task TestViewMessageReturnsView()
+        {
+            // Arrange
+            var mail = new List<MailMessage>();
+            for (int i = 0; i < 5; i++)
+            {
+                var mm = CreateValidEntities.MailMessage(i + 1);
+                mm.Order = CreateValidEntities.Order(i + 1);
+                mm.User = UserData[i % 2];
+                mm.Sent = null;
+                mm.SentAt = DateTime.UtcNow.AddDays(-35);
+                mail.Add(mm);
+            }
+
+            MockDbContext.Setup(a => a.MailMessages).Returns(mail.AsQueryable().MockAsyncDbSet().Object);
+
+
+
+            // Act
+            var controllerResult = await Controller.ViewMessage(3);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(controllerResult);
+            var modelResult = Assert.IsType<MailMessage>(viewResult.Model);
+            modelResult.ShouldNotBeNull();
+            modelResult.Id.ShouldBe(3);
+        }
+        #endregion ViewMessage
     }
 
     [Trait("Category", "Controller Reflection")]
