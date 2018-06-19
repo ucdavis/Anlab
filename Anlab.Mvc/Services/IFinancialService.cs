@@ -1,7 +1,10 @@
 using Anlab.Jobs.MoneyMovement;
 using Microsoft.Extensions.Options;
 using System;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Serilog;
@@ -43,6 +46,14 @@ namespace AnlabMvc.Services
 
             using (var client = new HttpClient())
             {
+                var byteArray = Encoding.ASCII.GetBytes(string.Format("{0}:{1}", "User", "Secret"));
+                //specify to use TLS 1.2 as default connection
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+                //Need this for MIV (PrePurchasing) otherwise it throws an exception if it is empty.
+                //client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");
+
+
                 var validationResponse = await client.GetAsync(validationUrl);
                 validationResponse.EnsureSuccessStatusCode();
 
