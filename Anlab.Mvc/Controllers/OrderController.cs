@@ -93,6 +93,7 @@ namespace AnlabMvc.Controllers
             return RedirectToAction("Link", "Results", new { id });
         }
 
+        [HttpPost]
         public async Task<IActionResult> DeleteLink(Guid id)
         {
             var order = await _context.Orders.SingleOrDefaultAsync(a => a.ShareIdentifier == id);
