@@ -38,17 +38,31 @@
             <i class="fa fa-download" aria-hidden="true"></i> Download
         </a>
         @if (User.Identity.IsAuthenticated)
-         {
-             <form asp-action="Copy" asp-controller="Order" method="post" autocomplete="off">
-                 <input type="hidden" name="id" value="@Model.OrderReviewModel.Order.ShareIdentifier" />
-                 <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-files-o" aria-hidden="true"></i> Duplicate</button>
-             </form>
-         }
-         else
-         {
-             <button id="sign-in" class="btn btn-primary" aria-hidden="true"><i class="fa fa-files-o" aria-hidden="true"></i> Duplicate</button>
-         }
+        {
+            <form asp-action="Copy" asp-controller="Order" method="post" autocomplete="off" style="margin-right: 3px">
+                <input type="hidden" name="id" value="@Model.OrderReviewModel.Order.ShareIdentifier" />
+                <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-files-o" aria-hidden="true"></i> Duplicate</button>
+            </form>
+        }
+        else
+        {
+            <button id="sign-in" class="btn btn-primary" aria-hidden="true"><i class="fa fa-files-o" aria-hidden="true" style="margin-right: 3px"></i> Duplicate</button>
+
+        }
     }
+    @if (User.Identity.IsAuthenticated)
+    {
+        <form asp-action="SaveLink" asp-controller="Order" method="post" autocomplete="off">
+            <input type="hidden" name="id" value="@Model.OrderReviewModel.Order.ShareIdentifier" />
+            <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-save" aria-hidden="true"></i> Save Link</button>
+        </form>
+    }
+    else
+    {
+        <button id="sign-in-to-save" class="btn btn-primary" aria-hidden="true"><i class="fa fa-files-o" aria-hidden="true"></i> Save Link</button>
+    }
+
+
 
 </p>
 }
@@ -73,6 +87,9 @@
         });
         $("#sign-in").on("click",function() {
                 alert("Please sign in first to duplicate the order");
+        });
+        $("#sign-in-to-save").on("click",function() {
+            alert("Please sign in first to save this order to your favorites");
         });
     </script>
 

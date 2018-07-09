@@ -49,6 +49,71 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> Favorites()
+        {
+            var savedOrders = await _context.SavedOrders.Where(a => a.UserId == CurrentUserId).Select(s => s.Order).ToArrayAsync();
+
+            return View(savedOrders);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveLink(Guid id)
+        {
+            var order = await _context.Orders.SingleOrDefaultAsync(a => a.ShareIdentifier == id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if (order.Status != OrderStatusCodes.Finalized && order.Status != OrderStatusCodes.Complete)
+            {
+                return NotFound();
+            }
+
+            if (await _context.SavedOrders.AnyAsync(a => a.OrderId == order.Id && a.UserId == CurrentUserId))
+            {
+                Message = "You have already added this to your saved orders";
+                return RedirectToAction("Link", "Results", new {id});
+            }
+
+            //TODO: Maybe allow user to specify a short note, saved in the SavedOrders table.
+
+            var user = _context.Users.Single(a => a.Id == CurrentUserId);
+
+            var savedOrder = new SavedOrder();
+            savedOrder.OrderId = order.Id;
+            //savedOrder.Order = order;
+            savedOrder.UserId = CurrentUserId;
+            //savedOrder.User = user;
+
+            await _context.AddAsync(savedOrder);
+            await _context.SaveChangesAsync();
+
+            Message = "Order saved to your list";
+            return RedirectToAction("Link", "Results", new { id });
+        }
+
+        public async Task<IActionResult> DeleteLink(Guid id)
+        {
+            var order = await _context.Orders.SingleOrDefaultAsync(a => a.ShareIdentifier == id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            var savedOrder = await _context.SavedOrders.SingleOrDefaultAsync(a => a.OrderId == order.Id && a.UserId == CurrentUserId);
+            if (savedOrder == null)
+            {
+                return NotFound();
+            }
+
+            _context.SavedOrders.Remove(savedOrder);
+            await _context.SaveChangesAsync();
+
+            Message = "Saved order removed from list";
+            return RedirectToAction("Favorites");
+        }
+
         public async Task<IActionResult> Create()
         {
             var joined = await _orderService.PopulateTestItemModel();
