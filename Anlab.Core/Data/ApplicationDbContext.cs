@@ -75,6 +75,8 @@ namespace Anlab.Core.Data
 
         public virtual DbSet<MailMessage> MailMessages { get; set; }
 
+        public virtual DbSet<SavedOrder> SavedOrders { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Order>()

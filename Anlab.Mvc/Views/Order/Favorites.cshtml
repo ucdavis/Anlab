@@ -1,0 +1,104 @@
+@using Anlab.Core.Models
+@using AnlabMvc.Models.Order
+@model IList<Order>
+@{
+    ViewData["Title"] = "Orders";
+}
+@section ActionButtons
+    {
+    <p>
+        <a class="btn btn-small" asp-action="Create">
+            Create Order
+        </a>
+    </p>
+}
+<div class="col">
+    @if (Model.Any(o => o.Status == OrderStatusCodes.Finalized && !o.Paid))
+    {
+        <div class="alert alert-danger" role="alert">
+            You have orders that have not been paid.
+        </div>
+    }
+
+    <table id="table" class="table">
+        <thead>
+        <tr>
+            <th>Project</th>
+            <th>Work Req #</th>
+            <th>Status</th>
+            <th>Paid</th>
+            <th>Created</th>
+            <th>Updated</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>
+                    @if (order.Status == OrderStatusCodes.Complete || order.Status == OrderStatusCodes.Finalized)
+                    {
+                        <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier">@order.Project</a>
+                    }
+                </td>
+                <td>@order.RequestNum</td>
+                <td>@order.Status</td>
+                <td>
+                    @if (order.Paid)
+                    {
+                        <i class="fa fa-check" aria-hidden="true"></i>
+
+                    }
+                </td>
+                <td>@order.Created.ToPacificTime().ToString("g")</td>
+                <td>@order.Updated.ToPacificTime().ToString("g")</td>
+                <td>
+                    <form asp-action="DeleteLink" asp-controller="Order" method="post" autocomplete="off">
+                        <input type="hidden" name="id" value="@order.ShareIdentifier" />
+                        <button type="submit" class="btn-danger"  aria-hidden="true"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@section AdditionalStyles
+{
+    @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+}
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            var table = $("#table").DataTable({
+                "sorting": [[5, "desc"]],
+                "columnDefs": [
+                    {
+                        "type": "date",
+                        "targets": [4, 5],
+                        "orderable": false, "targets": [-1],
+                        "searchable":false, "targets": -1 
+                    }
+                ],
+
+                "stateSave": true,
+                "stateDuration": 60 * 10,
+                "createdRow": function(row, data, index) {
+                    if (data[2] == "Created") {
+                        $(row).addClass('warning');
+                    }
+                    if (data[2] == "Finalized" && !data[3]) {
+                        $(row).addClass('danger');
+                    }
+                }
+            });
+
+        });
+
+    </script>
+}
