@@ -1062,7 +1062,7 @@ namespace Test.TestsController
         [Fact]
         public void TestControllerMethodCount()
         {
-            ControllerReflection.ControllerPublicMethods(11);
+            ControllerReflection.ControllerPublicMethods(14);
         }
 
         [Fact]
@@ -1108,6 +1108,17 @@ namespace Test.TestsController
             //11
             ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("LookupClientId", 2 + countAdjustment, "LookupClientId-1", showListOfAttributes: false);
             ControllerReflection.MethodExpectedAttribute<HttpGetAttribute>("LookupClientId", 2 + countAdjustment, "LookupClientId-2", showListOfAttributes: false);
+
+            //12
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Favorites", 1 + countAdjustment, "Favorites-1", showListOfAttributes: false);
+
+            //13
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("SaveLink", 2 + countAdjustment, "SaveLink-1", showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("SaveLink", 2 + countAdjustment, "SaveLink-1", showListOfAttributes: false);
+
+            //14
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("DeleteLink", 2 + countAdjustment, "DeleteLink-1", showListOfAttributes: true);
+            ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("DeleteLink", 2 + countAdjustment, "DeleteLink-1", showListOfAttributes: false);
 
         }
 
