@@ -20,7 +20,7 @@ namespace Anlab.Core.Domain
 
         public int OrderId { get; set; }
 
-        [ForeignKey("OderId")]
+        [ForeignKey("OrderId")]
         public Order Order { get; set; }
     }
 }
