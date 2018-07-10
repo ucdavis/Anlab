@@ -52,6 +52,8 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("Employer", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("PhoneNumber", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("PiEmail", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("PiName", "System.String", new List<string>()));            
             #endregion Arrange
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ClientInfo));
