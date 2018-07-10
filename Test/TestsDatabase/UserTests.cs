@@ -69,6 +69,7 @@ namespace Test.TestsDatabase
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
             }));
             expectedFields.Add(new NameAndType("Id", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("LastFirst", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("LastName", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Last Name\")]",
