@@ -81,5 +81,18 @@ namespace Anlab.Core.Domain
             }
             return String.Empty;
         }
+
+        public string LastFirst
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(FirstName) && !string.IsNullOrWhiteSpace(LastName))
+                {
+                    return $"{LastName}, {FirstName}";
+                }
+
+                return Name;
+            }
+        }
     }
 }
