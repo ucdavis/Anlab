@@ -106,6 +106,8 @@ export default class OrderForm extends React.Component<
             ? this.props.defaultClientIdName
             : "",
         phoneNumber: "",
+        piName: "",
+        piEmail: "",
       },
       clientInfoValid: (this.props.defaultClientId && this.props.defaultClientIdName) ? true: false,
       payment: { clientType: "uc", account: "" },
@@ -187,6 +189,8 @@ export default class OrderForm extends React.Component<
         department: orderInfo.ClientInfo.Department,
         name: orderInfo.ClientInfo.Name,
         phoneNumber: orderInfo.ClientInfo.PhoneNumber,
+        piName: orderInfo.ClientInfo.PiName,
+        piEmail: orderInfo.ClientInfo.PiEmail,
       };
       initialState.clientInfoValid = true;
       initialState.additionalInfoList = orderInfo.AdditionalInfoList;
@@ -646,6 +650,8 @@ export default class OrderForm extends React.Component<
             name: "",
             email: "",
             phoneNumber: "",
+            piName: "",
+            piEmail: "",
         };
       this.setState({
           ...this.state, clientInfo: clearInfo, clientInfoValid: false,
