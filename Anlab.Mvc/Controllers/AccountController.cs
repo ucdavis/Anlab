@@ -290,6 +290,16 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction(nameof(Login));
             }
 
+            if (info.LoginProvider.Equals("Google", StringComparison.OrdinalIgnoreCase))
+            {
+                var emailClaim = info.Principal.FindFirstValue(ClaimTypes.Email);
+                if (emailClaim.Contains("@ucdavis"))
+                {
+                    ErrorMessage = "Do not use Google to log in to a UC Davis account";
+                    return RedirectToAction("Login");
+                }
+            }
+
             // setup claims properly to deal with how CAS represents things
             if (info.LoginProvider.Equals("UCDavis", StringComparison.OrdinalIgnoreCase))
             {
