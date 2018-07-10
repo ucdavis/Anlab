@@ -35,7 +35,7 @@ export class ClientIdModalInput extends React.Component<IClientIdModalInputProps
 
         if (this.props.required === true && (!v || v.trim() === "")) {
             error = "This field is required";
-        } else if (this.props.property === "email" && !emailRe.test(v))
+        } else if ((this.props.property === "email" || this.props.property === "piEmail") && !emailRe.test(v))
         {
             error = "Invalid email";
         }

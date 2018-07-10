@@ -13,5 +13,8 @@ namespace Anlab.Core.Models
         public string Name { get; set; }
         public string PhoneNumber { get; set; }
         public string CopyPhone { get; set; }
+
+        public string PiName { get; set; }
+        public string PiEmail { get; set; }
     }
 }

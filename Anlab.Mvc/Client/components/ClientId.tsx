@@ -10,6 +10,8 @@ export interface IClientInfo {
     name: string;
     email: string;
     phoneNumber: string;
+    piName: string;
+    piEmail: string;
 }
 
 interface IClientIdProps {
