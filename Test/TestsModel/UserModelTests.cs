@@ -67,6 +67,7 @@ namespace Test.TestsModel
 
             }));
             expectedFields.Add(new NameAndType("Id", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("LastFirst", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("LastName", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Last Name\")]",                
@@ -96,8 +97,7 @@ namespace Test.TestsModel
             //expectedFields.Add(new NameAndType("Roles", "System.Collections.Generic.ICollection`1[Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserRole`1[System.String]]", new List<string>()));
             expectedFields.Add(new NameAndType("SecurityStamp", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("TwoFactorEnabled", "System.Boolean", new List<string>()));
-            expectedFields.Add(new NameAndType("UserName", "System.String", new List<string>()));
-
+            expectedFields.Add(new NameAndType("UserName", "System.String", new List<string>()));            
             #endregion Arrange
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(User));
