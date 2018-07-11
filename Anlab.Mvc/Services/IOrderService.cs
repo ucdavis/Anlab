@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using AnlabMvc.Helpers;
+using Serilog;
 
 namespace AnlabMvc.Services
 {
@@ -196,6 +197,26 @@ namespace AnlabMvc.Services
             var allTests = orderToUpdate.GetTestDetails();
 
             var testIds = allTests.Where(a => orderFromDb.TestCodes.Contains(a.Id)).Select(s => s.Id).ToArray();
+            var groupTestIds = testIds.Where(a => a.StartsWith("G-")).ToArray();
+
+            if (groupTestIds.Any())
+            {
+                var testsToZeroOut = await _labworksService.GetTestsForDiscountedGroups(groupTestIds);
+                foreach (var zeroTest in testsToZeroOut)
+                {
+                    var test = allTests.FirstOrDefault(a => a.Id == zeroTest);
+                    if (test == null)
+                    {
+                        Log.Information($"Test not found to zero out: {zeroTest}");
+                        continue;
+                    }
+                    test.ExternalCost = 0;
+                    test.InternalCost = 0;
+                    test.ExternalSetupCost = 0;
+                    test.InternalSetupCost = 0;
+                }
+            }
+
             var tests = PopulateSelectedTestsItemModel(testIds, allTests);
 
             if (orderFromDb.TestCodes.Count != testIds.Length)

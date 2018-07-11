@@ -27,6 +27,8 @@ namespace AnlabMvc.Services
 
         Task<IList<string>> GetAllCodes();
 
+        Task<IList<string>> GetTestsForDiscountedGroups(string[] GroupCodes);
+
     }
 
     public class LabworksService : ILabworksService
@@ -211,6 +213,16 @@ namespace AnlabMvc.Services
                 return codes as IList<string>;
             }
         }
+
+        public async Task<IList<string>> GetTestsForDiscountedGroups(string[] GroupCodes)
+        {
+            using (var db = new DbManager(_connectionSettings.AnlabConnection))
+            {
+                IEnumerable<string> codes = await db.Connection.QueryAsync<string>(QueryResource.AnlabCodesInGroups, new { GroupCodes });
+
+                return codes as IList<string>;
+            }
+        }
     }
     
     
@@ -335,6 +347,11 @@ namespace AnlabMvc.Services
         }
 
         public Task<IList<string>> GetAllCodes()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<string>> GetTestsForDiscountedGroups(string[] GroupCodes)
         {
             throw new NotImplementedException();
         }
