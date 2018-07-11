@@ -14,6 +14,8 @@ namespace AnlabMvc.Models.Order
             MissingCodes = new List<string>();
         }
         public IList<TestDetails> SelectedTests { get; set; }
+
+        public IList<TestItemModel> BackedupTests { get; set; }
         public IList<String> MissingCodes { get; set; }
         public string ErrorMessage { get; set; }
         

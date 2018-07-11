@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using AnlabMvc.Helpers;
+using Serilog;
 
 namespace AnlabMvc.Services
 {
@@ -144,7 +145,18 @@ namespace AnlabMvc.Services
             order.ClientName = order.ClientName;
             order.JsonDetails = orderToCopy.JsonDetails;
             var orderDetails = order.GetOrderDetails();
-            var tests = CalculateTestDetails(order);
+            var tests = CalculateTestDetails(order).ToList();
+
+            var groupTestIds = tests.Where(a => a.Id.StartsWith("G-", StringComparison.OrdinalIgnoreCase)).Select(a => a.Id).ToArray();
+
+            if (groupTestIds.Any())
+            {
+                var testsToRemove = await _labworksService.GetTestsForDiscountedGroups(groupTestIds);
+                if (testsToRemove.Any())
+                {
+                    tests.RemoveAll(a => testsToRemove.Contains(a.Id));
+                }
+            }
 
             orderDetails.SelectedTests = tests.ToArray();
             orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.IsInternalClient ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
@@ -194,8 +206,50 @@ namespace AnlabMvc.Services
             }
 
             var allTests = orderToUpdate.GetTestDetails();
+            var restoreTests = orderToUpdate.GetBackedupTestDetails();
+            if (restoreTests.Any())
+            {
+                foreach (var restoreTest in restoreTests)
+                {
+                    var test = allTests.FirstOrDefault(a => a.Id == restoreTest.Id);
+                    if (test == null)
+                    {
+                        Log.Information($"Test not found to restore out: {restoreTest}");
+                        continue;
+                    }
+
+                    test = restoreTest.ShallowCopy();
+                }
+            }
 
             var testIds = allTests.Where(a => orderFromDb.TestCodes.Contains(a.Id)).Select(s => s.Id).ToArray();
+            var groupTestIds = testIds.Where(a => a.StartsWith("G-", StringComparison.OrdinalIgnoreCase)).ToArray();
+
+            if (groupTestIds.Any())
+            {
+                var savedPrices = new List<TestItemModel>();
+                var testsToZeroOut = await _labworksService.GetTestsForDiscountedGroups(groupTestIds);
+                foreach (var zeroTest in testsToZeroOut)
+                {
+                    var test = allTests.FirstOrDefault(a => a.Id == zeroTest);
+                    if (test == null)
+                    {
+                        Log.Information($"Test not found to zero out: {zeroTest}");
+                        continue;
+                    }
+                    savedPrices.Add(test.ShallowCopy());
+                    test.ExternalCost = 0;
+                    test.InternalCost = 0;
+                    test.ExternalSetupCost = 0;
+                    test.InternalSetupCost = 0;
+                }
+
+                if (savedPrices.Any())
+                {
+                    rtValue.BackedupTests = savedPrices;
+                }
+            }
+
             var tests = PopulateSelectedTestsItemModel(testIds, allTests);
 
             if (orderFromDb.TestCodes.Count != testIds.Length)
