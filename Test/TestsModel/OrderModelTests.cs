@@ -16,6 +16,7 @@ namespace Test.TestsModel
             var expectedFields = new List<NameAndType>();
             expectedFields.Add(new NameAndType("AdditionalEmails", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("ApprovedPayment", "Anlab.Core.Domain.PaymentEvent", new List<string>()));
+            expectedFields.Add(new NameAndType("BackedupTestDetails", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("ClientId", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)16)]"
