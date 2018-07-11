@@ -233,6 +233,7 @@ namespace AnlabMvc.Controllers
             }
 
             order.SaveDetails(orderDetails);
+            order.SaveBackedupTestDetails(result.BackedupTests);
 
             return order;
         }

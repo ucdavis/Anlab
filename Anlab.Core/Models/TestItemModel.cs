@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -23,5 +23,10 @@ namespace Anlab.Core.Models
         public string Sop { get; set; }
         public int RequestOrder { get; set; }
         public int LabOrder { get; set; }
+
+        public TestItemModel ShallowCopy()
+        {
+            return (TestItemModel) this.MemberwiseClone();
+        }
     }
 }

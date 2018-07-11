@@ -195,12 +195,28 @@ namespace AnlabMvc.Services
             }
 
             var allTests = orderToUpdate.GetTestDetails();
+            var restoreTests = orderToUpdate.GetBackedupTestDetails();
+            if (restoreTests.Any())
+            {
+                foreach (var restoreTest in restoreTests)
+                {
+                    var test = allTests.FirstOrDefault(a => a.Id == restoreTest.Id);
+                    if (test == null)
+                    {
+                        Log.Information($"Test not found to restore out: {restoreTest}");
+                        continue;
+                    }
+
+                    test = restoreTest.ShallowCopy();
+                }
+            }
 
             var testIds = allTests.Where(a => orderFromDb.TestCodes.Contains(a.Id)).Select(s => s.Id).ToArray();
             var groupTestIds = testIds.Where(a => a.StartsWith("G-")).ToArray();
 
             if (groupTestIds.Any())
             {
+                var savedPrices = new List<TestItemModel>();
                 var testsToZeroOut = await _labworksService.GetTestsForDiscountedGroups(groupTestIds);
                 foreach (var zeroTest in testsToZeroOut)
                 {
@@ -210,10 +226,16 @@ namespace AnlabMvc.Services
                         Log.Information($"Test not found to zero out: {zeroTest}");
                         continue;
                     }
+                    savedPrices.Add(test.ShallowCopy());
                     test.ExternalCost = 0;
                     test.InternalCost = 0;
                     test.ExternalSetupCost = 0;
                     test.InternalSetupCost = 0;
+                }
+
+                if (savedPrices.Any())
+                {
+                    rtValue.BackedupTests = savedPrices;
                 }
             }
 
