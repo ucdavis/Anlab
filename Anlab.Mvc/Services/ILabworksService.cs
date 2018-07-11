@@ -84,6 +84,7 @@ namespace AnlabMvc.Services
 
         /// <summary>
         /// Get the test codes for an order that exist in labworks so we can update our order details with what was actually done.
+        /// Replaced with GetRequestDetails
         /// </summary>
         /// <param name="RequestNum"></param>
         /// <returns></returns>

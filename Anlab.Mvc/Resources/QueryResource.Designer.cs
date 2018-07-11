@@ -92,6 +92,20 @@ namespace AnlabMvc.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SELECT distinct 
+        ///SG2.SGACODE as Code
+        ///FROM [LABWORKS].[dbo].[SGTESTS] as SG1 , [LABWORKS].[dbo].[SGTESTS] as SG2
+        ///where SG1.SGACODE in (@GroupCodes) 
+        ///and SG1.ACODE = SG2.ACODE 
+        ///and SG2.SGACODE not in (@GroupCodes).
+        /// </summary>
+        internal static string AnlabCodesInGroups {
+            get {
+                return ResourceManager.GetString("AnlabCodesInGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DECLARE @setup int;
         ///SELECT @setup = APRICE from dbo.ANL_LIST where ACODE = &apos;SETUP&apos;
         ///

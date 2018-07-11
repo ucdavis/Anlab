@@ -137,6 +137,16 @@ FROM	dbo.USERFLDS INNER JOIN
 WHERE	dbo.USERFLDS.LOCCODE = @clientId  OR dbo.USERFLDS.SUBEMAIL = @clientId</value>
     <comment>Get the clinet info associated with the client id</comment>
   </data>
+  <data name="AnlabCodesInGroups" xml:space="preserve">
+    <value>SELECT distinct 
+SG2.SGACODE as Code
+FROM [LABWORKS].[dbo].[SGTESTS] as SG1 , [LABWORKS].[dbo].[SGTESTS] as SG2
+where SG1.SGACODE in (@GroupCodes) 
+and SG1.ACODE = SG2.ACODE 
+and SG2.SGACODE not in (@GroupCodes)</value>
+    <comment>List of codes that are a part of group discounts. The group code is excluded.
+This is a self join</comment>
+  </data>
   <data name="AnlabItemPrices" xml:space="preserve">
     <value>DECLARE @setup int;
 SELECT @setup = APRICE from dbo.ANL_LIST where ACODE = 'SETUP'
