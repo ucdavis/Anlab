@@ -145,7 +145,18 @@ namespace AnlabMvc.Services
             order.ClientName = order.ClientName;
             order.JsonDetails = orderToCopy.JsonDetails;
             var orderDetails = order.GetOrderDetails();
-            var tests = CalculateTestDetails(order);
+            var tests = CalculateTestDetails(order).ToList();
+
+            var groupTestIds = tests.Where(a => a.Id.StartsWith("G-")).Select(a => a.Id).ToArray();
+
+            if (groupTestIds.Any())
+            {
+                var testsToRemove = await _labworksService.GetTestsForDiscountedGroups(groupTestIds);
+                if (testsToRemove.Any())
+                {
+                    tests.RemoveAll(a => testsToRemove.Contains(a.Id));
+                }
+            }
 
             orderDetails.SelectedTests = tests.ToArray();
             orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.IsInternalClient ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
