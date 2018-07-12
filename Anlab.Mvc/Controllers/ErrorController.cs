@@ -18,5 +18,11 @@ namespace AnlabMvc.Controllers
         {
             return View();
         }
+
+        public IActionResult LoginError()
+        {
+            TempData["ErrorMessage"] = "Do not use Google to log in to a UC Davis account";
+            return View();
+        }
     }
 }

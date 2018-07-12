@@ -295,8 +295,7 @@ namespace AnlabMvc.Controllers
                 var emailClaim = info.Principal.FindFirstValue(ClaimTypes.Email);
                 if (emailClaim.Contains("@ucdavis"))
                 {
-                    ErrorMessage = "Do not use Google to log in to a UC Davis account";
-                    return RedirectToAction("Login");
+                    return RedirectToAction("LoginError", "Error");
                 }
             }
 
