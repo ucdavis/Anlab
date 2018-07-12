@@ -55,7 +55,7 @@ namespace Anlab.Jobs.SendMail
 
 
             // Get all messages that we haven't tried to send yet
-            var messagesToSend = dbContext.MailMessages.Where(x => x.Sent == null).ToList();
+            var messagesToSend = dbContext.MailMessages.Where(x => x.Sent == null || x.Sent == false).ToList();
             Log.Information($"Emails to Send: {messagesToSend.Count}");
             var counter = 0;
 
