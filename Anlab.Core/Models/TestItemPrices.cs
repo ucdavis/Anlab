@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -35,7 +35,7 @@ namespace Anlab.Core.Models
         {
             get
             {
-                if (Nonrep)
+                if (Nonrep && !Id.StartsWith("G-", StringComparison.OrdinalIgnoreCase))
                 {
                     return 0;
                 }
