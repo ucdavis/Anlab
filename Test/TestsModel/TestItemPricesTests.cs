@@ -80,8 +80,24 @@ namespace Test.TestsModel
             theThing.SetupCost = 2;
             theThing.Multiplier = 3;
             theThing.Nonrep = true;
+            theThing.Id = "NotGroup";
 
             theThing.SetupPrice.ShouldBe(0);
+        }
+
+        [Theory]
+        [InlineData("g-test1")]
+        [InlineData("G-test1")]
+        [InlineData("g-test2")]
+        public void SetupPriceReturnsExpectedValues1a(string value)
+        {
+            var theThing = new TestItemPrices();
+            theThing.SetupCost = 2;
+            theThing.Multiplier = 3;
+            theThing.Nonrep = true;
+            theThing.Id = value;
+
+            theThing.SetupPrice.ShouldBe(6);
         }
         [Fact]
         public void SetupPriceReturnsExpectedValues2()
