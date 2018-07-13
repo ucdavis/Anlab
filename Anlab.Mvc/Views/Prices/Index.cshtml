@@ -29,7 +29,7 @@
         {
             <tr>
 
-                <td>@Html.DisplayFor(modelItem => item.Category)</td>
+                <td>@item.Category.Replace("|", " / ")</td>
                 <td>@Html.DisplayFor(modelItem => item.Group)</td>
                 <td>@Html.DisplayFor(modelItem => item.Analysis)</td>
                 @*<td>@Html.DisplayFor(modelItem => item.Id)</td>*@
