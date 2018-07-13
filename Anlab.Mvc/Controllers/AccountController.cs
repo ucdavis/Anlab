@@ -10,9 +10,12 @@ using AnlabMvc.Services;
 using Ietws;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace AnlabMvc.Controllers
 {
@@ -280,14 +283,23 @@ namespace AnlabMvc.Controllers
         {
             if (remoteError != null)
             {
-                ErrorMessage = $"Error from external provider: {remoteError}";
-                return RedirectToAction(nameof(Login));
+                Log.Error($"Error from external provider: {remoteError}");
+                return RedirectToAction("LoginError", "Error", new { id = 102 });
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
 
             if (info == null)
             {
                 return RedirectToAction(nameof(Login));
+            }
+
+            if (info.LoginProvider.Equals("Google", StringComparison.OrdinalIgnoreCase))
+            {
+                var emailClaim = info.Principal.FindFirstValue(ClaimTypes.Email);
+                if (emailClaim.Contains("@ucdavis"))
+                {
+                    return RedirectToAction("LoginError", "Error", new{id=101});
+                }
             }
 
             // setup claims properly to deal with how CAS represents things
@@ -299,8 +311,8 @@ namespace AnlabMvc.Controllers
                 var ucdPerson = await _directorySearchService.GetByKerberos(kerb);
                 if (ucdPerson.IsInvalid)
                 {
-                    TempData["ErrorMessage"] = ucdPerson.ErrorMessage;
-                    return RedirectToAction("Index", "Home");
+                    Log.Error($"Error from IAM: {ucdPerson.ErrorMessage}");
+                    return RedirectToAction("LoginError", "Error", new { id = 103 });
                 }
 
                 var identity = (ClaimsIdentity)info.Principal.Identity;
