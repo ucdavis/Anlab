@@ -32,10 +32,11 @@ namespace AnlabMvc.Controllers
         private readonly IOrderMessageService _orderMessageService;
         private readonly IFileStorageService _fileStorageService;
         private readonly ISlothService _slothService;
+        private readonly IFinancialService _financialService;
 
         private const int _maxShownOrders = 1000;
 
-        public LabController(ApplicationDbContext dbContext, IOrderService orderService, ILabworksService labworksService, IOrderMessageService orderMessageService, IFileStorageService fileStorageService, ISlothService slothService)
+        public LabController(ApplicationDbContext dbContext, IOrderService orderService, ILabworksService labworksService, IOrderMessageService orderMessageService, IFileStorageService fileStorageService, ISlothService slothService, IFinancialService financialService)
         {
             _dbContext = dbContext;
             _orderService = orderService;
@@ -43,6 +44,7 @@ namespace AnlabMvc.Controllers
             _orderMessageService = orderMessageService;
             _fileStorageService = fileStorageService;
             _slothService = slothService;
+            _financialService = financialService;
         }
 
         [HttpGet]
@@ -433,6 +435,11 @@ namespace AnlabMvc.Controllers
                 Status = order.Status,
                 Emails = order.AdditionalEmails
             };
+            if (order.PaymentType == PaymentTypeCodes.UcDavisAccount ||
+                order.PaymentType == PaymentTypeCodes.UcOtherAccount)
+            {
+                model.Account = model.OrderReviewModel.OrderDetails.Payment.Account;
+            }
 
             return View(model);
         }
@@ -454,6 +461,53 @@ namespace AnlabMvc.Controllers
                 {
                     ErrorMessage = $"Unexpected Status Value: {model.Status}";
                     return RedirectToAction("OverrideOrder", new {id});
+                }
+            }
+
+            if (orderToUpdate.PaymentType == PaymentTypeCodes.UcDavisAccount ||
+                orderToUpdate.PaymentType == PaymentTypeCodes.UcOtherAccount)
+            {
+                var orderDetails = orderToUpdate.GetOrderDetails();
+                model.Account = model.Account.SafeToUpper();
+                if (orderDetails.Payment.Account != model.Account)
+                {
+                    model.OrderReviewModel = new OrderReviewModel
+                    {
+                        Order = orderToUpdate,
+                        OrderDetails = orderDetails,
+                        HideLabDetails = false
+                    };
+                    if (string.IsNullOrWhiteSpace(model.Account))
+                    {                        
+                        model.Account = model.OrderReviewModel.OrderDetails.Payment.Account;
+                        ModelState.AddModelError("Account", "Account is required");                        
+                    }
+
+                    if (orderToUpdate.PaymentType == PaymentTypeCodes.UcDavisAccount)
+                    {
+                        try
+                        {
+                            orderDetails.Payment.AccountName = await _financialService.GetAccountName(model.Account);
+                        }
+                        catch
+                        {
+                            orderDetails.Payment.AccountName = string.Empty;
+                        }
+
+                        //order.SaveDetails(orderDetails);
+                        if (string.IsNullOrWhiteSpace(orderDetails.Payment.AccountName))
+                        {
+                            ModelState.AddModelError("Account","Unable to verify UC Account number.");
+                        }
+                    }
+                    if (!ModelState.IsValid)
+                    {
+                        ErrorMessage = "Errors Detected. Override failed";
+                        return View(model);
+                    }
+
+                    orderDetails.Payment.Account = model.Account;
+                    orderToUpdate.SaveDetails(orderDetails);
                 }
             }
 

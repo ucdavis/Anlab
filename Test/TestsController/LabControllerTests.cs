@@ -36,6 +36,8 @@ namespace Test.TestsController
         public Mock<IFileStorageService> MockFileStorageService { get; set; }
         public Mock<ISlothService> MockSlothService { get; set; }
 
+        public Mock<IFinancialService> MockFinancialService { get; set; }
+
         public Mock<IFormFile> MockFormFile { get; set; }
 
 
@@ -59,6 +61,7 @@ namespace Test.TestsController
             MockFileStorageService = new Mock<IFileStorageService>();
             MockSlothService = new Mock<ISlothService>();
             MockFormFile = new Mock<IFormFile>();
+            MockFinancialService = new Mock<IFinancialService>();
 
             var mockDataProvider = new Mock<SessionStateTempDataProvider>();
 
@@ -80,7 +83,7 @@ namespace Test.TestsController
 
 
             Controller = new LabController(MockDbContext.Object, MockOrderService.Object, MockLabworksService.Object,
-                MockOrderMessagingService.Object, MockFileStorageService.Object, MockSlothService.Object)
+                MockOrderMessagingService.Object, MockFileStorageService.Object, MockSlothService.Object, MockFinancialService.Object)
             {
                 ControllerContext = new ControllerContext
                 {
