@@ -206,6 +206,34 @@ namespace AnlabMvc.Services
             }
 
             var allTests = orderToUpdate.GetTestDetails();
+            var testIds = allTests.Where(a => orderFromDb.TestCodes.Contains(a.Id)).Select(s => s.Id).ToArray();
+
+            if (orderFromDb.TestCodes.Count != testIds.Length)
+            {
+                //Oh No!!! tests were returned that we don't know about
+                var foundCodes = allTests.Where(a => testIds.Contains(a.Id)).Select(s => s.Id).Distinct().ToList();
+                rtValue.MissingCodes = orderFromDb.TestCodes.Except(foundCodes).ToList();
+
+                var currentPrices = await PopulateTestItemModel(true);
+                rtValue.MissingTestsToAdd = currentPrices.Where(a => rtValue.MissingCodes.Contains(a.Id)).ToList();
+                if (rtValue.MissingTestsToAdd.Count != rtValue.MissingCodes.Count)
+                {
+                    return rtValue;
+                }
+
+                var testIdsList = testIds.ToList();
+
+                foreach (var missingWithPrice in rtValue.MissingTestsToAdd)
+                {
+                    allTests.Add(missingWithPrice);
+                    testIdsList.Add(missingWithPrice.Id);
+                }
+
+                testIds = testIdsList.ToArray();
+                rtValue.MissingCodes = new List<string>(); //Clear it out                
+            }
+
+
             var restoreTests = orderToUpdate.GetBackedupTestDetails();
             if (restoreTests.Any())
             {
@@ -218,11 +246,11 @@ namespace AnlabMvc.Services
                         continue;
                     }
 
-                    test = restoreTest.ShallowCopy();
+                    test = restoreTest.ShallowCopy(); //This is doing something even if it doesn't look like it.
                 }
             }
 
-            var testIds = allTests.Where(a => orderFromDb.TestCodes.Contains(a.Id)).Select(s => s.Id).ToArray();
+            
             var groupTestIds = testIds.Where(a => a.StartsWith("G-", StringComparison.OrdinalIgnoreCase)).ToArray();
 
             if (groupTestIds.Any())
@@ -252,14 +280,7 @@ namespace AnlabMvc.Services
 
             var tests = PopulateSelectedTestsItemModel(testIds, allTests);
 
-            if (orderFromDb.TestCodes.Count != testIds.Length)
-            {
-                //Oh No!!! tests were returned that we don't know about
-                var foundCodes = allTests.Where(a => testIds.Contains(a.Id)).Select(s => s.Id).Distinct().ToList();
-                rtValue.MissingCodes = orderFromDb.TestCodes.Except(foundCodes).ToList();
-                
-                return rtValue;
-            }
+
 
 
             var orderDetails = orderToUpdate.GetOrderDetails();

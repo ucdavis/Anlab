@@ -221,6 +221,16 @@ namespace AnlabMvc.Controllers
 
             }
 
+            if (result.MissingTestsToAdd.Any())
+            {
+                var allTests = order.GetTestDetails();
+                foreach (var missingTest in result.MissingTestsToAdd)
+                {
+                    allTests.Add(missingTest);
+                }
+                order.SaveTestDetails(allTests);
+            }
+
             orderDetails.Quantity = result.Quantity;
             orderDetails.SelectedTests = result.SelectedTests;
             orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.IsInternalClient ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
