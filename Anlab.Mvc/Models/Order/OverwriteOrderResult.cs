@@ -12,11 +12,13 @@ namespace AnlabMvc.Models.Order
         {
             SelectedTests = new List<TestDetails>();
             MissingCodes = new List<string>();
+            MissingTestsToAdd = new List<TestItemModel>();
         }
         public IList<TestDetails> SelectedTests { get; set; }
 
         public IList<TestItemModel> BackedupTests { get; set; }
-        public IList<String> MissingCodes { get; set; }
+        public IList<TestItemModel> MissingTestsToAdd { get; set; }
+         public IList<String> MissingCodes { get; set; }
         public string ErrorMessage { get; set; }
         
         public string ClientId { get; set; }

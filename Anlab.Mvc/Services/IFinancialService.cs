@@ -28,7 +28,7 @@ namespace AnlabMvc.Services
             var accountModel = new AccountModel(account);
             string url;
             string validationUrl;
-            if (!String.IsNullOrWhiteSpace(accountModel.SubAccount))
+            if (!string.IsNullOrWhiteSpace(accountModel.SubAccount))
             {
                 validationUrl =
                     $"{_appSettings.FinancialLookupUrl}/subaccount/{accountModel.Chart}/{accountModel.Account}/{accountModel.SubAccount}/isvalid";

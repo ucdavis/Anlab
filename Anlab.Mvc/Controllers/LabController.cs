@@ -124,7 +124,7 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRequestNumber(int id, bool confirm, string requestNum)
         {
-            if (String.IsNullOrWhiteSpace(requestNum))
+            if (string.IsNullOrWhiteSpace(requestNum))
             {
                 ErrorMessage = "A request number is required";
                 return RedirectToAction("AddRequestNumber");
@@ -221,6 +221,16 @@ namespace AnlabMvc.Controllers
 
             }
 
+            if (result.MissingTestsToAdd.Any())
+            {
+                var allTests = order.GetTestDetails();
+                foreach (var missingTest in result.MissingTestsToAdd)
+                {
+                    allTests.Add(missingTest);
+                }
+                order.SaveTestDetails(allTests);
+            }
+
             orderDetails.Quantity = result.Quantity;
             orderDetails.SelectedTests = result.SelectedTests;
             orderDetails.Total = orderDetails.SelectedTests.Sum(x => x.Total) + (orderDetails.Payment.IsInternalClient ? orderDetails.InternalProcessingFee : orderDetails.ExternalProcessingFee);
@@ -278,7 +288,7 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Orders");
             }
 
-            if(String.IsNullOrWhiteSpace(order.RequestNum))
+            if(string.IsNullOrWhiteSpace(order.RequestNum))
             {
                 ErrorMessage = "You must add a request number first";
                 return RedirectToAction("AddRequestNumber", new { id = id });

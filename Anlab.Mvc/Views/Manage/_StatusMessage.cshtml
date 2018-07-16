@@ -1,7 +1,7 @@
-﻿@using System
+@using System
 @model string
 
-@if (!String.IsNullOrEmpty(Model))
+@if (!string.IsNullOrEmpty(Model))
 {
     var statusMessageClass = Model.StartsWith("Error") ? "danger" : "success";
     <div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
