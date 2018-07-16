@@ -122,7 +122,7 @@
             <strong>Project Title / Location:</strong>
             <span>@Model.Order.Project</span>
          </div>
-         @if (!String.IsNullOrWhiteSpace(Model.OrderDetails.Commodity))
+         @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.Commodity))
          {
          <div class="form-group">
             <strong>Commodity</strong>
@@ -148,7 +148,7 @@
          </div>
       </div>
    </div>
-   @if (!String.IsNullOrWhiteSpace(Model.OrderDetails.AdditionalInfo))
+   @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.AdditionalInfo))
    {
    <div class="form-group">
       <strong>Comments, special test requests and missing samples</strong>
@@ -200,11 +200,11 @@
             <td>
                @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
                {
-               <span>@(String.Format("{0:C}", Model.OrderDetails.InternalProcessingFee))</span>
+               <span>@(string.Format("{0:C}", Model.OrderDetails.InternalProcessingFee))</span>
                }
                else
                {
-               <span>@(String.Format("{0:C}", Model.OrderDetails.ExternalProcessingFee))</span>
+               <span>@(string.Format("{0:C}", Model.OrderDetails.ExternalProcessingFee))</span>
                }
             </td>
          </tr>
@@ -215,7 +215,7 @@
             <td></td>
             <td></td>
             <th>Total</th>
-            <th>@(String.Format("{0:C}", Model.OrderDetails.GrandTotal))</th>
+            <th>@(string.Format("{0:C}", Model.OrderDetails.GrandTotal))</th>
          </tr>
       </tfoot>
    </table>

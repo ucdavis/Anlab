@@ -124,7 +124,7 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRequestNumber(int id, bool confirm, string requestNum)
         {
-            if (String.IsNullOrWhiteSpace(requestNum))
+            if (string.IsNullOrWhiteSpace(requestNum))
             {
                 ErrorMessage = "A request number is required";
                 return RedirectToAction("AddRequestNumber");
@@ -288,7 +288,7 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Orders");
             }
 
-            if(String.IsNullOrWhiteSpace(order.RequestNum))
+            if(string.IsNullOrWhiteSpace(order.RequestNum))
             {
                 ErrorMessage = "You must add a request number first";
                 return RedirectToAction("AddRequestNumber", new { id = id });
