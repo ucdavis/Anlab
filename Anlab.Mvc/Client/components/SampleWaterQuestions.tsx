@@ -58,12 +58,6 @@ export class SampleWaterQuestions extends React.Component<
     );
   };
 
-  private _changeReporting = () => {
-    this.props.handleChange(
-      "waterReportedInMgL",
-      !this.props.questions.waterReportedInMgL
-    );
-  };
 
   private _validate = (v: string) => {
     let error = null;
@@ -140,30 +134,6 @@ export class SampleWaterQuestions extends React.Component<
               />
             </p>
           )}
-        </p>
-        <label className="form_header margin-bottom-zero">
-          Cl and Soluble Ca, Mg, and Na are reported in meq/L. Do you want them
-          reported in mg/L?
-        </label>
-        <p>
-          <label>
-            <input
-              type="radio"
-              checked={this.props.questions.waterReportedInMgL}
-              onChange={this._changeReporting}
-            />{" "}
-            Yes
-          </label>
-        </p>
-        <p>
-          <label>
-            <input
-              type="radio"
-              checked={!this.props.questions.waterReportedInMgL}
-              onChange={this._changeReporting}
-            />{" "}
-            No
-          </label>
         </p>
       </div>
     );

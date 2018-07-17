@@ -400,7 +400,7 @@ namespace AnlabMvc.Services
             {
                 sb.AppendFormat("{0}: {1}{2}", "Water filtered", orderDetails.SampleTypeQuestions.WaterFiltered.ToYesNoString(), Environment.NewLine);
                 sb.AppendFormat("{0}: {1} {2}{3}", "Water preservative added", orderDetails.SampleTypeQuestions.WaterPreservativeAdded.ToYesNoString(), orderDetails.SampleTypeQuestions.WaterPreservativeInfo, Environment.NewLine);
-                sb.AppendFormat("{0}: {1}{2}", "Water reported in mg/L", orderDetails.SampleTypeQuestions.WaterReportedInMgL.ToYesNoString(), Environment.NewLine);
+                //sb.AppendFormat("{0}: {1}{2}", "Water reported in mg/L", orderDetails.SampleTypeQuestions.WaterReportedInMgL.ToYesNoString(), Environment.NewLine); //For now they don't want this question.
             }
 
             if (orderDetails.AdditionalInfoList != null)
