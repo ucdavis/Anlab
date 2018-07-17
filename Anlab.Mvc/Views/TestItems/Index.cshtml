@@ -91,13 +91,13 @@
                 }
             </td>
             <td>
-                @if (!String.IsNullOrEmpty(item.Notes))
+                @if (!string.IsNullOrEmpty(item.Notes))
                 {
                     <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@item.NotesEncoded')" title="@item.NotesEncoded" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
                 }
             </td>
             <td>
-                @if (!String.IsNullOrEmpty(item.AdditionalInfoPrompt))
+                @if (!string.IsNullOrEmpty(item.AdditionalInfoPrompt))
                 {
                     <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@item.AdditionalInfoPrompt')" title="@item.AdditionalInfoPrompt" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
                 }

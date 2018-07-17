@@ -67,7 +67,7 @@ namespace Anlab.Core.Domain
             {
                 return Name.Split(' ')[0];
             }
-            return String.Empty;
+            return string.Empty;
         }
         public string GetLastName()
         {
@@ -79,7 +79,7 @@ namespace Anlab.Core.Domain
             {
                 return Name.Split(' ')[1];
             }
-            return String.Empty;
+            return string.Empty;
         }
 
         public string LastFirst

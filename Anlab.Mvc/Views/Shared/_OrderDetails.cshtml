@@ -50,7 +50,7 @@
     }
 
 </div>
-@if (!String.IsNullOrWhiteSpace(Model.Order.ClientId))
+@if (!string.IsNullOrWhiteSpace(Model.Order.ClientId))
 {
     <div class="form-group">
         <strong>Client Id</strong>
@@ -61,7 +61,7 @@
         <span>@Model.OrderDetails.ClientInfo.Name</span>
     </div>
 }
-@if (!String.IsNullOrWhiteSpace(Model.OrderDetails.Commodity))
+@if (!string.IsNullOrWhiteSpace(Model.OrderDetails.Commodity))
 {
     <div class="form-group">
         <strong>Commodity</strong>
@@ -147,7 +147,7 @@
     }
 </div>
 
-@if (!String.IsNullOrWhiteSpace(Model.OrderDetails.LabComments))
+@if (!string.IsNullOrWhiteSpace(Model.OrderDetails.LabComments))
 {
     <div class="form-group">
         <strong>Lab Comments</strong>
@@ -208,7 +208,7 @@
             <tr>
                 <td>
                     @test.Analysis
-                    @if (temp != null && !String.IsNullOrEmpty(temp.Notes))
+                    @if (temp != null && !string.IsNullOrEmpty(temp.Notes))
                     {
                         <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@temp.Notes')" title="@temp.Notes" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
                     }
@@ -244,11 +244,11 @@
             <td>
                 @if (Model.OrderDetails.Payment.IsInternalClient)
                 {
-                    <span>@(String.Format("{0:C}", Model.OrderDetails.InternalProcessingFee))</span>
+                    <span>@(string.Format("{0:C}", Model.OrderDetails.InternalProcessingFee))</span>
                 }
                 else
                 {
-                    <span>@(String.Format("{0:C}", Model.OrderDetails.ExternalProcessingFee))</span>
+                    <span>@(string.Format("{0:C}", Model.OrderDetails.ExternalProcessingFee))</span>
                 }
             </td>
         </tr>
@@ -257,7 +257,7 @@
             <tr>
                 <th>Other Costs</th>
                 <td colSpan="3" />
-                <td><span>@(String.Format("{0:C}", hiddenCosts))</span></td>
+                <td><span>@(string.Format("{0:C}", hiddenCosts))</span></td>
             </tr>
         }
         @if (Model.OrderDetails.AdjustmentAmount != 0)
@@ -265,14 +265,14 @@
             <tr>
                 <th>Adjustment Amount</th>
                 <td colSpan="3" />
-                <td><span>@(String.Format("{0:C}", Model.OrderDetails.AdjustmentAmount))</span></td>
+                <td><span>@(string.Format("{0:C}", Model.OrderDetails.AdjustmentAmount))</span></td>
             </tr>
 
         }
         <tr>
             <th>Total Amount</th>
             <td colSpan="3" />
-            <th><span>@(String.Format("{0:C}", Model.OrderDetails.GrandTotal))</span></th>
+            <th><span>@(string.Format("{0:C}", Model.OrderDetails.GrandTotal))</span></th>
         </tr>
     </tfoot>
 </table>
