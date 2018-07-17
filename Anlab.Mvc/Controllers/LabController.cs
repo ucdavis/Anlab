@@ -368,7 +368,7 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Orders");
             }
 
-            if (model.UploadFile == null || model.UploadFile.Length <= 0)
+            if (order.ResultsFileIdentifier == null && ( model.UploadFile == null || model.UploadFile.Length <= 0))
             {
                 ErrorMessage = "You need to upload the results at this time.";
                 return RedirectToAction("Finalize", new{id});
@@ -391,7 +391,10 @@ namespace AnlabMvc.Controllers
             }
 
             //File Upload
-            order.ResultsFileIdentifier = await _fileStorageService.UploadFile(model.UploadFile);
+            if (model.UploadFile != null)
+            {
+                order.ResultsFileIdentifier = await _fileStorageService.UploadFile(model.UploadFile);
+            }
 
             order = await UpdateOrderFromLabworksResult(order, result, model);
             
