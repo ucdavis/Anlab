@@ -5,7 +5,27 @@
     var host = Context.Request.Host;
     var path = $"{protocol}://{host}";
     var image = $"{path}/{Url.Content("~/Images/anlab170.png")}";
-    var dispositionText = $"This still needs to be updated by code. But it might say something like: Note that samples for work request {Model.RequestNum} will be discarded after SOMEDATE (1 month later). Or....  Please contact the lab to arrange pickup of your samples.";
+    var dispositionText = string.Empty;
+    switch (order.LabworksSampleDisposition.SafeToUpper())
+    {
+        case "S":
+            dispositionText = "I will pick up samples not later than 30 days from report date.";
+            break;
+        case "D":
+        case "A":
+            dispositionText = "Dispose of samples 30 days from report date.";
+            break;
+        case "R":
+            dispositionText = "Return samples at client cost.";
+            break;
+        case "H" :
+            dispositionText = "Samples are being held.";
+            break;
+        default:
+            dispositionText = "Please enquire about your sample disposition.";
+            break;
+    }
+     
 }
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" style="background:#f3f3f3!important">
