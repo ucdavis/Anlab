@@ -11,7 +11,7 @@ export class AdditionalInfo extends React.Component<IAdditionalInfoProps, {}> {
     return (
       <div className="form-group">
         <label htmlFor="additionalInfo">
-          Comments, special test requests and missing samples
+          Comments, sampled date range, special test requests, and missing samples
         </label>
         <textarea
           className="form-control"
