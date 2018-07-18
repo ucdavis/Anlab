@@ -165,6 +165,8 @@ namespace AnlabMvc.Services
                     }
 
                     var rtValue = clientInfo.ElementAt(0);
+
+                    TryToFixEmails(rtValue);
                     if (rtValue.CopyEmail != null)
                     {
                         if(rtValue.CopyEmail.IsEmailValid())
@@ -200,6 +202,21 @@ namespace AnlabMvc.Services
             catch
             {
                 return new ClientDetailsLookupModel {Name = "Unknown"};
+            }
+
+        }
+
+        private void TryToFixEmails(ClientDetailsLookupModel rtValue)
+        {
+            if (!string.IsNullOrWhiteSpace(rtValue.CopyEmail) && rtValue.CopyEmail.Trim().EndsWith("@"))
+            {
+                rtValue.CopyEmail = $"{rtValue.CopyEmail.Trim()}ucdavis.edu";
+            }
+
+
+            if (!string.IsNullOrWhiteSpace(rtValue.SubEmail) && rtValue.SubEmail.Trim().EndsWith("@"))
+            {
+                rtValue.SubEmail = $"{rtValue.SubEmail.Trim()}ucdavis.edu";
             }
 
         }
