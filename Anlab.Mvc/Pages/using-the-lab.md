@@ -25,7 +25,7 @@ title: "Using the Lab"
 
   <p>A print out of the Work Order receipt is submitted with the samples as the Work Request Form.</p>
 
-  <p>Certain analytical tests may have specific requirements concerning sample size, preparation, and storage. These requirements are described in the section titled <a asp-area="" asp-controller="Home" asp-action="SamplingAndPreparation">Sampling and Preparation</a>.</p>
+  <p>Certain analytical tests may have specific requirements concerning sample size, preparation, and storage. These requirements are described in the section titled <a href="/home/SamplingAndPreparation">Sampling and Preparation</a>.</p>
 
 
   <p><strong>Please label each container consecutively beginning with the number 1</strong> for each Work Order. A waterproof marker or ink appropriate to sample storage (e.g., freezer marking pen for frozen samples) should be used. Please use the “Comment" field on the Work Order if there is an exception, such as a missing number. If sample descriptions are sent to the Lab via e-mail, they can be included in the final report. We can accommodate a one column list of identifiers, not to exceed seven characters (including any spaces), in the same order that the samples are numbered. Our reports are prepared in Excel format, and it is also possible for you to insert your descriptions into the report when you receive your results.
@@ -33,20 +33,18 @@ title: "Using the Lab"
   <p>Samples can be delivered by hand or sent to:</p>
   <blockquote>
       <p class="callout">UC DAVIS ANALYTICAL LABORATORY<br />Hoagland Annex<br />University of California<br />One Shields Ave<br />Davis, CA 95616-5270</p>
-      <p><a href="http://campusmap.ucdavis.edu/?b=81" target="_blank">Campus Map</a>.  Or click here to access 
-          <a href="resolveuid/360476ccb95f48ee917a77d619408aea"
-             >Directions/Parking</a> to our facilities.</p>
+      <p><a href="http://campusmap.ucdavis.edu/?b=81" target="_blank">Campus Map</a>.</p>
       <p>Our Receiving Facility staff can answer questions on sample preparation and shipping. 530-752-0266</p>
   </blockquote>
   <h3><a name="three"></a>Processing the Samples:</h3>
   <p>Samples are logged in upon receipt and according to the information provided in the Work Order.  The submitter(s) specified on the Work Order will then receive a confirmation e-mail with a summary of the anticipated charges and the Work Request number assigned to that set of samples. The Work Request number is the reference number used when making inquiries.</p>
 
-<p>In fairness to all submitters, samples are processed in the order received by the Lab. If you feel your testing needs to be conducted on a "rush" basis, contact the Lab to make arrangements. Click here to view the <a asp-controller="Pages" asp-action="rush-request">Rush Request Policy</a>.</p>
+<p>In fairness to all submitters, samples are processed in the order received by the Lab. If you feel your testing needs to be conducted on a "rush" basis, contact the Lab to make arrangements. Click here to view the <a href="/pages/rush-request">Rush Request Policy</a>.</p>
 
 <p>The Lab will dry and sub-sample as needed. If sample material requires grinding/pulverizing, that service is also provided (at client cost).</p>
 
   <h3><a name="four"></a>Analyzing the Samples:</h3>
-  <p>The samples are tested using standard methods as described in the section titled Methods of Analyses. At least ten percent of the samples are tested in duplicate at no cost as part of our quality assurance program. We also run at least one standard reference material sample with each set of analyses. These QC results are included in the final report. A description of the Lab's quality assurance and quality control measures are described in the section titled <a asp-controller="Pages" asp-action="qa-qc">QA/QC</a>.</p>
+  <p>The samples are tested using standard methods as described in the section titled Methods of Analyses. At least ten percent of the samples are tested in duplicate at no cost as part of our quality assurance program. We also run at least one standard reference material sample with each set of analyses. These QC results are included in the final report. A description of the Lab's quality assurance and quality control measures are described in the section titled <a href="/pages/qa-qc">QA/QC</a>.</p>
 
   <h3>Reporting the Results:</h3>
   <p>A link to the final report is e-mailed to the client when testing is complete. Reports are in Excel format. A copy will also be sent to individual specified in the Work Order. Please review the results upon receipt of the report.For questions regarding the report, please contact the Lab (530-752-0147).</p>
