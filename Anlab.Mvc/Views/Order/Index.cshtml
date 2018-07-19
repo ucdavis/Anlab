@@ -52,39 +52,51 @@
         </tbody>
     </table>
 
-    <table id="table" class="table">
+    <table id="table" class="table table-hover">
         <thead>
-        <tr>
-            <th>Project</th>
-            <th>Work Req #</th>
-            <th>Status</th>
-            <th>Paid</th>
-            <th>Created</th>
-            <th>Updated</th>
-        </tr>
+            <tr>
+                <th>Work Order</th>
+                <th>Work Request</th>
+                <th>Project</th>
+                <th>Status</th>
+                <th>Paid</th>
+                <th>Created</th>
+                <th>Updated</th>
+            </tr>
         </thead>
         <tbody>
         @foreach (var order in Model)
         {
-            <tr>
-                <td>@if (order.Status == OrderStatusCodes.Created)
-                    {
-                        <a asp-action="Confirmation" asp-route-id="@order.Id">@order.Project</a>
-                    }
-                    else if (order.Status == OrderStatusCodes.Complete || order.Status == OrderStatusCodes.Finalized)
-                    {
-                        <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier">@order.Project</a>
-                    }
-                    else if (order.Status == OrderStatusCodes.Confirmed)
-                    {
-                        <a asp-action="Confirmed" asp-route-id="@order.Id">@order.Project</a>
-                    }
-                    else
-                    {
-                        <a asp-action="Details" asp-route-id="@order.Id">@order.Project</a>
-                    }
-                </td>
+            var controller = "Order";
+            var action = string.Empty;
+            var route = string.Empty;
+            if (order.Status == OrderStatusCodes.Created)
+            {
+                action = "Confirmation";
+                route = order.Id.ToString();
+            }
+            else if (order.Status == OrderStatusCodes.Complete || order.Status == OrderStatusCodes.Finalized)
+            {
+                controller = "Results";
+                action = "Link";
+                route = order.ShareIdentifier.ToString();                
+            }
+            else if (order.Status == OrderStatusCodes.Confirmed)
+            {
+                action = "Confirmed";
+                route = order.Id.ToString();                
+            }
+            else
+            {
+                action = "Details";
+                route = order.Id.ToString();
+            }
+            <tr data-href="@controller/@action/@route">
+                <td>@order.Id</td>
                 <td>@order.RequestNum</td>
+                <td>
+                    @order.Project
+                </td>
                 <td>@order.Status</td>
                 <td>
                     @if (order.Paid)
@@ -95,7 +107,6 @@
                 </td>
                 <td>@order.Created.ToPacificTime().ToString("g")</td>
                 <td>@order.Updated.ToPacificTime().ToString("g")</td>
-
             </tr>
         }
         </tbody>
@@ -106,13 +117,21 @@
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css"/>
 
     <style>
         #max, #min, #status {
             margin: 0 5px 5px 0;
             height: 30px;
         }
+        #table tbody tr {
+            cursor: pointer;
+        }
+        /*#table tbody tr:hover {
+            color: blue;
+        }*/
+
+       
     </style>
 
 }
@@ -128,17 +147,17 @@
                  "sorting": [[5, "desc"]],
                  "columnDefs": [
                      {
-                         "type": "date", "targets": [4, 5]
+                         "type": "date", "targets": [5, 6]
                      }
                  ],
                  "stateSave": true,
                  "stateDuration": 60 * 10,
                  "createdRow": function (row, data, index) {
-                     if (data[2] == "Created")
+                     if (data[3] == "Created")
                      {
                          $(row).addClass('warning');
                      }
-                     if (data[2] == "Finalized" && !data[3])
+                     if (data[3] == "Finalized" && !data[4])
                      {
                          $(row).addClass('danger');
                      }
@@ -162,7 +181,7 @@
                  var startDate = new Date(data[5]);
                  startDate.setHours(0, 0, 0, 0);
 
-                 var status = data[2];
+                 var status = data[3];
                  var statusFilter = $('#status').val();
 
                  if (statusFilter == "All" || status == statusFilter) {
@@ -175,5 +194,8 @@
              }
          );
 
+         $("#table tbody").on("click", "tr", function() {
+            window.location = $(this).data("href");
+         });
     </script>
 }
