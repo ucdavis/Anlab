@@ -336,6 +336,9 @@ export default class OrderForm extends React.Component<
                 {placingOrder && (<div>
                     <div className="form_wrap">
                         <label className="form_header">What date were the items sampled?</label>
+                        <p className="help-block">
+                            Note: If you have a date range or the sample date is not applicable, please specifiy that in the comments below.
+                        </p>
                         <DateSampled
                             date={dateSampled}
                             handleChange={this._handleChange}
