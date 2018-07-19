@@ -134,25 +134,6 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4 class="panel-title"><a href="#olive" data-toggle="collapse" data-parent="#accordion">Olive Oil Methods</a></h4>
-            </div>
-            <div class="panel-collapse collapse" id="olive">
-                <div class="panel-body">
-                    <p><strong>Sample Amount:</strong> Submit 50mL for chemical testing.</p>
-                    <p><strong>Storage:</strong> Store sample at room temperature.  Avoid direct sunlight.</p>
-                    <p><strong>Containers:</strong> Amber or foil wrapped glass bottles.</p>
-                    <h3>Method Summaries:</h3>
-                    <ul>
-                        @foreach (var method in Model.Where(x => x.Id >= 950 && x.Id < 1000))
-                        {
-                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
-                        }
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
                 <h4 class="panel-title"><a href="#water" data-toggle="collapse" data-parent="#accordion">Water and Waste Water</a></h4>
             </div>
             <div class="panel-collapse collapse" id="water">
@@ -164,22 +145,6 @@
                     <h3>Method Summaries</h3>
                     <ul>
                         @foreach (var method in Model.Where(x => x.Id >= 800 && x.Id < 900))
-                        {
-                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
-                        }
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title"><a href="#misc" data-toggle="collapse" data-parent="#accordion">Miscellaneous Methods</a></h4>
-            </div>
-            <div class="panel-collapse collapse" id="misc">
-                <div class="panel-body">
-                    <p>Miscellaneous Methods</p>
-                    <ul>
-                        @foreach (var method in Model.Where(x => x.Id == 905))
                         {
                             <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
                         }

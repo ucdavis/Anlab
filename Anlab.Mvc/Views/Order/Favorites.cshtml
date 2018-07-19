@@ -20,11 +20,12 @@
         </div>
     }
 
-    <table id="table" class="table">
+    <table id="table" class="table table-hover">
         <thead>
         <tr>
+            <th>Work Order</th>
+            <th>Work Request</th>
             <th>Project</th>
-            <th>Work Req #</th>
             <th>Status</th>
             <th>Paid</th>
             <th>Created</th>
@@ -35,14 +36,17 @@
         <tbody>
         @foreach (var order in Model)
         {
-            <tr>
-                <td>
-                    @if (order.Status == OrderStatusCodes.Complete || order.Status == OrderStatusCodes.Finalized)
-                    {
-                        <a asp-controller="Results" asp-action="Link" asp-route-id="@order.ShareIdentifier">@order.Project</a>
-                    }
-                </td>
+            var url = string.Empty;
+            if (order.Status == OrderStatusCodes.Complete || order.Status == OrderStatusCodes.Finalized)
+            {
+                url = string.Format("/Results/Link/{0}", order.ShareIdentifier);
+            }
+            <tr data-href="@url">
+                <td>@order.Id</td>
                 <td>@order.RequestNum</td>
+                <td>
+                    @order.Project
+                </td>
                 <td>@order.Status</td>
                 <td>
                     @if (order.Paid)
@@ -56,7 +60,7 @@
                 <td>
                     <form asp-action="DeleteLink" asp-controller="Order" method="post" autocomplete="off">
                         <input type="hidden" name="id" value="@order.ShareIdentifier" />
-                        <button type="submit" class="btn-danger"  aria-hidden="true"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                        <button type="submit" class="btn-danger" aria-hidden="true"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
                     </form>
                 </td>
             </tr>
@@ -68,6 +72,11 @@
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+    <style>
+        #table tbody tr {
+            cursor: pointer;
+        }
+    </style>
 }
 @section Scripts
 {
@@ -76,11 +85,11 @@
     <script type="text/javascript">
         $(function() {
             var table = $("#table").DataTable({
-                "sorting": [[5, "desc"]],
+                "sorting": [[6, "desc"]],
                 "columnDefs": [
                     {
                         "type": "date",
-                        "targets": [4, 5],
+                        "targets": [5, 6],
                         "orderable": false, "targets": [-1],
                         "searchable":false, "targets": -1 
                     }
@@ -89,15 +98,18 @@
                 "stateSave": true,
                 "stateDuration": 60 * 10,
                 "createdRow": function(row, data, index) {
-                    if (data[2] == "Created") {
+                    if (data[3] == "Created") {
                         $(row).addClass('warning');
                     }
-                    if (data[2] == "Finalized" && !data[3]) {
+                    if (data[3] == "Finalized" && !data[4]) {
                         $(row).addClass('danger');
                     }
                 }
             });
 
+        });
+        $("#table tbody").on("click", "tr", function() {
+            window.location = $(this).data("href");
         });
 
     </script>

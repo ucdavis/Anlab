@@ -4,42 +4,46 @@
 @{
     ViewBag.Title = "Current Prices";
 }
+<h3>
+    For an estimate of charges, please Browse Tests and Prices under <a asp-controller="Order" asp-action="Create">Orders/Create Orders</a>
+</h3>
 
 <div class="col">
     <table class="table">
         <thead>
-        <tr>
-            <th rowspan="2">@Html.DisplayNameFor(model => model[0].Category)</th>
-            <th rowspan="2">@Html.DisplayNameFor(model => model[0].Group)</th>
+            <tr>
+                <th rowspan="2">@Html.DisplayNameFor(model => model[0].Category)</th>
+                <th rowspan="2">@Html.DisplayNameFor(model => model[0].Group)</th>
 
-            <th rowspan="2">@Html.DisplayNameFor(model => model[0].Analysis)</th>
-            <th colspan="2">UC Clients</th><th colspan="2">Non-UC Clients</th>
-        </tr>
-        <tr>
-
-            @*<th>@Html.DisplayNameFor(model => model[0].Id)</th>*@
-            <th>Cost</th>
-            <th>Setup cost</th>
-            <th>Cost</th>
-            <th>Setup cost</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in Model.OrderBy(a => a.RequestOrder))
-        {
+                <th rowspan="2">@Html.DisplayNameFor(model => model[0].Analysis)</th>
+                <th colspan="2">UC Clients</th>
+                <th colspan="2">Non-UC Clients</th>
+            </tr>
             <tr>
 
-                <td>@item.Category.Replace("|", " / ")</td>
-                <td>@Html.DisplayFor(modelItem => item.Group)</td>
-                <td>@Html.DisplayFor(modelItem => item.Analysis)</td>
-                @*<td>@Html.DisplayFor(modelItem => item.Id)</td>*@
-                <td>@Html.DisplayFor(modelItem => item.InternalCost)</td>
-                <td>@Html.DisplayFor(modelItem => item.InternalSetupCost)</td>
-                <td>@Html.DisplayFor(modelItem => item.ExternalCost)</td>
-                <td>@Html.DisplayFor(modelItem => item.ExternalSetupCost)</td>
+                @*<th>@Html.DisplayNameFor(model => model[0].Id)</th>*@
+                <th>Cost</th>
+                <th>Setup cost</th>
+                <th>Cost</th>
+                <th>Setup cost</th>
             </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderBy(a => a.RequestOrder))
+            {
+                <tr>
 
-        }
+                    <td>@item.Category.Replace("|", " / ")</td>
+                    <td>@Html.DisplayFor(modelItem => item.Group)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Analysis)</td>
+                    @*<td>@Html.DisplayFor(modelItem => item.Id)</td>*@
+                    <td>@Html.DisplayFor(modelItem => item.InternalCost)</td>
+                    <td>@Html.DisplayFor(modelItem => item.InternalSetupCost)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ExternalCost)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ExternalSetupCost)</td>
+                </tr>
+
+            }
         </tbody>
     </table>
 </div>
@@ -47,18 +51,22 @@
 
 
 @section AdditionalStyles
-{
+    {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+    @{ await Html.RenderPartialAsync("_DataTableFixedHeaderStylePartial");}
+    
 }
 
 @section Scripts
     {
     @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+    @{ await Html.RenderPartialAsync("_DataTableFixedHeaderScriptsPartial"); }
     <script type="text/javascript">
         $(function () {
             $(".table").dataTable({
                 "lengthMenu": [[-1, 10, 25, 50], ["All", 10, 25, 50]],
-                "sort": false
+                "sort": false,
+                "fixedHeader": true
             });
         });
     </script>
