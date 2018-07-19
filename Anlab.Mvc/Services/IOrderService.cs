@@ -417,7 +417,7 @@ namespace AnlabMvc.Services
 
             if (sb.Length > 0)
             {
-                sbPre.AppendFormat("{0}{1}", "Automatically Added:", Environment.NewLine);
+                sbPre.AppendFormat("{0}{1}{2}", Environment.NewLine, "Automatically Added:", Environment.NewLine);
             }
             orderDetails.AdditionalInfo = sbPre.ToString() + sb.ToString();
 
