@@ -2,7 +2,7 @@
 @model AnlabMvc.Models.Order.OrderResultsModel
 
 @{
-    ViewData["Title"] = "Results for Work Request" + Model.OrderReviewModel.Order.RequestNum;
+    ViewData["Title"] = "Results for Work Request " + Model.OrderReviewModel.Order.RequestNum;
 }
 @section ActionButtons
 {
@@ -15,7 +15,7 @@
                 <input type="hidden" name="@pair.Key" value="@pair.Value" />
             }
             <input type="hidden" name="signature" value="@ViewBag.Signature" />
-            <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-credit-card" aria-hidden="true"></i> @(string.Format("{0:C}", Model.OrderReviewModel.OrderDetails.GrandTotal)) Pay Now</button>
+            <button type="submit" class="btn btn-primary showTooltip" aria-hidden="true" title="You must pay before you can download your results."><i class="fa fa-credit-card" aria-hidden="true"></i> @(string.Format("{0:C}", Model.OrderReviewModel.OrderDetails.GrandTotal)) Pay Now</button>
         </form>
     }
     else
@@ -27,26 +27,26 @@
                     <input type="hidden" name="id" value="@Model.OrderReviewModel.Order.ShareIdentifier"/>
                     <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-money" aria-hidden="true"></i> Confirm Payment</button>
                 </form>*@
-            <a class="btn btn-small" asp-action="ConfirmPayment" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier" style="margin-right: 3px">
+            <a class="btn btn-small showTooltip" asp-action="ConfirmPayment" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier" style="margin-right: 3px" title="You must confirm payment before you can download your results.">
                 <i class="fa fa-money" aria-hidden="true"></i> Confirm Payment
             </a>
         }
     }
     @if (Model.OrderReviewModel.Order.Paid)
     {
-        <a class="btn btn-small" asp-action="Download" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier" style="margin-right: 3px">
+        <a class="btn btn-small showTooltip" asp-action="Download" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier" style="margin-right: 3px" title="Click here to download your results.">
             <i class="fa fa-download" aria-hidden="true"></i> Download
         </a>
         @if (User.Identity.IsAuthenticated)
         {
             <form asp-action="Copy" asp-controller="Order" method="post" autocomplete="off" style="margin-right: 3px">
                 <input type="hidden" name="id" value="@Model.OrderReviewModel.Order.ShareIdentifier" />
-                <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-files-o" aria-hidden="true"></i> Duplicate</button>
+                <button type="submit" class="btn btn-primary showTooltip" aria-hidden="true" title="Use this order to create a new order."><i class="fa fa-files-o" aria-hidden="true"></i> Duplicate</button>
             </form>
         }
         else
         {
-            <button id="sign-in" class="btn btn-primary" aria-hidden="true"><i class="fa fa-files-o" aria-hidden="true" style="margin-right: 3px"></i> Duplicate</button>
+            <button id="sign-in" class="btn btn-primary showTooltip" aria-hidden="true" title="Use this order to create a new order. But you must sign in first."><i class="fa fa-files-o" aria-hidden="true" style="margin-right: 3px"></i> Duplicate</button>
 
         }
     }
@@ -54,12 +54,12 @@
     {
         <form asp-action="SaveLink" asp-controller="Order" method="post" autocomplete="off">
             <input type="hidden" name="id" value="@Model.OrderReviewModel.Order.ShareIdentifier" />
-            <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-save" aria-hidden="true"></i> Save Link</button>
+            <button type="submit" class="btn btn-primary showTooltip" aria-hidden="true" title="Save this order in your Saved Orders for easy access in the future."><i class="fa fa-save" aria-hidden="true"></i> Save Link</button>
         </form>
     }
     else
     {
-        <button id="sign-in-to-save" class="btn btn-primary" aria-hidden="true"><i class="fa fa-files-o" aria-hidden="true"></i> Save Link</button>
+        <button id="sign-in-to-save" class="btn btn-primary showTooltip" aria-hidden="true" title="Save this order in your Saved Orders for easy access in the future.  But you must sign in first."><i class="fa fa-files-o" aria-hidden="true"></i> Save Link</button>
     }
 
 
@@ -94,5 +94,11 @@
     </script>
 
     @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
+
+    <script type="text/javascript">
+        $(function() {
+            $(".showTooltip").tooltip();
+        });
+    </script>
 
 }
