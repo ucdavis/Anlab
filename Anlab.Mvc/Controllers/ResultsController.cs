@@ -68,8 +68,6 @@ namespace AnlabMvc.Controllers
                 model.CyberSourceUrl = _appSettings.CyberSourceUrl;
             }
 
-            Message = "Use the buttons to download results, Pay, and other actions. Mouse over the buttons for more details.";
-
             return View(model);
         }
 
