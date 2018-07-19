@@ -83,6 +83,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Update="Views\Shared\_DataTableFixedHeaderStylePartial.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Shared\_DataTableFixedHeaderScriptsPartial.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="wwwroot\Images\anlab.jpeg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
