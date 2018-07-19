@@ -59,12 +59,6 @@
                      <strong>Phone:</strong>
                      <span>@Model.OrderDetails.ClientInfo.PhoneNumber</span>
                  }
-                 <br />
-                 @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.CopyPhone))
-                 {
-                     <strong>Copy To Phone:</strong>
-                     <span>@Model.OrderDetails.ClientInfo.CopyPhone</span>
-                 }
              </div>
          }
          else
