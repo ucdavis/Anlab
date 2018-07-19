@@ -5,13 +5,14 @@ title: "About Us"
 ---
 <div class="col-8">
 <div class="imagewrapper imagewrapper--right">
-  <img class="img-respo" src="/media/about_anlab.png" alt="woman in lab">
+  <img class="img-respo" src="/media/about_anlab.jpg" alt="UC Davis employee in lab">
 </div>
 <p class="lead">
-    The UC Davis Analytical Laboratory is a core support facility of the UC Davis College of Agriculture and Environmental Sciences.
+The laboratory performs analyses on selected chemical constituents of soil, plant, water and waste water, and feed in support of agricultural and environmental research. Analytical Laboratory clients are University of California academics, other educational institutions, government agencies, and research-based businesses.
+
 </p>
 
-<p>The laboratory performs analyses on selected chemical constituents of soil, plant, water and waste water, and feed in support of agricultural and environmental research and UC Cooperative Extension activities. Analytical Laboratory clients are University
+<p>The laboratory performs analyses on selected chemical constituents of soil, plant, water and waste water, and feed in support of agricultural and environmental research. Analytical Laboratory clients are University
     of California academics, other educational institutions, government agencies, and research-based businesses.</p>
 <p>In addition to analytical services, the Laboratory provides project assistance in the areas of analytical, agricultural and environmental chemistry. The Laboratory has an educational role, providing training to students and researchers in the operation
     of a number of analytical methods and instruments.</p>
@@ -24,7 +25,7 @@ title: "About Us"
     <li>The Lab became a self-supporting program under the UC Davis College of Agricultural and Environmental Sciences in 2010</li>
 </ul>
 <h2>Location and Facilities</h2>
-<p>The UC Davis Analytical Laboratory is <a href="http://campusmap.ucdavis.edu/?b=82" target="_blank" title="">located in Hoagland Hall</a> on the Davis campus of the University of California. The Receiving Department isb<a href="http://campusmap.ucdavis.edu/?b=81"target="_blank" title="">located in Hoagland Annex</a>. Both are easily reached via <a href="http://campusmap.ucdavis.edu/?l=67" target="_blank" title="">Parking Lot #27</a>.</p>
+<p>The UC Davis Analytical Laboratory is <a href="http://campusmap.ucdavis.edu/?b=82" target="_blank" title="">located in Hoagland Hall</a> on the Davis campus of the University of California. The Receiving Department is <a href="http://campusmap.ucdavis.edu/?b=81" target="_blank" title="">located in Hoagland Annex</a>. Both are easily reached via <a href="http://campusmap.ucdavis.edu/?l=67" target="_blank" title="">Parking Lot #27</a>.</p>
 <ul><li>Administrative Offices - Room 224, Hoagland Hall, 530-752-0147, <a class="external-link" href="mailto:anlab@ucdavis.edu">anlab@ucdavis.edu</a></li>
 <li>Main Laboratory Area - Room 213, Hoagland Hall</li>
 <li>Sample Receiving Area - Hoagland Annex, 530-752-0266</li>
