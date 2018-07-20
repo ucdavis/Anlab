@@ -261,19 +261,22 @@ namespace AnlabMvc.Controllers
             var provider = User.FindFirst(ClaimTypes.AuthenticationMethod)?.Value;
 
             await _signInManager.SignOutAsync();
-
+            _logger.LogInformation("User logged out.");
             if (string.IsNullOrWhiteSpace(provider))
             {
-                _logger.LogInformation("User logged out.");
+                //This should never happen.
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
-            var returnUrl = Url.Action("Index", "Home", null, Request.Scheme);
+
+            
             if (provider.Equals("Google", StringComparison.OrdinalIgnoreCase))
             {
+                var returnUrl = Url.Action("Index", "Home", null, Request.Scheme);
                 var url = $"https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue={returnUrl}";
                 return Redirect(url);
             }
 
+            //CAS logout does not support a redirect. They thought it was a security risk
             return Redirect($"{_appSettings.CasBaseUrl}logout"); //Replace with the appSettings if we do it this way.
 
         }
