@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Serilog;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
@@ -29,6 +30,7 @@ namespace AnlabMvc.Controllers
         private readonly IDirectorySearchService _directorySearchService;
         private readonly ILogger _logger;
         private readonly ILabworksService _labworksService;
+        private readonly AppSettings _appSettings;
 
         public AccountController(
             UserManager<User> userManager,
@@ -36,7 +38,8 @@ namespace AnlabMvc.Controllers
             IEmailSender emailSender,
             IDirectorySearchService directorySearchService,
             ILogger<AccountController> logger,
-            ILabworksService labworksService)
+            ILabworksService labworksService,
+            IOptions<AppSettings> appSettings)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -44,6 +47,7 @@ namespace AnlabMvc.Controllers
             _directorySearchService = directorySearchService;
             _logger = logger;
             _labworksService = labworksService;
+            _appSettings = appSettings.Value;
         }
 
         [TempData]
@@ -270,7 +274,7 @@ namespace AnlabMvc.Controllers
                 return Redirect(url);
             }
 
-            return Redirect($"https://ssodev.ucdavis.edu/cas/logout"); //Replace with the appSettings if we do it this way.
+            return Redirect($"{_appSettings.CasBaseUrl}logout"); //Replace with the appSettings if we do it this way.
 
         }
 
