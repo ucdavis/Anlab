@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Serilog;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
@@ -29,6 +30,7 @@ namespace AnlabMvc.Controllers
         private readonly IDirectorySearchService _directorySearchService;
         private readonly ILogger _logger;
         private readonly ILabworksService _labworksService;
+        private readonly AppSettings _appSettings;
 
         public AccountController(
             UserManager<User> userManager,
@@ -36,7 +38,8 @@ namespace AnlabMvc.Controllers
             IEmailSender emailSender,
             IDirectorySearchService directorySearchService,
             ILogger<AccountController> logger,
-            ILabworksService labworksService)
+            ILabworksService labworksService,
+            IOptions<AppSettings> appSettings)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -44,6 +47,7 @@ namespace AnlabMvc.Controllers
             _directorySearchService = directorySearchService;
             _logger = logger;
             _labworksService = labworksService;
+            _appSettings = appSettings.Value;
         }
 
         [TempData]
@@ -254,9 +258,27 @@ namespace AnlabMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
+            var provider = User.FindFirst(ClaimTypes.AuthenticationMethod)?.Value;
+
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            if (string.IsNullOrWhiteSpace(provider))
+            {
+                //This should never happen.
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
+
+            
+            if (provider.Equals("Google", StringComparison.OrdinalIgnoreCase))
+            {
+                var returnUrl = Url.Action("Index", "Home", null, Request.Scheme);
+                var url = $"https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue={returnUrl}";
+                return Redirect(url);
+            }
+
+            //CAS logout does not support a redirect. They thought it was a security risk
+            return Redirect($"{_appSettings.CasBaseUrl}logout"); //Replace with the appSettings if we do it this way.
+
         }
 
         public async Task<IActionResult> LogoutDirect()
