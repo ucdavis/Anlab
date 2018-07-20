@@ -1,4 +1,4 @@
-﻿---
+---
 
 title: "Using the Lab"
 
@@ -46,7 +46,7 @@ title: "Using the Lab"
   <h3><a name="four"></a>Analyzing the Samples:</h3>
   <p>The samples are tested using standard methods as described in the section titled Methods of Analyses. At least ten percent of the samples are tested in duplicate at no cost as part of our quality assurance program. We also run at least one standard reference material sample with each set of analyses. These QC results are included in the final report. A description of the Lab's quality assurance and quality control measures are described in the section titled <a href="/pages/qa-qc">QA/QC</a>.</p>
 
-  <h3>Reporting the Results:</h3>
+  <h3><a name="five"></a>Reporting the Results:</h3>
   <p>A link to the final report is e-mailed to the client when testing is complete. Reports are in Excel format. A copy will also be sent to individual specified in the Work Order. Please review the results upon receipt of the report.For questions regarding the report, please contact the Lab (530-752-0147).</p>
   <h3>Billing:</h3>
   <p>A link to billing statement with a summary of the charges is included in the email containing the final report.  UC Davis clients are automatically invoiced to the account number specified in the Work Order.  Other clients will receive payment instructions based on the type of payment they selected when creating the Work Order.
