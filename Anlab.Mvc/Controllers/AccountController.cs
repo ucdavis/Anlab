@@ -254,9 +254,24 @@ namespace AnlabMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
+            var provider = User.FindFirst(ClaimTypes.AuthenticationMethod)?.Value;
+
             await _signInManager.SignOutAsync();
-            _logger.LogInformation("User logged out.");
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+
+            if (string.IsNullOrWhiteSpace(provider))
+            {
+                _logger.LogInformation("User logged out.");
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
+            var returnUrl = Url.Action("Index", "Home", null, Request.Scheme);
+            if (provider.Equals("Google", StringComparison.OrdinalIgnoreCase))
+            {
+                var url = $"https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue={returnUrl}";
+                return Redirect(url);
+            }
+
+            return Redirect($"https://ssodev.ucdavis.edu/cas/logout"); //Replace with the appSettings if we do it this way.
+
         }
 
         public async Task<IActionResult> LogoutDirect()
