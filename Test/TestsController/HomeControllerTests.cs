@@ -126,7 +126,7 @@ namespace Test.TestsController
             #endregion Act
 
             #region Assert
-            result.Count().ShouldBe(5);
+            result.Count().ShouldBe(4);
 
             #endregion Assert
         }
