@@ -185,6 +185,10 @@ FROM [ANL_LIST] INNER JOIN [ANALYTES] ON [ANL_LIST].[ACODE] = [ANALYTES].[ACODE]
 GROUP BY LOGBATCH, LOCCODE, SAMPCOL, REPDATE  
 HAVING (LOGBATCH = @RequestNum)</value>
   </data>
+  <data name="AnlabTestConnection" xml:space="preserve">
+    <value>SELECT TOP (1) [ACODE]      
+  FROM [LABWORKS].[dbo].[ANL_LIST]</value>
+  </data>
   <data name="AnlabTestsRunForOrder" xml:space="preserve">
     <value>SELECT DISTINCT [ACODE] as Id
 FROM            [SAMPLE] INNER JOIN
