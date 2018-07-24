@@ -631,5 +631,19 @@ namespace AnlabMvc.Controllers
             return new JsonResult(order.GetOrderDetails());
         }
 
+        [AllowAnonymous]
+        public async Task<IActionResult> Ping()
+        {
+            var localDbCheck = _dbContext.TestItems.FirstOrDefault(a => a.Public);
+            if (localDbCheck == null)
+            {
+                throw new Exception("Unable to get local db record");
+            }
+
+            var code = await _labworksService.TestDbConnection();
+
+            return Content("pong");
+        }
+
     }
 }
