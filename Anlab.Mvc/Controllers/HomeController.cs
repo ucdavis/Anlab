@@ -1,5 +1,5 @@
-using System;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace AnlabMvc.Controllers
 {
@@ -27,5 +27,7 @@ namespace AnlabMvc.Controllers
             }
             return NotFound(id);
         }
+
+
     }
 }

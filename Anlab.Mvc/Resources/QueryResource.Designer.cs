@@ -156,6 +156,16 @@ namespace AnlabMvc.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SELECT TOP (1) [ACODE]      
+        ///  FROM [LABWORKS].[dbo].[ANL_LIST].
+        /// </summary>
+        internal static string AnlabTestConnection {
+            get {
+                return ResourceManager.GetString("AnlabTestConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SELECT DISTINCT [ACODE] as Id
         ///FROM            [SAMPLE] INNER JOIN
         ///                         [ANALYSIS] ON [SAMPLE].[SAMPNO] = [ANALYSIS].[SAMPNO]

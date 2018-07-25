@@ -2021,7 +2021,7 @@ namespace Test.TestsController
         [Fact]
         public void TestControllerMethodCount()
         {
-            ControllerReflection.ControllerPublicMethods(13);
+            ControllerReflection.ControllerPublicMethods(14);
         }
 
         [Fact]
@@ -2073,6 +2073,10 @@ namespace Test.TestsController
             ControllerReflection.MethodExpectedNoAttribute("Search", "SearchGet");
             ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("Search", 2 + countAdjustment, "SearchPost-1", true, showListOfAttributes: false);
             ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Search", 2 + countAdjustment, "SearchPost-2", true, showListOfAttributes: false);
+
+            //14
+            ControllerReflection.MethodExpectedAttribute<AllowAnonymousAttribute>("Ping", 2 + countAdjustment, "Ping-1", false, showListOfAttributes: true);
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Ping", 2 + countAdjustment, "Ping-2", false, showListOfAttributes: true);
         }
 
 
