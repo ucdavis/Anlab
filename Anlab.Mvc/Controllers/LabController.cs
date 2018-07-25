@@ -641,6 +641,10 @@ namespace AnlabMvc.Controllers
             }
 
             var code = await _labworksService.TestDbConnection();
+            if (code == null)
+            {
+                throw new Exception("Unable to connect to Labworks DB");
+            }
 
             return Content("pong");
         }
