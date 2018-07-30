@@ -9,6 +9,7 @@ namespace AnlabMvc
     {
         public decimal NonUcRate { get; set; } = 1.5m;
         public string StorageUrlBase { get; set; }
+        public string StorageContainerName { get; set; }
         public string CyberSourceUrl { get; set; }
         public string FinancialLookupUrl { get; set; }
         public string CasBaseUrl { get; set; }
