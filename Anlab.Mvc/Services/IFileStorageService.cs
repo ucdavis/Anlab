@@ -124,7 +124,7 @@ namespace AnlabMvc.Services
 
         public string GetFullUriFromIdentifier(string identifier)
         {
-            return $"{_appSettings.StorageUrlBase}/{_appSettings.StorageContainerName}/{identifier}";
+            return $"{_appSettings.StorageUrlBase}{_appSettings.StorageContainerName}/{identifier}";
         }
 
         public async Task<string> UploadFile(IFormFile file)
