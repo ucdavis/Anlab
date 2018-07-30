@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -35,13 +35,14 @@ namespace AnlabMvc.Services
     public class FileStorageService : IFileStorageService
     {
         private readonly AppSettings _appSettings;
-        private const string ContainerName = "anlabupload";
+        //private readonly string _containerName;
         private readonly ConnectionSettings _connectionSetting;
 
         public FileStorageService(IOptions<ConnectionSettings> connectionSetting, IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings.Value;
             _connectionSetting = connectionSetting.Value;
+            //_containerName = _appSettings.StorageContainerName;
         }
 
 
@@ -72,7 +73,7 @@ namespace AnlabMvc.Services
             }
 
             // Get a reference to the container for which shared access signature will be created.
-            CloudBlobContainer container = blobClient.GetContainerReference(ContainerName);
+            CloudBlobContainer container = blobClient.GetContainerReference(_appSettings.StorageContainerName);
             await container.CreateIfNotExistsAsync();
 
             var blob = container.GetBlockBlobReference(fileName);
@@ -118,14 +119,14 @@ namespace AnlabMvc.Services
             var blobClient = storageAccount.CreateCloudBlobClient();
 
             // Get a reference to the container for which shared access signature will be created.
-            CloudBlobContainer container = blobClient.GetContainerReference(ContainerName);
+            CloudBlobContainer container = blobClient.GetContainerReference(_appSettings.StorageContainerName);
             await container.CreateIfNotExistsAsync();
             return container;
         }
 
         public string GetFullUriFromIdentifier(string identifier)
         {
-            return string.Format("{0}{1}", _appSettings.StorageUrlBase, identifier);
+            return $"{_appSettings.StorageUrlBase}/{_appSettings.StorageContainerName}/{identifier}";
         }
 
         public async Task<string> UploadFile(IFormFile file)
