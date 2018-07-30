@@ -35,14 +35,12 @@ namespace AnlabMvc.Services
     public class FileStorageService : IFileStorageService
     {
         private readonly AppSettings _appSettings;
-        //private readonly string _containerName;
         private readonly ConnectionSettings _connectionSetting;
 
         public FileStorageService(IOptions<ConnectionSettings> connectionSetting, IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings.Value;
             _connectionSetting = connectionSetting.Value;
-            //_containerName = _appSettings.StorageContainerName;
         }
 
 
