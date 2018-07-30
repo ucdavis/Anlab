@@ -120,7 +120,7 @@ Questions concerning limited sample size can be answered by the UC Davis Analyti
 
 Harris, D., Horwáth, W. R.  and Van Kessel, C.  2001.  Acid fumigation of soils to remove carbonates prior to total organic carbon or CARBON-13 isotopic analysis.  Soil Science Society of America Journal 65:1853-1856 (2001.) 
 
-AOAC Official Method 972.43, Microchemical Determination of Carbon, Hydrogen, and Nitrogen, Automated Method, in Official Methods of Analysis of AOAC International, 16th Edition (1997), Chapter 12, pp. 5-6, AOAC International, Arlington, VA.', N'TOTAL ORGANIC CARBON-COMBUSTION METHOD')
+AOAC Official Method 972.43, Microchemical Determination of Carbon, Hydrogen, and Nitrogen, Automated Method, in Official Methods of Analysis of AOAC International, 16th Edition (1997), Chapter 12, pp. 5-6, AOAC International, Arlington, VA.', N'Total Organic Carbon - Combustion Method')
 GO
 INSERT [dbo].[AnalysisMethods] ([Id], [Category], [Content], [Title]) VALUES (330, N'Soils', N'# Fertility: SO~4~-S
 ## Summary
@@ -543,14 +543,6 @@ Nonstructural carbohydrates are those that can be accumulated and then readily m
 
 Smith, Dale. Removing and Analyzing Total Nonstructural Carbohydrates from Plant Tissue. Wisconsin Agric. Exp. Sta. Res. Report 41. 1969.', N'Total Glucose For Total Nonstructural Carbohydrates (TNC) And Starch')
 GO
-INSERT [dbo].[AnalysisMethods] ([Id], [Category], [Content], [Title]) VALUES (695, N'Feed', N'# By Special Request
-## Summary
-This method quantitatively determines the amount of the resveratrol in botanical materials. Freeze dried samples are extracted by homogenization with methanol, followed by heating at 60 degrees for 30 minutes and analyzed by HPLC with tandem mass selective detection. The analysis uses a Phenomenex SynerGi Hydro-RP (150 mm x 4.6 mm) HPLC column at a flow rate of 0.75 mL min-1 and a gradient elution using methanol:water. The method has a detection limit of 0.2 ppm.
-
-Romero-Perez, A. I., Lamuela-Ravento, R. M., Andres-Lacueva, C. and de la Torre-Boronat, M. C. Method for the Quantitative Extraction of Resveratrol and Piceid Isomers in Grape Berry Skins. Effect of Powdery Mildew on the Stilbene Content. J. Agric. Food Chem. 2001, 49, 210-215.
-
-Wang, Y., Catana, F., Yang, Y., Roderick, R. and van Breeman, R. An LC-MS Method for Analyzing Total Resveratrol in Grape Juice, Cranberry Juice, and in Wine. J. Agric. Food Chem. 2002, 50, 431-435.', N'Resveratrol - HPLC Method')
-GO
 INSERT [dbo].[AnalysisMethods] ([Id], [Category], [Content], [Title]) VALUES (705, N'Manure and Compost', N'# pH 1:5 pH (Water 1:5)
 ## Summary
 This method determines the pH of the liquid from a slurry of manure, using 1 part sample and 5 parts deionized water. The method is generally reproducible within 0.2 pH units.
@@ -826,25 +818,4 @@ Sample amount requested:  30 mL
 Questions concerning limited sample size can be answered by the UC Davis Analytical laboratory.
 
 Melton, Larry.  January 26, 2000. Mercury Quantitation by Hydride Generation ICP. CAHFS Toxicology Laboratory Standard Operating Procedure. HGVICP ver 04.', N'Mercury')
-GO
-INSERT [dbo].[AnalysisMethods] ([Id], [Category], [Content], [Title]) VALUES (972, N'Olive Oil', N'# Summary
-The method describes a procedure for determining the individual and total sterols and triterpene dialcohols content of olive oils and olive pomace oils. The oils are saponified with ethanolic potassium and the unsaponifiable matter is extracted with ether. The sterols and triterpene dialcohols fraction are separated from the unsaponifiable matter by silica gel chromatography. The fractions recovered from the silica gel are derivatized into trimethylsilyl ethers and analyzed by capillary column gas chromatography with a flame ionization detector.
-
-Reference: Determination of the Composition and Content of Sterols and Triterpene Dialcohols by Capillary Column Gas Chromatography, International Olive Council, COI/ T.20/ Doc. no. 30, 2009.', N'Sterols and Triterpene Dialcohols in Oil by Gas Chromatography')
-GO
-INSERT [dbo].[AnalysisMethods] ([Id], [Category], [Content], [Title]) VALUES (974, N'Olive Oil', N'# Summary
-Determination of the content of waxes, fatty acid methyl and ethyl esters in olive oils by gas chromatography. The waxes are purified on a silica gel column and analyzed by gas chromatography with a flame ionization detector.  The individual waxes and alkyl esters are separated according to the number of carbon atoms. The method is recommended as a tool for distinguishing between olive oil and olive-pomace oil and as a quality parameter for extra virgin olive oils enabling the detection of fraudulent mixtures of extra virgin olive oils with lower quality oils whether they are virgin, ordinary, lampante or some deodorised oils.
-
-Reference: Determination of the Content of Waxes, Fatty Acid Methyl Esters and Fatty Acid Ethyl Esters by Capillary Gas Chromatography, International Olive Council,
-COI/T.20/Doc. No 28/Rev. 1, 2010', N'Wax Content in Oil by Gas Chromatography')
-GO
-INSERT [dbo].[AnalysisMethods] ([Id], [Category], [Content], [Title]) VALUES (976, N'Olive Oil', N'# Summary
-Determination of the concentration of triacylglycerols (TAGs) with equivalent carbon number 42 (ECN42HPLC) in oil by reverse phase high performance liquid. The content of triacylglycerols with ECN 42 determined by HPLC analysis and the theoretical content of triacylglycerols with ECN 42 (calculated on the basis of GLC determination of fatty acid composition) correspond within a certain limit for genuine olive oils. A difference larger than the values adopted for each type of oil points out that the oil contains seed oils.
-
-Reference: Determination of the Difference between Actual and Theoretical Content of Triacyglycerols with ECN 42, International Olive Council, COI/T.20/Doc. No 20 /Rev. 3, 2010.', N'Triacylglycerols (ECN 42) in Oil by HPLC')
-GO
-INSERT [dbo].[AnalysisMethods] ([Id], [Category], [Content], [Title]) VALUES (978, N'Olive Oil', N'# Summary
-The method describes a procedure for determining the stigmastadiene content of vegetable oils. The oils are saponified with ethanolic potassium and the unsaponifiable matter is extracted with hexane. The stigmastadiene fraction is separated from the unsaponifiable matter by silica gel chromatography. The fraction recovered from the silica gel is analyzed by capillary column gas chromatography. The method is particularly suited to detecting the presence of refined vegetable oils (olive, olive-pomace, sunflower, soybean, palm, etc) in virgin olive oil since refined oils contain Stigmastadienes and virgin oils do not.
-
-Reference: Determination of Stigmastadienes in Vegetable Oils, International Olive Council, COI/T.20/Doc. no. 11/Rev. 2, 2001', N'Stigmastadiene in Oil by Gas Chromatography')
 GO
