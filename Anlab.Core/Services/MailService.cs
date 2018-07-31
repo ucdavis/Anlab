@@ -37,10 +37,6 @@ namespace Anlab.Core.Services
             Log.Information($"Email Host: {_emailSettings.Host}");
 
             var message = new System.Net.Mail.MailMessage {From = new MailAddress("anlab@ucdavis.edu", "Anlab")};
-            if (mailMessage.SendTo != "anlab-test@ucdavis.edu") //TODO: Remove when we want to start actually emailing people.            
-            {
-                throw new Exception("The testing email was not used.");
-            }
 
             var sendToEmails = mailMessage.SendTo.Split(';');
             foreach (var sendToEmail in sendToEmails)

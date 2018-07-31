@@ -61,9 +61,6 @@ namespace Anlab.Jobs.SendMail
 
             foreach (var message in messagesToSend)
             {
-                var saveSendTo = message.SendTo;
-                message.SendTo = "anlab-test@ucdavis.edu";
-
                 try
                 {
                     MailService.SendMessage(message);
@@ -79,9 +76,6 @@ namespace Anlab.Jobs.SendMail
                     message.Sent = false;
                     message.FailureReason = ex.Message;
                 }
-
-                message.SendTo = saveSendTo;
-
 
                 dbContext.Update(message);
                 dbContext.SaveChanges();
