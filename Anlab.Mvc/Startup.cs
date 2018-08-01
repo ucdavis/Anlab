@@ -109,12 +109,12 @@ namespace AnlabMvc
                 });
 
             // TODO: require HTTPS in production.  In development it is only needed for federated auth
-//             services.AddMvc(options =>
-//             {
-// #if !DEBUG
-//                 options.Filters.Add(new RequireHttpsAttribute());
-// #endif
-//             });
+            services.AddMvc(options =>
+            {
+#if !DEBUG
+                 options.Filters.Add(new RequireHttpsAttribute());
+#endif
+             });
 
 
             // app services
