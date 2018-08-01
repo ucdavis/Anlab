@@ -25,7 +25,7 @@ namespace AnlabMvc.Controllers
             switch (id)
             {
                 case 101:
-                    TempData[errKey] = "Do not use Google to log in to a UC Davis account";
+                    TempData[errKey] = "Do not use Google to log in to a UC Davis account. If you are logged into Google with your UC Davis account, either logout first or try using a Private/Incognito browser window instead.";
                     break;
                 case 102:
                     TempData[errKey] = "Error from external provider. Please try again and if the problem persists please contact us.";

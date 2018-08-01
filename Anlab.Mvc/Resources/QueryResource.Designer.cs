@@ -95,9 +95,9 @@ namespace AnlabMvc.Resources {
         ///   Looks up a localized string similar to SELECT distinct 
         ///SG2.SGACODE as Code
         ///FROM [LABWORKS].[dbo].[SGTESTS] as SG1 , [LABWORKS].[dbo].[SGTESTS] as SG2
-        ///where SG1.SGACODE in (@GroupCodes) 
+        ///where SG1.SGACODE in @GroupCodes 
         ///and SG1.ACODE = SG2.ACODE 
-        ///and SG2.SGACODE not in (@GroupCodes).
+        ///and SG2.SGACODE not in @GroupCodes.
         /// </summary>
         internal static string AnlabCodesInGroups {
             get {
