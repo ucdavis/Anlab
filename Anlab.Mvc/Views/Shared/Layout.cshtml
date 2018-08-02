@@ -3,19 +3,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-5512876-10"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-5512876-10');
+    </script>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"]</title>
 
     <environment names="Development">
-        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.css" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" />
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.css"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css"/>
     </environment>
     <environment names="Staging,Production">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"/>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="~/dist/root.css" asp-append-version="true" />
-        <link rel="stylesheet" href="~/dist/react.css" asp-append-version="true" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+        <link rel="stylesheet" href="~/dist/root.css" asp-append-version="true"/>
+        <link rel="stylesheet" href="~/dist/react.css" asp-append-version="true"/>
     </environment>
     <link rel="shortcut icon" href="/media/favicon.ico">
     @RenderSection("AdditionalStyles", required: false)
@@ -32,121 +41,111 @@
         </div>
     </header>
     <div class="head_bleed">
-      <div class="head_divider">
-        <div class="button_wrapper">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
-        <div class="navbar-collapse collapse boundary">
-            <ul class="nav navbar-nav" style="margin-left:-25px;">
-                <!-- <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li> -->
-                <li><a asp-controller="Pages" asp-action="about">About</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lab Information <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a asp-controller="Pages" asp-action="using-the-lab">Using the Lab</a></li>
-                        <li><a asp-controller="Pages" asp-action="rush-request">Rush Request</a></li>
-                        <li><a asp-controller="Analysis" asp-action="Index">Methods of Analysis</a></li>
-                        <li><a asp-controller="Pages" asp-action="qa-qc">QA/QC</a></li>
-                        <li><a asp-controller="Pages" asp-action="forms-and-guides">Forms and Guides</a></li>
-                        <li><a asp-area="" asp-controller="Home" asp-action="SamplingAndPreparation">Sampling and Preparation</a></li>
-                        <li><a asp-controller="Prices" asp-action="Index">Prices</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Orders <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a asp-controller="Order" asp-action="Index">Your Orders</a></li>
-                        <li><a asp-controller="Order" asp-action="Favorites">Saved Orders</a></li>
-                        <li><a asp-controller="Order" asp-action="Create">Create Order</a></li>
-                        <li class="divider"></li>
-                        <li><a asp-area="" asp-controller="Profile" asp-action="Edit" title="Manage">Edit Profile</a></li>
-                    </ul>
-                </li>
-                @if (User != null && (User.IsInRole(RoleCodes.Admin) || User.IsInRole(RoleCodes.LabUser) ))
-                {
+        <div class="head_divider">
+            <div class="button_wrapper">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse boundary">
+                <ul class="nav navbar-nav" style="margin-left:-25px;">
+                    <!-- <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li> -->
+                    <li><a asp-controller="Pages" asp-action="about">About</a></li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lab Information <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a asp-controller="Lab" asp-action="Orders">Orders</a></li>
-                            <li><a asp-controller="Admin" asp-action="ListClients">Clients</a></li>
-                            @if (User.IsInRole(RoleCodes.Admin))
-                            {
-                                <li><a asp-controller="Admin" asp-action="Index">Admin Users</a></li>
-                            }
-                            <li><a asp-controller="Admin" asp-action="MailQueue">Mail Queue</a></li>
-                            <li><a asp-controller="TestItems" asp-action="Index">Test Codes</a></li>
-                            <li><a asp-controller="AdminAnalysis" asp-action="Index">Method Summaries</a></li>
-                            <li><a asp-controller="Lab" asp-action="Search">Search Order</a></li>
+                            <li><a asp-controller="Pages" asp-action="using-the-lab">Using the Lab</a></li>
+                            <li><a asp-controller="Pages" asp-action="rush-request">Rush Request</a></li>
+                            <li><a asp-controller="Analysis" asp-action="Index">Methods of Analysis</a></li>
+                            <li><a asp-controller="Pages" asp-action="qa-qc">QA/QC</a></li>
+                            <li><a asp-controller="Pages" asp-action="forms-and-guides">Forms and Guides</a></li>
+                            <li><a asp-area="" asp-controller="Home" asp-action="SamplingAndPreparation">Sampling and Preparation</a></li>
+                            <li><a asp-controller="Prices" asp-action="Index">Prices</a></li>
                         </ul>
                     </li>
-                }
-                @if (User != null && (User.IsInRole(RoleCodes.Admin) || User.IsInRole(RoleCodes.Reports) ))
-                {
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reviewers <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Orders <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a asp-controller="Reviewer" asp-action="Index">Review Orders</a></li>
+                            <li><a asp-controller="Order" asp-action="Index">Your Orders</a></li>
+                            <li><a asp-controller="Order" asp-action="Favorites">Saved Orders</a></li>
+                            <li><a asp-controller="Order" asp-action="Create">Create Order</a></li>
+                            <li class="divider"></li>
+                            <li><a asp-area="" asp-controller="Profile" asp-action="Edit" title="Manage">Edit Profile</a></li>
                         </ul>
                     </li>
-                }
-                <li><a asp-controller="Pages" asp-action="contact">Contact</a></li>
-            </ul>
-
+                    @if (User != null && (User.IsInRole(RoleCodes.Admin) || User.IsInRole(RoleCodes.LabUser)))
+                    {
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a asp-controller="Lab" asp-action="Orders">Orders</a></li>
+                                <li><a asp-controller="Admin" asp-action="ListClients">Clients</a></li>
+                                @if (User.IsInRole(RoleCodes.Admin))
+                                {
+                                    <li><a asp-controller="Admin" asp-action="Index">Admin Users</a></li>
+                                }
+                                <li><a asp-controller="Admin" asp-action="MailQueue">Mail Queue</a></li>
+                                <li><a asp-controller="TestItems" asp-action="Index">Test Codes</a></li>
+                                <li><a asp-controller="AdminAnalysis" asp-action="Index">Method Summaries</a></li>
+                                <li><a asp-controller="Lab" asp-action="Search">Search Order</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (User != null && (User.IsInRole(RoleCodes.Admin) || User.IsInRole(RoleCodes.Reports)))
+                    {
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reviewers <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a asp-controller="Reviewer" asp-action="Index">Review Orders</a></li>
+                            </ul>
+                        </li>
+                    }
+                    <li><a asp-controller="Pages" asp-action="contact">Contact</a></li>
+                </ul>
+            </div>
         </div>
-    </div>
-  </div> <!-- head bleed-->
+    </div> <!-- head bleed-->
     </div>
     <div class="pagetitle_banner">
-      <div class="pagetitle_banner_contents">
-        <div class="title-left"><h1>@ViewData["Title"]</h1></div>
-        <div class="title-right">
-            @RenderSection("ActionButtons", required: false)
+        <div class="pagetitle_banner_contents">
+            <div class="title-left"><h1>@ViewData["Title"]</h1></div>
+            <div class="title-right">
+                @RenderSection("ActionButtons", required: false)
+            </div>
+
+        </div>
+    </div>
+    <div class="boundary">
+        @if (!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string))
+        {
+            <div class="alert alert-danger">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                @TempData["ErrorMessage"]
+            </div>
+        }
+        @if (!string.IsNullOrWhiteSpace(TempData["Message"] as string))
+        {
+            <div class="alert alert-info">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                @TempData["Message"]
+            </div>
+        }
+        <div class="row whiteblock">
+            @RenderBody()
         </div>
 
-
-      </div>
-
     </div>
-
-<div class="boundary">
-    @if (!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string))
-    {
-        <div class="alert alert-danger">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            @TempData["ErrorMessage"]
+    <footer>
+        <div class="footer_contents">
+            <p class="discreet">
+                &copy; The Regents of the University of California, Davis campus, 2017-@(DateTime.UtcNow.Date.ToString("yy")).
+            </p>
+            <p class="discreet">Version: @VersionFinder.Version </p>
         </div>
-    }
-
-    @if (!string.IsNullOrWhiteSpace(TempData["Message"] as string))
-    {
-        <div class="alert alert-info">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            @TempData["Message"]
-        </div>
-    }
-    <div class="row whiteblock">
-
-        @RenderBody()
-    </div>
-
-
-</div>
-
-<footer>
-    <div class="footer_contents">
-        <p class="discreet">
-            &copy; The Regents of the University of California, Davis campus, 2017-@(DateTime.UtcNow.Date.ToString("yy")).
-        </p>
-        <p class="discreet">Version: @VersionFinder.Version </p>
-    </div>
-
-</footer>
-
+    </footer>
 
     <environment names="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.js"></script>
@@ -156,9 +155,7 @@
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
         <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"></script>
     </environment>
-
     <script src="~/dist/root.js" asp-append-version="true"></script>
-
     @RenderSection("Scripts", required: false)
 </body>
 </html>
