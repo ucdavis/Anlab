@@ -160,5 +160,13 @@
     <script src="~/dist/root.js" asp-append-version="true"></script>
 
     @RenderSection("Scripts", required: false)
+    <script async src=“https://www.googletagmanager.com/gtag/js?id =UA-652647-50“></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag(‘js’, new Date());
+
+        gtag(‘config’, ‘UA-652647-50’);
+    </script>
 </body>
 </html>
