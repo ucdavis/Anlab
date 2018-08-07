@@ -70,7 +70,7 @@ namespace AnlabMvc.Services
 
             var message = new MailMessage
             {
-                Subject = "Work Request Confirmation",
+                Subject = $"Work Request Confirmation - {order.RequestNum}",
                 Body = body,
                 SendTo = GetSendTo(order),
                 Order = order,
@@ -89,7 +89,7 @@ namespace AnlabMvc.Services
         public async Task EnqueueFinalizedMessage(Order order, bool bypass = false)
         {
             var orderDetails = order.GetOrderDetails();
-            var subject = "Work Request Finalized - Payment Pending";
+            var subject = $"Work Request Finalized - Payment Pending - {order.RequestNum}";
             //TODO: change body of email, right now it is the same as OrderCreated
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderFinalized", order);
 
@@ -119,7 +119,7 @@ namespace AnlabMvc.Services
         public async Task EnqueuePaidMessage(Order order)
         {
             var orderDetails = order.GetOrderDetails();
-            var subject = "Work Request Payment Complete";
+            var subject = $"Work Request Payment Complete  - {order.RequestNum}";
             //TODO: change body of email, right now it is the same as OrderCreated
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_PaymentReceived", order);
 
