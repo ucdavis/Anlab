@@ -82,6 +82,7 @@ export default class OrderForm extends React.Component<
   private otherPaymentInfoRef: any;
   private sampleDateRef: any;
   private sampleDispositionRef: any;
+  private commentsInputRef: any;
 
   constructor(props) {
     super(props);
@@ -415,7 +416,7 @@ export default class OrderForm extends React.Component<
             </div>
           </Collapse>
 
-          <Collapse in={this.state.sampleType !== ""}>
+          <Collapse in={this.state.sampleType !== ""} onEntered={(e) => this._focusInput(this.commentsInputRef)}>
             <div>
               {placingOrder && (
                 <div className="form_wrap">
@@ -426,6 +427,9 @@ export default class OrderForm extends React.Component<
                     value={additionalInfo}
                     name="additionalInfo"
                     handleChange={this._handleChange}
+                    commentsInputRef={(inputRef) => {
+                      this.commentsInputRef = inputRef;
+                    }}
                   />
                 </div>
               )}
