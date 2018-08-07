@@ -4,6 +4,7 @@ export interface IAdditionalInfoProps {
   handleChange: (key: string, value: string) => void;
   name: string;
   value: string;
+  commentsInputRef: (element: HTMLTextAreaElement) => void;
 }
 
 export class AdditionalInfo extends React.Component<IAdditionalInfoProps, {}> {
@@ -21,6 +22,7 @@ export class AdditionalInfo extends React.Component<IAdditionalInfoProps, {}> {
           onChange={this._onChange}
           maxLength={2000}
           rows={4}
+          ref={this.props.commentsInputRef}
         />
       </div>
     );
