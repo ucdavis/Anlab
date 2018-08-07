@@ -121,20 +121,20 @@
     {
         <span>Other Payment (@Model.OrderDetails.OtherPaymentInfo.PaymentType)</span><br />
         <strong>Company Name: </strong><span>@Model.OrderDetails.OtherPaymentInfo.CompanyName</span><br />
-        <strong>Account Contact Name: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcName</span><br />
-        <strong>Account Contact Address: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcAddr</span><br />
-        <strong>Account Contact Email: </strong><span><a href="mailto:@Model.OrderDetails.OtherPaymentInfo.AcEmail">@Model.OrderDetails.OtherPaymentInfo.AcEmail</a></span><br />
-        <strong>Account Contact Phone Number: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcPhone</span><br />
+        <strong>Billing Contact Name: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcName</span><br />
+        <strong>Billing Contact Address: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcAddr</span><br />
+        <strong>Billing Contact Email: </strong><span><a href="mailto:@Model.OrderDetails.OtherPaymentInfo.AcEmail">@Model.OrderDetails.OtherPaymentInfo.AcEmail</a></span><br />
+        <strong>Billing Contact Phone Number: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcPhone</span><br />
         <strong>PO Number: </strong><span>@Model.OrderDetails.OtherPaymentInfo.PoNum</span>
     }
     @if (Model.Order.PaymentType == PaymentTypeCodes.UcOtherAccount)
     {
         <span>UC Account: @Model.OrderDetails.Payment.Account</span><br />
         <strong>Campus Name: </strong><span>@Model.OrderDetails.OtherPaymentInfo.CompanyName</span><br />
-        <strong>Account Contact Name: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcName</span><br />
-        <strong>Account Contact Address: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcAddr</span><br />
-        <strong>Account Contact Email: </strong><span><a href="mailto:@Model.OrderDetails.OtherPaymentInfo.AcEmail">@Model.OrderDetails.OtherPaymentInfo.AcEmail</a></span><br />
-        <strong>Account Contact Phone Number: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcPhone</span>
+        <strong>Billing Contact Name: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcName</span><br />
+        <strong>Billing Contact Address: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcAddr</span><br />
+        <strong>Billing Contact Email: </strong><span><a href="mailto:@Model.OrderDetails.OtherPaymentInfo.AcEmail">@Model.OrderDetails.OtherPaymentInfo.AcEmail</a></span><br />
+        <strong>Billing Contact Phone Number: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcPhone</span>
     }
     @if (Model.Order.PaymentType == PaymentTypeCodes.UcDavisAccount)
     {

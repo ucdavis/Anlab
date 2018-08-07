@@ -79,7 +79,8 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
                         <h3>Other</h3>
                         <p>Payment by PO or Bank Transfer.</p>
                     </div>
-                </div>
+                </div>                
+                {this.props.placingOrder && this._renderheading()}
                 {this.props.placingOrder && this._renderUcAccount()}
                 {this.props.placingOrder && this._renderOtherInfo()}
                 {this._renderAgreement()}
@@ -90,7 +91,10 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
     private _renderUcAccount = () => {
         if (this.props.payment.clientType === "uc") {
             return (
-                <div>
+                <div>                    
+                    <p className="help-block">
+                        Unless using a UC Davis account, please provide the full chart string
+                    </p>
                     <Input
                       label="UC Account"
                       value={this.props.payment.account}
@@ -101,6 +105,16 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
                       inputRef={this.props.ucAccountRef}
                     />
                     {this.props.payment.accountName}
+                </div>
+            );
+        }
+    }
+
+    private _renderheading = () => {
+        if (this.props.payment.clientType === "uc" || this.props.payment.clientType === "other") {
+            return (
+                <div>
+                    <h2 className="form_header">Please provide billing account information:</h2>
                 </div>
             );
         }

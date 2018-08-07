@@ -27,12 +27,12 @@ export class OtherPaymentInfo extends React.Component<IOtherPaymentInfoProps, {}
             <div className="flexrow">
                 <div className="flexcol">
                     <OtherPaymentInput property="companyName" value={this.props.otherPaymentInfo.companyName} label={this.props.otherPaymentInfo.paymentType === "IOC" ? "Campus Name" : "Company Name"} handleChange={this._onOtherInfoChange} required={true} inputRef={this.props.otherPaymentInfoRef} />
-                    <OtherPaymentInput property="acName" value={this.props.otherPaymentInfo.acName} label="Account Contact Name" handleChange={this._onOtherInfoChange} required={true} />
-                    <OtherPaymentInput property="acAddr" value={this.props.otherPaymentInfo.acAddr} label="Account Contact Address" handleChange={this._onOtherInfoChange} required={true} />
+                    <OtherPaymentInput property="acName" value={this.props.otherPaymentInfo.acName} label="Billing Contact Name" handleChange={this._onOtherInfoChange} required={true} />
+                    <OtherPaymentInput property="acAddr" value={this.props.otherPaymentInfo.acAddr} label="Billing Contact Address" handleChange={this._onOtherInfoChange} required={true} />
                 </div>
                 <div className="flexcol">
-                    <OtherPaymentInput property="acEmail" value={this.props.otherPaymentInfo.acEmail} label="Account Contact Email" handleChange={this._onOtherInfoChange} required={true} />
-                    <OtherPaymentInput property="acPhone" value={this.props.otherPaymentInfo.acPhone} label="Account Contact Phone Number" handleChange={this._onOtherInfoChange} required={true} />
+                    <OtherPaymentInput property="acEmail" value={this.props.otherPaymentInfo.acEmail} label="Billing Contact Email" handleChange={this._onOtherInfoChange} required={true} />
+                    <OtherPaymentInput property="acPhone" value={this.props.otherPaymentInfo.acPhone} label="Billing Contact Phone Number" handleChange={this._onOtherInfoChange} required={true} />
                     {this.props.clientType === "other" && < OtherPaymentInput property="poNum" value={this.props.otherPaymentInfo.poNum} label="PO #" handleChange={this._onOtherInfoChange} required={this.props.otherPaymentInfo.paymentType === "PO"} />}
                 </div>
             </div>);
