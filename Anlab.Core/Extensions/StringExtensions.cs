@@ -22,11 +22,6 @@ namespace Anlab.Core.Extensions
                 return true;
             }
 
-            if (value.Equals("DM55", StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-
             return false;
         }
 
