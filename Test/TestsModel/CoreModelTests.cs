@@ -174,23 +174,23 @@ namespace Test.TestsModel
             var expectedFields = new List<NameAndType>();
             expectedFields.Add(new NameAndType("AcAddr", "System.String", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Account Contact Address\")]",
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Billing Contact Address\")]",
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
             expectedFields.Add(new NameAndType("AcEmail", "System.String", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Account Contact Email\")]",
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Billing Contact Email\")]",
                 "[System.ComponentModel.DataAnnotations.EmailAddressAttribute()]",
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
             expectedFields.Add(new NameAndType("AcName", "System.String", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Account Contact Name\")]",
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Billing Contact Name\")]",
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
             expectedFields.Add(new NameAndType("AcPhone", "System.String", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Account Contact Phone Number\")]",
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Billing Contact Phone Number\")]",
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
             expectedFields.Add(new NameAndType("CompanyName", "System.String", new List<string>
