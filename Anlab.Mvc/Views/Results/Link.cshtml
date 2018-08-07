@@ -5,125 +5,185 @@
     ViewData["Title"] = "Results for Work Request " + Model.OrderReviewModel.Order.RequestNum;
 }
 @section ActionButtons
-{
-<p>
+    {
+    <p>
+        @if (Model.ShowCreditCardPayment)
+        {
+            <form action="@Model.CyberSourceUrl" method="post" autocomplete="off" style="margin-right: 3px">
+                @foreach (var pair in Model.PaymentDictionary)
+                {
+                    <input type="hidden" name="@pair.Key" value="@pair.Value" />
+                }
+                <input type="hidden" name="signature" value="@ViewBag.Signature" />
+                <button type="submit" class="btn btn-primary showTooltip" aria-hidden="true" title="You must pay before you can download your results."><i class="fa fa-credit-card" aria-hidden="true"></i> @(string.Format("{0:C}", Model.OrderReviewModel.OrderDetails.GrandTotal)) Pay Now</button>
+            </form>
+        }
+        else
+        {
+            if (!Model.OrderReviewModel.Order.Paid)
+            {
+                @*<form asp-controller="Results" asp-action="ConfirmPayment" method="post" autocomplete="off" style="margin-right: 3px">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.OrderReviewModel.Order.ShareIdentifier"/>
+                        <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-money" aria-hidden="true"></i> Confirm Payment</button>
+                    </form>*@
+                <a class="btn btn-small showTooltip" asp-action="ConfirmPayment" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier" style="margin-right: 3px" title="You must confirm payment before you can download your results.">
+                    <i class="fa fa-money" aria-hidden="true"></i> Confirm Payment
+                </a>
+            }
+        }
+        @if (Model.OrderReviewModel.Order.Paid)
+        {
+            <a class="btn btn-small showTooltip" asp-action="Download" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier" style="margin-right: 3px" title="Click here to download your results.">
+                <i class="fa fa-download" aria-hidden="true"></i> Download
+            </a>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <form asp-action="Copy" asp-controller="Order" method="post" autocomplete="off" style="margin-right: 3px">
+                    <input type="hidden" name="id" value="@Model.OrderReviewModel.Order.ShareIdentifier" />
+                    <button type="submit" class="btn btn-primary showTooltip" aria-hidden="true" title="Use this order to create a new order."><i class="fa fa-files-o" aria-hidden="true"></i> Duplicate</button>
+                </form>
+            }
+            else
+            {
+                <button id="sign-in" class="btn btn-primary showTooltip" aria-hidden="true" title="Use this order to create a new order. But you must sign in first."><i class="fa fa-files-o" aria-hidden="true" style="margin-right: 3px"></i> Duplicate</button>
+
+            }
+        }
+        @if (User.Identity.IsAuthenticated)
+        {
+            <form asp-action="SaveLink" asp-controller="Order" method="post" autocomplete="off">
+                <input type="hidden" name="id" value="@Model.OrderReviewModel.Order.ShareIdentifier" />
+                <button type="submit" class="btn btn-primary showTooltip" aria-hidden="true" title="Save this order in your Saved Orders for easy access in the future."><i class="fa fa-save" aria-hidden="true"></i> Save Link</button>
+            </form>
+        }
+        else
+        {
+            <button id="sign-in-to-save" class="btn btn-primary showTooltip" aria-hidden="true" title="Save this order in your Saved Orders for easy access in the future.  But you must sign in first."><i class="fa fa-files-o" aria-hidden="true"></i> Save Link</button>
+        }
+
+
+
+    </p>
+}
+
+
+
+
+<div class="col">
     @if (Model.ShowCreditCardPayment)
     {
-        <form action="@Model.CyberSourceUrl" method="post" autocomplete="off" style="margin-right: 3px">
-            @foreach (var pair in Model.PaymentDictionary)
-            {
-                <input type="hidden" name="@pair.Key" value="@pair.Value" />
-            }
-            <input type="hidden" name="signature" value="@ViewBag.Signature" />
-            <button type="submit" class="btn btn-primary showTooltip" aria-hidden="true" title="You must pay before you can download your results."><i class="fa fa-credit-card" aria-hidden="true"></i> @(string.Format("{0:C}", Model.OrderReviewModel.OrderDetails.GrandTotal)) Pay Now</button>
-        </form>
+        <div class="alert alert-danger noprint">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <form action="@Model.CyberSourceUrl" method="post" autocomplete="off" style="display: inline-block">
+                @foreach (var pair in Model.PaymentDictionary)
+                {
+                    <input type="hidden" name="@pair.Key" value="@pair.Value" />
+                }
+                <input type="hidden" name="signature" value="@ViewBag.Signature" />
+                <button type="submit" class="btn-link" aria-hidden="true">Click here to pay,</button>
+            </form>or use the Pay Now button in the upper right before you can download your results.
+        </div>
     }
     else
     {
         if (!Model.OrderReviewModel.Order.Paid)
         {
-            @*<form asp-controller="Results" asp-action="ConfirmPayment" method="post" autocomplete="off" style="margin-right: 3px">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="id" value="@Model.OrderReviewModel.Order.ShareIdentifier"/>
-                    <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-money" aria-hidden="true"></i> Confirm Payment</button>
-                </form>*@
-            <a class="btn btn-small showTooltip" asp-action="ConfirmPayment" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier" style="margin-right: 3px" title="You must confirm payment before you can download your results.">
-                <i class="fa fa-money" aria-hidden="true"></i> Confirm Payment
-            </a>
+            <div class="alert alert-danger noprint">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <a asp-action="ConfirmPayment" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier">Click here to confirm payment,</a> or use the Confirm Payment button in the upper right before you can download your results.
+            </div>
         }
     }
     @if (Model.OrderReviewModel.Order.Paid)
     {
-        <a class="btn btn-small showTooltip" asp-action="Download" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier" style="margin-right: 3px" title="Click here to download your results.">
-            <i class="fa fa-download" aria-hidden="true"></i> Download
-        </a>
-        @if (User.Identity.IsAuthenticated)
-        {
-            <form asp-action="Copy" asp-controller="Order" method="post" autocomplete="off" style="margin-right: 3px">
-                <input type="hidden" name="id" value="@Model.OrderReviewModel.Order.ShareIdentifier" />
-                <button type="submit" class="btn btn-primary showTooltip" aria-hidden="true" title="Use this order to create a new order."><i class="fa fa-files-o" aria-hidden="true"></i> Duplicate</button>
-            </form>
-        }
-        else
-        {
-            <button id="sign-in" class="btn btn-primary showTooltip" aria-hidden="true" title="Use this order to create a new order. But you must sign in first."><i class="fa fa-files-o" aria-hidden="true" style="margin-right: 3px"></i> Duplicate</button>
-
-        }
+        <div class="alert alert-warning noprint">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <a asp-action="Download" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier">Click here to Download your results,</a> or use the Download button in the upper right.
+        </div>
     }
-    @if (User.Identity.IsAuthenticated)
-    {
-        <form asp-action="SaveLink" asp-controller="Order" method="post" autocomplete="off">
-            <input type="hidden" name="id" value="@Model.OrderReviewModel.Order.ShareIdentifier" />
-            <button type="submit" class="btn btn-primary showTooltip" aria-hidden="true" title="Save this order in your Saved Orders for easy access in the future."><i class="fa fa-save" aria-hidden="true"></i> Save Link</button>
-        </form>
-    }
-    else
-    {
-        <button id="sign-in-to-save" class="btn btn-primary showTooltip" aria-hidden="true" title="Save this order in your Saved Orders for easy access in the future.  But you must sign in first."><i class="fa fa-files-o" aria-hidden="true"></i> Save Link</button>
-    }
-
-
-
-</p>
-}
-
-
-
-    
-<div class="col">
-@if (Model.ShowCreditCardPayment)
-{
-    <div class="alert alert-danger">
-        <button type="button" class="close" data-dismiss="alert">×</button>
-        <form action="@Model.CyberSourceUrl" method="post" autocomplete="off" style="display: inline-block">
-            @foreach (var pair in Model.PaymentDictionary)
-            {
-                <input type="hidden" name="@pair.Key" value="@pair.Value"/>
-            }
-            <input type="hidden" name="signature" value="@ViewBag.Signature"/>
-            <button type="submit" class="btn-link" aria-hidden="true">Click here to pay,</button>
-        </form>or use the Pay Now button in the upper right before you can download your results.
-    </div>
-}
-else
-{
-    if (!Model.OrderReviewModel.Order.Paid)
-    {
-    <div class="alert alert-danger">
-        <button type="button" class="close" data-dismiss="alert">×</button>
-        <a asp-action="ConfirmPayment" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier">Click here to confirm payment,</a> or use the Confirm Payment button in the upper right before you can download your results.
-    </div>
-    }
-}
-@if (Model.OrderReviewModel.Order.Paid)
-{
-    <div class="alert alert-warning">
-        <button type="button" class="close" data-dismiss="alert">×</button>
-        <a asp-action="Download" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier">Click here to Download your results,</a> or use the Download button in the upper right.
-    </div>
-}
 
 
     @Html.Partial("_OrderDetails", Model.OrderReviewModel)
 
 </div>
 @section AdditionalStyles
-{
+    {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
-}
+    <style media="print">
 
+        .noprint {
+            display: none !important;
+        }
+        .dropdown-toggle {
+            display: none !important;
+        }
+
+        .avoidBreak {
+            page-break-inside: avoid;
+        }
+
+        .nopadding {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        th {
+            padding: 5px;
+            padding-top: 20px;
+        }
+
+        td {
+            padding: 5px;
+        }
+
+        #links a:after {
+            content: " (" attr(href) ")";
+        }
+
+        .footer_contents, .navbar, .head_bleed, footer, header, .title-right {
+            display: none !important;
+        }
+
+        .pagetitle_banner {
+            margin-bottom: 5px !important;
+            padding: 0 0 0 0 !important;
+        }
+
+        .pagetitle_banner_contents {
+            height: auto !important;
+        }
+
+        body, .whiteblock, .row {
+            margin: 0 0 0 0 !important;
+            padding: 0 0 0 0 !important;
+        }
+
+        .boundary, .pagetitle_banner_contents {
+            margin: 0 0 0 0 !important;
+            padding: 0 0 0 0 !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            -webkit-flex: 100% !important;
+        }
+
+        * {
+            line-height: 1.3em !important;
+        }
+    </style>
+}
 @section Scripts
-{
+    {
     @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
 
     <script type="text/javascript">
-        $(function() {
+        $(function () {
             $("#table").dataTable();
         });
-        $("#sign-in").on("click",function() {
-                alert("Please sign in first to duplicate the order");
+        $("#sign-in").on("click", function () {
+            alert("Please sign in first to duplicate the order");
         });
-        $("#sign-in-to-save").on("click",function() {
+        $("#sign-in-to-save").on("click", function () {
             alert("Please sign in first to save this order to your favorites");
         });
     </script>
@@ -131,7 +191,7 @@ else
     @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
 
     <script type="text/javascript">
-        $(function() {
+        $(function () {
             $(".showTooltip").tooltip();
         });
     </script>
