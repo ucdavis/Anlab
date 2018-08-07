@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 
 namespace Anlab.Core.Extensions
@@ -12,6 +13,31 @@ namespace Anlab.Core.Extensions
             }
 
             return value.ToUpper(CultureInfo.InvariantCulture);
+        }
+
+        public static bool ClearOutSetupPrice(this string value)
+        {
+            if (value.Equals("GRNDONLY", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            if (value.Equals("DM55", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool IsGroupTest(this string value)
+        {
+            if (value.StartsWith("G-", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

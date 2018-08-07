@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Anlab.Core.Domain;
+using Anlab.Core.Extensions;
 
 namespace Anlab.Core.Models
 {
@@ -35,7 +36,12 @@ namespace Anlab.Core.Models
         {
             get
             {
-                if (Nonrep && !Id.StartsWith("G-", StringComparison.OrdinalIgnoreCase))
+                if (Nonrep && !Id.IsGroupTest())
+                {
+                    return 0;
+                }
+
+                if (Id.ClearOutSetupPrice())
                 {
                     return 0;
                 }
