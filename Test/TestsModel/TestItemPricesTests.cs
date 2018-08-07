@@ -99,6 +99,32 @@ namespace Test.TestsModel
 
             theThing.SetupPrice.ShouldBe(6);
         }
+        [Theory]
+        [InlineData("GRNDONLY")]
+        [InlineData("GrndOnlY")]
+        public void SetupPriceReturnsExpectedValues1b(string value)
+        {
+            var theThing = new TestItemPrices();
+            theThing.SetupCost = 2;
+            theThing.Multiplier = 3;
+            theThing.Nonrep = true;
+            theThing.Id = value;
+
+            theThing.SetupPrice.ShouldBe(0);
+        }
+        [Theory]
+        [InlineData("GRNDONLY")]
+        [InlineData("GrndOnlY")]
+        public void SetupPriceReturnsExpectedValues1c(string value)
+        {
+            var theThing = new TestItemPrices();
+            theThing.SetupCost = 2;
+            theThing.Multiplier = 3;
+            theThing.Nonrep = false;
+            theThing.Id = value;
+
+            theThing.SetupPrice.ShouldBe(0);
+        }
         [Fact]
         public void SetupPriceReturnsExpectedValues2()
         {

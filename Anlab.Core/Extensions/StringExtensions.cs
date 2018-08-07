@@ -17,6 +17,10 @@ namespace Anlab.Core.Extensions
 
         public static bool ClearOutSetupPrice(this string value)
         {
+            if (value == null)
+            {
+                return false;
+            }
             if (value.Equals("GRNDONLY", StringComparison.OrdinalIgnoreCase))
             {
                 return true;
