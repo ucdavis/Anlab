@@ -18,7 +18,7 @@ namespace Anlab.Core.Extensions
         public static bool ClearOutSetupPrice(this string value)
         {
             //If we have other special cases, add them here
-            return value.Equals("GRNDONLY", StringComparison.OrdinalIgnoreCase);
+            return string.Equals(value, "GRNDONLY", StringComparison.OrdinalIgnoreCase); //Deals with null, which would only happen in my tests
         }
 
         public static bool IsGroupTest(this string value)
