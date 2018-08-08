@@ -1,13 +1,12 @@
-using System;
-using System.Collections.Generic;
+using Anlab.Core.Data;
+using Anlab.Core.Models;
+using AnlabMvc.Models.Order;
+using AnlabMvc.Models.Roles;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Anlab.Core.Data;
-using Microsoft.EntityFrameworkCore;
-using Anlab.Core.Models;
-using Microsoft.AspNetCore.Authorization;
-using AnlabMvc.Models.Roles;
 
 namespace AnlabMvc.Controllers
 {
@@ -24,6 +23,23 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> Index()
         {
             var model = await _context.Orders.Where(a => a.Status == OrderStatusCodes.Finalized).ToArrayAsync();
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id && o.Status != OrderStatusCodes.Created);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+            model.HideLabDetails = false;
 
             return View(model);
         }

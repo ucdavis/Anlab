@@ -304,6 +304,7 @@ namespace Test.TestsModel
             #region Arrange
             var expectedFields = new List<NameAndType>();
             expectedFields.Add(new NameAndType("MerchantTrackingNumber", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("MerchantTrackingUrl", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Source", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("SourceType", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("TransactionDate", "System.DateTime", new List<string>()));
