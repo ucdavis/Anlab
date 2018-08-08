@@ -14,6 +14,8 @@ namespace Anlab.Jobs.MoneyMovement
         }
         public string MerchantTrackingNumber { get; set; }
 
+        public string MerchantTrackingUrl { get; set; }
+
         public DateTime TransactionDate { get; set; }
 
         public string Source { get; set; } = "ANLAB Internal Recharge";
