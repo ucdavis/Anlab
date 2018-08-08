@@ -12,9 +12,12 @@
 
   <row>
       <columns>
-          <h1>Order Number @Model.Id @billingText</h1>
-          <h2>Anlab Work Request Billing</h2>
-          <p>A new @billingText2 has been placed that requires your attention.</p>
+          <h1>@h1Text</h1>
+          <h2>@h2Text</h2>
+          @if(showH4Text){
+          <h4>@h4Text</h4>
+          }
+          <p>A new @billingText has been placed that requires your attention.</p>
           <spacer size="16"></spacer>
           <h4>Requester Details</h4>
           <callout class="primary">
