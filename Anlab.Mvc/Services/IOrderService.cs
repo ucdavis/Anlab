@@ -147,7 +147,7 @@ namespace AnlabMvc.Services
             var orderDetails = order.GetOrderDetails();
             var tests = CalculateTestDetails(order).ToList();
 
-            var groupTestIds = tests.Where(a => a.Id.StartsWith("G-", StringComparison.OrdinalIgnoreCase)).Select(a => a.Id).ToArray();
+            var groupTestIds = tests.Where(a => a.Id.IsGroupTest()).Select(a => a.Id).ToArray();
 
             if (groupTestIds.Any())
             {
@@ -251,7 +251,7 @@ namespace AnlabMvc.Services
             }
 
             
-            var groupTestIds = testIds.Where(a => a.StartsWith("G-", StringComparison.OrdinalIgnoreCase)).ToArray();
+            var groupTestIds = testIds.Where(a => a.IsGroupTest()).ToArray();
 
             if (groupTestIds.Any())
             {
