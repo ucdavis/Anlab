@@ -35,8 +35,9 @@
 
             @foreach (var order in Model)
             {
+                var url = $"/Reviewer/Details/{order.Id}";
                 var orderDetails = order.GetOrderDetails();
-                <tr>
+                <tr data-href="@url">
                     <td>@order.RequestNum</td>
                     <td>@order.Id</td>
                     <td>@order.ClientId</td>
@@ -61,6 +62,11 @@
         #max, #min {
             margin: 0 5px 5px 0;
             height: 30px;
+        }
+    </style>
+    <style>
+        #table tbody tr {
+            cursor: pointer;
         }
     </style>
 }
@@ -109,6 +115,10 @@
                 return false;
             }
         );
+
+        $("#table tbody").on("click", "tr", function() {
+            window.location = $(this).data("href");
+        });
 
     </script>
 }
