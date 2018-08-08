@@ -722,6 +722,10 @@ export default class OrderForm extends React.Component<
   };
 
   private _focusInput = (component: any) => {
+    if (!component)
+    {
+      return;
+    }
     component.focus();
     component.blur();
     component.focus();
