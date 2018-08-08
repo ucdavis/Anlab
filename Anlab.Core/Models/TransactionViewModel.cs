@@ -16,7 +16,7 @@ namespace Anlab.Jobs.MoneyMovement
 
         public DateTime TransactionDate { get; set; }
 
-        public string Source { get; set; } = "ANLAB";
+        public string Source { get; set; } = "ANLAB Internal Recharge";
         public string SourceType { get; set; } = "Recharge";
 
         public IList<TransferViewModel> Transfers { get; set; }
