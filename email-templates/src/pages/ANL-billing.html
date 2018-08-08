@@ -12,10 +12,17 @@
 
   <row>
       <columns>
-          <h1>Order Number @Model.Id </h1>
+          <h1>Order Number @Model.Id @billingText</h1>
           <h2>Anlab Work Request Billing</h2>
-          <p>A new work request has been placed that requires your attention.</p>
+          <p>A new @billingText2 has been placed that requires your attention.</p>
           <spacer size="16"></spacer>
+          <h4>Requester Details</h4>
+          <callout class="primary">
+              <strong>Name</strong><br />@creator.Name<br /><br />
+              <strong>Email</strong><br />@creator.Email<br /><br />
+          </callout>
+          <spacer size="16"></spacer>
+          <h4>Billing Details</h4>
           <callout class="primary">
               <row>
                   <columns large="6">
