@@ -17,26 +17,13 @@ namespace Anlab.Core.Extensions
 
         public static bool ClearOutSetupPrice(this string value)
         {
-            if (value == null)
-            {
-                return false;
-            }
-            if (value.Equals("GRNDONLY", StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-
-            return false;
+            //If we have other special cases, add them here
+            return value.Equals("GRNDONLY", StringComparison.OrdinalIgnoreCase);
         }
 
         public static bool IsGroupTest(this string value)
         {
-            if (value.StartsWith("G-", StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-
-            return false;
+            return value.StartsWith("G-", StringComparison.OrdinalIgnoreCase);
         }
     }
 }
