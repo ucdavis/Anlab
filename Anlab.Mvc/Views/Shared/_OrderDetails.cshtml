@@ -149,9 +149,40 @@
 
     @if (!Model.HideLabDetails)
     {
+        var toolTipText = "This order has not been paid.";
+        if (Model.Order.Paid)
+        {
+            toolTipText = "Contact technical support. Unknown payment type.";
+            if (Model.Order.PaymentType == PaymentTypeCodes.CreditCard)
+            {
+                if (Model.Order.Status == OrderStatusCodes.Complete)
+                {
+                    toolTipText = "Paid and money has moved";
+                }
+                else
+                {
+                    toolTipText = "Client's Credit Card payment has been accepted, waiting final money movement.";
+                }
+            }
+            if (Model.Order.PaymentType == PaymentTypeCodes.UcDavisAccount)
+            {
+                if (Model.Order.Status == OrderStatusCodes.Complete)
+                {
+                    toolTipText = "Paid and money has moved";
+                }
+                else
+                {
+                    toolTipText = "UC Davis payment has been accepted, waiting final money movement.";
+                }
+            }
+            if (Model.Order.PaymentType == PaymentTypeCodes.UcOtherAccount || Model.Order.PaymentType == PaymentTypeCodes.Other)
+            {
+                toolTipText = "Client has confirmed payment, actual money movement is outside this system.";
+            }
+        }
         <div class="form-group">
-            <strong>Paid <i class="analysisTooltip fa fa-info-circle" title="This is not an indicator that the final money movement has happened."></i></strong>
-            <span> @Model.Order.Paid.ToYesNoString() </span>
+            <strong>Paid</strong>
+            <span> @Model.Order.Paid.ToYesNoString() <i class="analysisTooltip fa fa-info-circle" title="@toolTipText"></i></span>
         </div>
     }
 
