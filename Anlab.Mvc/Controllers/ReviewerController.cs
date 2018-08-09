@@ -1,3 +1,4 @@
+using System;
 using Anlab.Core.Data;
 using Anlab.Core.Models;
 using AnlabMvc.Models.Order;
@@ -22,7 +23,8 @@ namespace AnlabMvc.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var model = await _context.Orders.Where(a => a.Status == OrderStatusCodes.Finalized).ToArrayAsync();
+            var lastActions = DateTime.UtcNow.AddDays(-60);
+            var model = await _context.Orders.Where(a => a.Status == OrderStatusCodes.Finalized || (a.Status == OrderStatusCodes.Complete && a.Updated >= lastActions)).ToArrayAsync();
 
             return View(model);
         }
