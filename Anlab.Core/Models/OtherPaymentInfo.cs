@@ -16,20 +16,20 @@ namespace Anlab.Core.Models
         public string CompanyName { get; set; }
         
         [Required]
-        [Display(Name = "Account Contact Name")]
+        [Display(Name = "Billing Contact Name")]
         public string AcName { get; set; }
         
         [Required]
-        [Display(Name = "Account Contact Address")]
+        [Display(Name = "Billing Contact Address")]
         public string AcAddr { get; set; }
         
         [Required]
         [EmailAddress]
-        [Display(Name = "Account Contact Email")]
+        [Display(Name = "Billing Contact Email")]
         public string AcEmail { get; set; }
         
         [Required]
-        [Display(Name = "Account Contact Phone Number")]
+        [Display(Name = "Billing Contact Phone Number")]
         public string AcPhone { get; set; }
         
         //[Required] 

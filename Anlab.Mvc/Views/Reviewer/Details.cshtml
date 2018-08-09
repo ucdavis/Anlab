@@ -1,0 +1,36 @@
+@using Humanizer
+@model AnlabMvc.Models.Order.OrderReviewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="col">
+    @Html.Partial("_OrderDetails")
+</div>
+
+@section AdditionalStyles
+    {
+    @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+}
+
+@section Scripts
+    {
+    @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+
+
+    <script type="text/javascript">
+        $(function () {
+            $("#table").dataTable();
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(function() {
+            $(".showTooltip").tooltip();
+        });
+    </script>
+
+    @{     await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
+
+}

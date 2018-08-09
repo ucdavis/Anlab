@@ -53,6 +53,7 @@ namespace Anlab.Core.Services
 
             var model = new TransactionViewModel();
             model.MerchantTrackingNumber = order.Id.ToString();
+            model.MerchantTrackingUrl = $"https://anlab.ucdavis.edu/Reviewer/Details/{order.Id}";
             model.Transfers.Add(new TransferViewModel { Account = debitAccount.Account.SafeToUpper() , Amount = orderDetails.GrandTotal, Chart = debitAccount.Chart.SafeToUpper(), SubAccount = debitAccount.SubAccount.SafeToUpper(), Description = $"{order.Project} - {order.RequestNum}", Direction = "Debit", ObjectCode = _appSettings.DebitObjectCode });
             model.Transfers.Add(new TransferViewModel { Account = creditAccount.Account.SafeToUpper(), Amount = orderDetails.GrandTotal, Chart = creditAccount.Chart.SafeToUpper(), SubAccount = creditAccount.SubAccount.SafeToUpper(), Description = $"{order.Project} - {order.RequestNum}", Direction = "Credit", ObjectCode = _appSettings.CreditObjectCode });
 
