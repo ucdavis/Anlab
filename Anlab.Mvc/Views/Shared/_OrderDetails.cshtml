@@ -146,13 +146,14 @@
         }
     }
 </div>
-@if (!Model.HideLabDetails)
-{
-    <div class="form-group">
-        <strong>Paid <i class="analysisTooltip fa fa-info-circle" title="This is not an indicator that the final money movement has happened."></i></strong>
-        <span> @Model.Order.Paid.ToYesNoString() </span>
-    </div>
-}
+
+    @if (!Model.HideLabDetails)
+    {
+        <div class="form-group">
+            <strong>Paid <i class="analysisTooltip fa fa-info-circle" title="This is not an indicator that the final money movement has happened."></i></strong>
+            <span> @Model.Order.Paid.ToYesNoString() </span>
+        </div>
+    }
 
     @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.LabComments))
     {
