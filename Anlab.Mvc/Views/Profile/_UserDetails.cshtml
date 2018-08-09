@@ -27,6 +27,11 @@
     </div>*@
 
     <dl class="dl-horizontal">
+        @if (Model.Email.SafeToUpper() != Model.NormalizedUserName)
+        {
+            <dt>Sign In Id</dt>
+            <dd>@Html.DisplayFor(a => a.UserName)</dd>
+        }
         <dt>@Html.DisplayNameFor(a => a.Email)</dt>
         <dd>@Html.DisplayFor(a => a.Email)</dd>
 
