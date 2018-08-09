@@ -12,10 +12,20 @@
 
   <row>
       <columns>
-          <h1>Order Number @Model.Id </h1>
-          <h2>Anlab Work Request Billing</h2>
-          <p>A new work request has been placed that requires your attention.</p>
+          <h1>@h1Text</h1>
+          <h2>@h2Text</h2>
+          @if(showH4Text){
+          <h4>@h4Text</h4>
+          }
+          <p>A new @billingText has been placed that requires your attention.</p>
           <spacer size="16"></spacer>
+          <h4>Requester Details</h4>
+          <callout class="primary">
+              <strong>Name</strong><br />@creator.Name<br /><br />
+              <strong>Email</strong><br />@creator.Email<br /><br />
+          </callout>
+          <spacer size="16"></spacer>
+          <h4>Billing Details</h4>
           <callout class="primary">
               <row>
                   <columns large="6">
@@ -70,6 +80,7 @@
                   var temp = @Model.GetTestDetails().Where(a => a.Id == test.Id).FirstOrDefault();
                   if (!temp.Public)
                   {
+                  hiddenCosts += test.Total;
                   continue;
                   }
                   <tr>
@@ -95,6 +106,14 @@
                           }
                       </td>
                   </tr>
+                  @if(hiddenCosts > 0.0M)
+                  {
+                  <tr>
+                      <td></td>
+                      <th colspan="2"><b>Other Costs</b></th>
+                      <th>@(String.Format("{0:C}", hiddenCosts))</th>
+                  </tr>
+                  }
                   @if(order.AdjustmentAmount != 0)
                   {
                   <tr>
