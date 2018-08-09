@@ -2,7 +2,7 @@
 @using AnlabMvc.Models.Order;
 @model IList<Order>
 @{
-    ViewData["Title"] = "Finalized Orders";
+    ViewData["Title"] = "Finalized Orders or Completed within 60 Days";
 }
 
 
@@ -29,6 +29,8 @@
                 <th>Payment Type</th>
                 <th>Total</th>
                 <th>Created</th>
+                <th>Last Updated</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
@@ -37,15 +39,16 @@
             {
                 var url = $"/Reviewer/Details/{order.Id}";
                 var orderDetails = order.GetOrderDetails();
-                <tr data-href="@url">
-                    <td>@order.RequestNum</td>
-                    <td>@order.Id</td>
-                    <td>@order.ClientId</td>
-                    <td>@order.PaymentType</td>
-                    <td>@orderDetails.GrandTotal.ToString("C")</td>
-                    <td>@order.Created.ToPacificTime().ToString("g")</td>
-                    
-                </tr>
+            <tr data-href="@url">
+                <td>@order.RequestNum</td>
+                <td>@order.Id</td>
+                <td>@order.ClientId</td>
+                <td>@order.PaymentType</td>
+                <td>@orderDetails.GrandTotal.ToString("C")</td>
+                <td>@order.Created.ToPacificTime().ToString("g")</td>
+                <td>@order.Updated.ToPacificTime().ToString("g")</td>
+                <td>@order.Status</td>
+            </tr>
             }
         </tbody>
     </table>
@@ -80,10 +83,10 @@
     <script type="text/javascript">
         $(function () {
             var table = $("#table").DataTable({
-                "sorting": [[5, "desc"]],
+                "sorting": [[6, "desc"]],
                 "columnDefs": [
                     {
-                        "type": "date", "targets": 5
+                        "type": "date", "targets": [5,6]
                     }
                 ],
                 "stateSave": true,
