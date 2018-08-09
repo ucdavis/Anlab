@@ -99,6 +99,10 @@
                 {
                     <a asp-action="Finalize" asp-route-id="@order.Id"><i class="fa fa-upload" style="color: red"></i> Finalize</a>
                 }
+                @if (order.Status == OrderStatusCodes.Complete || order.Status == OrderStatusCodes.Finalized)
+                {
+                    <a asp-action="Details" asp-route-id="@order.Id"><i class="fa fa-eye"></i> Lab View</a>
+                }
 
             </td>
         </tr>
