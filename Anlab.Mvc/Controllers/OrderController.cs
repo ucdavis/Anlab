@@ -447,8 +447,11 @@ namespace AnlabMvc.Controllers
 
             if (order.CreatorId != CurrentUserId)
             {
-                ErrorMessage = "You don't have access to this order.";
-                return NotFound();
+                if (!User.IsInRole(RoleCodes.Admin))
+                {
+                    ErrorMessage = "You don't have access to this order.";
+                    return NotFound();
+                }
             }
 
             var model = new OrderReviewModel();
