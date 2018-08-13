@@ -20,13 +20,17 @@ CREATE TABLE [dbo].[AspNetUsers] (
     [SecurityStamp]        NVARCHAR (MAX)     NULL,
     [TwoFactorEnabled]     BIT                NOT NULL,
     [UserName]             NVARCHAR (256)     NULL,
-    [CompanyName] NVARCHAR(1000) NULL, 
-    [BillingContactName] NVARCHAR(250) NULL, 
-    [BillingContactAddress] NVARCHAR(2000) NULL, 
-    [BillingContactPhone] NVARCHAR(50) NULL, 
-    [BillingContactEmail] NVARCHAR(250) NULL, 
+    [CompanyName]          NVARCHAR (1000)    NULL,
+    [BillingContactName]   NVARCHAR (250)     NULL,
+    [BillingContactAddress]NVARCHAR (2000)    NULL,
+    [BillingContactPhone]  NVARCHAR (50)      NULL,
+    [BillingContactEmail]  NVARCHAR (250)     NULL,
+    [Created]              DATETIME           CONSTRAINT [DF_AspNetUsers_Created] DEFAULT (getdate()) NOT NULL,
+    [Updated]              DATETIME           CONSTRAINT [DF_AspNetUsers_Updated] DEFAULT (getdate()) NOT NULL,
     CONSTRAINT [PK_AspNetUsers] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
+
+
 
 
 GO
