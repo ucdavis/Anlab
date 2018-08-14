@@ -54,6 +54,7 @@ namespace Test.TestsModel
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)1000)]",
             }));
             expectedFields.Add(new NameAndType("ConcurrencyStamp", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Created", "System.DateTime", new List<string>()));
             expectedFields.Add(new NameAndType("Email", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.EmailAddressAttribute()]",
@@ -97,6 +98,7 @@ namespace Test.TestsModel
             //expectedFields.Add(new NameAndType("Roles", "System.Collections.Generic.ICollection`1[Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserRole`1[System.String]]", new List<string>()));
             expectedFields.Add(new NameAndType("SecurityStamp", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("TwoFactorEnabled", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("Updated", "System.DateTime", new List<string>()));
             expectedFields.Add(new NameAndType("UserName", "System.String", new List<string>()));            
             #endregion Arrange
 

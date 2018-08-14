@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Anlab.Core.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace Anlab.Core.Domain
 {
     // Add profile data for application users by adding properties to the User class
-    public class User : IdentityUser
+    public class User : IdentityUser,IDatedEntity
     {
         [StringLength(50)]
         [Display(Name = "First Name")]        
@@ -49,6 +50,9 @@ namespace Anlab.Core.Domain
         [Required]
         [EmailAddress]
         public override string Email { get; set; }
+
+        public DateTime Created { get; set; }
+        public DateTime Updated { get; set; }
 
         public ICollection<MailMessage> MailMessages { get; set; }
 
@@ -94,5 +98,7 @@ namespace Anlab.Core.Domain
                 return Name;
             }
         }
+
+
     }
 }
