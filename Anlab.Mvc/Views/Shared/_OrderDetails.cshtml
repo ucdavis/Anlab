@@ -85,6 +85,20 @@
         }
     </span>
 </div>
+@if (!Model.HideLabDetails)
+{
+    <div class="form-group">
+        <strong>Creator Email</strong>
+        <span><a href="mailto:@Model.Order.Creator.Email">@Model.Order.Creator.Email</a></span>
+    </div>
+    @if (Model.Order.Creator.Email.SafeToUpper() != Model.Order.Creator.UserName.SafeToUpper())
+    {
+        <div class="form-group">
+            <strong style="background-color: red">Creator Sign In Id</strong>
+            <span><a href="mailto:@Model.Order.Creator.UserName">@Model.Order.Creator.UserName</a></span>
+        </div>
+    }
+}
 
 @if (Model.Order.AdditionalEmails.Length > 0)
 {
