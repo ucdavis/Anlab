@@ -25,5 +25,16 @@ namespace Anlab.Core.Extensions
         {
             return value.StartsWith("G-", StringComparison.OrdinalIgnoreCase);
         }
+
+        public static string SpecialTruncation(this string value, int additionalLength, int maxLength)
+        {
+            if ((value.Length + additionalLength) <= maxLength)
+            {
+                return value;
+            }
+
+            var max = (value.Length + additionalLength + 3) - maxLength;
+            return $"{value.Substring(0, (value.Length - max))}...";
+        }
     }
 }
