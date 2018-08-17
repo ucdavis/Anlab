@@ -50,8 +50,6 @@ namespace Anlab.Core.Services
                 Log.Error("Sloth Token missing");
             }
 
-            var xxx = $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}";
-
 
             var model = new TransactionViewModel();
             model.MerchantTrackingNumber = order.Id.ToString();
