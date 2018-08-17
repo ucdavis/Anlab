@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using Anlab.Core.Extensions;
 using Serilog;
@@ -50,12 +51,14 @@ namespace Anlab.Core.Services
                 Log.Error("Sloth Token missing");
             }
 
+            var xxx = $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}";
+
 
             var model = new TransactionViewModel();
             model.MerchantTrackingNumber = order.Id.ToString();
             model.MerchantTrackingUrl = $"https://anlab.ucdavis.edu/Reviewer/Details/{order.Id}";
-            model.Transfers.Add(new TransferViewModel { Account = debitAccount.Account.SafeToUpper() , Amount = orderDetails.GrandTotal, Chart = debitAccount.Chart.SafeToUpper(), SubAccount = debitAccount.SubAccount.SafeToUpper(), Description = $"{order.Project} - {order.RequestNum}", Direction = "Debit", ObjectCode = _appSettings.DebitObjectCode });
-            model.Transfers.Add(new TransferViewModel { Account = creditAccount.Account.SafeToUpper(), Amount = orderDetails.GrandTotal, Chart = creditAccount.Chart.SafeToUpper(), SubAccount = creditAccount.SubAccount.SafeToUpper(), Description = $"{order.Project} - {order.RequestNum}", Direction = "Credit", ObjectCode = _appSettings.CreditObjectCode });
+            model.Transfers.Add(new TransferViewModel { Account = debitAccount.Account.SafeToUpper() , Amount = orderDetails.GrandTotal, Chart = debitAccount.Chart.SafeToUpper(), SubAccount = debitAccount.SubAccount.SafeToUpper(), Description = $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}", Direction = "Debit", ObjectCode = _appSettings.DebitObjectCode });
+            model.Transfers.Add(new TransferViewModel { Account = creditAccount.Account.SafeToUpper(), Amount = orderDetails.GrandTotal, Chart = creditAccount.Chart.SafeToUpper(), SubAccount = creditAccount.SubAccount.SafeToUpper(), Description = $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}", Direction = "Credit", ObjectCode = _appSettings.CreditObjectCode });
 
             using (var client = new HttpClient())
             {
