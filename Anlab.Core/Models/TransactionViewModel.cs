@@ -31,7 +31,7 @@ namespace Anlab.Jobs.MoneyMovement
         public string Account { get; set; }
         public string SubAccount { get; set; }
         public string ObjectCode { get; set; }
-        
+        //Max 40 characters
         public string Description { get; set; }
         
         public string Direction { get; set; }// Debit or Credit Code associated with the transaction. = ['Credit', 'Debit'],
