@@ -76,7 +76,7 @@ namespace Anlab.Core.Services
 
                 if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    Log.Information("Sloth Response Bad Request for order {id}", order.Id);
+                    Log.Error("Sloth Response Bad Request for order {id}", order.Id);
                     var badrequest = await response.Content.ReadAsStringAsync();
                     Log.ForContext("data", badrequest, true).Information("Sloth message response");
                     var badRtValue = new SlothResponseModel
