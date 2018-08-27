@@ -143,7 +143,7 @@
       </div>
       <div class="col-6 onlyPrint">
          <div class="pull-right">
-            <img style="width: 350px; height 350px;"  src="/images/lab-only-section.png" alt="lab use only section" />
+            <img style="width: 350px; height: 350px;"  src="/images/lab-only-section.png" alt="lab use only section" />
          </div>
       </div>
    </div>
@@ -296,6 +296,11 @@
             margin: 0 !important;
         }
 
+        /* This prevents the table header from printing twice on the same page and over top of the table details */
+        thead {
+            display: table-row-group;
+        }
+
         th {
             padding: 5px;
             padding-top: 20px;
@@ -334,6 +339,7 @@
         * {
             line-height: 1.3em !important;
         }
+
 
     </style>
     <style media="screen">
