@@ -296,6 +296,11 @@
             margin: 0 !important;
         }
 
+        /* This prevents the table header from printing twice on the same page and over top of the table details */
+        thead {
+            display: table-row-group;
+        }
+
         th {
             padding: 5px;
             padding-top: 20px;
@@ -334,6 +339,7 @@
         * {
             line-height: 1.3em !important;
         }
+
 
     </style>
     <style media="screen">
