@@ -14,7 +14,7 @@
     <columns>
       <h1>Payment Complete</h1>
       <p>The payment for your work order has been completed. Here is a summary of your order.</p>
-      <h3><a asp-protocol="@protocol" asp-host="@host" asp-controller="Results" asp-action="Link" asp-route-id="@Model.ShareIdentifier">View your results here</a></h3>
+      <h3><a asp-protocol="@protocol" asp-host="@host" asp-controller="Results" asp-action="Link" asp-route-id="@Model.ShareIdentifier">Click here to get your results</a></h3>
 
       <spacer size="16"></spacer>
 
@@ -24,22 +24,28 @@
               <p>
                   <strong>Online Order Number</strong><br />@Model.Id<br /><br />
                   <strong>Project Title/Location</strong><br />@order.Project<br /><br />
-                  <strong>Payment Method</strong><br />@order.Payment.ClientType<br /><br />
-                  @if(Model.ClientId != null)
+                  <strong>Payment Method</strong><br />@order.Payment.ClientType.PaymentMethodDescription()<br /><br />
+                  @if(order.ClientInfo.ClientId != null)
                   {
-                  <strong>Client Id</strong><br />@Model.ClientId
+                  <strong>Client Id</strong><br />@order.ClientInfo.ClientId<br /><br />
                   }
+                  <strong>Client Name</strong> <br />@order.ClientInfo.Name
               </p>
           </columns>
           <columns large="6">
-            <p>
-                <strong>Sample Type</strong><br />@order.SampleType<br /><br />
-                @if (!String.IsNullOrWhiteSpace(order.Commodity))
-                {
-                <strong>Commodity</strong><br />@order.Commodity<br /><br />
-                }
-                <strong># of Samples</strong><br />@order.Quantity
-            </p>
+              <p>
+                  <strong>Created By</strong><br />@createdBy<br /><br />
+                  <strong>Sample Type</strong><br />@order.SampleType<br /><br />
+                  @if (!String.IsNullOrWhiteSpace(order.Commodity))
+                  {
+                  <strong>Commodity</strong><br />@order.Commodity<br /><br />
+                  }
+                  <strong># of Samples</strong><br />@order.Quantity<br /><br />
+                  @if (order.DateSampled != null)
+                  {
+                  <strong>Date Sampled</strong><br />@order.DateSampled.ToShortDateString()
+                  }
+              </p>
           </columns>
         </row>
       </callout>
@@ -52,27 +58,28 @@
         <table>
             <thead>
                 <tr>
-                    <th><b>Analysis</b></th>
+                    <th><b>Test(s)</b></th>
                     <th><b>Per Test</b></th>
                     <th><b>Setup</b></th>
                     <th><b>Test Total</b></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var test in order.SelectedTests)
-                {
-                var temp = @Model.GetTestDetails().Where(a => a.Id == test.Id).FirstOrDefault();
-                if (!temp.Public)
-                {
-                continue;
-                }
-                <tr>
-                    <td width="50%">@test.Analysis</td>
-                    <td>@test.Cost.ToString("C")</td>
-                    <td>@test.SetupCost.ToString("C")</td>
-                    <td>@test.Total.ToString("C")</td>
-                </tr>
-                }
+            @foreach (var test in order.SelectedTests)
+            {
+            var temp = @Model.GetTestDetails().Where(a => a.Id == test.Id).FirstOrDefault();
+            if (!temp.Public)
+            {
+            hiddenCosts += test.Total;
+            continue;
+            }
+            <tr>
+                <td width="50%">@test.Analysis</td>
+                <td>@test.Cost.ToString("C")</td>
+                <td>@test.SetupCost.ToString("C")</td>
+                <td>@test.Total.ToString("C")</td>
+            </tr>
+            }
             </tbody>
             <tfoot>
                 <tr>
@@ -89,6 +96,14 @@
                         }
                     </th>
                 </tr>
+                @if(hiddenCosts > 0.0M)
+                {
+                <tr>
+                    <td></td>
+                    <th colspan="2"><b>Other Costs</b></th>
+                    <th>@(String.Format("{0:C}", hiddenCosts))</th>
+                </tr>
+                }
                 @if(order.AdjustmentAmount != 0)
                 {
                 <tr>
