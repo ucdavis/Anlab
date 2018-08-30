@@ -122,7 +122,7 @@ namespace AnlabMvc.Controllers
             var payment = ProcessPaymentEvent(response, dictionary);
 
             //Do payment stuff.
-            var order = _context.Orders.SingleOrDefault(a => a.Id == response.Req_Reference_Number);
+            var order = _context.Orders.Include(i => i.Creator).SingleOrDefault(a => a.Id == response.Req_Reference_Number);
             if (order == null)
             {
                 Log.Error("Order not found {0}", response.Req_Reference_Number);
