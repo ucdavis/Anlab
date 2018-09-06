@@ -63,6 +63,10 @@ namespace Anlab.Jobs.SendMail
             {
                 try
                 {
+                    if (message.Sent == false && message.FailureCount > 5)
+                    {
+                        continue;
+                    }
                     MailService.SendMessage(message);
 
                     message.Sent = true;
@@ -72,6 +76,12 @@ namespace Anlab.Jobs.SendMail
                 catch (Exception ex)
                 {
                     Log.Error(ex.Message);
+                    message.FailureCount++;
+                    if (message.FailureCount > 5)
+                    {
+                        MailService.SendFailureNotification(message.Order.Id, ex.Message);
+                    }
+
                     // TODO: figure out which exceptions to retry
                     message.Sent = false;
                     message.FailureReason = ex.Message;
