@@ -33,5 +33,7 @@ namespace Anlab.Core.Domain
         public Order Order { get; set; }
 
         public User User { get; set; }
+
+        public int FailureCount { get; set; }
     }
 }
