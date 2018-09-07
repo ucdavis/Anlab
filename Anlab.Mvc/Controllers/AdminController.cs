@@ -250,7 +250,7 @@ namespace AnlabMvc.Controllers
 
                 Message = $"Mail Message updated. {extraMessage}";
 
-                return RedirectToAction("Details", "Lab", new{id=model.OrderId});
+                return RedirectToAction("MailQueue", "Admin", new{id=model.OrderId});
             }
 
             ErrorMessage = "Unable to save";
