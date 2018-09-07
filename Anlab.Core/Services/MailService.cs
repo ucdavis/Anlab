@@ -78,6 +78,8 @@ namespace Anlab.Core.Services
             {
                 var message = new System.Net.Mail.MailMessage {From = new MailAddress("anlab@ucdavis.edu", "Anlab")};
                 message.To.Add(_emailSettings.AnlabAddress);
+                message.Bcc.Add("jsylvestre@ucdavis.edu");
+                message.Bcc.Add("jasoncsylvestre@gmail.com");
                 var body =
                     $"<p>Order Id {orderId}: https://anlab.ucdavis.edu/Lab/Details/{orderId} failed email.</p><p>Failure Reason: {failureReason}</p>";
 
