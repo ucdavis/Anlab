@@ -12,6 +12,7 @@
     <thead>
         <tr>
             <th></th>
+            <th>Action</th>
             <th>Status:</th>
             <th>Id</th>
             <th>To:</th>
@@ -24,6 +25,7 @@
     @foreach (var message in Model)
     {
         <tr>
+            <td></td>
             <td>
                 @if (message.Sent.HasValue)
                 {
@@ -105,10 +107,10 @@
     <script type="text/javascript">
         $(function() {
             var table = $("#table").DataTable({
-                "order": [[1, "desc"],[5,"desc"]],
+                "order": [[2, "desc"],[6,"desc"]],
                 "columnDefs": [
                     { "orderable": false, "targets": 0 },
-                    {"type": "date", "targets": 5}
+                    {"type": "date", "targets": 6}
                 ],
                 responsive: true,
             });

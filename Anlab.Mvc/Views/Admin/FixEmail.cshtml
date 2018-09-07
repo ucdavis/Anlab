@@ -17,9 +17,16 @@
                 <span>@Model.Id</span>
             </div>
             <div class="form-group">
-                <strong>Last Failure Reason</strong>
-                <span>@Model.FailureReason</span>
+                <strong>Failure Count</strong>
+                <span>@Model.FailureCount</span>
             </div>
+            @if (Model.Sent != null && Model.Sent.Value == false)
+            {
+                <div class="form-group">
+                    <strong>Last Failure Reason</strong>
+                    <span>@Model.FailureReason</span>
+                </div>
+            }
             <div class="form-group">
                 <label asp-for="SendTo" class="col-md-2 control-label"></label>
                 <div class="col-md-10">

@@ -21,6 +21,9 @@ namespace AnlabMvc.Models.MailMessageModels
 
         public bool Resend { get; set; } = false;
 
+        public bool? Sent { get; set; }
+        public int FailureCount { get; set; }
+
         public EditMailMessageModel(MailMessage v)
         {
             Id = v.Id;
@@ -28,6 +31,8 @@ namespace AnlabMvc.Models.MailMessageModels
             Subject = v.Subject;
             FailureReason = v.FailureReason;
             OrderId = v.Order.Id;
+            Sent = v.Sent;
+            FailureCount = v.FailureCount;
         }
     }
 }
