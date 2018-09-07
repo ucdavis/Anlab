@@ -24,7 +24,12 @@
     @foreach (var message in Model)
     {
         <tr>
-            <td></td>
+            <td>
+                @if (message.Sent.HasValue)
+                {
+                    <a asp-controller="Admin" asp-action="FixEmail" asp-route-id="@message.Id">Resend</a>
+                }
+            </td>
             <td>
                 @if (message.Sent.HasValue)
                 {
