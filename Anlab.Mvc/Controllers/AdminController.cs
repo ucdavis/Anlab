@@ -214,7 +214,7 @@ namespace AnlabMvc.Controllers
         [HttpGet]
         public async Task<IActionResult> FixEmail(int id)
         {
-            var mm = await _dbContext.MailMessages.Include(i=> i.Order).AsNoTracking().SingleAsync(x => x.Id == id);
+            var mm = await _dbContext.MailMessages.Include(i=> i.Order).AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
             if (mm == null)
             {
                 return NotFound();
@@ -222,6 +222,40 @@ namespace AnlabMvc.Controllers
             var editMailMessageModel = new EditMailMessageModel(mm);
 
             return View(editMailMessageModel);
+        }
+
+        [Authorize(Roles = RoleCodes.Admin)]
+        [HttpPost]
+        public async Task<IActionResult> FixEmail(int id, EditMailMessageModel model)
+        {
+            var mm = await _dbContext.MailMessages.Include(i=> i.Order).SingleOrDefaultAsync(x => x.Id == id);
+            if (mm == null || model.Id != id || model.OrderId != mm.Order.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                mm.SendTo = model.SendTo;
+                mm.Subject = model.Subject;
+                if (model.Resend)
+                {
+                    mm.Sent = null;
+                }
+
+                var extraMessage = mm.Sent == null
+                    ? "The mail message will attempt to send again."
+                    : "You did not choose to try and re-send";
+                await _dbContext.SaveChangesAsync();
+
+                Message = $"Mail Message updated. {extraMessage}";
+
+                return RedirectToAction("Details", "Lab", new{id=model.OrderId});
+            }
+
+            ErrorMessage = "Unable to save";
+
+            return View(model);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Anlab.Core.Domain;
@@ -9,9 +10,12 @@ namespace AnlabMvc.Models.MailMessageModels
 {
     public class EditMailMessageModel
     {
+        public EditMailMessageModel(){}
         public int Id { get; set; }
         public int OrderId { get; set; }
+        [Required]
         public string SendTo { get; set; }
+        [Required]
         public string Subject { get; set; }
         public string FailureReason { get; set; }
 
