@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
+using AnlabMvc.Models.MailMessageModels;
 using AnlabMvc.Models.Order;
 using AnlabMvc.Models.Roles;
 using AnlabMvc.Models.User;
@@ -207,6 +208,20 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
             return View(message);
+        }
+
+        [Authorize(Roles = RoleCodes.Admin)]
+        [HttpGet]
+        public async Task<IActionResult> FixEmail(int id)
+        {
+            var mm = await _dbContext.MailMessages.Include(i=> i.Order).AsNoTracking().SingleAsync(x => x.Id == id);
+            if (mm == null)
+            {
+                return NotFound();
+            }
+            var editMailMessageModel = new EditMailMessageModel(mm);
+
+            return View(editMailMessageModel);
         }
     }
 }

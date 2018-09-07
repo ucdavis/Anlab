@@ -79,6 +79,7 @@ namespace Anlab.Jobs.SendMail
                     message.FailureCount++;
                     if (message.FailureCount > 5)
                     {
+                        //TODO: Test that the ID is populated.
                         MailService.SendFailureNotification(message.Order.Id, ex.Message);
                     }
 

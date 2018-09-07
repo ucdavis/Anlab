@@ -1,0 +1,48 @@
+@model AnlabMvc.Models.MailMessageModels.EditMailMessageModel
+
+@{
+    ViewBag.Title = "Edit Mail Message";
+}
+
+<div class="col">
+    <form asp-action="FixEmail" method="post" asp-antiforgery="true" asp-id="@Model.Id">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <strong>Order Id</strong>
+                <span>@Model.OrderId</span>
+            </div>
+            <div class="form-group">
+                <strong>Mail Id</strong>
+                <span>@Model.Id</span>
+            </div>
+            <div class="form-group">
+                <strong>Failure Reason</strong>
+                <span>@Model.FailureReason</span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SendTo" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="SendTo" class="form-control" />
+                    <span asp-validation-for="SendTo" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Subject" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Subject" class="form-control" />
+                    <span asp-validation-for="Subject" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Resend" class="col-md-2 control-label">Resend</label>
+                <div class="col-md-10">
+                    <select asp-for="Resend" class="form-control">
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                    <span asp-validation-for="Resend" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
