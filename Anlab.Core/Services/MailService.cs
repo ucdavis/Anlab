@@ -14,6 +14,8 @@ namespace Anlab.Core.Services
     {
         void EnqueueMessage(MailMessage message);
         void SendMessage(MailMessage mailMessage);
+
+        void SendFailureNotification(int OrderId, string failureReason);
     }
 
     public class MailService : IMailService
@@ -68,6 +70,41 @@ namespace Anlab.Core.Services
                 client.Send(message);
             }
 
+        }
+
+        public void SendFailureNotification(int orderId, string failureReason)
+        {
+            try
+            {
+                var message = new System.Net.Mail.MailMessage {From = new MailAddress("anlab@ucdavis.edu", "Anlab")};
+                message.To.Add(_emailSettings.AnlabAddress);
+                message.Bcc.Add("jsylvestre@ucdavis.edu");
+                message.Bcc.Add("jasoncsylvestre@gmail.com");
+                var body =
+                    $"<p>Order Id {orderId}: https://anlab.ucdavis.edu/Lab/Details/{orderId} failed email.</p><p>Failure Reason: {failureReason}</p>";
+
+                message.Subject = $"T.O.P.S. Email Failure. Order Id {orderId}";
+                message.IsBodyHtml = false;
+                message.Body = body;
+                var mimeType = new System.Net.Mime.ContentType("text/html");
+                var alternate = AlternateView.CreateAlternateViewFromString(body, mimeType);
+                message.AlternateViews.Add(alternate);
+
+                using (var client = new SmtpClient(_emailSettings.Host))
+                {
+                    client.UseDefaultCredentials = false;
+                    client.Credentials = new NetworkCredential(_emailSettings.UserName, _emailSettings.Password);
+                    client.Port = _emailSettings.Port;
+                    client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    client.EnableSsl = true;
+
+                    client.Send(message);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error sending email for Failure reason. OrderId {orderId} Exception {ex.Message}" );
+            }
         }
     }
 }

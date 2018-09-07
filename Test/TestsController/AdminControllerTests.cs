@@ -779,7 +779,7 @@ namespace Test.TestsController
         [Fact]
         public void TestControllerMethodCount()
         {
-            ControllerReflection.ControllerPublicMethods(9);
+            ControllerReflection.ControllerPublicMethods(11);
         }
 
         [Fact]
@@ -828,6 +828,18 @@ namespace Test.TestsController
 
             //9
             ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("ViewMessage", 1 + countAdjustment, "ViewMessage-1", false, showListOfAttributes: false);
+
+            //10 & 11
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("FixEmail", 3 + countAdjustment, "FixEmailGet-1", false, showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<HttpGetAttribute>("FixEmail", 3 + countAdjustment, "FixEmailGet-2", false, showListOfAttributes: false);
+            var fixEmailUserAuth = ControllerReflection.MethodExpectedAttribute<AuthorizeAttribute>("FixEmail", 3 + countAdjustment, "FixEmail-1", false, showListOfAttributes: false);
+            fixEmailUserAuth.ElementAt(0).Roles.ShouldBe(RoleCodes.Admin);
+
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("FixEmail", 3 + countAdjustment, "FixEmailPost-1", true, showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("FixEmail", 3 + countAdjustment, "FixEmailPost-2", true, showListOfAttributes: false);
+            var fixEmailUserAuthPost = ControllerReflection.MethodExpectedAttribute<AuthorizeAttribute>("FixEmail", 3 + countAdjustment, "FixEmail-1", true, showListOfAttributes: false);
+            fixEmailUserAuthPost.ElementAt(0).Roles.ShouldBe(RoleCodes.Admin);
+
         }
     }
 }
