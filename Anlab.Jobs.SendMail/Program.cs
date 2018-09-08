@@ -63,7 +63,7 @@ namespace Anlab.Jobs.SendMail
             {
                 try
                 {
-                    if (message.Sent == false && message.FailureCount > 5)
+                    if (message.Sent == false && message.FailureCount > 4)
                     {
                         continue;
                     }
@@ -77,7 +77,7 @@ namespace Anlab.Jobs.SendMail
                 {
                     Log.Error(ex.Message);
                     message.FailureCount++;
-                    if (message.FailureCount > 5)
+                    if (message.FailureCount > 4)
                     {
                         var messageWithOrder = dbContext.MailMessages.Include(i => i.Order).SingleOrDefault(a => a.Id == message.Id);
                         int orderId = 0;
