@@ -181,12 +181,17 @@ namespace AnlabMvc.Controllers
         //    return Content($"Added {role} Role");
         //}
 
-        public async Task<IActionResult> MailQueue(int? id = null)
+        public async Task<IActionResult> MailQueue(int? id = null, bool allFailed = false)
         {
             // Right now, show unsent pending emails, failures, and successfully sent within 30 days.
             // TODO: Review filter
 
             List<MailMessage> messages = null;
+            if (allFailed)
+            {
+                messages = await _dbContext.MailMessages.Include(i => i.Order).Where(x => x.Sent == false).AsNoTracking().ToListAsync();
+                return View(messages);
+            }
             if (id.HasValue)
             {
                 messages = await _dbContext.MailMessages.Include(i => i.Order).Where(x => x.Order.Id == id).AsNoTracking().ToListAsync();
@@ -246,6 +251,14 @@ namespace AnlabMvc.Controllers
                 var extraMessage = mm.Sent == null
                     ? "The mail message will attempt to send again."
                     : "You did not choose to try and re-send";
+
+                if (model.Unsend)
+                {
+                    mm.Sent = true;
+                    extraMessage = "Message marked as sent and will not be resent";
+                }
+
+
                 await _dbContext.SaveChangesAsync();
 
                 Message = $"Mail Message updated. {extraMessage}";
