@@ -20,6 +20,8 @@ namespace AnlabMvc.Models.MailMessageModels
         public string FailureReason { get; set; }
 
         public bool Resend { get; set; } = false;
+        [Display(Name = "Mark As Sent")]
+        public bool Unsend { get; set; } = false;
 
         public bool? Sent { get; set; }
         public int FailureCount { get; set; }
