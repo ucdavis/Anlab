@@ -382,6 +382,9 @@ export default class OrderForm extends React.Component<
                 <p className="help-block">
                     Note: 100 sample limit per work order. If submitting more than 100 sample please create additional work orders.
                 </p>
+                <p className="help-block">
+                    Each sample container must be numbered consecutively beginning with number 1.
+                </p>
                 <Quantity
                   quantity={quantity}
                   onQuantityChanged={this._onQuantityChanged}
