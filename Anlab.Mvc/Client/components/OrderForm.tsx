@@ -256,7 +256,7 @@ export default class OrderForm extends React.Component<
             <div className="form_wrap">
               <label className="form_header">Do you have a Client ID?</label>
               <p className="help-block">
-                Clinet IDs are typically assigned only to principal investigators or organizations.
+                Client IDs are typically assigned only to principal investigators or organizations.
               </p>
               <ClientId
                 clientIdRef={inputRef => {
