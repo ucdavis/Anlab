@@ -1,12 +1,28 @@
 @model List<Anlab.Core.Domain.MailMessage>
 @{
-    ViewData["Title"] = "Mail Queue";
+    if (ViewBag.allFailed == null || ViewBag.allFailed == false)
+    {
+        ViewData["Title"] = "Mail Queue";
+    }
+    else
+    {
+        ViewData["Title"] = "All Failed Mail Messages";
+    }
+    
 }
 
 <div class="col">
 <button id="collapsebutton" class="btn-hollow"><i class="glyphicon glyphicon-minus"></i> Collapse All</button>
 <button id="expandbutton" class="btn-hollow"><i class="glyphicon glyphicon-plus"></i> Expand All</button>
-<a class="btn pull-right" asp-controller="Admin" asp-action="MailQueue" asp-route-allFailed="true">Show All Fails</a>
+@if (ViewBag.allFailed == null || ViewBag.allFailed == false)
+{
+    <a class="btn pull-right" asp-controller="Admin" asp-action="MailQueue" asp-route-allFailed="true" asp-route-id="">Show All Fails</a>
+}
+else
+{
+    <a class="btn pull-right" asp-controller="Admin" asp-action="MailQueue" asp-route-allFailed="false" asp-route-id="">Show All Emails</a>
+}
+
 
 <div style="margin-top:16px;">
 <table id="table" cellpadding="0" class="row-border stripe order-column dt-responsive">

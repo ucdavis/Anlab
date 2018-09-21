@@ -186,6 +186,8 @@ namespace AnlabMvc.Controllers
             // Right now, show unsent pending emails, failures, and successfully sent within 30 days.
             // TODO: Review filter
 
+            ViewBag.allFailed = allFailed;
+
             List<MailMessage> messages = null;
             if (allFailed)
             {
@@ -202,6 +204,7 @@ namespace AnlabMvc.Controllers
                     x.Sent == null || !x.Sent.Value || x.Sent.Value && x.SentAt != null &&
                     x.SentAt.Value >= DateTime.UtcNow.AddDays(-30)).AsNoTracking().ToListAsync();
             }
+            
             return View(messages);
         }
 
