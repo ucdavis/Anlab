@@ -10,7 +10,7 @@ interface IPlantQuestionProps {
 export const SamplePlantQuestionsOptions = {
     average: "Report results on 100% dry weight basis, based on an average of 10% of the samples.",
     asReceived: "Report results on As Received basis.",
-    individual: "Report results on 100% dry weight basis, based on individual dry matter results (charge applies)."
+    individual: "Report results on 100% dry weight basis, based on individual dry matter results (Charges Apply)."
 }
 
 export class SamplePlantQuestions extends React.Component<IPlantQuestionProps, {}> {
@@ -60,7 +60,7 @@ export class SamplePlantQuestions extends React.Component<IPlantQuestionProps, {
           </label>
           {this.props.questions.plantReportingBasis === SamplePlantQuestionsOptions.individual &&
             (<h2 className="help-block">
-               Please select the dry matter test below
+               Please select the dry matter test below <span className="red-text">(Charges Apply)</span>
             </h2>)
           }
         </p>
