@@ -35,6 +35,7 @@ namespace Test.TestsModel
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)450)]"
             }));
+            expectedFields.Add(new NameAndType("DateFinalized", "System.Nullable`1[System.DateTime]", new List<string>()));
             expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>()));
             expectedFields.Add(new NameAndType("IsDeleted", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("JsonDetails", "System.String", new List<string>()));
