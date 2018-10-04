@@ -21,6 +21,7 @@ CREATE TABLE [dbo].[Orders] (
     [IsDeleted] BIT NOT NULL DEFAULT 0, 
     [ClientName] VARCHAR(512) NULL, 
     [BackedupTestDetails] NVARCHAR(MAX) NULL, 
+    [DateFinalized] DATETIME2 NULL, 
     CONSTRAINT [PK_Orders] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Orders_AspNetUsers_CreatorId] FOREIGN KEY ([CreatorId]) REFERENCES [dbo].[AspNetUsers] ([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK_Orders_PaymentEvents_ApprovedPaymentTransaction_Id] FOREIGN KEY ([ApprovedPaymentTransaction_Id]) REFERENCES [dbo].[PaymentEvents] ([Transaction_Id])
