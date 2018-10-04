@@ -244,6 +244,7 @@ export default class OrderForm extends React.Component<
 
     return (
       <div>
+            <div><a href="/media/pdf/ClientInstructionsCreateWorkOrder9-19-18.pdf" target="_blank"><i className="fa fa-question-circle-o"></i> Click here for instructions on how to complete this form</a></div>
         <div>
           <div className="form_wrap">
             <ViewMode
