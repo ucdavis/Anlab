@@ -59,9 +59,9 @@ export class SamplePlantQuestions extends React.Component<IPlantQuestionProps, {
             {SamplePlantQuestionsOptions.individual}
           </label>
           {this.props.questions.plantReportingBasis === SamplePlantQuestionsOptions.individual &&
-            (<h2 className="help-block">
-               Please select the dry matter test below <span className="red-text">(Charges Apply)</span>
-            </h2>)
+            (<div><h2 className="help-block inline-block">
+               Please select the dry matter test below 
+            </h2><span className="red-text inline-block">(Charges Apply)</span></div>)
           }
         </p>
       </div>
