@@ -212,8 +212,7 @@
     @if (Model.OrderDetails.RushMultiplier.HasValue && Model.OrderDetails.RushMultiplier.Value > 1)
     {
         <div class="form-group">
-            <strong>RUSH</strong>
-            <span>This order is a rush and has the cost increased by a factor of @Model.OrderDetails.RushMultiplier</span>
+            <h2 style="color: red">RUSH <strong style="color: green">This order is a rush and has the cost increased by a factor of @Model.OrderDetails.RushMultiplier</strong></h2>
         </div>
     }
 

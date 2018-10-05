@@ -65,6 +65,10 @@
 
       <callout class="primary">
         <p>Order Total: <strong>@order.GrandTotal.ToString("C")</strong></p>
+        @if (order.RushMultiplier.HasValue && order.RushMultiplier.Value > 1)
+        {
+          <h4>RUSH This order is a rush and has the cost increased by a factor of @order.RushMultiplier</h4>
+        }
       </callout>
 
       <h4>Order Details</h4>
