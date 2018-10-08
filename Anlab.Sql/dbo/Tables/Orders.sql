@@ -18,7 +18,7 @@ CREATE TABLE [dbo].[Orders] (
     [SlothTransactionId]            UNIQUEIDENTIFIER   NULL,
     [Status]                        NVARCHAR (50)   NULL,
     [Updated]                       DATETIME2 (7)    NOT NULL,
-    [IsDeleted] BIT NOT NULL DEFAULT 0, 
+    [IsDeleted] BIT NOT NULL DEFAULT ((0)), 
     [ClientName] VARCHAR(512) NULL, 
     [BackedupTestDetails] NVARCHAR(MAX) NULL, 
     [DateFinalized] DATETIME2 NULL, 
