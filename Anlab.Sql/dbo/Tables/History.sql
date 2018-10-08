@@ -7,6 +7,7 @@ CREATE TABLE [dbo].[History] (
     [ActorName]      NVARCHAR (250) NULL,
     [Notes]          NVARCHAR (MAX) NULL,
     [JsonDetails]    NVARCHAR (MAX) NULL,
+    [Status] NVARCHAR(50) NULL, 
     CONSTRAINT [PK_History] PRIMARY KEY CLUSTERED ([Id] ASC), 
     CONSTRAINT [FK_History_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders]([Id])
 );

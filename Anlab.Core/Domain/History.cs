@@ -24,6 +24,7 @@ namespace Anlab.Core.Domain
         public string Action { get; set; }
         public string ActorId { get; set; }
         public string ActorName { get; set; }
+        public string Status { get; set; }
 
         public string Notes { get; set; }
 
