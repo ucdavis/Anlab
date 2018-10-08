@@ -94,7 +94,24 @@ namespace AnlabMvc.Controllers
             model.OrderDetails = order.GetOrderDetails();
             model.HideLabDetails = false;
 
+            await GetHistories(id, model);
+
             return View(model);
+        }
+
+        private async Task GetHistories(int id, OrderReviewModel model)
+        {
+            model.History = await _dbContext.History.Where(a => a.OrderId == id).Select(s =>
+                new History
+                {
+                    Action = s.Action,
+                    ActionDateTime = s.ActionDateTime,
+                    Id = s.Id,
+                    Status = s.Status,
+                    ActorId = s.ActorId,
+                    ActorName = s.ActorName,
+                    Notes = s.Notes
+                }).OrderBy(o => o.ActionDateTime).ToListAsync(); //Basically filtering out jsonDetails
         }
 
         public async Task<IActionResult> AddRequestNumber(int id)
@@ -116,6 +133,8 @@ namespace AnlabMvc.Controllers
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
             model.HideLabDetails = false;
+
+            await GetHistories(id, model);
 
             return View(model);
 
@@ -280,6 +299,8 @@ namespace AnlabMvc.Controllers
             model.OrderDetails = order.GetOrderDetails();
             model.HideLabDetails = false;
 
+            await GetHistories(id, model);
+
             return View(model);
         }
 
@@ -372,6 +393,8 @@ namespace AnlabMvc.Controllers
             model.Order = order;
             model.OrderDetails = order.GetOrderDetails();
             model.HideLabDetails = false;
+
+            await GetHistories(id, model);
 
             return View(model);
         }
@@ -492,6 +515,8 @@ namespace AnlabMvc.Controllers
                 model.Account = model.OrderReviewModel.OrderDetails.Payment.Account;
             }
 
+            await GetHistories(id, model.OrderReviewModel);
+
             return View(model);
         }
 
@@ -555,6 +580,7 @@ namespace AnlabMvc.Controllers
                     }
                     if (!ModelState.IsValid)
                     {
+                        await GetHistories(id, model.OrderReviewModel);
                         ErrorMessage = "Errors Detected. Override failed";
                         return View(model);
                     }
