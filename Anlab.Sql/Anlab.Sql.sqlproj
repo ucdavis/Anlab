@@ -75,9 +75,8 @@
     <Build Include="dbo\Tables\AspNetRoles.sql" />
     <Build Include="dbo\Tables\AspNetRoleClaims.sql" />
     <Build Include="dbo\Tables\AnalysisMethods.sql" />
-    <None Include="Scripts\InsertSop.sql" />
-    <Build Include="Scripts\TestItemsData.sql" />
     <Build Include="dbo\Tables\SavedOrders.sql" />
+    <Build Include="dbo\Tables\History.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Compare\SqlExpressToProject.scmp" />

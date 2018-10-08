@@ -67,6 +67,8 @@ namespace Anlab.Core.Data
 
         public virtual DbSet<Order> Orders { get; set; }
 
+        public virtual DbSet<History> History { get; set; }
+
         public virtual DbSet<TestItem> TestItems { get; set; }
 
         public virtual DbSet<AnalysisMethod> AnalysisMethods { get; set; }
