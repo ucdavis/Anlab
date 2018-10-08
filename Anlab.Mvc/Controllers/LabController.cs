@@ -180,6 +180,17 @@ namespace AnlabMvc.Controllers
 
             order = await UpdateOrderFromLabworksResult(order, result);
 
+            var user = _dbContext.Users.Single(a => a.Id == CurrentUserId);
+            order.History.Add(new History
+            {
+                    Action = "Added Request Number",
+                    Status = order.Status,
+                    ActorId = user.NormalizedUserName,
+                    ActorName = user.Name,
+                    JsonDetails = order.JsonDetails,
+                    Notes = $"Request Number: {order.RequestNum} {ErrorMessage}",
+            });
+
             await _dbContext.SaveChangesAsync();
 
             Message = "Order updated from work request number";
@@ -307,6 +318,18 @@ namespace AnlabMvc.Controllers
 
             await _orderMessageService.EnqueueReceivedMessage(order, model.BypassEmail);
 
+            var extraMessage = model.BypassEmail ? "Without Email" : "";
+            var user = _dbContext.Users.Single(a => a.Id == CurrentUserId);
+            order.History.Add(new History
+            {
+                    Action = "Received",
+                    Status = order.Status,
+                    ActorId = user.NormalizedUserName,
+                    ActorName = user.Name,
+                    JsonDetails = order.JsonDetails,
+                    Notes = $"Request Number: {order.RequestNum} {extraMessage}",
+            });
+
             await _dbContext.SaveChangesAsync();
 
             Message = "Order marked as received";
@@ -418,6 +441,20 @@ namespace AnlabMvc.Controllers
             }
             //Only send email if there wasn't a problem with sloth.
             await _orderMessageService.EnqueueFinalizedMessage(order, model.BypassEmail);
+
+            var extraMailMessage = model.BypassEmail ? "Without Email" : "";
+            var user = _dbContext.Users.Single(a => a.Id == CurrentUserId);
+            order.History.Add(new History
+            {
+                    Action = "Finalized",
+                    Status = order.Status,
+                    ActorId = user.NormalizedUserName,
+                    ActorName = user.Name,
+                    JsonDetails = order.JsonDetails,
+                    Notes = $"Order marked as Finalized{extraMessage} {extraMailMessage}",
+            });
+
+
             await _dbContext.SaveChangesAsync();
 
             Message = $"Order marked as Finalized{extraMessage}";
@@ -462,6 +499,8 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         public async Task<ActionResult> OverrideOrder(int id, OverrideOrderModel model)
         {
+            var historyNote = string.Empty;
+
             var orderToUpdate = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
             if (orderToUpdate == null)
@@ -519,6 +558,7 @@ namespace AnlabMvc.Controllers
                         ErrorMessage = "Errors Detected. Override failed";
                         return View(model);
                     }
+                    historyNote = $"Account Changed Old: {orderDetails.Payment.Account} New: {model.Account}.";
 
                     orderDetails.Payment.Account = model.Account;
                     orderToUpdate.SaveDetails(orderDetails);
@@ -554,8 +594,28 @@ namespace AnlabMvc.Controllers
 
                     }
 
+                    historyNote = $"Additional emails changed. Old: {orderToUpdate.AdditionalEmails} New: {model.Emails}. {historyNote}";
+
                     orderToUpdate.AdditionalEmails = string.Join(';', filteredEmailList);
                 }
+            }
+
+            if (orderToUpdate.Paid != model.Paid)
+            {
+                historyNote = $"Paid value changed. New: {model.Paid.ToYesNoString()}. {historyNote}";
+            }
+            if (orderToUpdate.Status != model.Status)
+            {
+                historyNote = $"Status value changed. Old: {orderToUpdate.Status}. {historyNote}";
+            }
+            if (model.IsDeleted)
+            {
+                historyNote = $"Marked as Deleted. {historyNote}";
+            }
+
+            if (model.UploadFile != null && model.UploadFile.Length >= 0)
+            {
+                historyNote = $"New File Uploaded. {historyNote}";
             }
 
             orderToUpdate.Paid = model.Paid;
@@ -567,6 +627,17 @@ namespace AnlabMvc.Controllers
                 orderToUpdate.ResultsFileIdentifier = await _fileStorageService.UploadFile(model.UploadFile);
                 Log.Information($"New Results File Identifier {orderToUpdate.ResultsFileIdentifier}");
             }
+
+            var user = _dbContext.Users.Single(a => a.Id == CurrentUserId);
+            orderToUpdate.History.Add(new History
+            {
+                    Action = "Admin Override",
+                    Status = orderToUpdate.Status,
+                    ActorId = user.NormalizedUserName,
+                    ActorName = user.Name,
+                    JsonDetails = orderToUpdate.JsonDetails,
+                    Notes = historyNote,
+            });
 
             await _dbContext.SaveChangesAsync();
             
