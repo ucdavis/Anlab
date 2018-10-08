@@ -375,6 +375,7 @@ namespace AnlabMvc.Controllers
             }
 
             order.Status = OrderStatusCodes.Finalized;
+            order.DateFinalized = DateTime.UtcNow;
 
             var result = await _orderService.OverwriteOrderFromDb(order);
             if (result.WasError)

@@ -73,6 +73,8 @@ namespace Anlab.Core.Domain
         [StringLength(50)]
         public string PaymentType { get; set; }
 
+        public DateTime? DateFinalized { get; set; }
+
         public OrderDetails GetOrderDetails()
         {
             try
