@@ -1,0 +1,43 @@
+@model AnlabMvc.Models.Reviewer.ReviewerTotalModel
+
+@{
+    ViewData["Title"] = "Totals";
+}
+
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Totals">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="fStart" class="control-label"></label>
+                <input asp-for="fStart" class="form-control" />
+                <span asp-validation-for="fStart" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="fEnd" class="control-label"></label>
+                <input asp-for="fEnd" class="form-control" />
+                <span asp-validation-for="fEnd" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="cStart" class="control-label"></label>
+                <input asp-for="cStart" class="form-control" />
+                <span asp-validation-for="cStart" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="cEnd" class="control-label"></label>
+                <input asp-for="cEnd" class="form-control" />
+                <span asp-validation-for="cEnd" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
