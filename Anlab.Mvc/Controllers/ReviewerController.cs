@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using AnlabMvc.Models.Reviewer;
 
 namespace AnlabMvc.Controllers
 {
@@ -27,6 +28,15 @@ namespace AnlabMvc.Controllers
             var model = await _context.Orders.Where(a => a.Status == OrderStatusCodes.Finalized || (a.Status == OrderStatusCodes.Complete && a.Updated >= lastActions)).ToArrayAsync();
 
             return View(model);
+        }
+
+        public async Task<IActionResult> Totals(ReviewerTotalModel model)
+        {
+            if (fStart == null && fEnd == null && cStart == null && cEnd == null)
+            {
+                Message = "Please select a date range.";
+                return View(null);
+            }
         }
 
         public async Task<IActionResult> Details(int id)
