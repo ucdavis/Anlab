@@ -154,10 +154,26 @@ namespace Anlab.Core.Services
                         {
                             updatedCount++;
                             order.Status = OrderStatusCodes.Complete;
+                            order.History.Add(new History
+                            {
+                                Action = "Move UCD Money",
+                                Status = order.Status,
+                                ActorName = "Job",
+                                JsonDetails = order.JsonDetails,
+                                Notes = "Money Moved",
+                            });
                         }
                         if (slothResponse.Status == "Cancelled")
                         {
                             order.Paid = false;
+                            order.History.Add(new History
+                            {
+                                Action = "Move UCD Money",
+                                Status = order.Status,
+                                ActorName = "Job",
+                                JsonDetails = order.JsonDetails,
+                                Notes = "Money Movement Cancelled.",
+                            });
                             Log.Information($"Order {order.Id} was cancelled. Setting back to unpaid");
                             roledBackCount++;
                             //TODO: Write to the notes field? Trigger off an email?
@@ -215,6 +231,13 @@ namespace Anlab.Core.Services
                         order.KfsTrackingNumber = slothResponse.KfsTrackingNumber;
                         order.SlothTransactionId = slothResponse.Id;
                         order.Status = OrderStatusCodes.Complete;
+                        order.History.Add(new History
+                        {
+                            Action = "Move CC Money",
+                            Status = order.Status,
+                            ActorName = "Job",
+                            JsonDetails = order.JsonDetails,
+                        });
                     }
                     else
                     {
