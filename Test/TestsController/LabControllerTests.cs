@@ -16,6 +16,7 @@ using Shouldly;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Test.Helpers;
@@ -35,7 +36,7 @@ namespace Test.TestsController
         public Mock<IOrderMessageService> MockOrderMessagingService { get; set; }
         public Mock<IFileStorageService> MockFileStorageService { get; set; }
         public Mock<ISlothService> MockSlothService { get; set; }
-
+        public Mock<ClaimsPrincipal> MockClaimsPrincipal { get; set; }
         public Mock<IFinancialService> MockFinancialService { get; set; }
 
         public Mock<IFormFile> MockFormFile { get; set; }
@@ -43,6 +44,7 @@ namespace Test.TestsController
 
         //Setup Data
         public List<Order> OrderData { get; set; }
+        public List<User> UserData { get; set; }
 
         //Controller
         public LabController Controller { get; set; }
@@ -54,6 +56,7 @@ namespace Test.TestsController
         public LabControllerTests()
         {
             MockDbContext = new Mock<ApplicationDbContext>();
+            MockClaimsPrincipal = new Mock<ClaimsPrincipal>();
             MockHttpContext = new Mock<HttpContext>();
             MockOrderService = new Mock<IOrderService>();
             MockLabworksService = new Mock<ILabworksService>();
@@ -72,15 +75,30 @@ namespace Test.TestsController
             for (int i = 0; i < 5; i++)
             {
                 var order = CreateValidEntities.Order(i + 1, true);
-                order.Creator = CreateValidEntities.User(2);
+                order.Creator = CreateValidEntities.User(2);                
                 OrderData.Add(order);
             }
 
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, "Creator1"),
+            }));
+
+            UserData = new List<User>()
+            {
+                CreateValidEntities.User(1, true),
+                CreateValidEntities.User(2, true)
+            };
+            UserData[0].Id = "Creator1";
 
 
             //Setups
+            MockClaimsPrincipal.Setup(a => a.Claims).Returns(user.Claims);
+            MockClaimsPrincipal.Setup(a => a.FindFirst(It.IsAny<string>())).Returns(new Claim(ClaimTypes.NameIdentifier, "Creator1"));
             MockDbContext.Setup(m => m.Orders).Returns(OrderData.AsQueryable().MockAsyncDbSet().Object);
-
+            MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);  
+            MockDbContext.Setup(a => a.History).Returns(new List<History>().AsQueryable().MockAsyncDbSet().Object);
+            MockHttpContext.Setup(m => m.User).Returns(MockClaimsPrincipal.Object);
 
             Controller = new LabController(MockDbContext.Object, MockOrderService.Object, MockLabworksService.Object,
                 MockOrderMessagingService.Object, MockFileStorageService.Object, MockSlothService.Object, MockFinancialService.Object)

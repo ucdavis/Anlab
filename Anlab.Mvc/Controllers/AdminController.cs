@@ -242,6 +242,8 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
 
+            var saveSendTo = mm.SendTo;            
+
             if (ModelState.IsValid)
             {
                 mm.SendTo = model.SendTo;
@@ -260,6 +262,25 @@ namespace AnlabMvc.Controllers
                     mm.Sent = true;
                     extraMessage = "Message marked as sent and will not be resent";
                 }
+                var user = _dbContext.Users.Single(a => a.Id == CurrentUserId);
+                var order = mm.Order;
+
+                var historyNote = extraMessage;
+                if (saveSendTo != mm.SendTo)
+                {
+                    historyNote = $"Email List Changed. Original: {saveSendTo} New: {mm.SendTo} . {extraMessage}";
+                }
+
+                order.History.Add(new History
+                {
+                    Action = "Fix Email",
+                    Status = order.Status,
+                    ActorId = user.NormalizedUserName,
+                    ActorName = user.Name,
+                    JsonDetails = order.JsonDetails,
+                    Notes = historyNote
+                });
+
 
 
                 await _dbContext.SaveChangesAsync();

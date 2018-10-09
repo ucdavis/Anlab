@@ -67,6 +67,8 @@ namespace Anlab.Core.Data
 
         public virtual DbSet<Order> Orders { get; set; }
 
+        public virtual DbSet<History> History { get; set; }
+
         public virtual DbSet<TestItem> TestItems { get; set; }
 
         public virtual DbSet<AnalysisMethod> AnalysisMethods { get; set; }
@@ -80,7 +82,10 @@ namespace Anlab.Core.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Order>()
-                .HasQueryFilter(a => a.IsDeleted == false);
+                .HasQueryFilter(a => a.IsDeleted == false)
+                .HasMany(b => b.History)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
             
             base.OnModelCreating(builder);
             // Customize the ASP.NET Identity model and override the defaults if needed.

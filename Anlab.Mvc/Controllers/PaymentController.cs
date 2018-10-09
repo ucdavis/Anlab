@@ -133,18 +133,26 @@ namespace AnlabMvc.Controllers
             {
                 order.ApprovedPayment = payment;
                 order.Paid = true;
-                
+
+                order.History.Add(new History
+                {
+                    Action = "Credit Card Payment Accepted",
+                    Status = order.Status,
+                    JsonDetails = order.JsonDetails,
+                });
 
                 try
                 {
-                    await _orderMessageService.EnqueuePaidMessage(order);
+                    await _orderMessageService.EnqueuePaidMessage(order); //This will continue to fail unless the order includes the creator
                 }
                 catch (Exception ex)
                 {
                     Log.Error(ex, ex.Message);
                 }
+
+                
             }
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return new JsonResult(new { });
         }
 
