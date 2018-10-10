@@ -29,11 +29,11 @@
                 <th>Work Req #</th>
                 <th>Id</th>
                 <th>ClientId</th>
-                <th>Payment Type</th>
-                <th>Total</th>
+                <th>Payment Type</th>                
                 <th>Created</th>
                 <th>Finalized</th>
                 <th>Status</th>
+                <th>Total</th>
             </tr>
         </thead>
         <tbody>
@@ -45,21 +45,26 @@
                     <td>@order.Id</td>
                     <td>@order.ClientId</td>
                     <td>@order.PaymentType</td>
-                    <td>@orderDetails.GrandTotal.ToString("C")</td>
                     <td>@order.Created.ToPacificTime().ToString("g")</td>
                     <td>@order.DateFinalized.Value.ToPacificTime().ToString("g")</td>
                     <td>@order.Status</td>
+                    <td>@orderDetails.GrandTotal.ToString("C")</td>
                 </tr>
             }
         </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="6" style="text-align:right">Total:</th>
+                <th></th>
+                <th style="text-align: left"></th>
+            </tr>
+        </tfoot>
     </table>
 </div>
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section AdditionalStyles
-{
+    {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" />
 
@@ -73,7 +78,7 @@
 }
 
 @section Scripts
-{
+    {
     @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
     <script type="text/javascript">
@@ -86,8 +91,41 @@
                         "type": "date", "targets": [5, 6]
                     }
                 ],
-                "stateSave": true,
-                "stateDuration": 60 * 10,
+        "footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+ 
+            // Remove the formatting to get integer data for summation
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+ 
+            // Total over all pages
+            var total = api
+                .column( 7 )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+ 
+            // Total over this page
+            var pageTotal = api
+                .column( 7, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+ 
+            // Update footer
+            $( api.column( 6 ).footer() ).html(
+                '$'+pageTotal
+            );
+            $( api.column( 7 ).footer() ).html(
+                '( $'+ total +' total)'
+            );
+        }
             });
         });
     </script>
