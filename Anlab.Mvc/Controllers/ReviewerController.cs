@@ -37,7 +37,7 @@ namespace AnlabMvc.Controllers
         {
             if (model.fStart == null && model.fEnd == null && model.cStart == null && model.cEnd == null)
             {
-                Message = "Please select a date range.";
+                Message = "Please select a filter.";
                 model.Orders = new List<Order>();
                 return View(model);
             }

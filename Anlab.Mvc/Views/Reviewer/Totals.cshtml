@@ -126,8 +126,8 @@
                         }, 0);
 
                     // Update footer
-                    $(api.column(7).footer()).html('$' + pageTotal);
-                    $('tr:eq(1) td:eq(1)', api.table().footer()).html('$' + total);
+                    $(api.column(7).footer()).html('$' + pageTotal.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                    $('tr:eq(1) td:eq(1)', api.table().footer()).html('$' + total.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 
                 }
             });
