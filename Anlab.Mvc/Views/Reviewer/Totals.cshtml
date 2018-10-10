@@ -4,33 +4,24 @@
 }
 <div class="col">
     <form asp-action="Totals">
-        <div class="form-group">
-            <label asp-for="fStart" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="fStart" class="datepicker form-control datepicker-input" type="text" />
-                <span asp-validation-for="fStart" class="text-danger"></span>
-            </div>
-            <label asp-for="fEnd" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="fEnd" class="datepicker form-control datepicker-input" type="text" />
-                <span asp-validation-for="fEnd" class="text-danger"></span>
-            </div>
-            <label asp-for="cStart" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="cStart" class="datepicker form-control datepicker-input" type="text" />
-                <span asp-validation-for="cStart" class="text-danger"></span>
-            </div>
-            <label asp-for="cEnd" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="cEnd" class="datepicker form-control datepicker-input" type="text" />
-                <span asp-validation-for="cEnd" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </div>
+        <table border="0" cellspacing="5" cellpadding="5" align="left">
+            <tbody>
+                <tr>
+                    <td><label asp-for="fStart" class="col-md-2 control-label"></label></td>
+                    <td><label asp-for="fEnd" class="col-md-2 control-label"></label></td>
+                    <td><label asp-for="cStart" class="col-md-2 control-label"></label></td>
+                    <td><label asp-for="cEnd" class="col-md-2 control-label"></label></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><input asp-for="fStart" class="datepicker datepicker-input" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
+                    <td><input asp-for="fEnd" class="datepicker datepicker-input" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
+                    <td><input asp-for="cStart" class="datepicker datepicker-input" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
+                    <td><input asp-for="cEnd" class="datepicker datepicker-input" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
+                    <td><input type="submit" value="Apply" class="btn btn-default" /></td>
+                </tr>
+            </tbody>
+        </table>
     </form>
 </div>
 <div>
