@@ -1,43 +1,61 @@
 @model AnlabMvc.Models.Reviewer.ReviewerTotalModel
-
 @{
     ViewData["Title"] = "Totals";
 }
-
-
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Totals">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="fStart" class="control-label"></label>
-                <input asp-for="fStart" class="form-control" />
+<div class="col">
+    <form asp-action="Totals">
+        <div class="form-group">
+            <label asp-for="fStart" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="fStart" class="datepicker form-control datepicker-input" type="text" />
                 <span asp-validation-for="fStart" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="fEnd" class="control-label"></label>
-                <input asp-for="fEnd" class="form-control" />
+            <label asp-for="fEnd" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="fEnd" class="datepicker form-control datepicker-input" type="text" />
                 <span asp-validation-for="fEnd" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="cStart" class="control-label"></label>
-                <input asp-for="cStart" class="form-control" />
+            <label asp-for="cStart" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="cStart" class="datepicker form-control datepicker-input" type="text" />
                 <span asp-validation-for="cStart" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="cEnd" class="control-label"></label>
-                <input asp-for="cEnd" class="form-control" />
+            <label asp-for="cEnd" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="cEnd" class="datepicker form-control datepicker-input" type="text" />
                 <span asp-validation-for="cEnd" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
-
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
+@section AdditionalStyles
+    {
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" />
+
+    <style>
+
+        .datepicker-input {
+            margin: 0 5px 5px 0;
+            height: 30px;
+        }
+    </style>
+}
+
+@section Scripts
+    {
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $(".datepicker").datepicker();
+        });
+    </script>
+}
