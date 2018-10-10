@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Anlab.Core.Data;
 using Anlab.Core.Models;
 using AnlabMvc.Models.Order;
@@ -37,6 +38,7 @@ namespace AnlabMvc.Controllers
             if (model.fStart == null && model.fEnd == null && model.cStart == null && model.cEnd == null)
             {
                 Message = "Please select a date range.";
+                model.Orders = new List<Order>();
                 return View(model);
             }
 
