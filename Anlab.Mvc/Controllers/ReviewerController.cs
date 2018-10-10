@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Anlab.Core.Extensions;
+using Anlab.Core.Domain;
 using AnlabMvc.Models.Reviewer;
 
 namespace AnlabMvc.Controllers
@@ -79,7 +80,24 @@ namespace AnlabMvc.Controllers
             model.OrderDetails = order.GetOrderDetails();
             model.HideLabDetails = false;
 
+            await GetHistories(id, model);
+
             return View(model);
+        }
+
+        private async Task GetHistories(int id, OrderReviewModel model)
+        {
+            model.History = await _context.History.Where(a => a.OrderId == id).Select(s =>
+                new History
+                {
+                    Action = s.Action,
+                    ActionDateTime = s.ActionDateTime,
+                    Id = s.Id,
+                    Status = s.Status,
+                    ActorId = s.ActorId,
+                    ActorName = s.ActorName,
+                    Notes = s.Notes
+                }).OrderBy(o => o.ActionDateTime).ToListAsync(); //Basically filtering out jsonDetails
         }
     }
 }

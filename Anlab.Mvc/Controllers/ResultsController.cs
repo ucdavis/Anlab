@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Anlab.Core.Data;
+using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using Anlab.Core.Services;
 using AnlabMvc.Models.Configuration;
@@ -78,6 +79,18 @@ namespace AnlabMvc.Controllers
             {
                 return NotFound();
             }
+
+            var user = await _context.Users.SingleOrDefaultAsync(a => a.Id == CurrentUserId);
+            order.History.Add(new History
+            {
+                Action = "Download Results",
+                Status = order.Status,
+                ActorId = user?.NormalizedUserName,
+                ActorName = user?.Name,
+                JsonDetails = order.JsonDetails,
+            });
+
+            await _context.SaveChangesAsync();
 
             var result = await _fileStorageService.GetSharedAccessSignature(order.ResultsFileIdentifier);
             return Redirect(result.AccessUrl);
@@ -161,6 +174,17 @@ namespace AnlabMvc.Controllers
             order.Status = OrderStatusCodes.Complete; //mark as paid and completed (yeah, completed)
 
             await _orderMessageService.EnqueueBillingMessage(order); //Send email to accountants
+
+            var user = await _context.Users.SingleOrDefaultAsync(a => a.Id == CurrentUserId);
+            order.History.Add(new History
+            {
+                Action = "Confirmed Payment",
+                Status = order.Status,
+                ActorId = user?.NormalizedUserName,
+                ActorName = user?.Name,
+                JsonDetails = order.JsonDetails,
+            });
+
 
             await _context.SaveChangesAsync();
 

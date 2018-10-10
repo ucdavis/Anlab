@@ -15,6 +15,7 @@ namespace Anlab.Core.Domain
         public Order()
         {
             MailMessages = new List<MailMessage>();
+            History = new List<History>();
         }
         public int Id { get; set; }
         
@@ -74,6 +75,8 @@ namespace Anlab.Core.Domain
         public string PaymentType { get; set; }
 
         public DateTime? DateFinalized { get; set; }
+
+        public IList<History> History { get; set; }
 
         public OrderDetails GetOrderDetails()
         {

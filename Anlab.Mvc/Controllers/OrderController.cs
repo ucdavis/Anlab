@@ -224,6 +224,29 @@ namespace AnlabMvc.Controllers
                 orderDetails.LabComments = labComments.ToString();
                 order.SaveDetails(orderDetails);
                 order.SavedTestDetails = orderToCopy.SavedTestDetails; //Use the test codes the original order was created from
+
+                order.History.Add(new History
+                {
+                    Action = "Copied - Admin",
+                    Status = order.Status,
+                    ActorId = user.NormalizedUserName,
+                    ActorName = user.Name,
+                    JsonDetails = order.JsonDetails,
+                    Notes = $"Copied from Order {orderToCopy.Id}",
+                });
+            }
+            else
+            {
+
+                order.History.Add(new History
+                {
+                    Action = "Copied",
+                    Status = order.Status,
+                    ActorId = order.Creator.NormalizedUserName,
+                    ActorName = order.Creator.Name,
+                    JsonDetails = order.JsonDetails,
+                    Notes = $"Copied from Order {orderToCopy.Id}",
+                });
             }
 
             _context.Add(order);
@@ -274,6 +297,15 @@ namespace AnlabMvc.Controllers
 
                 _orderService.PopulateOrder(model, orderToUpdate);
 
+                orderToUpdate.History.Add(new History
+                {
+                    Action = "Edited",
+                    Status = orderToUpdate.Status,
+                    ActorId = orderToUpdate.Creator.NormalizedUserName,
+                    ActorName = orderToUpdate.Creator.Name,
+                    JsonDetails = orderToUpdate.JsonDetails
+                });
+
                 idForRedirection = model.OrderId.Value;
                 await _context.SaveChangesAsync();
             }
@@ -293,6 +325,14 @@ namespace AnlabMvc.Controllers
 
                 _orderService.PopulateOrder(model, order);
 
+                order.History.Add(new History
+                {
+                    Action = "Created",
+                    Status = order.Status,
+                    ActorId = order.Creator.NormalizedUserName,
+                    ActorName = order.Creator.Name,
+                    JsonDetails = order.JsonDetails
+                });
                 _context.Add(order);
                 await _context.SaveChangesAsync();
                 idForRedirection = order.Id;
@@ -428,6 +468,15 @@ namespace AnlabMvc.Controllers
             _orderService.UpdateAdditionalInfo(order);
             order.Status = OrderStatusCodes.Confirmed;
 
+            order.History.Add(new History
+            {
+                Action = "Confirmed",
+                Status = order.Status,
+                ActorId = order.Creator.NormalizedUserName,
+                ActorName = order.Creator.Name,
+                JsonDetails = order.JsonDetails
+            });
+
             await _orderMessageService.EnqueueCreatedMessage(order);
 
             await _context.SaveChangesAsync();
@@ -464,7 +513,7 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var order = await _context.Orders.SingleOrDefaultAsync(o => o.Id == id);
+            var order = await _context.Orders.Include(a => a.History).SingleOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
             {

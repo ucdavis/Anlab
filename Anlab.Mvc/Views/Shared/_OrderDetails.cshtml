@@ -330,5 +330,35 @@
         </tfoot>
     </table>
 
+@if (!Model.HideLabDetails)
+{
+    <h3>History</h3>
+    <table id="history-table" class="table">
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th>Status</th>
+                <th>Actor Id</th>
+                <th>Actor Name</th>
+                <th>Action Date</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var hist in Model.History)
+            {
+                <tr>
+                    <td>@hist.Action</td>
+                    <td>@hist.Status</td>
+                    <td>@hist.ActorId</td>
+                    <td>@hist.ActorName</td>
+                    <td>@hist.ActionDateTime.ToPacificTime().ToString("g")</td>
+                    <td>@hist.Notes</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
 
 

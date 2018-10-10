@@ -16,6 +16,7 @@ using Shouldly;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Test.Helpers;
@@ -36,11 +37,13 @@ namespace Test.TestsController
         public Mock<IOptions<CyberSourceSettings>> MockCyberSourceSettings { get; set; }
         public Mock<IOptions<AppSettings>> MockAppSettings { get; set; }
         public Mock<IOrderMessageService> MockOrderMessageService { get; set; }
+        public Mock<ClaimsPrincipal> MockClaimsPrincipal { get; set; }
 
         //Setup Data
         public List<Order> OrderData { get; set; }
         public CyberSourceSettings CyberSourceSettings { get; set; }
         public AppSettings AppSettings { get; set; }
+        public List<User> UserData { get; set; }
 
         //Controller
         public ResultsController Controller { get; set; }
@@ -53,10 +56,21 @@ namespace Test.TestsController
             MockCyberSourceSettings = new Mock<IOptions<CyberSourceSettings>>();
             MockAppSettings = new Mock<IOptions<AppSettings>>();
             MockOrderMessageService = new Mock<IOrderMessageService>();
+            MockClaimsPrincipal = new Mock<ClaimsPrincipal>();
             var mockDataProvider = new Mock<SessionStateTempDataProvider>();
 
 
-            //Data
+            //Data        
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, "Creator1"),
+            }));
+            UserData = new List<User>()
+            {
+                CreateValidEntities.User(1, true),
+                CreateValidEntities.User(2, true)
+            };
+            UserData[0].Id = "Creator1";
             OrderData = new List<Order>();
             for (int i = 0; i < 3; i++)
             {
@@ -72,9 +86,13 @@ namespace Test.TestsController
             AppSettings.CyberSourceUrl = "Http://FakeUrl.com";
 
             //Setup
+            MockClaimsPrincipal.Setup(a => a.Claims).Returns(user.Claims);
+            MockClaimsPrincipal.Setup(a => a.FindFirst(It.IsAny<string>())).Returns(new Claim(ClaimTypes.NameIdentifier, "Creator1"));
             MockDbContext.Setup(a => a.Orders).Returns(OrderData.AsQueryable().MockAsyncDbSet().Object);
+            MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);   
             MockCyberSourceSettings.Setup(a => a.Value).Returns(CyberSourceSettings);
             MockAppSettings.Setup(a => a.Value).Returns(AppSettings);
+            MockHttpContext.Setup(m => m.User).Returns(MockClaimsPrincipal.Object);
 
             Controller = new ResultsController(MockDbContext.Object,
                 MockFileStorageService.Object,
@@ -83,6 +101,10 @@ namespace Test.TestsController
                 MockAppSettings.Object,
                 MockOrderMessageService.Object)
             {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = MockHttpContext.Object
+                },
                 TempData = new TempDataDictionary(MockHttpContext.Object, mockDataProvider.Object)
             };
         }
