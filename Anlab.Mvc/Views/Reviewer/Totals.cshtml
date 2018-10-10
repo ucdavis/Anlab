@@ -92,6 +92,8 @@
         $(function () {
             $(".datepicker").datepicker();
             $("#table").DataTable({
+                "lengthMenu": [[10,25,50,-1],[10,25,50,"All"]],
+                "iDisplayLength": -1,
                 "sorting": [[6, "desc"]],
                 "columnDefs": [
                     {
