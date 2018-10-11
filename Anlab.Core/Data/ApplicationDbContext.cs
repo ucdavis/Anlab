@@ -81,11 +81,7 @@ namespace Anlab.Core.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Order>()
-                .HasQueryFilter(a => a.IsDeleted == false)
-                .HasMany(b => b.History)
-                .WithOne()
-                .OnDelete(DeleteBehavior.Cascade);
+            Order.OnModelCreating(builder);
             
             base.OnModelCreating(builder);
             // Customize the ASP.NET Identity model and override the defaults if needed.

@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using Anlab.Core.Models;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Serilog;
 
@@ -140,6 +141,15 @@ namespace Anlab.Core.Domain
             {
                 BackedupTestDetails = JsonConvert.SerializeObject(tests);
             }
+        }
+
+        protected internal static void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Order>()
+                .HasQueryFilter(a => a.IsDeleted == false)
+                .HasMany(b => b.History)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
     }
