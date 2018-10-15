@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Anlab.Core.Data;
 using Anlab.Core.Models;
 using AnlabMvc.Models.Order;
@@ -8,7 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using Anlab.Core.Extensions;
 using Anlab.Core.Domain;
+using AnlabMvc.Models.Reviewer;
 
 namespace AnlabMvc.Controllers
 {
@@ -26,6 +29,41 @@ namespace AnlabMvc.Controllers
         {
             var lastActions = DateTime.UtcNow.AddDays(-60);
             var model = await _context.Orders.Where(a => a.Status == OrderStatusCodes.Finalized || (a.Status == OrderStatusCodes.Complete && a.Updated >= lastActions)).ToArrayAsync();
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> Totals(ReviewerTotalModel model)
+        {
+            if (model.fStart == null && model.fEnd == null && model.cStart == null && model.cEnd == null)
+            {
+                Message = "Please select a filter.";
+                model.Orders = new List<Order>();
+                return View(model);
+            }
+
+            var orders = _context.Orders.Where(a => a.DateFinalized != null).AsQueryable();
+            if (model.fStart != null)
+            {
+                orders = orders.Where(a => a.DateFinalized >= model.fStart.Value.Date.FromPacificTime());
+            }
+
+            if (model.fEnd != null)
+            {
+                orders = orders.Where(a => a.DateFinalized <= model.fEnd.Value.Date.FromPacificTime());
+            }
+
+            if (model.cStart != null)
+            {
+                orders = orders.Where(a => a.DateFinalized >= model.cStart.Value.Date.FromPacificTime());
+            }
+
+            if (model.cEnd != null)
+            {
+                orders = orders.Where(a => a.DateFinalized <= model.cEnd.Value.Date.FromPacificTime());
+            }
+
+            model.Orders = await orders.ToListAsync();
 
             return View(model);
         }
