@@ -358,6 +358,40 @@ namespace AnlabMvc.Controllers
 
         }
 
+        [HttpPost]
+        public async Task<IActionResult> GeneratePartialResultsEmail(int id)
+        {
+            var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if (order.Status == OrderStatusCodes.Created || order.Status == OrderStatusCodes.Confirmed)
+            {
+                ErrorMessage = "Don't generate an email in this status.";
+                return RedirectToAction("Orders");
+            }
+
+            await _orderMessageService.EnqueuePartialResultsMessage(order);
+            var user = _dbContext.Users.Single(a => a.Id == CurrentUserId);
+            order.History.Add(new History
+            {
+                Action = "Partial Results",
+                Status = order.Status,
+                ActorId = user.NormalizedUserName,
+                ActorName = user.Name,
+                JsonDetails = order.JsonDetails,
+            });
+
+            await _dbContext.SaveChangesAsync();
+
+            Message = "Email Generated";
+
+            return RedirectToAction("MailQueue", "Admin", new {id = order.Id});
+        }
+
         public async Task<IActionResult> Finalize(int id)
         {
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
