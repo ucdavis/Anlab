@@ -14,6 +14,8 @@ namespace AnlabMvc.Services
         Task EnqueuePaidMessage(Order order);
         Task EnqueueBillingMessage(Order order, string subject = "Anlab Work Order Billing Info");
 
+        Task EnqueuePartialResultsMessage(Order order);
+
     }
 
     public class OrderMessageService : IOrderMessageService
@@ -60,7 +62,6 @@ namespace AnlabMvc.Services
 
         public async Task EnqueueReceivedMessage(Order order, bool bypass = false)
         {
-            //TODO: change body of email, right now it is the same as OrderCreated
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderReceived", order);
 
             if (bypass)
@@ -86,11 +87,36 @@ namespace AnlabMvc.Services
             _mailService.EnqueueMessage(message);
         }
 
+        /// <summary>
+        /// Generate an email that is sent to anlab only for them to use as a template to attach partial reults to
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        public async Task EnqueuePartialResultsMessage(Order order)
+        {
+            var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderPartialResults", order);
+
+            body = $"Email not sent to clients. </br> {GetSendTo(order)} </br></br></br> {body}";
+
+            var message = new MailMessage
+            {
+                Subject = $"Work Request Partial Results - {order.RequestNum}  -- Bypass Client",
+                Body = body,
+                SendTo = GetSendTo(order),
+                Order = order,
+                User = order.Creator,
+            };
+
+            message.SendTo = _emailSettings.AnlabAddress;
+
+            _mailService.EnqueueMessage(message);
+        }
+
         public async Task EnqueueFinalizedMessage(Order order, bool bypass = false)
         {
             var orderDetails = order.GetOrderDetails();
             var subject = $"Work Request Finalized - Payment Pending - {order.RequestNum}";
-            //TODO: change body of email, right now it is the same as OrderCreated
+
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderFinalized", order);
 
             if (bypass)
@@ -153,6 +179,5 @@ namespace AnlabMvc.Services
 
             _mailService.EnqueueMessage(message);
         }
-
     }
 }
