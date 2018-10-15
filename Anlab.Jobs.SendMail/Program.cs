@@ -79,12 +79,7 @@ namespace Anlab.Jobs.SendMail
                 {
                     Log.Error(failedRecipientEx.Message);
                     message.FailureCount = 5; //Say it failed 5 times so it doesn't try to send again. Otherwise need to change the db.
-                    var messageWithOrder = dbContext.MailMessages.Include(i => i.Order).SingleOrDefault(a => a.Id == message.Id);
-                    int orderId = 0;
-                    if (messageWithOrder != null && messageWithOrder.Order != null)
-                    {
-                        orderId = messageWithOrder.Order.Id;
-                    }
+                    var orderId = dbContext.MailMessages.Where(a => a.Id == message.Id).Select(s => s.Order.Id).Single();
 
                     MailService.SendFailureNotification(orderId, failedRecipientEx.Message);
                     message.Sent = false;
