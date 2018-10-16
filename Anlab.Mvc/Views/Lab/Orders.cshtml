@@ -143,7 +143,7 @@
                 ],
                 "iDisplayLength": 100,
                 "stateSave": true,                
-                "stateDuration": 60 * 10,
+                "stateDuration": 60 * 60,
             });
 
 
@@ -158,10 +158,10 @@
 
         $(function () {
             $("#showComplete")[0].checked = @ViewBag.ShowComplete.ToString().ToLower();
-            $("#showComplete").change(function () {
+            $("#showComplete").change(function() {
                 this.value = this.checked;
                 document.getElementById("toggleCompleteForm").submit();
-            })
+            });
 
         });
 
