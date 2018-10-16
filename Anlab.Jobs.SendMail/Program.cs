@@ -9,6 +9,7 @@ using Serilog;
 using System;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 
 
 namespace Anlab.Jobs.SendMail
@@ -67,11 +68,22 @@ namespace Anlab.Jobs.SendMail
                     {
                         continue;
                     }
+
                     MailService.SendMessage(message);
 
                     message.Sent = true;
                     message.SentAt = DateTime.UtcNow;
                     counter++;
+                }
+                catch (SmtpFailedRecipientException failedRecipientEx)
+                {
+                    Log.Error(failedRecipientEx.Message);
+                    message.FailureCount = 5; //Say it failed 5 times so it doesn't try to send again. Otherwise need to change the db.
+                    var orderId = dbContext.MailMessages.Where(a => a.Id == message.Id).Select(s => s.Order.Id).Single();
+
+                    MailService.SendFailureNotification(orderId, failedRecipientEx.Message);
+                    message.Sent = false;
+                    message.FailureReason = failedRecipientEx.Message;
                 }
                 catch (Exception ex)
                 {
@@ -79,12 +91,14 @@ namespace Anlab.Jobs.SendMail
                     message.FailureCount++;
                     if (message.FailureCount > 2)
                     {
-                        var messageWithOrder = dbContext.MailMessages.Include(i => i.Order).SingleOrDefault(a => a.Id == message.Id);
+                        var messageWithOrder = dbContext.MailMessages.Include(i => i.Order)
+                            .SingleOrDefault(a => a.Id == message.Id);
                         int orderId = 0;
                         if (messageWithOrder != null && messageWithOrder.Order != null)
                         {
                             orderId = messageWithOrder.Order.Id;
                         }
+
                         MailService.SendFailureNotification(orderId, ex.Message);
                     }
 
