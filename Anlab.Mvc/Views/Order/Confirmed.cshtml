@@ -71,7 +71,7 @@
          }
          else
          {
-                      <div class="form-group">
+         <div class="form-group">
             <h4>New Client Info</h4>
             <strong>Client Name:</strong>
             <span>@Model.OrderDetails.ClientInfo.Name</span>
@@ -95,15 +95,12 @@
              <span>@Model.OrderDetails.ClientInfo.PiEmail</span>
          </div>
          }
-         <div class="form-group">
-             <h4>Submitter Info:</h4>
-              <div class="form-group">
-                  <h4>Submitter Info:</h4>
-                  <strong>Name:</strong><span> @Model.Order.Creator.Name</span><br/>
-                  <strong>Email:</strong><span> @Model.Order.Creator.Email</span><br/>
-                  <strong>Phone:</strong><span> @Model.Order.Creator.Phone</span>
-              </div>
-         </div>
+          <div class="form-group">
+              <h4>Submitter Info:</h4>
+              <strong>Name:</strong><span> @Model.Order.Creator.Name</span><br/>
+              <strong>Email:</strong><span> @Model.Order.Creator.Email</span><br/>
+              <strong>Phone:</strong><span> @Model.Order.Creator.Phone</span>
+          </div>
           <div class="form-group">
               <strong>Payment Method:</strong>
               @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
