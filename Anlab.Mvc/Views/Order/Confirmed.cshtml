@@ -71,35 +71,62 @@
          }
          else
          {
-         <div class="form-group">
-            <h4>New Client Info</h4>
-            <strong>Client Name:</strong>
-            <span>@Model.OrderDetails.ClientInfo.Name</span>
-            <br />
-            <strong>Employer:</strong>
-            <span>@Model.OrderDetails.ClientInfo.Employer</span>
-             <br />
-             <strong>Department/Unit:</strong>
-             <span>@Model.OrderDetails.ClientInfo.Department</span>
-             <br />
-            <strong>Email:</strong>
-            <span>@Model.OrderDetails.ClientInfo.Email</span>
-            <br />
-            <strong>Phone Number:</strong>
-             <span>@Model.OrderDetails.ClientInfo.PhoneNumber</span>
-             <br />
-             <strong>PI Name:</strong>
-             <span>@Model.OrderDetails.ClientInfo.PiName</span>
-             <br />
-             <strong>PI Email:</strong>
-             <span>@Model.OrderDetails.ClientInfo.PiEmail</span>
-         </div>
+             <div class="form-group">
+                 <h4>New Client Info:</h4>
+                 <table id="new-client-table" class="avoidBreak">
+                     <thead></thead>
+                     <tbody>
+                         <tr>
+                             <td><strong>Client Name</strong></td>
+                             <td>@Model.OrderDetails.ClientInfo.Name</td>
+                         </tr>
+                         <tr>
+                             <td><strong>Employer</strong></td>
+                             <td>@Model.OrderDetails.ClientInfo.Employer</td>
+                         </tr>
+                         <tr>
+                             <td><strong>Department/Unit</strong></td>
+                             <td>@Model.OrderDetails.ClientInfo.Department</td>
+                         </tr>
+                         <tr>
+                             <td><strong>Email</strong></td>
+                             <td>@Model.OrderDetails.ClientInfo.Email</td>
+                         </tr>
+                         <tr>
+                             <td><strong>Phone Number</strong></td>
+                             <td>@Model.OrderDetails.ClientInfo.PhoneNumber</td>
+                         </tr>
+                         <tr>
+                             <td><strong>PI Name</strong></td>
+                             <td>@Model.OrderDetails.ClientInfo.PiName</td>
+                         </tr>
+                         <tr>
+                             <td><strong>PI Email</strong></td>
+                             <td>@Model.OrderDetails.ClientInfo.PiEmail</td>
+                         </tr>
+                     </tbody>
+                 </table>
+             </div>
          }
           <div class="form-group">
-              <h4>Submitter Info:</h4>
-              <strong>Name:</strong><span> @Model.Order.Creator.Name</span><br/>
-              <strong>Email:</strong><span> @Model.Order.Creator.Email</span><br/>
-              <strong>Phone:</strong><span> @Model.Order.Creator.Phone</span>
+             <h4>Submitter Info:</h4>
+             <table id="submitter-table" class="avoidBreak">
+                 <thead></thead>
+                 <tbody>
+                     <tr>
+                         <td><strong>Name</strong></td>
+                         <td>@Model.Order.Creator.Name</td>
+                     </tr>
+                     <tr>
+                         <td><strong>Email</strong></td>
+                         <td>@Model.Order.Creator.Email</td>
+                     </tr>
+                     <tr>
+                         <td><strong>Phone</strong></td>
+                         <td>@Model.Order.Creator.Phone</td>
+                     </tr>
+                 </tbody>
+             </table>
           </div>
           <div class="form-group">
               <strong>Payment Method:</strong>
