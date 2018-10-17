@@ -64,9 +64,13 @@ namespace AnlabMvc.Extensions
             var phoneNumberUtil = PhoneNumbers.PhoneNumberUtil.GetInstance();
             var phoneNumber = phoneNumberUtil.ParseAndKeepRawInput(value, "US");
             var phone = phoneNumberUtil.Format(phoneNumber, PhoneNumberFormat.NATIONAL);
-            if (phone == "+1 NA")
+            if (!phoneNumberUtil.IsValidNumberForRegion(phoneNumber, "US"))
             {
                 return phoneNumber.RawInput;
+            }
+            if (phone == "+1 NA") //Just in case catch
+            {
+               return phoneNumber.RawInput;
             }
 
             return phone;
