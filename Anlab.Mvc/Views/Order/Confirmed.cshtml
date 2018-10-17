@@ -44,8 +44,13 @@
          {
              <div class="form-group">
                  <h4>Client Info</h4>
-                 <table id="client-table" class="avoidBreak">
-                     <thead></thead>
+                 <table id="client-table" class="avoidBreak tight-table">
+                     <thead>
+                         <tr>
+                             <th style="width: 8em;"></th>
+                             <th></th>
+                         </tr>
+                     </thead>
                      <tbody>
                          <tr>
                              <td><strong>ID</strong></td>
@@ -84,8 +89,13 @@
          {
              <div class="form-group">
                  <h4>New Client Info:</h4>
-                 <table id="new-client-table" class="avoidBreak">
-                     <thead></thead>
+                 <table id="new-client-table" class="avoidBreak tight-table">
+                     <thead>
+                         <tr>
+                             <th style="width: 8em;"></th>
+                             <th></th>
+                         </tr>
+                     </thead>
                      <tbody>
                          <tr>
                              <td><strong>Client Name</strong></td>
@@ -121,8 +131,13 @@
          }
           <div class="form-group">
              <h4>Submitter Info:</h4>
-             <table id="submitter-table" class="avoidBreak">
-                 <thead></thead>
+             <table id="submitter-table" class="avoidBreak tight-table">
+                 <thead>
+                     <tr>
+                         <th style="width: 8em;"></th>
+                         <th></th>
+                     </tr>
+                 </thead>
                  <tbody>
                      <tr>
                          <td><strong>Name</strong></td>
@@ -364,11 +379,19 @@
             padding: 5px;
         }
 
-        #links a:after{
+        .tight-table td {
+            padding: 2px;
+        }
+        .tight-table th {
+            padding: 1px;
+            padding-top: 1px;
+        }
+
+        #links a:after {
             content: " (" attr(href) ")";
         }
 
-        .footer_contents, .navbar, .head_bleed, footer, header, .title-right{
+        .footer_contents, .navbar, .head_bleed, footer, header, .title-right {
             display: none !important;
         }
 
@@ -406,6 +429,14 @@
         }
         .onlyPrint {
             display: none !important;
+        }
+
+        .tight-table td {
+            padding: 2px;
+        }
+        .tight-table th {
+            padding: 1px;
+            padding-top: 1px;
         }
     </style>
 }
