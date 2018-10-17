@@ -75,6 +75,11 @@ namespace AnlabMvc.Controllers
             .Take(_maxShownOrders)
             .ToList();
 
+            if (orders.Count >= _maxShownOrders)
+            {
+                ErrorMessage = $"Warning, maximum orders displayed is {_maxShownOrders}";
+            }
+
             ViewBag.ShowComplete = showComplete;
 
             return View(orders);
