@@ -19,6 +19,7 @@
     <PackageReference Include="Dapper" Version="1.50.2" />
     <PackageReference Include="Humanizer.Core" Version="2.2.0" />
     <PackageReference Include="ietws" Version="0.1.7" />
+    <PackageReference Include="libphonenumber-csharp" Version="8.9.15" />
     <PackageReference Include="Markdig" Version="0.13.4" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.0.0" />
