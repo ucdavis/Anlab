@@ -73,10 +73,6 @@ namespace AnlabMvc.Extensions
 
                 return phoneNumber.RawInput;
             }
-            if (phone == "+1 NA") //Just in case catch
-            {
-               return phoneNumber.RawInput;
-            }
 
             return phone;
         }
