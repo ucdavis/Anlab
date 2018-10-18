@@ -66,6 +66,11 @@ namespace AnlabMvc.Extensions
             var phone = phoneNumberUtil.Format(phoneNumber, PhoneNumberFormat.NATIONAL);
             if (!phoneNumberUtil.IsValidNumberForRegion(phoneNumber, "US"))
             {
+                if (phoneNumberUtil.IsValidNumber(phoneNumber))
+                {
+                    return phoneNumberUtil.Format(phoneNumber, PhoneNumberFormat.INTERNATIONAL);
+                }
+
                 return phoneNumber.RawInput;
             }
             if (phone == "+1 NA") //Just in case catch
