@@ -1,3 +1,4 @@
+@using AnlabMvc.Extensions
 @using Humanizer
 @model AnlabMvc.Models.Order.OrderReviewModel
 
@@ -22,7 +23,7 @@
             <span>@Model.OrderDetails.ClientInfo.Email</span>
             <br />
             <strong>Phone Number</strong>
-            <span>@Model.OrderDetails.ClientInfo.PhoneNumber</span>
+            <span>@Model.OrderDetails.ClientInfo.PhoneNumber.FormatPhone()</span>
             <br />
         </div>
     }

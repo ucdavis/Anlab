@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using PhoneNumbers;
 
 namespace AnlabMvc.Extensions
 {
@@ -52,6 +53,28 @@ namespace AnlabMvc.Extensions
                 return false;
             }
             return Regex.IsMatch(value.ToLower(), emailRegex);
+        }
+
+        public static string FormatPhone(this string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return value;
+            }
+            var phoneNumberUtil = PhoneNumbers.PhoneNumberUtil.GetInstance();
+            var phoneNumber = phoneNumberUtil.ParseAndKeepRawInput(value, "US");
+            var phone = phoneNumberUtil.Format(phoneNumber, PhoneNumberFormat.NATIONAL);
+            if (!phoneNumberUtil.IsValidNumberForRegion(phoneNumber, "US"))
+            {
+                if (phoneNumberUtil.IsValidNumber(phoneNumber))
+                {
+                    return phoneNumberUtil.Format(phoneNumber, PhoneNumberFormat.INTERNATIONAL);
+                }
+
+                return phoneNumber.RawInput;
+            }
+
+            return phone;
         }
     }
 }
