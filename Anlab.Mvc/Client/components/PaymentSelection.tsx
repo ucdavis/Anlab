@@ -93,7 +93,7 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
             return (
                 <div>                    
                     <p className="help-block">
-                        Unless using a UC Davis account, please provide the full chart string
+                        UC Davis accounts require the chart. <strong><a href="https://afs.ucdavis.edu/our_services/accounting-e-financial-reporting/intercampus-transactions/other-uc-campus-info.html" target="blank">Other campus IOC Account requirement instructions can be found here</a></strong>
                     </p>
                     <Input
                       label="UC Account"
