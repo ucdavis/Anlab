@@ -140,7 +140,7 @@
         <strong>Billing Contact Name: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcName</span><br />
         <strong>Billing Contact Address: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcAddr</span><br />
         <strong>Billing Contact Email: </strong><span><a href="mailto:@Model.OrderDetails.OtherPaymentInfo.AcEmail">@Model.OrderDetails.OtherPaymentInfo.AcEmail</a></span><br />
-        <strong>Billing Contact Phone Number: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcPhone</span><br />
+        <strong>Billing Contact Phone Number: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcPhone.FormatPhone()</span><br />
         <strong>PO Number: </strong><span>@Model.OrderDetails.OtherPaymentInfo.PoNum</span>
     }
     @if (Model.Order.PaymentType == PaymentTypeCodes.UcOtherAccount)
@@ -150,7 +150,7 @@
         <strong>Billing Contact Name: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcName</span><br />
         <strong>Billing Contact Address: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcAddr</span><br />
         <strong>Billing Contact Email: </strong><span><a href="mailto:@Model.OrderDetails.OtherPaymentInfo.AcEmail">@Model.OrderDetails.OtherPaymentInfo.AcEmail</a></span><br />
-        <strong>Billing Contact Phone Number: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcPhone</span>
+        <strong>Billing Contact Phone Number: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcPhone.FormatPhone()</span>
     }
     @if (Model.Order.PaymentType == PaymentTypeCodes.UcDavisAccount)
     {
