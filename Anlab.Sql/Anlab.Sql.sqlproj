@@ -61,6 +61,7 @@
     <Folder Include="dbo\Tables\" />
     <Folder Include="Compare" />
     <Folder Include="Scripts" />
+    <Folder Include="dbo\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\TestItems.sql" />
@@ -77,6 +78,7 @@
     <Build Include="dbo\Tables\AnalysisMethods.sql" />
     <Build Include="dbo\Tables\SavedOrders.sql" />
     <Build Include="dbo\Tables\History.sql" />
+    <Build Include="dbo\Views\ReviewerOrders.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Compare\SqlExpressToProject.scmp" />
