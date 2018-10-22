@@ -29,26 +29,11 @@ namespace AnlabMvc.Controllers
         {
             var lastActions = DateTime.UtcNow.AddDays(-60);
 
-            var ordersQueryable = _context.Orders.Where(a =>
+            var reviewerOrder = await _context.ReviewerOrderViews.Where(a =>
                 a.Status == OrderStatusCodes.Finalized ||
-                (a.Status == OrderStatusCodes.Complete && a.Updated >= lastActions));
-
-            var orders = await ordersQueryable.Select(c => new Order
-            {
-                RequestNum = c.RequestNum,
-                Id = c.Id,
-                ClientId = c.ClientId,
-                PaymentType = c.PaymentType,
-                JsonDetails = c.JsonDetails,
-                Created = c.Created,
-                Updated = c.Updated,
-                Status = c.Status,
-                Paid = c.Paid,                
-            }).ToListAsync();
-
+                (a.Status == OrderStatusCodes.Complete &&  a.Updated >= lastActions)).AsNoTracking().ToListAsync();
             
-
-            return View(orders);
+            return View(reviewerOrder);
         }
 
         public async Task<IActionResult> Totals(ReviewerTotalModel model)
@@ -56,11 +41,11 @@ namespace AnlabMvc.Controllers
             if (model.fStart == null && model.fEnd == null && model.cStart == null && model.cEnd == null)
             {
                 Message = "Please select a filter.";
-                model.Orders = new List<Order>();
+                model.Orders = new List<ReviewerOrderView>();
                 return View(model);
             }
 
-            var orders = _context.Orders.Where(a => a.DateFinalized != null).AsQueryable();
+            var orders = _context.ReviewerOrderViews.Where(a => a.DateFinalized != null).AsQueryable();
             if (model.fStart != null)
             {
                 orders = orders.Where(a => a.DateFinalized >= model.fStart.Value.Date.FromPacificTime());
