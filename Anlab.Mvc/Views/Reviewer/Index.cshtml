@@ -1,6 +1,6 @@
 @using Anlab.Core.Models
 @using AnlabMvc.Models.Order;
-@model IList<Order>
+@model IList<ReviewerOrderView>
 @{
     ViewData["Title"] = "Finalized Orders or Completed within 60 Days";
 }
@@ -30,6 +30,7 @@
                 <th>Total</th>
                 <th>Created</th>
                 <th>Last Updated</th>
+                <th>Paid</th>
                 <th>Status</th>
             </tr>
         </thead>
@@ -38,15 +39,20 @@
             @foreach (var order in Model)
             {
                 var url = $"/Reviewer/Details/{order.Id}";
-                var orderDetails = order.GetOrderDetails();
             <tr data-href="@url">
                 <td>@order.RequestNum</td>
                 <td>@order.Id</td>
                 <td>@order.ClientId</td>
                 <td>@order.PaymentType</td>
-                <td>@orderDetails.GrandTotal.ToString("C")</td>
+                <td>@order.GrandTotal.ToString("C")</td>
                 <td>@order.Created.ToPacificTime().ToString("g")</td>
                 <td>@order.Updated.ToPacificTime().ToString("g")</td>
+                <td style="text-align: center">
+                @if (order.Paid)
+                {
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                }
+                </td>
                 <td>@order.Status</td>
             </tr>
             }

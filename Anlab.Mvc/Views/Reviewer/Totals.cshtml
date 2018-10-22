@@ -39,7 +39,6 @@
         <tbody>
             @foreach (var order in Model.Orders)
             {
-                var orderDetails = order.GetOrderDetails();
                 <tr>
                     <td>@order.RequestNum</td>
                     <td>@order.Id</td>
@@ -48,7 +47,7 @@
                     <td>@order.Created.ToPacificTime().ToString("g")</td>
                     <td>@order.DateFinalized.Value.ToPacificTime().ToString("g")</td>
                     <td>@order.Status</td>
-                    <td>@orderDetails.GrandTotal.ToString("C")</td>
+                    <td>@order.GrandTotal.ToString("C")</td>
                 </tr>
             }
         </tbody>
