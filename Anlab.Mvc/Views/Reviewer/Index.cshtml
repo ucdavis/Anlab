@@ -30,6 +30,7 @@
                 <th>Total</th>
                 <th>Created</th>
                 <th>Last Updated</th>
+                <th>Paid</th>
                 <th>Status</th>
             </tr>
         </thead>
@@ -47,6 +48,12 @@
                 <td>@orderDetails.GrandTotal.ToString("C")</td>
                 <td>@order.Created.ToPacificTime().ToString("g")</td>
                 <td>@order.Updated.ToPacificTime().ToString("g")</td>
+                <td style="text-align: center">
+                @if (order.Paid)
+                {
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                }
+                </td>
                 <td>@order.Status</td>
             </tr>
             }

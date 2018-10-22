@@ -28,9 +28,27 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> Index()
         {
             var lastActions = DateTime.UtcNow.AddDays(-60);
-            var model = await _context.Orders.Where(a => a.Status == OrderStatusCodes.Finalized || (a.Status == OrderStatusCodes.Complete && a.Updated >= lastActions)).ToArrayAsync();
 
-            return View(model);
+            var ordersQueryable = _context.Orders.Where(a =>
+                a.Status == OrderStatusCodes.Finalized ||
+                (a.Status == OrderStatusCodes.Complete && a.Updated >= lastActions));
+
+            var orders = await ordersQueryable.Select(c => new Order
+            {
+                RequestNum = c.RequestNum,
+                Id = c.Id,
+                ClientId = c.ClientId,
+                PaymentType = c.PaymentType,
+                JsonDetails = c.JsonDetails,
+                Created = c.Created,
+                Updated = c.Updated,
+                Status = c.Status,
+                Paid = c.Paid,                
+            }).ToListAsync();
+
+            
+
+            return View(orders);
         }
 
         public async Task<IActionResult> Totals(ReviewerTotalModel model)
