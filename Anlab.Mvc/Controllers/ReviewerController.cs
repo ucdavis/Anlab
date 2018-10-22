@@ -41,11 +41,11 @@ namespace AnlabMvc.Controllers
             if (model.fStart == null && model.fEnd == null && model.cStart == null && model.cEnd == null)
             {
                 Message = "Please select a filter.";
-                model.Orders = new List<Order>();
+                model.Orders = new List<ReviewerOrderView>();
                 return View(model);
             }
 
-            var orders = _context.Orders.Where(a => a.DateFinalized != null).AsQueryable();
+            var orders = _context.ReviewerOrderViews.Where(a => a.DateFinalized != null).AsQueryable();
             if (model.fStart != null)
             {
                 orders = orders.Where(a => a.DateFinalized >= model.fStart.Value.Date.FromPacificTime());

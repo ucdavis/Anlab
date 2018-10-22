@@ -20,6 +20,6 @@ namespace AnlabMvc.Models.Reviewer
         [Display(Name = "Created End")]
         public DateTime? cEnd { get; set; }
 
-        public IList<Anlab.Core.Domain.Order> Orders { get; set; }
+        public IList<Anlab.Core.Domain.ReviewerOrderView> Orders { get; set; }
     }
 }
