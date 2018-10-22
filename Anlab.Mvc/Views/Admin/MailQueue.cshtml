@@ -46,7 +46,7 @@ else
             <td>
                 @if (message.Sent.HasValue)
                 {
-                    <a asp-controller="Admin" asp-action="FixEmail" asp-route-id="@message.Id">Resend</a>
+                    <a asp-controller="Admin" asp-action="FixEmail" asp-route-id="@message.Id">Edit</a>
                 }
             </td>
             <td>
