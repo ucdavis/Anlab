@@ -190,8 +190,8 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
         this.props.onPaymentSelected({ ...this.props.payment, account, accountName:null });
     }
 
-    private _handleCheckboxChange = () => {
-        const isUcd = !this.props.payment.isUcdAccount;
+    private _handleCheckboxChange = (event) => {
+        const isUcd = event.target.checked; //!this.props.payment.isUcdAccount;
         this.props.onPaymentSelected({ ...this.props.payment, isUcdAccount: isUcd, accountName:null });
         this._validateAccount(this.props.payment.account, this.props.payment.clientType);
         if (isUcd) {
