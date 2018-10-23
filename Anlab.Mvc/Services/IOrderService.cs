@@ -350,7 +350,8 @@ namespace AnlabMvc.Services
             if (orderDetails.Payment.IsInternalClient)
             {
                 var account = new AccountModel(orderDetails.Payment.Account);
-                if (account.Chart == "3" || account.Chart == "L" || account.Chart == "H" || account.Chart == "M") //Removed S as a choice and added H to match _checkUcChart in react code
+                //if (account.Chart == "3" || account.Chart == "L" || account.Chart == "H" || account.Chart == "M") //Removed S as a choice and added H to match _checkUcChart in react code
+                if(orderDetails.Payment.IsUcdAccount)
                 {
                     orderToUpdate.PaymentType = PaymentTypeCodes.UcDavisAccount;
                 }
