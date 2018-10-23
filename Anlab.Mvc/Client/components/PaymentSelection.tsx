@@ -3,11 +3,13 @@ import * as React from "react";
 import Input from "./ui/input/input";
 import { Checkbox } from "react-bootstrap";
 import { OtherPaymentInfo, IOtherPaymentInfo } from "./OtherPaymentQuestions";
+import FancyCheckbox from "./ui/fancyCheckbox/fancyCheckbox";
 
 export interface IPayment {
     clientType: string;
     account?: string;
     accountName?: string;
+    isUcdAccount?: boolean;
 }
 
 interface IPaymentSelectionProps {
@@ -42,7 +44,8 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
             nextProps.payment.account !== this.props.payment.account ||
             nextProps.payment.accountName !== this.props.payment.accountName ||
             nextProps.onPaymentSelected !== this.props.onPaymentSelected ||
-            nextProps.otherPaymentInfo !== this.props.otherPaymentInfo || 
+            nextProps.otherPaymentInfo !== this.props.otherPaymentInfo ||
+            nextProps.payment.isUcdAccount !== this.props.payment.isUcdAccount ||
             nextState.error !== this.state.error 
         );
     }
@@ -95,6 +98,11 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
                     <p className="help-block">
                         UC Davis accounts require the chart. <strong><a href="https://afs.ucdavis.edu/our_services/accounting-e-financial-reporting/intercampus-transactions/other-uc-campus-info.html" target="blank">Other campus IOC Account requirement instructions can be found here</a></strong>
                     </p>
+                <FancyCheckbox
+                    checked={this.props.payment.isUcdAccount}
+                    label="This is a UC Davis Account"
+                    onChange={this._handleCheckboxChange}
+                />
                     <Input
                       label="UC Account"
                       value={this.props.payment.account}
@@ -175,6 +183,11 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
         const account = e.target.value;
         this._validateAccount(account, this.props.payment.clientType);
         this.props.onPaymentSelected({ ...this.props.payment, account, accountName:null });
+    }
+
+    private _handleCheckboxChange = () => {
+        const isUcd = !this.props.payment.isUcdAccount;
+        this.props.onPaymentSelected({ ...this.props.payment, isUcdAccount: isUcd });
     }
 
     private _validateAccount = (account: string, clientType: string) => {
