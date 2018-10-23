@@ -223,6 +223,7 @@ namespace Test.TestsModel
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute(ErrorMessage = \"You must select the payment method.\")]"
             }));
             expectedFields.Add(new NameAndType("IsInternalClient", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("IsUcdAccount", "System.Boolean", new List<string>()));
             #endregion Arrange
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(Payment));
