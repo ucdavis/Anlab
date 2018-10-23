@@ -111,7 +111,7 @@ export default class OrderForm extends React.Component<
         piEmail: "",
       },
       clientInfoValid: (this.props.defaultClientId && this.props.defaultClientIdName) ? true: false,
-      payment: { clientType: "uc", account: "" },
+      payment: { clientType: "uc", account: "", isUcdAccount: true },
       otherPaymentInfo: {
         paymentType: this.props.defaultAccount ? "IOC" : "",
         companyName: this.props.defaultCompanyName || "",
@@ -171,6 +171,7 @@ export default class OrderForm extends React.Component<
       initialState.payment.clientType = orderInfo.Payment.ClientType;
       initialState.payment.account = orderInfo.Payment.Account;
       initialState.payment.accountName = orderInfo.Payment.AccountName;
+      initialState.payment.isUcdAccount = orderInfo.Payment.IsUcdAccount;
       if (orderInfo.OtherPaymentInfo) {
         initialState.otherPaymentInfo = {
           acAddr: orderInfo.OtherPaymentInfo.AcAddr,
@@ -580,14 +581,7 @@ export default class OrderForm extends React.Component<
       if (!chart) {
           return(false);
       }
-      const upperChart = chart.toUpperCase();
-      //Removed S as a choice (can be used by other UC's) added H (From Brian's excel doc)
-    return (
-        upperChart === "L" ||
-        upperChart === "3" ||
-        upperChart === "M" ||
-        upperChart === "H"
-    );
+      return this.state.payment.isUcdAccount; //Note, this replaced checking the chart
   };
 
   private _onSampleSelected = (sampleType: string) => {
