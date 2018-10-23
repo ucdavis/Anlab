@@ -581,14 +581,18 @@ export default class OrderForm extends React.Component<
       if (!chart) {
           return(false);
       }
-      const upperChart = chart.toUpperCase();
-      //Removed S as a choice (can be used by other UC's) added H (From Brian's excel doc)
-    return (
-        upperChart === "L" ||
-        upperChart === "3" ||
-        upperChart === "M" ||
-        upperChart === "H"
-    );
+      return this.state.payment.isUcdAccount;
+    //  if (!chart) {
+    //      return(false);
+    //  }
+    //  const upperChart = chart.toUpperCase();
+    //  //Removed S as a choice (can be used by other UC's) added H (From Brian's excel doc)
+    //return (
+    //    upperChart === "L" ||
+    //    upperChart === "3" ||
+    //    upperChart === "M" ||
+    //    upperChart === "H"
+    //);
   };
 
   private _onSampleSelected = (sampleType: string) => {
