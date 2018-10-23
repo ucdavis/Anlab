@@ -157,21 +157,26 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
           return;
         }
 
+        this._accountLookup();
+
+    }
+
+    private _accountLookup = () => {
         fetch(`/financial/info?account=${this.props.payment.account}`, { credentials: "same-origin" })
-            .then((response) => {
-                if (!response.ok) {
-                    throw Error("The account you entered could not be found");
-                }
-                return response;
-            })
-            .then((response) => response.json())
-            .then((accountName) => {
-                this.props.onPaymentSelected({ ...this.props.payment, accountName: accountName });
-            })
-            .catch((error: Error) => {
-                this.setState({ error: error.message });
-                this.props.onPaymentSelected({ ...this.props.payment, accountName: null });
-            });
+        .then((response) => {
+            if (!response.ok) {
+                throw Error("The account you entered could not be found");
+            }
+            return response;
+        })
+        .then((response) => response.json())
+        .then((accountName) => {
+            this.props.onPaymentSelected({ ...this.props.payment, accountName: accountName });
+        })
+        .catch((error: Error) => {
+            this.setState({ error: error.message });
+            this.props.onPaymentSelected({ ...this.props.payment, accountName: null });
+        });
     }
 
     private _handleChange = (clientType: string) => {
@@ -187,7 +192,11 @@ export class PaymentSelection extends React.Component<IPaymentSelectionProps, IP
 
     private _handleCheckboxChange = () => {
         const isUcd = !this.props.payment.isUcdAccount;
-        this.props.onPaymentSelected({ ...this.props.payment, isUcdAccount: isUcd });
+        this.props.onPaymentSelected({ ...this.props.payment, isUcdAccount: isUcd, accountName:null });
+        this._validateAccount(this.props.payment.account, this.props.payment.clientType);
+        if (isUcd) {
+            this._accountLookup();
+        }
     }
 
     private _validateAccount = (account: string, clientType: string) => {
