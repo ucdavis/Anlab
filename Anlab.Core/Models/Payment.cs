@@ -14,5 +14,7 @@ namespace Anlab.Core.Models
         public string AccountName { get; set; }
 
         public bool IsInternalClient => string.Equals(ClientType, "uc", StringComparison.OrdinalIgnoreCase);
+
+        public bool IsUcdAccount { get; set; } = true;
     }
 }
