@@ -37,7 +37,7 @@
               <p>
                   <strong>Online Order Number</strong><br />@Model.Id<br /><br />
                   <strong>Project Title/Location</strong><br />@order.Project<br /><br />
-                  <strong>Payment Method</strong><br />@order.Payment.ClientType.PaymentMethodDescription()<br /><br />
+                  <strong>Payment Method</strong><br />@order.Payment.ClientType.PaymentMethodDescription()@paymentDetail<br /><br />
                   @if(order.ClientInfo.ClientId != null)
                   {
                   <strong>Client Id</strong><br />@order.ClientInfo.ClientId<br /><br />

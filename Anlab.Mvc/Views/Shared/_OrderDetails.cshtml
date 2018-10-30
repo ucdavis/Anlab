@@ -145,7 +145,7 @@
     }
     @if (Model.Order.PaymentType == PaymentTypeCodes.UcOtherAccount)
     {
-        <span>UC Account: @Model.OrderDetails.Payment.Account</span><br />
+        <span>UC Account: @Model.OrderDetails.Payment.Account (@Model.OrderDetails.OtherPaymentInfo.PaymentType)</span><br />
         <strong>Campus Name: </strong><span>@Model.OrderDetails.OtherPaymentInfo.CompanyName</span><br />
         <strong>Billing Contact Name: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcName</span><br />
         <strong>Billing Contact Address: </strong><span>@Model.OrderDetails.OtherPaymentInfo.AcAddr</span><br />

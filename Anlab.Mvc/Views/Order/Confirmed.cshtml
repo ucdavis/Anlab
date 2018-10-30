@@ -163,6 +163,13 @@
                    {
                        <span> (@Model.OrderDetails.Payment.AccountName)</span>
                    }
+                   else
+                   {
+                       if (Model.OrderDetails.OtherPaymentInfo != null && !string.IsNullOrWhiteSpace(Model.OrderDetails.OtherPaymentInfo.PaymentType))
+                       {
+                           <span> (@Model.OrderDetails.OtherPaymentInfo.PaymentType)</span>
+                       }
+                   }
               }
               else if (string.Equals(Model.OrderDetails.Payment.ClientType, "creditcard", StringComparison.OrdinalIgnoreCase))
               {
@@ -171,6 +178,10 @@
               else
               {
                   <span>Other</span>
+                   if (Model.OrderDetails.OtherPaymentInfo != null && !string.IsNullOrWhiteSpace(Model.OrderDetails.OtherPaymentInfo.PaymentType))
+                   {
+                       <span> (@Model.OrderDetails.OtherPaymentInfo.PaymentType)</span>
+                   }
               }
           </div>
          <div class="form-group">
