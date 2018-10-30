@@ -207,13 +207,10 @@
             <strong>Number of Samples Submitted:</strong>
             <span>@Model.OrderDetails.Quantity</span>
          </div>
-         <div class="form-group">
-            <strong>Sample Type:</strong>
-            <span>@Model.OrderDetails.SampleType</span>
-         </div>
       </div>
       <div class="col-6 onlyPrint">
          <div class="pull-right">
+             <h1 style="text-align: center">@Model.OrderDetails.SampleType</h1>
             <img style="width: 350px; height: 350px;"  src="/images/lab-only-section.png" alt="lab use only section" />
          </div>
       </div>
