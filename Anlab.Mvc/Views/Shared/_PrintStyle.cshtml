@@ -1,0 +1,73 @@
+<style media="print">
+
+    .noprint {
+        display: none !important;
+    }
+
+    .signature2 {
+        width: 100%;
+        border-top: 2px solid black;
+    }
+
+    .avoidBreak {
+        page-break-inside: avoid;
+    }
+
+    .nopadding {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* This prevents the table header from printing twice on the same page and over top of the table details */
+    thead {
+        display: table-row-group;
+    }
+
+    th {
+        padding: 5px;
+        padding-top: 20px;
+    }
+
+    td {
+        padding: 5px;
+    }
+
+    .tight-table td {
+        padding: 2px;
+    }
+
+    .tight-table th {
+        padding: 1px;
+        padding-top: 1px;
+    }
+
+    #links a:after {
+        content: " (" attr(href) ")";
+    }
+
+    .footer_contents, .navbar, .head_bleed, footer, header, .title-right {
+        display: none !important;
+    }
+
+    .pagetitle_banner {
+        display: none !important;
+    }
+
+
+    body, .whiteblock, .row {
+        margin: 0 0 0 0 !important;
+        padding: 0 0 0 0 !important;
+    }
+
+    .boundary, .pagetitle_banner_contents {
+        margin: 0 0 0 0 !important;
+        padding: 0 0 0 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        -webkit-flex: 100% !important;
+    }
+
+    * {
+        line-height: 1.3em !important;
+    }
+</style>

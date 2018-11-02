@@ -107,93 +107,38 @@
     @Html.Partial("_OrderDetails", Model.OrderReviewModel)
 
 </div>
+
+
 @section AdditionalStyles
-    {
+{
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
-    <style media="print">
-
-        .noprint {
-            display: none !important;
-        }
-        .dropdown-toggle {
-            display: none !important;
-        }
-
-        .avoidBreak {
-            page-break-inside: avoid;
-        }
-
-        .nopadding {
-            padding: 0 !important;
-            margin: 0 !important;
-        }
-
-        th {
-            padding: 5px;
-            padding-top: 20px;
-        }
-
-        td {
-            padding: 5px;
-        }
-
-        #links a:after {
-            content: " (" attr(href) ")";
-        }
-
-        .footer_contents, .navbar, .head_bleed, footer, header, .title-right {
-            display: none !important;
-        }
-
-        .pagetitle_banner {
-            margin-bottom: 5px !important;
-            padding: 0 0 0 0 !important;
-        }
-
-        .pagetitle_banner_contents {
-            height: auto !important;
-        }
-
-        body, .whiteblock, .row {
-            margin: 0 0 0 0 !important;
-            padding: 0 0 0 0 !important;
-        }
-
-        .boundary, .pagetitle_banner_contents {
-            margin: 0 0 0 0 !important;
-            padding: 0 0 0 0 !important;
-            max-width: 100% !important;
-            width: 100% !important;
-            -webkit-flex: 100% !important;
-        }
-
-        * {
-            line-height: 1.3em !important;
-        }
-    </style>
+    @Html.Partial("_PrintStyle") 
 }
 @section Scripts
-    {
+{
     @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
 
     <script type="text/javascript">
-        $(function () {
+        $(function() {
             $("#table").dataTable();
         });
-        $("#sign-in").on("click", function () {
-            alert("Please sign in first to duplicate the order");
-        });
-        $("#sign-in-to-save").on("click", function () {
-            alert("Please sign in first to save this order to your favorites");
-        });
+        $("#sign-in").on("click",
+            function() {
+                alert("Please sign in first to duplicate the order");
+            });
+        $("#sign-in-to-save").on("click",
+            function() {
+                alert("Please sign in first to save this order to your favorites");
+            });
     </script>
 
     @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
 
     <script type="text/javascript">
-        $(function () {
+        $(function() {
             $(".showTooltip").tooltip();
         });
     </script>
 
+    @Html.Partial("_PrintScript")
 }

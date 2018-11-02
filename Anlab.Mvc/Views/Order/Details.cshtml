@@ -6,7 +6,7 @@
 }
 
 @section ActionButtons
-{
+    {
     <p>
         <a asp-action="Index" class="btn btn-default">Back to Orders</a>
         <form asp-action="Copy" asp-controller="Order" method="post" autocomplete="off" style="margin-right: 3px; margin-left: 3px">
@@ -18,30 +18,34 @@
 
 <div class="col">
 
-@Html.Partial("_OrderDetails")
+    @Html.Partial("_OrderDetails")
 
 </div>
 @section AdditionalStyles
-{
+    {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+
+    @Html.Partial("_PrintStyle") 
 }
 
 @section Scripts
-{
+    {
     @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
 
     <script type="text/javascript">
-        $(function() {
+        $(function () {
             $("#table").dataTable();
         });
     </script>
 
     <script type="text/javascript">
-        $(function() {
+        $(function () {
             $(".showTooltip").tooltip();
         });
     </script>
 
     @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
+
+    @Html.Partial("_PrintScript")
 
 }
