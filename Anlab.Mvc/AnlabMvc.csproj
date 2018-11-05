@@ -87,6 +87,12 @@
     <Content Update="Views\Reviewer\Details.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Shared\_PrintScript.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Shared\_PrintStyle.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Shared\_DataTableFixedHeaderStylePartial.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
