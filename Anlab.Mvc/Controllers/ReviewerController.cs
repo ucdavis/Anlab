@@ -53,7 +53,7 @@ namespace AnlabMvc.Controllers
 
             if (model.fEnd != null)
             {
-                orders = orders.Where(a => a.DateFinalized <= model.fEnd.Value.Date.FromPacificTime());
+                orders = orders.Where(a => a.DateFinalized <= model.fEnd.Value.Date.AddDays(1).FromPacificTime());
             }
 
             if (model.cStart != null)
@@ -63,7 +63,7 @@ namespace AnlabMvc.Controllers
 
             if (model.cEnd != null)
             {
-                orders = orders.Where(a => a.DateFinalized <= model.cEnd.Value.Date.FromPacificTime());
+                orders = orders.Where(a => a.DateFinalized <= model.cEnd.Value.Date.AddDays(1).FromPacificTime());
             }
 
             model.Orders = await orders.ToListAsync();
