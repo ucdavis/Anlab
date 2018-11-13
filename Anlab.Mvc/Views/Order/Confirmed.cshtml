@@ -53,31 +53,31 @@
                      </thead>
                      <tbody>
                          <tr>
-                             <td><strong>ID</strong></td>
+                             <td><strong>ID:</strong></td>
                              <td>@Model.Order.ClientId</td>
                          </tr>
                          <tr>
-                             <td><strong>Name</strong></td>
+                             <td><strong>Name:</strong></td>
                              <td>@Model.OrderDetails.ClientInfo.Name</td>
                          </tr>
                          @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.Department))
                          {
                              <tr>
-                                 <td><strong>Department/Unit</strong></td>
+                                 <td><strong>Department/Unit:</strong></td>
                                  <td>@Model.OrderDetails.ClientInfo.Department</td>
                              </tr>
                          }
                          @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.Email))
                          {
                              <tr>
-                                 <td><strong>Email</strong></td>
+                                 <td><strong>Email:</strong></td>
                                  <td>@Model.OrderDetails.ClientInfo.Email</td>
                              </tr>
                          }
                          @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.PhoneNumber))
                          {
                              <tr>
-                                 <td><strong>Phone Number</strong></td>
+                                 <td><strong>Phone Number:</strong></td>
                                  <td>@Model.OrderDetails.ClientInfo.PhoneNumber.FormatPhone()</td>
                              </tr>
                          }
@@ -98,31 +98,31 @@
                      </thead>
                      <tbody>
                          <tr>
-                             <td><strong>Client Name</strong></td>
+                             <td><strong>Client Name:</strong></td>
                              <td>@Model.OrderDetails.ClientInfo.Name</td>
                          </tr>
                          <tr>
-                             <td><strong>Employer</strong></td>
+                             <td><strong>Employer:</strong></td>
                              <td>@Model.OrderDetails.ClientInfo.Employer</td>
                          </tr>
                          <tr>
-                             <td><strong>Department/Unit</strong></td>
+                             <td><strong>Department/Unit:</strong></td>
                              <td>@Model.OrderDetails.ClientInfo.Department</td>
                          </tr>
                          <tr>
-                             <td><strong>Email</strong></td>
+                             <td><strong>Email:</strong></td>
                              <td>@Model.OrderDetails.ClientInfo.Email</td>
                          </tr>
                          <tr>
-                             <td><strong>Phone Number</strong></td>
+                             <td><strong>Phone Number:</strong></td>
                              <td>@Model.OrderDetails.ClientInfo.PhoneNumber.FormatPhone()</td>
                          </tr>
                          <tr>
-                             <td><strong>PI Name</strong></td>
+                             <td><strong>PI Name:</strong></td>
                              <td>@Model.OrderDetails.ClientInfo.PiName</td>
                          </tr>
                          <tr>
-                             <td><strong>PI Email</strong></td>
+                             <td><strong>PI Email:</strong></td>
                              <td>@Model.OrderDetails.ClientInfo.PiEmail</td>
                          </tr>
                      </tbody>
@@ -140,15 +140,15 @@
                  </thead>
                  <tbody>
                      <tr>
-                         <td><strong>Name</strong></td>
+                         <td><strong>Name:</strong></td>
                          <td>@Model.Order.Creator.Name</td>
                      </tr>
                      <tr>
-                         <td><strong>Email</strong></td>
+                         <td><strong>Email:</strong></td>
                          <td>@Model.Order.Creator.Email</td>
                      </tr>
                      <tr>
-                         <td><strong>Phone</strong></td>
+                         <td><strong>Phone:</strong></td>
                          <td>@Model.Order.Creator.Phone.FormatPhone()</td>
                      </tr>
                  </tbody>
@@ -191,16 +191,16 @@
          @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.Commodity))
          {
          <div class="form-group">
-            <strong>Commodity</strong>
+            <strong>Commodity:</strong>
             <span>@Model.OrderDetails.Commodity</span>
          </div>
          }
           <div class="form-group">
-              <strong>Date Sampled</strong>
+              <strong>Date Sampled:</strong>
               <span>@Model.OrderDetails.DateSampled.ToLongDateString()</span>
           </div>
           <div class="form-group">
-              <strong>Sample Disposition</strong>
+              <strong>Sample Disposition:</strong>
               <span>@Model.OrderDetails.SampleDisposition</span>
           </div>
          <div class="form-group">
@@ -218,7 +218,7 @@
    @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.AdditionalInfo))
    {
    <div class="form-group">
-      <strong>Comments, special test requests and missing samples</strong>
+      <strong>Comments, special test requests and missing samples:</strong>
       <div class="well well-sm" style="white-space: pre-wrap">@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</div>
    </div>
    }

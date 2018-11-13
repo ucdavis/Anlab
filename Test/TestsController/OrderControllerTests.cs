@@ -317,12 +317,12 @@ namespace Test.TestsController
             copiedOrder.Creator = CreateValidEntities.User(5, true);
             OrderData[1].CreatorId = "xxx";
             OrderData[1].Creator = CreateValidEntities.User(5);
-            MockOrderService.Setup(a => a.DuplicateOrder(OrderData[1])).ReturnsAsync(copiedOrder);
+            MockOrderService.Setup(a => a.DuplicateOrder(OrderData[1], false)).ReturnsAsync(copiedOrder);
             // Act
             var controllerResult = await Controller.Copy(SpecificGuid.GetGuid(2));
 
             // Assert
-            MockOrderService.Verify(a => a.DuplicateOrder(OrderData[1]), Times.Once);
+            MockOrderService.Verify(a => a.DuplicateOrder(OrderData[1], false), Times.Once);
             MockDbContext.Verify(a => a.Add(It.IsAny<Order>()), Times.Once);
             MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
 
@@ -350,7 +350,7 @@ namespace Test.TestsController
             copiedOrder.Creator = CreateValidEntities.User(5, true);
             OrderData[1].CreatorId = "xxx";
             OrderData[1].Creator = CreateValidEntities.User(5);
-            MockOrderService.Setup(a => a.DuplicateOrder(OrderData[1])).ReturnsAsync(copiedOrder);
+            MockOrderService.Setup(a => a.DuplicateOrder(OrderData[1], true)).ReturnsAsync(copiedOrder);
 
             // Act
             var ex = Assert.ThrowsAsync<Exception>(async () => await Controller.Copy(SpecificGuid.GetGuid(2), true));
@@ -360,13 +360,13 @@ namespace Test.TestsController
             ex.Result.Message.ShouldBe("Permissions Missing");
 
 
-            MockOrderService.Verify(a => a.DuplicateOrder(OrderData[1]), Times.Once);
+            MockOrderService.Verify(a => a.DuplicateOrder(OrderData[1], true), Times.Once);
             MockDbContext.Verify(a => a.Add(It.IsAny<Order>()), Times.Never);
             MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Never);
         }
 
         [Fact]
-        public async Task TestCopySetsTheCreatorToCurrectUserWhenAdminIsTrue()
+        public async Task TestCopySetsTheCreatorToCorrectUserWhenAdminIsTrue()
         {
             MockClaimsPrincipal.Setup(a => a.IsInRole(RoleCodes.Admin)).Returns(true);
 
@@ -386,12 +386,12 @@ namespace Test.TestsController
             copiedOrder.Creator = CreateValidEntities.User(5, true);
             OrderData[1].CreatorId = "xxx";
             OrderData[1].Creator = CreateValidEntities.User(5);
-            MockOrderService.Setup(a => a.DuplicateOrder(OrderData[1])).ReturnsAsync(copiedOrder);
+            MockOrderService.Setup(a => a.DuplicateOrder(OrderData[1], true)).ReturnsAsync(copiedOrder);
             // Act
             var controllerResult = await Controller.Copy(SpecificGuid.GetGuid(2), true);
 
             // Assert
-            MockOrderService.Verify(a => a.DuplicateOrder(OrderData[1]), Times.Once);
+            MockOrderService.Verify(a => a.DuplicateOrder(OrderData[1], true), Times.Once);
             MockDbContext.Verify(a => a.Add(It.IsAny<Order>()), Times.Once);
             MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
 
