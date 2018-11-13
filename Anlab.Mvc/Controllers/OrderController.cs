@@ -203,7 +203,7 @@ namespace AnlabMvc.Controllers
 
             var user = _context.Users.Single(a => a.Id == CurrentUserId);
 
-            var order = await _orderService.DuplicateOrder(orderToCopy);
+            var order = await _orderService.DuplicateOrder(orderToCopy, adminCopy);
             order.CreatorId = CurrentUserId;
             order.Creator = user;
             order.ShareIdentifier = Guid.NewGuid();
@@ -254,6 +254,12 @@ namespace AnlabMvc.Controllers
             if (adminCopy)
             {
                 return RedirectToAction("AddRequestNumber", "Lab", new {id = order.Id});
+            }
+
+            var originalDetails = orderToCopy.GetOrderDetails();
+            if (!string.IsNullOrWhiteSpace(originalDetails.AdditionalInfo))
+            {
+                Message = "Note! Comments not copied.";
             }
             return RedirectToAction("Edit", new {id = order.Id});
 

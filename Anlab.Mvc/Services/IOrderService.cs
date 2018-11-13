@@ -30,7 +30,7 @@ namespace AnlabMvc.Services
 
         Task UpdateTestsAndPrices(Order orderToUpdate);
 
-        Task<Order> DuplicateOrder(Order orderToCopy);
+        Task<Order> DuplicateOrder(Order orderToCopy, bool adminCopy = false);
     }
 
     public class OrderService : IOrderService
@@ -133,7 +133,7 @@ namespace AnlabMvc.Services
             orderToUpdate.SaveDetails(orderDetails);
         }
 
-        public async Task<Order> DuplicateOrder(Order orderToCopy)
+        public async Task<Order> DuplicateOrder(Order orderToCopy, bool adminCopy = false)
         {
             var order = new Order();
             order.Status = OrderStatusCodes.Created;
@@ -145,6 +145,10 @@ namespace AnlabMvc.Services
             order.ClientName = order.ClientName;
             order.JsonDetails = orderToCopy.JsonDetails;
             var orderDetails = order.GetOrderDetails();
+            if (!adminCopy)
+            {
+                orderDetails.AdditionalInfo = string.Empty;
+            }
             var tests = CalculateTestDetails(order).ToList();
 
             var groupTestIds = tests.Where(a => a.Id.IsGroupTest()).Select(a => a.Id).ToArray();
