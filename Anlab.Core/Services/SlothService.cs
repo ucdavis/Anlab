@@ -93,8 +93,9 @@ namespace Anlab.Core.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    return JsonConvert.DeserializeObject<SlothResponseModel>(content);
+                    Log.Information("Sloth Success Response", content);
 
+                    return JsonConvert.DeserializeObject<SlothResponseModel>(content);
                 }
 
 
