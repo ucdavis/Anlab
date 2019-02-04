@@ -1,4 +1,4 @@
-﻿---
+---
 
 title: "Contact"
 
@@ -45,8 +45,8 @@ title: "Contact"
 <p>See also the <a class="external-link" href="http://taps.ucdavis.edu/parking/information/visitor" target="_blank" title="UCD Visitor Parking Info">University's page for more parking information</a>.</p>
 </div>
 <div class="col-4">
-<p><a href="mailto:dmholstege@ucdavis.edu"><b>Dirk Holstege</b></a> <br> Director<br> 530-752-0147<br> Room 224 Hoagland Hall</p>
-<p><a href="mailto:anlab@ucdavis.edu"><b>Main Office</b></a><br> 530-752-0147<br> Room 224 Hoagland Hall</p>
+<p><a href="mailto:dmholstege@ucdavis.edu"><b>Dirk Holstege</b></a> <br><a href="mailto:dmholstege@ucdavis.edu">dmholstege@ucdavis.edu</a> <br> Director<br>  530-752-0147<br> Room 224 Hoagland Hall</p>
+<p><a href="mailto:anlab@ucdavis.edu"><b>Main Office</b></a><br><a href="mailto:anlab@ucdavis.edu">anlab@ucdavis.edu</a><br> 530-752-0147<br> Room 224 Hoagland Hall</p>
 <p><a href="http://campusmap.ucdavis.edu/?b=82" target="_blank">Campus Map</a><span class="external-link"> — Hoagland Hall
   <a href="http://campusmap.ucdavis.edu/?b=82" target="_blank"><br /></a>
 </p>
