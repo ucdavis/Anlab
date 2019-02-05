@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace AnlabMvc.Controllers
 {
@@ -63,7 +64,7 @@ namespace AnlabMvc.Controllers
             if (!responseValid.IsValid)
             {
                 ErrorMessage = string.Format("Errors detected: {0}", string.Join(",", responseValid.Errors));
-                return RedirectToAction("PaymentError");
+                return RedirectToAction("PaymentError", new {id = ErrorMessage}); //For some reason, the ErrorMessage is getting lost in the redirect
             }
 
             //Should be good,   
@@ -77,8 +78,12 @@ namespace AnlabMvc.Controllers
         }
 
         [IgnoreAntiforgeryToken]
-        public ActionResult PaymentError()
+        public ActionResult PaymentError(string id)
         {
+            if (ErrorMessage == null)
+            {
+                ErrorMessage = id;
+            }
             return View();
         }
 
