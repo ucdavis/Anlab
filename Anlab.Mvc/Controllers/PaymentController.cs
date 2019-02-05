@@ -63,7 +63,9 @@ namespace AnlabMvc.Controllers
             if (!responseValid.IsValid)
             {
                 ErrorMessage = string.Format("Errors detected: {0}", string.Join(",", responseValid.Errors));
-                return RedirectToAction("PaymentError");
+                ViewBag.Declined = true;
+                return View(response);
+                //return RedirectToAction("PaymentError", new {id = ErrorMessage}); //For some reason, the ErrorMessage is getting lost in the redirect
             }
 
             //Should be good,   
@@ -77,8 +79,12 @@ namespace AnlabMvc.Controllers
         }
 
         [IgnoreAntiforgeryToken]
-        public ActionResult PaymentError()
+        public ActionResult PaymentError(string id)
         {
+            if (ErrorMessage == null)
+            {
+                ErrorMessage = id;
+            }
             return View();
         }
 
