@@ -57,6 +57,7 @@ namespace AnlabMvc.Extensions
 
         public static string FormatPhone(this string value)
         {
+            return value;
             if (string.IsNullOrWhiteSpace(value))
             {
                 return value;
