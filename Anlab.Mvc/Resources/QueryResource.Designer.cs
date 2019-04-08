@@ -145,8 +145,8 @@ namespace AnlabMvc.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT COUNT(LOCCODE) AS Quantity, LOCCODE as ClientId, SAMPCOL as Disposition, REPDATE as ReportDate FROM dbo.SAMPLE
-        ///GROUP BY LOGBATCH, LOCCODE, SAMPCOL, REPDATE  
+        ///   Looks up a localized string similar to SELECT COUNT(LOCCODE) AS Quantity, LOCCODE as ClientId, SAMPCOL as Disposition, convert(date, REPDATE,1) as ReportDate FROM dbo.SAMPLE
+        ///GROUP BY LOGBATCH, LOCCODE, SAMPCOL, convert(date, REPDATE,1) 
         ///HAVING (LOGBATCH = @RequestNum).
         /// </summary>
         internal static string AnlabSampleDetails {

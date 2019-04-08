@@ -129,7 +129,7 @@ namespace AnlabMvc.Services
                     rtValue.TestCodes = codes as IList<string>;
                     if (sampleDetails.Count() != 1)
                     {
-                        throw new Exception("(Sample Details) Client Id / Quantity not found");
+                        throw new Exception("(Sample Details) Client Id / Quantity not found or too many results.");
                     }
                     rtValue.ClientId = sampleDetails.ElementAtOrDefault(0).ClientId;
                     rtValue.Quantity = sampleDetails.ElementAtOrDefault(0).Quantity;
