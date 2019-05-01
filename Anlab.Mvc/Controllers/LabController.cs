@@ -119,6 +119,44 @@ namespace AnlabMvc.Controllers
                 }).OrderBy(o => o.ActionDateTime).ToListAsync(); //Basically filtering out jsonDetails
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ClearRequestNumber(int id)
+        {
+            var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if (order.Status != OrderStatusCodes.Confirmed)
+            {
+                ErrorMessage = "You can only clear the WRN on a confirmed order";
+                return RedirectToAction("Orders");
+            }
+
+            var saveRequestNumber = order.RequestNum;
+
+            order.RequestNum = null;
+            var user = _dbContext.Users.Single(a => a.Id == CurrentUserId);
+            order.History.Add(new History
+            {
+                Action = "Cleared Request Number",
+                Status = order.Status,
+                ActorId = user.NormalizedUserName,
+                ActorName = user.Name,
+                JsonDetails = order.JsonDetails,
+                Notes = $"Request Number: {saveRequestNumber} Cleared",
+            });
+
+            Message = "NOTE!!! The order details will remain changed until you add a new request number";
+
+            await _dbContext.SaveChangesAsync();
+
+            return RedirectToAction("AddRequestNumber", new {id});
+        }
+
+
         public async Task<IActionResult> AddRequestNumber(int id)
         {
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);

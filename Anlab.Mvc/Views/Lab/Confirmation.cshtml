@@ -11,6 +11,7 @@
         @Html.Hidden("requestNum", Model.Order.RequestNum)        
         <button type="submit" class="btn btn-info"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh From Labworks</button>
     </form>
+    <div style="display: inline-block;">
     <form id="form" asp-controller="Lab" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post">
         @Html.Hidden("confirm", true)
         <div class="form-group">
@@ -26,9 +27,13 @@
         @Html.Hidden("bypassEmail", false)
         <button type="submit" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true"></i> Received and Send Email</button>
         <button class="btn btn-green" id="submit-with-bypass"><i class="fa fa-ban" aria-hidden="true"></i> Received without Email</button>
-        <a asp-action="AddRequestNumber" asp-route-id="@Model.Order.Id"> Oops wrong one. Change it</a>
     </form>
-
+    </div>
+    <div style="display: inline-block;">
+        <form asp-controller="Lab" asp-action="ClearRequestNumber" asp-route-id="@Model.Order.Id" method="post">
+            <button type="submit" class="btn btn-danger">Oops wrong one. Clear It</button>
+        </form>
+    </div>
 </div>
 @section AdditionalStyles
 {
