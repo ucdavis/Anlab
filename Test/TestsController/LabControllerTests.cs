@@ -2039,7 +2039,7 @@ namespace Test.TestsController
         [Fact]
         public void TestControllerMethodCount()
         {
-            ControllerReflection.ControllerPublicMethods(15);
+            ControllerReflection.ControllerPublicMethods(16);
         }
 
         [Fact]
@@ -2099,6 +2099,10 @@ namespace Test.TestsController
             //#15
             ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("GeneratePartialResultsEmail", 2 + countAdjustment, "GeneratePartialResultsEmail-1", false, showListOfAttributes: false);
             ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("GeneratePartialResultsEmail", 2 + countAdjustment, "GeneratePartialResultsEmail-2", false, showListOfAttributes: false);
+
+            //#16
+            ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("ClearRequestNumber", 2 + countAdjustment, "ClearRequestNumber", false, showListOfAttributes: true);
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("ClearRequestNumber", 2 + countAdjustment, "ClearRequestNumber", false, showListOfAttributes: true);
         }
 
 
