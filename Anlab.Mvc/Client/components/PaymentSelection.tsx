@@ -104,30 +104,15 @@ export class PaymentSelection extends React.Component<
 
   private _renderUcAccount = () => {
     if (this.props.payment.clientType === "uc") {
-      const ucdOptions = {
-        example: "",
-
-      };
       return (
         <div>
-          <p className="help-block">
-            UC Davis accounts require the chart.{" "}
-            <strong>
-              <a
-                href="https://afs.ucdavis.edu/our_services/accounting-e-financial-reporting/intercampus-transactions/other-uc-campus-info.html"
-                target="blank"
-              >
-                Other campus IOC Account requirement instructions can be found
-                here
-              </a>
-            </strong>
-          </p>
-          <PaymentUcSelection 
+          <PaymentUcSelection
             payment={this.props.payment}
             error={this.state.error}
             handleAccountChange={this._handleAccountChange}
             lookupAccount={this._lookupAccount}
             ucAccountRef={this.props.ucAccountRef}
+            handleSelectionchange={this._handleSelectionChange}
           />
         </div>
       );
@@ -248,8 +233,7 @@ export class PaymentSelection extends React.Component<
     });
   }
 
-  private _handleCheckboxChange = (event) => {
-    const isUcd = event.target.checked; // !this.props.payment.isUcdAccount;
+  private _handleSelectionChange = (isUcd: boolean) => {
     this.props.onPaymentSelected({
       ...this.props.payment,
       isUcdAccount: isUcd,

@@ -20,6 +20,7 @@ interface IPaymentUcSelectionProps {
     handleAccountChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     lookupAccount: () => void;
     ucAccountRef: (element: HTMLInputElement) => void;
+    handleSelectionchange: (isUcdAccount: boolean) => void;
 }
 
 export class PaymentUcSelection extends React.Component<
@@ -44,7 +45,7 @@ export class PaymentUcSelection extends React.Component<
                 <select
                     className="form-control"
                     value={this.state.ucName}
-                    onChange={(e) => this.setState({ ucName: e.target.value })}
+                    onChange={(e) => this._handleSelectionChange(e.target.value)}
                 >
                 <option value="UCB">UCB</option>
                 <option value="UCSF">UCSF</option>
@@ -86,6 +87,11 @@ export class PaymentUcSelection extends React.Component<
             </div>
       </div>
     );
+  }
+
+  private _handleSelectionChange = (uc: string) => {
+      this.setState({ ucName: uc });
+      this.props.handleSelectionchange(uc === "UCD");
   }
 
   private _renderDetails = (option: any) => {
