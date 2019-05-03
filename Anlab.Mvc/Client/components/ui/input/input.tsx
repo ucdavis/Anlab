@@ -5,6 +5,7 @@ export interface IInputProps {
     value: string;
     label?: string;
     error?: string;
+    feedback?: string;
     multiline?: boolean;
     maxLength?: number;
     required?: boolean;
@@ -48,6 +49,7 @@ export default class Input extends React.PureComponent<IInputProps, {}> {
                     ref={this.props.inputRef}
                 />
                 {this.renderError()}
+                {this.renderFeedback()}
             </div>
 
         );
@@ -74,6 +76,17 @@ export default class Input extends React.PureComponent<IInputProps, {}> {
 
         return (
             <span className="form-text text-error help-block">{error}</span>
+        );
+    }
+
+    private renderFeedback() {
+        const { feedback } = this.props;
+        if (!feedback) {
+            return null;
+        }
+
+        return (
+            <span className="form-text help-block">{feedback}</span>
         );
     }
 }
