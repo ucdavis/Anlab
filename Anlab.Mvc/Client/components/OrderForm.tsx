@@ -297,6 +297,7 @@ export default class OrderForm extends React.Component<
                 ucAccountRef={inputRef => {
                   this.ucAccountRef = inputRef;
                 }}
+                creatingOrder={!this.props.orderId}
               />
             </div>
           </Collapse>
@@ -796,7 +797,7 @@ export default class OrderForm extends React.Component<
   };
 
   private _handleChange = (name, value) => {
-    this.setState({ [name]: value }, this._validate);
+    this.setState({ ...this.state, [name]: value }, this._validate);
   };
 
   private _switchViews = (viewName: string) => {

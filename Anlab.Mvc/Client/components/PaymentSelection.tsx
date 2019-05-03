@@ -22,6 +22,7 @@ interface IPaymentSelectionProps {
   ucAccountRef: (element: HTMLInputElement) => void;
   otherPaymentInfoRef: (element: HTMLInputElement) => void;
   placingOrder: boolean;
+  creatingOrder: boolean;
 }
 
 interface IPaymentSelectionState {
@@ -103,7 +104,40 @@ export class PaymentSelection extends React.Component<
   }
 
   private _renderUcAccount = () => {
-    if (this.props.payment.clientType === "uc") {
+    if (this.props.payment.clientType !== "uc") {
+      return;
+    }
+    return(
+      <div>
+        <p className="help-block">
+          UC Davis accounts require the chart.{" "}
+          <strong>
+            <a
+              href="https://afs.ucdavis.edu/our_services/accounting-e-financial-reporting/intercampus-transactions/other-uc-campus-info.html"
+              target="blank"
+            >
+              Other campus IOC Account requirement instructions can be found
+              here
+            </a>
+          </strong>
+        </p>
+        {this._renderUcAccountInput()}
+      </div>);
+  }
+
+  private _renderUcAccountInput = () => {
+    if (!this.props.creatingOrder) {
+      return(
+        <Input
+          label="UC Account"
+          value={this.props.payment.account}
+          error={this.state.error}
+          maxLength={50}
+          onChange={this._handleAccountChange}
+          onBlur={this._lookupAccount}
+          inputRef={this.props.ucAccountRef}
+        />);
+    } else {
       return (
         <div>
           <PaymentUcSelection
