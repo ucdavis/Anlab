@@ -25,7 +25,7 @@
             <input type="text" class="form-control" id="GrandTotal" value="@Model.OrderDetails.GrandTotal" autocomplete="off" />
             <div id="adj-comm">
                 <span>Adjustment Comments</span>
-                <input class="form-control input-lg" id="AdjustmentComments" name="AdjustmentComments" maxlength="100" value="@Model.OrderDetails.AdjustmentComments"/>
+                <input class="form-control" id="AdjustmentComments" name="AdjustmentComments" maxlength="100" value="@Model.OrderDetails.AdjustmentComments"/>
             </div>
             <div>Original Total: $@Model.OrderDetails.Total</div>
             @if (Model.OrderDetails.AdjustmentAmount != 0)
