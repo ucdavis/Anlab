@@ -73,17 +73,7 @@ export class PaymentUcSelection extends React.Component<
                     />
                 {this.props.payment.accountName}
                 </div>
-                {this.state.ucName === "UCB" && this._renderDetails(options["UCB"])}
-                {this.state.ucName === "UCSF" && this._renderDetails(options["UCSF"])}
-                {this.state.ucName === "UCD" && this._renderDetails(options["UCD"])}
-                {this.state.ucName === "UCLA" && this._renderDetails(options["UCLA"])}
-                {this.state.ucName === "UCR" && this._renderDetails(options["UCR"])}
-                {this.state.ucName === "UCSD" && this._renderDetails(options["UCSD"])}
-                {this.state.ucName === "UCSC" && this._renderDetails(options["UCSC"])}
-                {this.state.ucName === "UCSB" && this._renderDetails(options["UCSB"])}
-                {this.state.ucName === "UCI" && this._renderDetails(options["UCI"])}
-                {this.state.ucName === "UCM" && this._renderDetails(options["UCM"])}
-                {this.state.ucName === "MOP" && this._renderDetails(options["MOP"])}
+                {this._renderDetails(options[this.state.ucName])}
             </div>
       </div>
     );
@@ -95,6 +85,9 @@ export class PaymentUcSelection extends React.Component<
   }
 
   private _renderDetails = (option: any) => {
+    if (!option) {
+      return;
+    }
     return(
         <div className="col-5">
             <Input
