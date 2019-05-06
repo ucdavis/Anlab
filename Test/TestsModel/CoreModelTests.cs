@@ -106,6 +106,7 @@ namespace Test.TestsModel
             #region Arrange
             var expectedFields = new List<NameAndType>();
             expectedFields.Add(new NameAndType("AdjustmentAmount", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("AdjustmentComments", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("BypassEmail", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Confirm", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("LabComments", "System.String", new List<string>()));
@@ -121,6 +122,7 @@ namespace Test.TestsModel
             #region Arrange
             var expectedFields = new List<NameAndType>();
             expectedFields.Add(new NameAndType("AdjustmentAmount", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("AdjustmentComments", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("BypassEmail", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Confirm", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("LabComments", "System.String", new List<string>()));
