@@ -317,8 +317,7 @@
             @if (Model.OrderDetails.AdjustmentAmount != 0)
             {
                 <tr>
-                    <th>Adjustment Amount</th>
-                    <td colSpan="3" />
+                    <td colSpan="4"><strong>Adjustment Amount</strong> <span class="pull-right">@Model.OrderDetails.AdjustmentComments</span></td>
                     <td><span>@(string.Format("{0:C}", Model.OrderDetails.AdjustmentAmount))</span></td>
                 </tr>
 
