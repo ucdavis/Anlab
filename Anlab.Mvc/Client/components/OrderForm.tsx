@@ -797,7 +797,7 @@ export default class OrderForm extends React.Component<
   };
 
   private _handleChange = (name, value) => {
-    this.setState({ ...this.state, [name]: value }, this._validate);
+    this.setState({ [name]: value }, this._validate);
   };
 
   private _switchViews = (viewName: string) => {
