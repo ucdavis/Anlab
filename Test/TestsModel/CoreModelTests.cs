@@ -141,6 +141,7 @@ namespace Test.TestsModel
             }));
             expectedFields.Add(new NameAndType("AdditionalInfoList", "System.Collections.Generic.Dictionary`2[System.String,System.String]", new List<string>()));
             expectedFields.Add(new NameAndType("AdjustmentAmount", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("AdjustmentComments", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("ClientInfo", "Anlab.Core.Models.ClientInfo", new List<string>()));
             expectedFields.Add(new NameAndType("Commodity", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("DateSampled", "System.DateTime", new List<string>()));
