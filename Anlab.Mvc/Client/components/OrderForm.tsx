@@ -297,6 +297,7 @@ export default class OrderForm extends React.Component<
                 ucAccountRef={inputRef => {
                   this.ucAccountRef = inputRef;
                 }}
+                creatingOrder={!this.props.orderId}
               />
             </div>
           </Collapse>
