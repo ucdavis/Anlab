@@ -98,8 +98,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td></td>
-                    <th colspan="2"><b>Processing Fee</b></th>
+                    <th colspan="3"><b>Processing Fee</b></th>
                     <th>
                         @if (string.Equals(order.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
                         {
@@ -114,22 +113,19 @@
                 @if(hiddenCosts > 0.0M)
                 {
                 <tr>
-                    <td></td>
-                    <th colspan="2"><b>Other Costs</b></th>
+                    <th colspan="3"><b>Other Costs</b></th>
                     <th>@(String.Format("{0:C}", hiddenCosts))</th>
                 </tr>
                 }
                 @if(order.AdjustmentAmount != 0)
                 {
                 <tr>
-                    <td></td>
-                    <th colspan="2"><b>Adjustment Amount</b></th>
+                    <td colspan="3"><b>Adjustment Amount</b> @order.AdjustmentComments</td>
                     <th>@(String.Format("{0:C}", order.AdjustmentAmount))</th>
                 </tr>
                 }
                 <tr>
-                    <td></td>
-                    <th colspan="2"><b>Total Amount</b></th>
+                    <th colspan="3"><b>Total Amount</b></th>
                     <th>@(String.Format("{0:C}", order.GrandTotal))</th>
                 </tr>
 
