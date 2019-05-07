@@ -13,6 +13,7 @@ using AnlabMvc.Models.Order;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 
 namespace AnlabMvc.Controllers
 {
@@ -68,6 +69,37 @@ namespace AnlabMvc.Controllers
                 model.PaymentDictionary = dictionary;
                 model.CyberSourceUrl = _appSettings.CyberSourceUrl;
             }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> Receipt(Guid id)
+        {
+            var order = await _context.Orders.Include(i => i.ApprovedPayment).SingleOrDefaultAsync(o => o.ShareIdentifier == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if (order.Status != OrderStatusCodes.Finalized && order.Status != OrderStatusCodes.Complete)
+            {
+                return NotFound();
+            }
+
+            if (!order.Paid)
+            {
+                return NotFound();
+            }
+
+            var model = new OrderReceiptModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+            model.ApprovedAmount = order.ApprovedPayment.Auth_Amount;
+            dynamic data = JObject.Parse(order.ApprovedPayment.ReturnedResults);
+
+            model.MaskedCreditCard = data.req_card_number; 
+
 
             return View(model);
         }
