@@ -11,6 +11,7 @@ namespace Anlab.Core.Models
         public IFormFile UploadFile { get; set; }
         public string LabComments { get; set; }
         public decimal AdjustmentAmount { get; set; }
+        public string AdjustmentComments { get; set; }
         public bool BypassEmail { get; set; }
     }
 }

@@ -20,7 +20,7 @@ describe('<PaymentSelection/>', () => {
             const onPaymentSelected = jasmine.createSpy('onPaymentSelected');
             const payment = { clientType: 'uc', account: '' };
             const target = mount(<PaymentSelection payment={payment} onPaymentSelected={onPaymentSelected} ucAccountRef={null} creatingOrder={true} placingOrder={true} checkChart={null} otherPaymentInfo={null} otherPaymentInfoRef={null} updateOtherPaymentInfo={null} updateOtherPaymentInfoType={null} />);
-            expect(target.find('Input').length).toEqual(1);
+            expect(target.find('Input').length).toEqual(2);
         });
         describe('Parameters', () => {
             const onPaymentSelected = jasmine.createSpy('onPaymentSelected');
@@ -44,7 +44,7 @@ describe('<PaymentSelection/>', () => {
             });
 
             it('should have a label', () => {
-                expect(input.prop('label')).toEqual('UC Account');
+                expect(input.prop('label')).toEqual('UCD Account');
             });
             it('should have a maxLength of 50', () => {
                 expect(input.prop('maxLength')).toEqual(50);
@@ -68,7 +68,7 @@ describe('<PaymentSelection/>', () => {
                 agreementRequired: false,
             };
             const target = mount(<PaymentSelection payment={payment} onPaymentSelected={onPaymentSelected} ucAccountRef={null} creatingOrder={true} placingOrder={true} checkChart={checkChart} otherPaymentInfo={otherPaymentInfo} otherPaymentInfoRef={null} updateOtherPaymentInfo={null} updateOtherPaymentInfoType={null} />);
-            expect(target.find('Input').length).toEqual(6); //TODO: Write one of these for "Other" which will have 7
+            expect(target.find('Input').length).toEqual(7); //TODO: Write one of these for "Other" which will have 7
 
             const inp = target.find('input').at(0);
             inp.simulate('change', { target: { value: 'xxx'} });
@@ -232,7 +232,7 @@ describe('<PaymentSelection/>', () => {
             agreementRequired: false,
         };
         const target = mount(<PaymentSelection payment={payment} onPaymentSelected={onPaymentSelected} ucAccountRef={null} creatingOrder={true} placingOrder={true} checkChart={checkChart} otherPaymentInfo={otherPaymentInfo} otherPaymentInfoRef={null} updateOtherPaymentInfo={null} updateOtherPaymentInfoType={null} />);
-        expect(target.find('Input').length).toEqual(6);
+        expect(target.find('Input').length).toEqual(7);
 
         const internal = target.instance();
         internal._handleChange('creditcard');

@@ -111,19 +111,16 @@
         @if (!String.IsNullOrWhiteSpace(order.LabComments))
         {
         <callout class="secondary">
-            <p>
-                <strong>Lab Comments</strong>
-                <div style="white-space: pre-wrap">@Html.Raw(Html.Encode(order.LabComments))</div>
-            </p>
+            <strong>Lab Comments</strong>
+            <pre style="Margin:5px 0;background:#f3f3f3;margin:5px 0">@order.LabComments</pre>
         </callout>
         }
 
         @if (!String.IsNullOrWhiteSpace(order.AdditionalInfo))
         {
         <callout class="secondary">
-            <p>
-        <strong>Additional Info</strong>
-        <div style="white-space: pre-wrap">@Html.Raw(Html.Encode(order.AdditionalInfo))</div></p>
+            <strong>Additional Info</strong>
+            <pre style="Margin:5px 0;background:#f3f3f3;margin:5px 0">@Html.Raw(Html.Encode(order.AdditionalInfo))</pre>
             </callout>
         }
       <hr/>
