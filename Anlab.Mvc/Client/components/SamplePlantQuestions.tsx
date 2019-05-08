@@ -68,6 +68,8 @@ export class SamplePlantQuestions extends React.Component<IPlantQuestionProps, {
               <span className="red-text inline-block">(Charges Apply)</span>
             </div>}
         </p>
+        {!this.props.questions.plantReportingBasis &&
+            <span className="red-text help-block">You must select how you would like your samples reported.</span>}
       </div>
     );
   }

@@ -59,6 +59,8 @@ export class SampleDisposition extends React.Component<
                         {SampleDispositionOptions.return}
                     </label>
                 </p>
+                {!this.props.disposition &&
+                    <span className="red-text help-block">You must select how you would like your samples to be disposed of.</span>}
             </div>
         );
 
