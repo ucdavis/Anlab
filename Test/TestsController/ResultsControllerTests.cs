@@ -681,7 +681,7 @@ namespace Test.TestsController
         [Fact]
         public void TestControllerMethodCount()
         {
-            ControllerReflection.ControllerPublicMethods(4);
+            ControllerReflection.ControllerPublicMethods(5);
         }
 
         [Fact]
@@ -707,6 +707,8 @@ namespace Test.TestsController
             ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("ConfirmPayment", 2 + countAdjustment, "ConfirmPaymentPost-1", true, showListOfAttributes: true);
             ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("ConfirmPayment", 2 + countAdjustment, "ConfirmPaymentPost-1", true, showListOfAttributes: false);
 
+            //5
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Receipt", 1 + countAdjustment, "Receipt-1", showListOfAttributes: false);
         }
 
     }
