@@ -272,6 +272,7 @@ export class PaymentSelection extends React.Component<
       isUcdAccount: isUcd,
       accountName: null,
     });
+    this.props.updateOtherPaymentInfo("companyName", ucName);
     this._validateAccount(
       this.props.payment.account,
       this.props.payment.clientType,
