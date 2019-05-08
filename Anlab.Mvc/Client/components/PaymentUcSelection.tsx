@@ -52,8 +52,8 @@ export class PaymentUcSelection extends React.Component<
                 <option value="MOP">M-OP</option>
                 </select>
             </div>
-            <div className="row">
-                <div className="col-5">
+            <div className="flexrow">
+                <div className="flexcol">
                     <Input
                         label={`${this.props.ucName} Account`}
                         value={this.props.payment.account}
@@ -80,7 +80,7 @@ export class PaymentUcSelection extends React.Component<
       return;
     }
     return(
-        <div className="col-5">
+        <div className="flexcol">
             <Input
                 label={`Example ${option.name} Account`}
                 value={option.example}
