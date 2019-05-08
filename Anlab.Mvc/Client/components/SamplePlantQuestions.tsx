@@ -5,6 +5,7 @@ interface IPlantQuestionProps {
   handleChange: Function;
   sampleType: string;
   questions: ISampleTypeQuestions;
+  plantReportingRef: (element: HTMLInputElement) => void;
 }
 
 export const SamplePlantQuestionsOptions = {
@@ -29,8 +30,9 @@ export class SamplePlantQuestions extends React.Component<IPlantQuestionProps, {
               className="videokilledtheradiostar"
               type="radio"
               value={SamplePlantQuestionsOptions.average}
-              checked={this.props.questions.plantReportingBasis == SamplePlantQuestionsOptions.average}
+              checked={this.props.questions.plantReportingBasis === SamplePlantQuestionsOptions.average}
               onChange={this._changeReporting}
+              ref={this.props.plantReportingRef}
             />
             {SamplePlantQuestionsOptions.average}
           </label>
@@ -41,7 +43,7 @@ export class SamplePlantQuestions extends React.Component<IPlantQuestionProps, {
               className="videokilledtheradiostar"
               type="radio"
               value={SamplePlantQuestionsOptions.asReceived}
-              checked={this.props.questions.plantReportingBasis == SamplePlantQuestionsOptions.asReceived}
+              checked={this.props.questions.plantReportingBasis === SamplePlantQuestionsOptions.asReceived}
               onChange={this._changeReporting}
             />
             {SamplePlantQuestionsOptions.asReceived}
@@ -53,16 +55,18 @@ export class SamplePlantQuestions extends React.Component<IPlantQuestionProps, {
               className="videokilledtheradiostar"
               type="radio"
               value={SamplePlantQuestionsOptions.individual}
-              checked={this.props.questions.plantReportingBasis == SamplePlantQuestionsOptions.individual}
+              checked={this.props.questions.plantReportingBasis === SamplePlantQuestionsOptions.individual}
               onChange={this._changeReporting}
             />
             {SamplePlantQuestionsOptions.individual}
           </label>
           {this.props.questions.plantReportingBasis === SamplePlantQuestionsOptions.individual &&
-            (<div><h2 className="help-block inline-block">
+            <div>
+              <h2 className="help-block inline-block">
                Please select the dry matter test below 
-            </h2><span className="red-text inline-block">(Charges Apply)</span></div>)
-          }
+              </h2>
+              <span className="red-text inline-block">(Charges Apply)</span>
+            </div>}
         </p>
       </div>
     );

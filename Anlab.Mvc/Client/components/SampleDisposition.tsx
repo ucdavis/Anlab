@@ -28,8 +28,9 @@ export class SampleDisposition extends React.Component<
                             className="videokilledtheradiostar"
                             type="radio"
                             value={SampleDispositionOptions.dispose}
-                            checked={this.props.disposition == SampleDispositionOptions.dispose}
+                            checked={this.props.disposition === SampleDispositionOptions.dispose}
                             onChange={this._onChange}
+                            ref={this.props.sampleDispositionRef}
                         />
                         {SampleDispositionOptions.dispose}
                     </label>
@@ -40,7 +41,7 @@ export class SampleDisposition extends React.Component<
                             className="videokilledtheradiostar"
                             type="radio"
                             value={SampleDispositionOptions.pickUp}
-                            checked={this.props.disposition == SampleDispositionOptions.pickUp}
+                            checked={this.props.disposition === SampleDispositionOptions.pickUp}
                             onChange={this._onChange}
                         />
                         {SampleDispositionOptions.pickUp}
@@ -52,7 +53,7 @@ export class SampleDisposition extends React.Component<
                             className="videokilledtheradiostar"
                             type="radio"
                             value={SampleDispositionOptions.return}
-                            checked={this.props.disposition == SampleDispositionOptions.return}
+                            checked={this.props.disposition === SampleDispositionOptions.return}
                             onChange={this._onChange}
                         />
                         {SampleDispositionOptions.return}

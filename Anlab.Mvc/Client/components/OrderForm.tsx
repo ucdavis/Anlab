@@ -18,7 +18,6 @@ import {
   SampleTypeQuestions
 } from "./SampleTypeQuestions";
 import { SampleTypeSelection } from "./SampleTypeSelection";
-import { SamplePlantQuestionsOptions } from "./SamplePlantQuestions";
 import Summary from "./Summary";
 import { ITestItem, TestList } from "./TestList";
 import { ViewMode } from "./ViewMode";
@@ -77,6 +76,7 @@ export default class OrderForm extends React.Component<
   private quantityRef: any;
   private projectRef: any;
   private waterPreservativeRef: any;
+  private plantReportingRef: any;
   private clientIdRef: any;
   private ucAccountRef: any;
   private otherPaymentInfoRef: any;
@@ -417,6 +417,9 @@ export default class OrderForm extends React.Component<
                   waterPreservativeRef={inputRef => {
                     this.waterPreservativeRef = inputRef;
                   }}
+                  plantReportingRef={inputRef => {
+                    this.plantReportingRef = inputRef;
+                  }}
                   sampleType={sampleType}
                   questions={sampleTypeQuestions}
                   handleChange={this._onSampleQuestionChanged}
@@ -726,6 +729,10 @@ export default class OrderForm extends React.Component<
         !this.state.sampleTypeQuestions.waterPreservativeInfo.trim())
     ) {
       this._focusInput(this.waterPreservativeRef);
+    } else if(
+      this.state.sampleType === "Plant" && !this.state.sampleTypeQuestions.plantReportingBasis
+    ) {
+      this._focusInput(this.plantReportingRef);
     }
   };
 
