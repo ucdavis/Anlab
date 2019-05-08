@@ -125,10 +125,10 @@ export default class OrderForm extends React.Component<
       placingOrder: true,
       project: "",
       quantity: null,
-      sampleDisposition: SampleDispositionOptions.dispose,
+      sampleDisposition: "",
       sampleType: "",
       sampleTypeQuestions: {
-        plantReportingBasis: SamplePlantQuestionsOptions.average,
+        plantReportingBasis: "",
         soilImported: false,
         waterFiltered: false,
         waterPreservativeAdded: false,
@@ -333,7 +333,7 @@ export default class OrderForm extends React.Component<
           <Collapse
             in={
                 !placingOrder ||
-                ((!!this.state.project.trim() && !!this.state.sampleDisposition.trim()) ||
+                (!!this.state.project.trim() ||
                 this.state.quantity > 0 ||
                 !!this.state.sampleType.trim())
             }
@@ -425,7 +425,7 @@ export default class OrderForm extends React.Component<
             </div>
           </Collapse>
 
-          <Collapse in={this.state.sampleType !== ""} onEntered={(e) => this._focusInput(this.commentsInputRef)}>
+          <Collapse in={this.state.sampleType !== ""}>
             <div>
               {placingOrder && (
                 <div className="form_wrap">
@@ -555,6 +555,12 @@ export default class OrderForm extends React.Component<
       (!this.state.sampleTypeQuestions.waterPreservativeInfo ||
         !this.state.sampleTypeQuestions.waterPreservativeInfo.trim())
     ) {
+      valid = false;
+    }
+
+    if (
+      this.state.sampleType === "Plant" &&
+      !this.state.sampleTypeQuestions.plantReportingBasis) {
       valid = false;
     }
 
