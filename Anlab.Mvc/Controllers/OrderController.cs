@@ -16,6 +16,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using AnlabMvc.Extensions;
 using AnlabMvc.Models.Roles;
+using Microsoft.AspNetCore.Identity;
 using Serilog;
 
 namespace AnlabMvc.Controllers
@@ -155,7 +156,19 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
-
+        /// <summary>
+        /// Scott will hate this name. it started out as a bool. Maybe change so Scott isn't sad.
+        /// </summary>
+        /// <returns></returns>
+        private async Task<User> AllowAdminOverride()
+        {
+            var user = await _context.Users.SingleAsync(a => a.Id == CurrentUserId);
+            if (User.IsInRole(RoleCodes.Admin))
+            {
+                return user;
+            }
+            return null;
+        }
 
         public async Task<IActionResult> Edit(int id)
         {
@@ -166,8 +179,13 @@ namespace AnlabMvc.Controllers
             }
             if (order.CreatorId != CurrentUserId)
             {
-                ErrorMessage = "You don't have access to this order.";
-                return RedirectToAction("Index");
+                if (await AllowAdminOverride() == null)
+                {
+                    ErrorMessage = "You don't have access to this order.";
+                    return RedirectToAction("Index");
+                }
+
+                Message = "Warning, Admin editing order for user.";
             }
 
             if (order.Status != OrderStatusCodes.Created)
@@ -269,6 +287,7 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Save(OrderSaveModel model)
         {
+            User adminUser = null;
             if (!ModelState.IsValid)
             {
                 var errors = new List<string>();
@@ -291,7 +310,11 @@ namespace AnlabMvc.Controllers
                 var orderToUpdate = await _context.Orders.Include(i => i.Creator).SingleAsync(a => a.Id == model.OrderId.Value);
                 if (orderToUpdate.CreatorId != CurrentUserId)
                 {
-                    return Json(new { success = false, message = "This is not your order." });
+                    adminUser = await AllowAdminOverride();
+                    if (adminUser == null)
+                    {
+                        return Json(new { success = false, message = "This is not your order." });
+                    }
                 }
                 if (orderToUpdate.Status != OrderStatusCodes.Created)
                 {
@@ -307,8 +330,8 @@ namespace AnlabMvc.Controllers
                 {
                     Action = "Edited",
                     Status = orderToUpdate.Status,
-                    ActorId = orderToUpdate.Creator.NormalizedUserName,
-                    ActorName = orderToUpdate.Creator.Name,
+                    ActorId = adminUser != null ? adminUser.NormalizedUserName : orderToUpdate.Creator.NormalizedUserName,
+                    ActorName = adminUser != null ? adminUser.Name : orderToUpdate.Creator.Name,
                     JsonDetails = orderToUpdate.JsonDetails
                 });
 
@@ -387,8 +410,12 @@ namespace AnlabMvc.Controllers
 
             if (order.CreatorId != CurrentUserId)
             {
-                ErrorMessage = "You don't have access to this order.";
-                return NotFound();
+                if (await AllowAdminOverride() == null)
+                {
+                    ErrorMessage = "You don't have access to this order.";
+                    return NotFound();
+                }
+                Message = "Warning, Admin editing order for user.";
             }
 
             await _orderService.UpdateTestsAndPrices(order);
@@ -412,8 +439,12 @@ namespace AnlabMvc.Controllers
 
             if (order.CreatorId != CurrentUserId)
             {
-                ErrorMessage = "You don't have access to this order.";
-                return NotFound();
+                if (await AllowAdminOverride() == null)
+                {
+                    ErrorMessage = "You don't have access to this order.";
+                    return NotFound();
+                }
+                Message = "Warning, Admin editing order for user.";
             }
 
             if (order.Status != OrderStatusCodes.Created)
