@@ -1,3 +1,4 @@
+@using Anlab.Core.Models
 @using Humanizer
 @model AnlabMvc.Models.Order.OrderResultsModel
 
@@ -37,6 +38,12 @@
             <a class="btn btn-small showTooltip" asp-action="Download" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier" style="margin-right: 3px" title="Click here to download your results.">
                 <i class="fa fa-download" aria-hidden="true"></i> Download
             </a>
+            @if (Model.OrderReviewModel.Order.PaymentType == PaymentTypeCodes.CreditCard)
+             {
+                <a class="btn btn-small showTooltip" asp-action="Receipt" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier" style="margin-right: 3px" title="Click here for a Printable Credit Card Receipt page.">
+                    <i class="fa fa-recycle" aria-hidden="true"></i> CC Receipt
+                </a>
+             }
             @if (User.Identity.IsAuthenticated)
             {
                 <form asp-action="Copy" asp-controller="Order" method="post" autocomplete="off" style="margin-right: 3px">

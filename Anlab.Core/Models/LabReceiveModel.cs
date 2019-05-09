@@ -10,6 +10,8 @@ namespace Anlab.Core.Models
         public string LabComments { get; set; }
         public decimal AdjustmentAmount { get; set; }
 
+        public string AdjustmentComments { get; set; }
+
         public bool BypassEmail { get; set; }
     }
 }

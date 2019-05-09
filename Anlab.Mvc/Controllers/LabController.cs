@@ -315,7 +315,13 @@ namespace AnlabMvc.Controllers
             {
                 orderDetails.LabComments = finalizeModel.LabComments;
                 orderDetails.AdjustmentAmount = finalizeModel.AdjustmentAmount;
+                if (orderDetails.AdjustmentAmount != 0)
+                {
+                    orderDetails.AdjustmentComments = finalizeModel.AdjustmentComments;
+                }
             }
+
+
 
             order.SaveDetails(orderDetails);
             order.SaveBackedupTestDetails(result.BackedupTests);
@@ -373,6 +379,14 @@ namespace AnlabMvc.Controllers
 
             orderDetails.LabComments = model.LabComments;
             orderDetails.AdjustmentAmount = model.AdjustmentAmount;
+            if (orderDetails.AdjustmentAmount != 0)
+            {
+                orderDetails.AdjustmentComments = model.AdjustmentComments;
+            }
+            else
+            {
+                orderDetails.AdjustmentComments = null;               
+            }
 
             order.SaveDetails(orderDetails);
 

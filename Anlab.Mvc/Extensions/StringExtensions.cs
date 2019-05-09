@@ -9,7 +9,8 @@ namespace AnlabMvc.Extensions
 {
     public static class StringExtensions
     {
-        const string emailRegex = @"^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
+        //const string emailRegex = @"^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
+        const string emailRegex = @"^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$"; //https://www.regular-expressions.info/email.html
 
         public static string PaymentMethodDescription(this string value)
         {
@@ -52,7 +53,7 @@ namespace AnlabMvc.Extensions
             {
                 return false;
             }
-            return Regex.IsMatch(value.ToLower(), emailRegex);
+            return Regex.IsMatch(value, emailRegex, RegexOptions.IgnoreCase);
         }
 
         public static string FormatPhone(this string value)

@@ -18,8 +18,12 @@
             <span>Add Lab Comments</span>
             <textarea class="form-control" name="LabComments"></textarea>
             <span>Adjust Final Total:</span>
-            <input type="hidden" class="form-control" id="prevTotal" value="@Model.OrderDetails.Total" />
+            <input type="hidden" class="form-control" id="prevTotal" value="@Model.OrderDetails.Total" />            
             <input type="text" class="form-control" id="GrandTotal" value="@Model.OrderDetails.Total" autocomplete="off" />
+            <div id="adj-comm" style="display: none">
+                <span>Adjustment Comments</span>
+                <input class="form-control" id="AdjustmentComments" name="AdjustmentComments" maxlength="100" value="@Model.OrderDetails.AdjustmentComments"/>
+            </div>
             <div>Current Total: $@Model.OrderDetails.Total</div>
             <div>Adjustment Amount: $<span id="adjustAmt">@Model.OrderDetails.AdjustmentAmount</span></div>
             <input type="hidden" class="form-control" id="adjustmentAmount" name="AdjustmentAmount" value="0" />
@@ -57,16 +61,23 @@
     </script>
 
     <script type="text/javascript">
-        $('#GrandTotal').on('keyup', function () {
-            var prevTotal = $('#prevTotal').val();
-            var grandTotal = $(this).val();
-            if (grandTotal)
-                var adjustAmt = parseFloat(grandTotal) - parseFloat(prevTotal);
-            else
-                var adjustAmt = 0;
-            $('#adjustmentAmount').val(adjustAmt);
-            $('#adjustAmt').html(adjustAmt);
-        });
+        $('#GrandTotal').on('keyup',
+            function() {
+                var prevTotal = $('#prevTotal').val();
+                var grandTotal = $(this).val();
+                if (grandTotal) {
+                    var adjustAmt = parseFloat(grandTotal) - parseFloat(prevTotal);                    
+                } else {
+                    var adjustAmt = 0;                    
+                }
+                $('#adjustmentAmount').val(adjustAmt);
+                $('#adjustAmt').html(adjustAmt);
+                if (adjustAmt === 0) {
+                    $('#adj-comm').hide();
+                } else {
+                    $('#adj-comm').show();
+                }
+            });
     </script>
 
     <script type="text/javascript">
