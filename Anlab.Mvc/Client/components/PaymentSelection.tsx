@@ -19,6 +19,7 @@ interface IPaymentSelectionProps {
   otherPaymentInfo: IOtherPaymentInfo;
   updateOtherPaymentInfo: (property, value) => void;
   updateOtherPaymentInfoType: (clientType, agreementRequired) => void;
+  changeSelectedUc: (payment: IPayment, ucName: string) => void;
   ucAccountRef: (element: HTMLInputElement) => void;
   otherPaymentInfoRef: (element: HTMLInputElement) => void;
   placingOrder: boolean;
@@ -195,7 +196,7 @@ export class PaymentSelection extends React.Component<
   private _renderOtherInfo = () => {
     if (
       this.props.payment.clientType === "other" ||
-      (this.props.payment.clientType === "uc" && this.state.ucName !== "UCD")) {
+      (this.props.payment.clientType === "uc" && !this.props.payment.isUcdAccount)) {
       return (
         <OtherPaymentInfo
           otherPaymentInfo={this.props.otherPaymentInfo}
@@ -267,12 +268,11 @@ export class PaymentSelection extends React.Component<
   private _handleSelectionChange = (ucName: string) => {
     const isUcd = ucName === "UCD";
     this.setState({ ucName });
-    this.props.onPaymentSelected({
+    this.props.changeSelectedUc({
       ...this.props.payment,
       isUcdAccount: isUcd,
       accountName: null,
-    });
-    this.props.updateOtherPaymentInfo("companyName", ucName);
+    }, ucName);
     this._validateAccount(
       this.props.payment.account,
       this.props.payment.clientType,

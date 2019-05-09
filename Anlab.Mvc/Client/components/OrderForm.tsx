@@ -291,6 +291,7 @@ export default class OrderForm extends React.Component<
                 otherPaymentInfo={otherPaymentInfo}
                 updateOtherPaymentInfo={this._updateOtherPaymentInfo}
                 updateOtherPaymentInfoType={this._changeOtherPaymentInfoType}
+                changeSelectedUc={this._changeSelectedUc}
                 otherPaymentInfoRef={inputRef => {
                   this.otherPaymentInfoRef = inputRef;
                 }}
@@ -584,6 +585,17 @@ export default class OrderForm extends React.Component<
       }
       return this.state.payment.isUcdAccount; //Note, this replaced checking the chart
   };
+
+  private _changeSelectedUc = (payment: IPayment, ucName: string) => {
+    this.setState({
+      ...this.state,
+      otherPaymentInfo: {
+        ...this.state.otherPaymentInfo,
+        companyName: ucName,
+      },
+      payment,
+     }, this._validate);
+  }
 
   private _onSampleSelected = (sampleType: string) => {
     var agree = true;
