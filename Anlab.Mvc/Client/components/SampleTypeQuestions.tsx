@@ -12,10 +12,10 @@ export interface ISampleTypeQuestions {
     waterReportedInMgL: boolean;
 }
 interface ISampleTypeQuestionsProps {
-    waterPreservativeRef: any;
-    sampleType: string;
+    waterPreservativeRef: (element: HTMLInputElement) => void;    sampleType: string;
     questions: ISampleTypeQuestions;
     handleChange: (key: string, value: any) => void;
+    plantReportingRef: (element: HTMLInputElement) => void;
 }
 
 export class SampleTypeQuestions extends React.Component<ISampleTypeQuestionsProps, {}> {
@@ -25,7 +25,7 @@ export class SampleTypeQuestions extends React.Component<ISampleTypeQuestionsPro
             <div>
                 <SampleSoilQuestions sampleType={this.props.sampleType} questions={this.props.questions} handleChange={this.props.handleChange} />
                 <SampleWaterQuestions waterPreservativeRef={this.props.waterPreservativeRef} sampleType={this.props.sampleType} questions={this.props.questions} handleChange={this.props.handleChange} />
-                <SamplePlantQuestions sampleType={this.props.sampleType} questions={this.props.questions} handleChange={this.props.handleChange} />
+                <SamplePlantQuestions plantReportingRef={this.props.plantReportingRef} sampleType={this.props.sampleType} questions={this.props.questions} handleChange={this.props.handleChange} />
             </div>
 
         );
