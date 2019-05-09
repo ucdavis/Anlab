@@ -511,8 +511,8 @@ namespace AnlabMvc.Controllers
             {
                 Action = "Confirmed",
                 Status = order.Status,
-                ActorId = adminUser != null ? adminUser.NormalizedUserName : orderToUpdate.Creator.NormalizedUserName,
-                ActorName = adminUser != null ? adminUser.Name : orderToUpdate.Creator.Name,
+                ActorId = adminUser != null ? adminUser.NormalizedUserName : order.Creator.NormalizedUserName,
+                ActorName = adminUser != null ? adminUser.Name : order.Creator.Name,
                 JsonDetails = order.JsonDetails
             });
 
