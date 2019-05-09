@@ -430,6 +430,7 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Confirmation(int id, bool confirm)
         {
+            User adminUser = null;
             var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
@@ -439,7 +440,8 @@ namespace AnlabMvc.Controllers
 
             if (order.CreatorId != CurrentUserId)
             {
-                if (await AllowAdminOverride() == null)
+                adminUser = await AllowAdminOverride();
+                if (adminUser == null)
                 {
                     ErrorMessage = "You don't have access to this order.";
                     return NotFound();
@@ -509,8 +511,8 @@ namespace AnlabMvc.Controllers
             {
                 Action = "Confirmed",
                 Status = order.Status,
-                ActorId = order.Creator.NormalizedUserName,
-                ActorName = order.Creator.Name,
+                ActorId = adminUser != null ? adminUser.NormalizedUserName : orderToUpdate.Creator.NormalizedUserName,
+                ActorName = adminUser != null ? adminUser.Name : orderToUpdate.Creator.Name,
                 JsonDetails = order.JsonDetails
             });
 
