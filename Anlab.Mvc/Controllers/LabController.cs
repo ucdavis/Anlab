@@ -811,7 +811,7 @@ namespace AnlabMvc.Controllers
                 }
                 else
                 {
-                    ErrorMessage = "Order is the the Created Status. Need Admin rights to access";
+                    ErrorMessage = "Order is in the Created Status. Need Admin rights to access";
                     return RedirectToAction("Search");
                 }
             }
