@@ -766,7 +766,7 @@ namespace AnlabMvc.Controllers
             Message = "Order Updated";
             if (model.Status == OrderStatusCodes.Created)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Confirmation", "Order", new {id});
             }
 
             return RedirectToAction("Details", new{id});
@@ -801,6 +801,19 @@ namespace AnlabMvc.Controllers
             {
                 ErrorMessage = "Order Not Found";
                 return RedirectToAction("Search");
+            }
+
+            if (order.Status == OrderStatusCodes.Created)
+            {
+                if (User.IsInRole(RoleCodes.Admin))
+                {
+                    return RedirectToAction("Confirmation", "Order", new {id = order.Id});
+                }
+                else
+                {
+                    ErrorMessage = "Order is the the Created Status. Need Admin rights to access";
+                    return RedirectToAction("Search");
+                }
             }
 
             return RedirectToAction("Details", new {id = order.Id});

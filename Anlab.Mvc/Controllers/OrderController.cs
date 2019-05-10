@@ -332,7 +332,8 @@ namespace AnlabMvc.Controllers
                     Status = orderToUpdate.Status,
                     ActorId = adminUser != null ? adminUser.NormalizedUserName : orderToUpdate.Creator.NormalizedUserName,
                     ActorName = adminUser != null ? adminUser.Name : orderToUpdate.Creator.Name,
-                    JsonDetails = orderToUpdate.JsonDetails
+                    JsonDetails = orderToUpdate.JsonDetails,
+                    Notes = adminUser != null ? "Admin Override" : string.Empty
                 });
 
                 idForRedirection = model.OrderId.Value;
@@ -513,7 +514,8 @@ namespace AnlabMvc.Controllers
                 Status = order.Status,
                 ActorId = adminUser != null ? adminUser.NormalizedUserName : order.Creator.NormalizedUserName,
                 ActorName = adminUser != null ? adminUser.Name : order.Creator.Name,
-                JsonDetails = order.JsonDetails
+                JsonDetails = order.JsonDetails,
+                Notes = adminUser != null ? "Admin Override" : string.Empty
             });
 
             await _orderMessageService.EnqueueCreatedMessage(order);
