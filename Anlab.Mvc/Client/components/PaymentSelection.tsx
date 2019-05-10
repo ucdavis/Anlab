@@ -19,6 +19,7 @@ interface IPaymentSelectionProps {
   otherPaymentInfo: IOtherPaymentInfo;
   updateOtherPaymentInfo: (property, value) => void;
   updateOtherPaymentInfoType: (clientType, agreementRequired) => void;
+  changeSelectedUc: (payment: IPayment, ucName: string) => void;
   ucAccountRef: (element: HTMLInputElement) => void;
   otherPaymentInfoRef: (element: HTMLInputElement) => void;
   placingOrder: boolean;
@@ -146,7 +147,8 @@ export class PaymentSelection extends React.Component<
             handleAccountChange={this._handleAccountChange}
             lookupAccount={this._lookupAccount}
             ucAccountRef={this.props.ucAccountRef}
-            handleSelectionchange={this._handleSelectionChange}
+            ucName={this.state.ucName}
+            handleSelectionChange={this._handleSelectionChange}
           />
         </div>
       );
@@ -194,11 +196,7 @@ export class PaymentSelection extends React.Component<
   private _renderOtherInfo = () => {
     if (
       this.props.payment.clientType === "other" ||
-      (this.props.payment.clientType === "uc" &&
-        this.props.payment.account != null &&
-        !!this.props.payment.account.trim() &&
-        !this.props.checkChart(this.props.payment.account.charAt(0)))
-    ) {
+      (this.props.payment.clientType === "uc" && !this.props.payment.isUcdAccount)) {
       return (
         <OtherPaymentInfo
           otherPaymentInfo={this.props.otherPaymentInfo}
@@ -267,12 +265,14 @@ export class PaymentSelection extends React.Component<
     });
   }
 
-  private _handleSelectionChange = (isUcd: boolean) => {
-    this.props.onPaymentSelected({
+  private _handleSelectionChange = (ucName: string) => {
+    const isUcd = ucName === "UCD";
+    this.setState({ ucName });
+    this.props.changeSelectedUc({
       ...this.props.payment,
       isUcdAccount: isUcd,
       accountName: null,
-    });
+    }, ucName);
     this._validateAccount(
       this.props.payment.account,
       this.props.payment.clientType,

@@ -10,29 +10,21 @@ export interface IPayment {
   isUcdAccount?: boolean;
 }
 
-interface IPaymentUcSelectionState {
-  ucName: string;
-}
 
 interface IPaymentUcSelectionProps {
     payment: IPayment;
     error: string;
+    ucName: string;
     handleAccountChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     lookupAccount: () => void;
     ucAccountRef: (element: HTMLInputElement) => void;
-    handleSelectionchange: (isUcdAccount: boolean) => void;
+    handleSelectionChange: (ucName: string) => void;
 }
 
 export class PaymentUcSelection extends React.Component<
   IPaymentUcSelectionProps,
-  IPaymentUcSelectionState
+  {}
 > {
-  constructor(props) {
-    super(props);
-    this.state = {
-      ucName: "UCD",
-    };
-  }
 
   public render() {
 
@@ -44,7 +36,7 @@ export class PaymentUcSelection extends React.Component<
                 <label>Select UC</label>
                 <select
                     className="form-control"
-                    value={this.state.ucName}
+                    value={this.props.ucName}
                     onChange={(e) => this._handleSelectionChange(e.target.value)}
                 >
                 <option value="UCB">UCB</option>
@@ -60,10 +52,10 @@ export class PaymentUcSelection extends React.Component<
                 <option value="MOP">M-OP</option>
                 </select>
             </div>
-            <div className="row">
-                <div className="col-5">
+            <div className="flexrow">
+                <div className="flexcol">
                     <Input
-                        label={`${this.state.ucName} Account`}
+                        label={`${this.props.ucName} Account`}
                         value={this.props.payment.account}
                         error={this.props.error}
                         maxLength={50}
@@ -73,15 +65,14 @@ export class PaymentUcSelection extends React.Component<
                     />
                 {this.props.payment.accountName}
                 </div>
-                {this._renderDetails(options[this.state.ucName])}
+                {this._renderDetails(options[this.props.ucName])}
             </div>
       </div>
     );
   }
 
   private _handleSelectionChange = (uc: string) => {
-      this.setState({ ucName: uc });
-      this.props.handleSelectionchange(uc === "UCD");
+      this.props.handleSelectionChange(uc);
   }
 
   private _renderDetails = (option: any) => {
@@ -89,7 +80,7 @@ export class PaymentUcSelection extends React.Component<
       return;
     }
     return(
-        <div className="col-5">
+        <div className="flexcol">
             <Input
                 label={`Example ${option.name} Account`}
                 value={option.example}
