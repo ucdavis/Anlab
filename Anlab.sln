@@ -27,6 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "email-Templates", "email-Te
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FF32C0CA-D35D-4B82-9A1F-7A717101E54B}"
 	ProjectSection(SolutionItems) = preProject
+		email-templates\src\pages\ANL-billing-override.html = email-templates\src\pages\ANL-billing-override.html
 		email-templates\src\pages\ANL-billing.html = email-templates\src\pages\ANL-billing.html
 		email-templates\src\pages\ANL-orderCreated.html = email-templates\src\pages\ANL-orderCreated.html
 		email-templates\src\pages\ANL-orderFinalized.html = email-templates\src\pages\ANL-orderFinalized.html
@@ -37,6 +38,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FF32C0CA-D35
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dest", "dest", "{B95E5274-5ABD-4066-9709-F146BF7361DB}"
 	ProjectSection(SolutionItems) = preProject
+		email-templates\dist\ANL-billing-override.html = email-templates\dist\ANL-billing-override.html
 		email-templates\dist\ANL-billing.html = email-templates\dist\ANL-billing.html
 		email-templates\dist\ANL-orderCreated.html = email-templates\dist\ANL-orderCreated.html
 		email-templates\dist\ANL-orderFinalized.html = email-templates\dist\ANL-orderFinalized.html

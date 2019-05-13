@@ -15,6 +15,7 @@ namespace AnlabMvc.Services
         Task EnqueueBillingMessage(Order order, string subject = "Anlab Work Order Billing Info");
 
         Task EnqueuePartialResultsMessage(Order order);
+        Task EnqueueBillingOverride(Order order);
 
     }
 
@@ -171,6 +172,22 @@ namespace AnlabMvc.Services
             var message = new MailMessage
             {
                 Subject = subject,
+                Body = body,
+                SendTo = _appSettings.AccountsEmail,
+                Order = order,
+                User = order.Creator,
+            };
+
+            _mailService.EnqueueMessage(message);
+        }
+
+        public async Task EnqueueBillingOverride(Order order)
+        {
+            var body = await _viewRenderService.RenderViewToStringAsync("Templates/_BillingOverride", order);
+
+            var message = new MailMessage
+            {
+                Subject = "Anlab Order -- Admin Override",
                 Body = body,
                 SendTo = _appSettings.AccountsEmail,
                 Order = order,
