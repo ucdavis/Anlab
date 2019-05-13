@@ -166,7 +166,7 @@ namespace AnlabMvc.Controllers
             return null;
         }
 
-        private async Task<bool> AllowAdminOverride()
+        private bool AllowAdminOverride()
         {
             if (User.IsInRole(RoleCodes.Admin))
             {
@@ -184,7 +184,7 @@ namespace AnlabMvc.Controllers
             }
             if (order.CreatorId != CurrentUserId)
             {
-                if (await AllowAdminOverride() == false)
+                if (AllowAdminOverride() == false)
                 {
                     ErrorMessage = "You don't have access to this order.";
                     return RedirectToAction("Index");
@@ -416,7 +416,7 @@ namespace AnlabMvc.Controllers
 
             if (order.CreatorId != CurrentUserId)
             {
-                if (await AllowAdminOverride() == false)
+                if (AllowAdminOverride() == false)
                 {
                     ErrorMessage = "You don't have access to this order.";
                     return NotFound();
