@@ -756,6 +756,11 @@ namespace AnlabMvc.Controllers
                     Notes = historyNote,
             });
 
+            if (orderToUpdate.PaymentType != PaymentTypeCodes.CreditCard && (model.IsDeleted || orderToUpdate.Status == OrderStatusCodes.Created))
+            {
+                await _orderMessageService.EnqueueBillingOverride(orderToUpdate);
+            }
+            
             await _dbContext.SaveChangesAsync();
             
             if (model.IsDeleted)
