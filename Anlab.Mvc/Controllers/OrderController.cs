@@ -168,7 +168,6 @@ namespace AnlabMvc.Controllers
 
         private async Task<bool> AllowAdminOverride()
         {
-            var user = await _context.Users.SingleAsync(a => a.Id == CurrentUserId);
             if (User.IsInRole(RoleCodes.Admin))
             {
                 return true;
