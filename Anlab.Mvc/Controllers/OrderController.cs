@@ -156,11 +156,7 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
-        /// <summary>
-        /// Scott will hate this name. it started out as a bool. Maybe change so Scott isn't sad.
-        /// </summary>
-        /// <returns></returns>
-        private async Task<User> AllowAdminOverride()
+        private async Task<User> GetAdminUser()
         {
             var user = await _context.Users.SingleAsync(a => a.Id == CurrentUserId);
             if (User.IsInRole(RoleCodes.Admin))
@@ -168,6 +164,16 @@ namespace AnlabMvc.Controllers
                 return user;
             }
             return null;
+        }
+
+        private async Task<bool> AllowAdminOverride()
+        {
+            var user = await _context.Users.SingleAsync(a => a.Id == CurrentUserId);
+            if (User.IsInRole(RoleCodes.Admin))
+            {
+                return true;
+            }
+            return false;
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -179,7 +185,7 @@ namespace AnlabMvc.Controllers
             }
             if (order.CreatorId != CurrentUserId)
             {
-                if (await AllowAdminOverride() == null)
+                if (await AllowAdminOverride() == false)
                 {
                     ErrorMessage = "You don't have access to this order.";
                     return RedirectToAction("Index");
@@ -310,7 +316,7 @@ namespace AnlabMvc.Controllers
                 var orderToUpdate = await _context.Orders.Include(i => i.Creator).SingleAsync(a => a.Id == model.OrderId.Value);
                 if (orderToUpdate.CreatorId != CurrentUserId)
                 {
-                    adminUser = await AllowAdminOverride();
+                    adminUser = await GetAdminUser();
                     if (adminUser == null)
                     {
                         return Json(new { success = false, message = "This is not your order." });
@@ -411,7 +417,7 @@ namespace AnlabMvc.Controllers
 
             if (order.CreatorId != CurrentUserId)
             {
-                if (await AllowAdminOverride() == null)
+                if (await AllowAdminOverride() == false)
                 {
                     ErrorMessage = "You don't have access to this order.";
                     return NotFound();
@@ -441,7 +447,7 @@ namespace AnlabMvc.Controllers
 
             if (order.CreatorId != CurrentUserId)
             {
-                adminUser = await AllowAdminOverride();
+                adminUser = await GetAdminUser();
                 if (adminUser == null)
                 {
                     ErrorMessage = "You don't have access to this order.";
