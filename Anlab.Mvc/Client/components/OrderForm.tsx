@@ -21,6 +21,7 @@ import { SampleTypeSelection } from "./SampleTypeSelection";
 import Summary from "./Summary";
 import { ITestItem, TestList } from "./TestList";
 import { ViewMode } from "./ViewMode";
+import { SamplePlantQuestionsOptions } from "./SamplePlantQuestions";
 
 declare var $: any;
 
@@ -629,6 +630,19 @@ export default class OrderForm extends React.Component<
   };
 
   private _onTestSelectionChanged = (test: ITestItem, selected: boolean) => {
+    if (test.id === "DM") {
+     if (selected && // if user selects DM, change to individual reporting
+          this.state.sampleTypeQuestions.plantReportingBasis !== SamplePlantQuestionsOptions.individual) {
+        this._changeSampleQuestion("plantReportingBasis", SamplePlantQuestionsOptions.individual);
+      } else if (!selected && // if a user deselects DM, deselect reporting
+          this.state.sampleTypeQuestions.plantReportingBasis === SamplePlantQuestionsOptions.individual) {
+        this._changeSampleQuestion("plantReportingBasis", null);
+      }
+    } 
+    this._changeTest(test, selected);
+  };
+
+  private _changeTest = (test: ITestItem, selected: boolean) => {
     const selectedCodes = {
       ...this.state.selectedCodes,
       [test.id]: selected
@@ -641,6 +655,20 @@ export default class OrderForm extends React.Component<
   };
 
   private _onSampleQuestionChanged = (question: string, answer: any) => {
+    if (question === "plantReportingBasis") {
+      const dryMatterTest = this.props.testItems.filter(x => x.id === "DM")[0];
+      if (answer === SamplePlantQuestionsOptions.individual) {
+        // if user selects individual basis, add dry matter test
+        this._changeTest(dryMatterTest, true);
+      } else if (this.state.selectedTests.indexOf(dryMatterTest) !== -1) {
+        // if user selects a different option and dry matter is selected, remove it
+        this._changeTest(dryMatterTest, false);
+      }
+    }
+    this._changeSampleQuestion(question, answer);
+  };
+
+  private _changeSampleQuestion = (question: string, answer: any) => {
     this.setState(
       {
         sampleTypeQuestions: {
