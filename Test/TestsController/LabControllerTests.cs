@@ -1703,8 +1703,9 @@ namespace Test.TestsController
             }
             else
             {
-                redirectResult.ActionName.ShouldBe("Index");
-                redirectResult.ControllerName.ShouldBe("Home");
+                redirectResult.ActionName.ShouldBe("Confirmation");
+                redirectResult.ControllerName.ShouldBe("Order");
+                redirectResult.RouteValues["id"].ShouldBe(2);
             }
 
             OrderData[1].ResultsFileIdentifier.ShouldBe("NotChanged");

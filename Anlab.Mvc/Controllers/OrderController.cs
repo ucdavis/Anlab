@@ -16,6 +16,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using AnlabMvc.Extensions;
 using AnlabMvc.Models.Roles;
+using Microsoft.AspNetCore.Identity;
 using Serilog;
 
 namespace AnlabMvc.Controllers
@@ -155,7 +156,24 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
+        private async Task<User> GetAdminUser()
+        {
+            var user = await _context.Users.SingleAsync(a => a.Id == CurrentUserId);
+            if (User.IsInRole(RoleCodes.Admin))
+            {
+                return user;
+            }
+            return null;
+        }
 
+        private bool AllowAdminOverride()
+        {
+            if (User.IsInRole(RoleCodes.Admin))
+            {
+                return true;
+            }
+            return false;
+        }
 
         public async Task<IActionResult> Edit(int id)
         {
@@ -166,8 +184,13 @@ namespace AnlabMvc.Controllers
             }
             if (order.CreatorId != CurrentUserId)
             {
-                ErrorMessage = "You don't have access to this order.";
-                return RedirectToAction("Index");
+                if (AllowAdminOverride() == false)
+                {
+                    ErrorMessage = "You don't have access to this order.";
+                    return RedirectToAction("Index");
+                }
+
+                Message = "Warning, Admin editing order for user.";
             }
 
             if (order.Status != OrderStatusCodes.Created)
@@ -269,6 +292,7 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Save(OrderSaveModel model)
         {
+            User adminUser = null;
             if (!ModelState.IsValid)
             {
                 var errors = new List<string>();
@@ -291,7 +315,11 @@ namespace AnlabMvc.Controllers
                 var orderToUpdate = await _context.Orders.Include(i => i.Creator).SingleAsync(a => a.Id == model.OrderId.Value);
                 if (orderToUpdate.CreatorId != CurrentUserId)
                 {
-                    return Json(new { success = false, message = "This is not your order." });
+                    adminUser = await GetAdminUser();
+                    if (adminUser == null)
+                    {
+                        return Json(new { success = false, message = "This is not your order." });
+                    }
                 }
                 if (orderToUpdate.Status != OrderStatusCodes.Created)
                 {
@@ -307,9 +335,10 @@ namespace AnlabMvc.Controllers
                 {
                     Action = "Edited",
                     Status = orderToUpdate.Status,
-                    ActorId = orderToUpdate.Creator.NormalizedUserName,
-                    ActorName = orderToUpdate.Creator.Name,
-                    JsonDetails = orderToUpdate.JsonDetails
+                    ActorId = adminUser != null ? adminUser.NormalizedUserName : orderToUpdate.Creator.NormalizedUserName,
+                    ActorName = adminUser != null ? adminUser.Name : orderToUpdate.Creator.Name,
+                    JsonDetails = orderToUpdate.JsonDetails,
+                    Notes = adminUser != null ? "Admin Override" : string.Empty
                 });
 
                 idForRedirection = model.OrderId.Value;
@@ -387,8 +416,12 @@ namespace AnlabMvc.Controllers
 
             if (order.CreatorId != CurrentUserId)
             {
-                ErrorMessage = "You don't have access to this order.";
-                return NotFound();
+                if (AllowAdminOverride() == false)
+                {
+                    ErrorMessage = "You don't have access to this order.";
+                    return NotFound();
+                }
+                Message = "Warning, Admin editing order for user.";
             }
 
             await _orderService.UpdateTestsAndPrices(order);
@@ -403,6 +436,7 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Confirmation(int id, bool confirm)
         {
+            User adminUser = null;
             var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
@@ -412,8 +446,13 @@ namespace AnlabMvc.Controllers
 
             if (order.CreatorId != CurrentUserId)
             {
-                ErrorMessage = "You don't have access to this order.";
-                return NotFound();
+                adminUser = await GetAdminUser();
+                if (adminUser == null)
+                {
+                    ErrorMessage = "You don't have access to this order.";
+                    return NotFound();
+                }
+                Message = "Warning, Admin editing order for user.";
             }
 
             if (order.Status != OrderStatusCodes.Created)
@@ -478,9 +517,10 @@ namespace AnlabMvc.Controllers
             {
                 Action = "Confirmed",
                 Status = order.Status,
-                ActorId = order.Creator.NormalizedUserName,
-                ActorName = order.Creator.Name,
-                JsonDetails = order.JsonDetails
+                ActorId = adminUser != null ? adminUser.NormalizedUserName : order.Creator.NormalizedUserName,
+                ActorName = adminUser != null ? adminUser.Name : order.Creator.Name,
+                JsonDetails = order.JsonDetails,
+                Notes = adminUser != null ? "Admin Override" : string.Empty
             });
 
             await _orderMessageService.EnqueueCreatedMessage(order);
