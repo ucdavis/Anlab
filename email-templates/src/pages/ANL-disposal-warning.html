@@ -1,0 +1,50 @@
+<style type="text/css">
+    body,
+    html,
+    .body {
+        background: #f3f3f3 !important;
+    }
+</style>
+
+<container>
+
+    <spacer size="16"></spacer>
+
+    <row>
+        <columns>
+            <h1>Work Request @Model.RequestNum</h1>
+            <h3>Client Id: @Model.ClientId</h3>
+            <h3>Report Date: @Model.DateFinalized.Value.ToPacificTime().ToString("g")</h3>
+            <spacer size="16"></spacer>
+            <p>Due to storage space limitations, the Analytical Laboratory can only hold tested samples for a limited time after testing. The 30 day courtesy holding period for the samples associated with the above work request has expired. <strong style="color: red">These samples will be discarded in two weeks from this date.</strong> Please reply to this email with one of the following options:</p>
+            <ul>
+                <li>I no longer want the samples. Please discard them.</li>
+                <li>I will arrange to pick up my samples at the Lab's Receiving Area in the Hoagland Annex (phone: (530) 752-0147; email: anlab@ucdavis.edu )</li>
+                <li>Please hold my samples until _________________________ (charges may apply)</li>
+                <li>Other ___________________________________________________________________</li>
+            </ul>
+            <p>Because this is the <strong style="color: red">only notification</strong> we will send you, <strong style="color: red">please take appropriate action quickly</strong>.  Without a response, the samples will be discarded.</p>
+            <spacer size="16"></spacer>
+            <h3><a asp-protocol="@protocol" asp-host="@host" asp-controller="Results" asp-action="Link" asp-route-id="@Model.ShareIdentifier">Click here to view details or order</a></h3>
+        </columns>
+    </row>
+    <spacer size="16"></spacer>
+
+
+      <row class="footer text-center">
+          <columns large="2">
+              <img src='@image' alt="">
+          </columns>
+          <columns large="2">
+              <p>
+                  Email us at <a href="mailto:anlab@ucdavis.edu">anlab@ucdavis.edu</a> 
+              </p>
+              <p>
+                  UC Davis Analytical Lab <br />
+                  <a href="tel:5307520147">530 752-0147</a> <br />
+                  University of California Davis, California <br />
+                  95616-5270
+              </p>
+          </columns>
+  </row>
+</container>
