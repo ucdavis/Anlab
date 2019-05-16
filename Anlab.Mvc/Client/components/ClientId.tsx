@@ -135,14 +135,19 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
     }
 
     //validate client id, not modal. this is because we are validating the string itself, not the props
-    private _lookupAndValidateClientId = (value) => {
+    private _lookupAndValidateClientId = (value: string) => {
         if (!value || !value.trim()) {
             this.setState({ error: "Either a Client ID or New Client Info is required", fetchedName: "", fetchedCopyEmail: "", fetchedEmail: "", fetchedPhoneNumber: "" });
             this.props.updateClientInfoValid("clientInfoValid", false);
             return;
         }
-        if (value.length < 4) {
-            this.setState({ error: "Client IDs must be at least 4 characters long", fetchedName: "", fetchedCopyEmail: "", fetchedEmail: "", fetchedPhoneNumber: "" });
+        if (value.length < 4 || value.length > 8) {
+            this.setState({ error: "Client IDs must be between 4 and 8 characters.", fetchedName: "", fetchedCopyEmail: "", fetchedEmail: "", fetchedPhoneNumber: "" });
+            this.props.updateClientInfoValid("clientInfoValid", false);
+            return;
+        }
+        if (value.indexOf("@") !== -1) {
+            this.setState({ error: "Client IDs are not emails. Please enter a valid ID.", fetchedName: "", fetchedCopyEmail: "", fetchedEmail: "", fetchedPhoneNumber: "" });
             this.props.updateClientInfoValid("clientInfoValid", false);
             return;
         }

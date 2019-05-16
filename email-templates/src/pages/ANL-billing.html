@@ -18,6 +18,7 @@
           <h4>@h4Text</h4>
           }
           <p>A new @billingText has been placed that requires your attention.</p>
+          <p>You may review the details <a asp-protocol="@protocol" asp-host="@host" asp-controller="Reviewer" asp-action="Details" asp-route-id="@Model.Id"> HERE</a></p>
           <spacer size="16"></spacer>
           <h4>Requester Details</h4>
           <callout class="primary">
