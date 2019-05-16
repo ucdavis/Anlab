@@ -449,6 +449,7 @@ namespace AnlabMvc.Controllers
             return RedirectToAction("MailQueue", "Admin", new {id = order.Id});
         }
 
+        [HttpPost]
         public async Task<IActionResult> GenerateDisposalEmail(int id)
         {
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
