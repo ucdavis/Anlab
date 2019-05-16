@@ -75,6 +75,12 @@
         <input type="hidden" name="adminCopy" value="true" />
         <button type="submit" class="btn btn-primary showTooltip" aria-hidden="true" data-placement="right" title="This will duplicate the order in the confirmed status so it can be received right away. The creator will stay the same. Prices will be based off the order (old Prices)."><i class="fa fa-files-o" aria-hidden="true"></i> Admin Duplicate</button>
     </form>
+    @if (Model.OrderReviewModel.Order.Status == OrderStatusCodes.Finalized || Model.OrderReviewModel.Order.Status == OrderStatusCodes.Complete)
+    {
+        <form id="admin-email-disposal" asp-controller="Lab" asp-action="GenerateDisposalEmail" method="post" asp-route-id="@Model.OrderReviewModel.Order.Id" style="margin-top: 3px;">
+            <button type="submit" class="btn btn-default">Disposal Email</button>
+        </form>
+    }
     @if (Model.OrderReviewModel.Order.Status != OrderStatusCodes.Created && Model.OrderReviewModel.Order.Status != OrderStatusCodes.Confirmed)
     {
         <form id="admin-email" asp-controller="Lab" asp-action="GeneratePartialResultsEmail" method="post" asp-route-id="@Model.OrderReviewModel.Order.Id" style="margin-top: 3px;">
