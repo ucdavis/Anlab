@@ -81,6 +81,8 @@ namespace Anlab.Core.Data
 
         public virtual DbSet<ReviewerOrderView> ReviewerOrderViews { get; set; }
 
+        public virtual DbSet<DisposalView> DisposalViews { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Order>()
