@@ -850,16 +850,9 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Orders");
             }
 
-            await _orderMessageService.EnqeueDisposalMessage(order);
             var user = _dbContext.Users.Single(a => a.Id == CurrentUserId);
-            order.History.Add(new History
-            {
-                Action = "Disposal Waring Email",
-                Status = order.Status,
-                ActorId = user.NormalizedUserName,
-                ActorName = user.Name,
-                JsonDetails = order.JsonDetails,
-            });
+
+            await DisposalEmailAndHistory(order, user);
 
             await _dbContext.SaveChangesAsync();
 
@@ -884,20 +877,25 @@ namespace AnlabMvc.Controllers
                 .ToListAsync();
             foreach (var order in orders)
             {
-                await _orderMessageService.EnqeueDisposalMessage(order);
-                order.History.Add(new History
-                {
-                    Action = "Disposal Waring Email",
-                    Status = order.Status,
-                    ActorId = user.NormalizedUserName,
-                    ActorName = user.Name,
-                    JsonDetails = order.JsonDetails,
-                });
+                await DisposalEmailAndHistory(order, user);
             }
             await _dbContext.SaveChangesAsync();
 
             ErrorMessage = $"Generated {orders.Count} emails for {ids}";
             return RedirectToAction("DisposalList");
+        }
+
+        private async Task DisposalEmailAndHistory(Order order, User user)
+        {
+            await _orderMessageService.EnqeueDisposalMessage(order);
+            order.History.Add(new History
+            {
+                Action = "Disposal Waring Email",
+                Status = order.Status,
+                ActorId = user.NormalizedUserName,
+                ActorName = user.Name,
+                JsonDetails = order.JsonDetails,
+            });
         }
 
         [Authorize(Roles = RoleCodes.Admin)]
