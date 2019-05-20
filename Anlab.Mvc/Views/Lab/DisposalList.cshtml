@@ -5,7 +5,41 @@
 }
 
 
+
+
 <div class="col">
+
+    <div class="col">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title"><a href="#help" data-toggle="collapse" data-parent="#accordion">Instructions</a></h4>
+            </div>
+            <div class="panel-collapse collapse" id="help">
+                <div class="panel-body">
+                    <p>You can click on instructions again to hide this.</p>
+                    <h3>Select Orders to send Emails</h3>
+                    <p>Click To select one</p>
+                    <p>Ctrl + Click to select multiple</p>
+                    <p>Shift + Click to select range</p>
+                    <p>Selected rows are a darker blue</p>
+                    <h3>Look at order's emails</h3>
+                    <p>If you click on the order id, it will open a new tab with emails for that order</p>
+                    <h3>The # column</h3>
+                    <p>This lists the number of emails found for this order that start with the subject "Work Request Disposal Warning". Hopefully this will only be zero or one. Otherwise you have sent the disposal warning more than once.</p>
+                    <h3>Sorting and filtering</h3>
+                    <p>You can sort the columns by clicking on the heading. You can sort by multiple columns by shift + click the headings. The heading arrow shows the direction of sort. Sorting does not effected selected columns.</p>
+                    <h3>What you have selected</h3>
+                    <p>Selected columns are a darker blue. A count of selected items shows up in the bottom of the table. Once you click on generate emails, a confirmation dialog will appears listing the order Ids it will generate the emails for. You can cancel at this time.</p>
+                    <h3>Alternatives</h3>
+                    <p>Only orders completed in the last 31 or so days are listed. If you need to send an email to an order not listed here, you can do it from the Admin Override.</p>
+                    <p>Only Finalized and Completed orders are listed.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
     <form id="bulk-disposal-email" asp-action="GenerateDisposalEmails" method="post">
         @Html.Hidden("ids")
 
