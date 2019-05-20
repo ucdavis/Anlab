@@ -1,0 +1,132 @@
+@model System.Collections.Generic.List<Anlab.Core.Domain.DisposalView>
+
+@{
+    ViewBag.Title = "Disposal List";
+}
+
+<div class="col">
+
+    <div class="col">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title"><a href="#help" data-toggle="collapse" data-parent="#accordion">Instructions</a></h4>
+            </div>
+            <div class="panel-collapse collapse" id="help">
+                <div class="panel-body">
+                    <p>You can click on instructions again to hide this.</p>
+                    <h3>Select Orders to send Emails</h3>
+                    <p>Click To select one</p>
+                    <p>Ctrl + Click to select multiple</p>
+                    <p>Shift + Click to select range</p>
+                    <p>Selected rows are a darker blue</p>
+                    <h3>Look at order's emails</h3>
+                    <p>If you click on the order id, it will open a new tab with emails for that order</p>
+                    <h3>The # column</h3>
+                    <p>This lists the number of emails found for this order that start with the subject "Work Request Disposal Warning". Hopefully this will only be zero or one. Otherwise you have sent the disposal warning more than once.</p>
+                    <h3>Sorting and filtering</h3>
+                    <p>You can sort the columns by clicking on the heading. You can sort by multiple columns by shift + click the headings. The heading arrow shows the direction of sort. Sorting does not effected selected columns.</p>
+                    <h3>What you have selected</h3>
+                    <p>Selected columns are a darker blue. A count of selected items shows up in the bottom of the table. Once you click on generate emails, a confirmation dialog will appears listing the order Ids it will generate the emails for. You can cancel at this time.</p>
+                    <h3>Alternatives</h3>
+                    <p>Only orders completed in the last 31 or so days are listed. If you need to send an email to an order not listed here, you can do it from the Admin Override.</p>
+                    <p>Only Finalized and Completed orders are listed.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <form id="bulk-disposal-email" asp-action="GenerateDisposalEmails" method="post">
+        @Html.Hidden("ids")
+
+        <div class="form-group">
+            <input type="submit" value="Generate Emails" class="btn btn-primary" />
+        </div>
+    </form>
+    <table id="table" class="table table-hover">
+        <thead>
+            <tr>
+                <th>Work Req #</th>
+                <th>Id</th>
+                <th>ClientId</th>
+                <th>Email</th>
+                <th>Additional Emails</th>
+                <th>Lab SD</th>
+                <th>Client SD</th>
+                <th>Date Finalized</th>
+                <th>Status</th>
+                <th>#</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var disOrder in Model)
+            {
+                <tr  id="@disOrder.Id">
+                    <td>@disOrder.RequestNum</td>
+                    <td><a asp-controller="Admin" asp-action="MailQueue" asp-route-id="@disOrder.Id" target="_blank">@disOrder.Id</a></td>
+                    <td>@disOrder.ClientId</td>
+                    <td>@disOrder.Email</td>
+                    <td>@disOrder.AdditionalEmails.Replace(";","; ")</td>
+                    <td>@disOrder.LabworksSampleDisposition</td>
+                    <td>@disOrder.SampleDisposition</td>
+                    <td>@disOrder.DateFinalized.Value.ToPacificTime().ToString("g")</td>
+                    <td>@disOrder.Status</td>
+                    <td>@disOrder.EmailCount</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section AdditionalStyles
+{
+    @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.3.0/css/select.dataTables.min.css">
+
+    <style>
+        #table tbody tr {
+            cursor: pointer;
+        }
+    </style>
+}
+
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+    <script type="text/javascript" src="https://cdn.datatables.net/select/1.3.0/js/dataTables.select.min.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            var table = $("#table").DataTable({
+                select: {
+                    style: 'os'
+                },
+                "sorting": [1, "desc"],
+                "columnDefs": [
+                    {
+                        "type": "date", "targets" : [7]
+                    }
+                ],
+                "iDisplayLength": 100,
+                "stateSave": true,                
+                "stateDuration": 60 * 60,
+            });
+
+            $("#bulk-disposal-email").submit(function () {
+                var ids = $.map(table.rows('.selected').ids(),
+                    function (item) {
+                        return item;
+                    });
+                $("#ids").val(ids);
+
+                if (!confirm("You are about to email these orders: " + ids)) {
+                    event.preventDefault();
+                }
+            });
+
+        });
+
+    </script>
+}
+
