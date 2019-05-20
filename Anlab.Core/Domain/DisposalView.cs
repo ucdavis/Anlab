@@ -15,6 +15,7 @@ namespace Anlab.Core.Domain
         public string RequestNum { get; set; }
         public string LabworksSampleDisposition { get; set; }
         public string SampleDisposition { get; set; }
+        public int EmailCount { get; set; }
 
     }
 }

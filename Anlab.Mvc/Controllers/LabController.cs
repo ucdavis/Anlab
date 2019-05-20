@@ -449,40 +449,7 @@ namespace AnlabMvc.Controllers
             return RedirectToAction("MailQueue", "Admin", new {id = order.Id});
         }
 
-        [HttpPost]
-        public async Task<IActionResult> GenerateDisposalEmail(int id)
-        {
-            var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
-
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            if (order.Status != OrderStatusCodes.Finalized && order.Status != OrderStatusCodes.Complete)
-            {
-                ErrorMessage = "Don't generate an email in this status.";
-                return RedirectToAction("Orders");
-            }
-
-            await _orderMessageService.EnqeueDisposalMessage(order);
-                        var user = _dbContext.Users.Single(a => a.Id == CurrentUserId);
-            order.History.Add(new History
-            {
-                Action = "Disposal Waring Email",
-                Status = order.Status,
-                ActorId = user.NormalizedUserName,
-                ActorName = user.Name,
-                JsonDetails = order.JsonDetails,
-            });
-
-            await _dbContext.SaveChangesAsync();
-
-            Message = "Email Generated";
-
-            return RedirectToAction("MailQueue", "Admin", new {id = order.Id});
-        }
-
+        
         public async Task<IActionResult> Finalize(int id)
         {
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
@@ -865,6 +832,72 @@ namespace AnlabMvc.Controllers
             var disOrders = await _dbContext.DisposalView.Where(a => a.DateFinalized.Value.Date >= DateTime.UtcNow.Date.AddDays(-31)).ToListAsync();
             Message = "Showing Disposal Orders Finalized within ~31 days";
             return View(disOrders);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GenerateDisposalEmail(int id)
+        {
+            var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if (order.Status != OrderStatusCodes.Finalized && order.Status != OrderStatusCodes.Complete)
+            {
+                ErrorMessage = "Don't generate an email in this status.";
+                return RedirectToAction("Orders");
+            }
+
+            await _orderMessageService.EnqeueDisposalMessage(order);
+            var user = _dbContext.Users.Single(a => a.Id == CurrentUserId);
+            order.History.Add(new History
+            {
+                Action = "Disposal Waring Email",
+                Status = order.Status,
+                ActorId = user.NormalizedUserName,
+                ActorName = user.Name,
+                JsonDetails = order.JsonDetails,
+            });
+
+            await _dbContext.SaveChangesAsync();
+
+            Message = "Email Generated";
+
+            return RedirectToAction("MailQueue", "Admin", new {id = order.Id});
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GenerateDisposalEmails(string ids)
+        {
+            if (string.IsNullOrWhiteSpace(ids))
+            {
+                ErrorMessage = "No Orders Selected";
+                return RedirectToAction("DisposalList");
+            }
+            var user = _dbContext.Users.Single(a => a.Id == CurrentUserId);
+
+            var idList = ids.Split(",").Select(a => int.Parse(a)).ToArray();
+
+            var orders = await _dbContext.Orders.Include(a => a.Creator).Where(w => idList.Contains(w.Id))
+                .ToListAsync();
+            foreach (var order in orders)
+            {
+                await _orderMessageService.EnqeueDisposalMessage(order);
+                order.History.Add(new History
+                {
+                    Action = "Disposal Waring Email",
+                    Status = order.Status,
+                    ActorId = user.NormalizedUserName,
+                    ActorName = user.Name,
+                    JsonDetails = order.JsonDetails,
+                });
+            }
+            await _dbContext.SaveChangesAsync();
+
+            ErrorMessage = $"Generated {orders.Count} emails for {ids}";
+            return RedirectToAction("DisposalList");
         }
 
         [Authorize(Roles = RoleCodes.Admin)]
