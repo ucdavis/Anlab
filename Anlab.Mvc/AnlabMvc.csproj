@@ -44,7 +44,7 @@
     <PackageReference Include="Serilog.Sinks.Stackify" Version="2.0.2" />
     <PackageReference Include="StackifyLib.AspNetCore" Version="2.0.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="8.4.0" />
-    <PackageReference Include="YamlDotNet" Version="4.2.1" />
+    <PackageReference Include="YamlDotNet" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
