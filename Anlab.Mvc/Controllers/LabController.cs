@@ -829,7 +829,7 @@ namespace AnlabMvc.Controllers
 
         public async Task<IActionResult> DisposalList()
         {
-            var disOrders = await _dbContext.DisposalView.Where(a => a.DateFinalized.Value.Date >= DateTime.UtcNow.Date.AddDays(-31)).ToListAsync();
+            var disOrders = await _dbContext.DisposalView.Where(a => a.DateFinalized.Value.Date >= DateTime.UtcNow.Date.AddDays(-31)).AsNoTracking().ToListAsync();
             Message = "Showing Disposal Orders Finalized within ~31 days";
             return View(disOrders);
         }
