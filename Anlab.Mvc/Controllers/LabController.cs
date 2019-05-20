@@ -860,6 +860,13 @@ namespace AnlabMvc.Controllers
 
         }
 
+        public async Task<IActionResult> DisposalList()
+        {
+            var disOrders = await _dbContext.DisposalView.Where(a => a.DateFinalized.Value.Date >= DateTime.UtcNow.Date.AddDays(-31)).ToListAsync();
+            Message = "Showing Disposal Orders Finalized within ~31 days";
+            return View(disOrders);
+        }
+
         [Authorize(Roles = RoleCodes.Admin)]
         public async Task<ActionResult> JsonDetails(int id)
         {

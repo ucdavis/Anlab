@@ -1,0 +1,41 @@
+@model System.Collections.Generic.List<Anlab.Core.Domain.DisposalView>
+
+@{
+    ViewBag.Title = "Disposal List";
+}
+
+
+<div class="col">
+    <table id="table" class="table">
+        <thead>
+            <tr>
+                <th>Work Req #</th>
+                <th>Id</th>
+                <th>ClientId</th>
+                <th>Email</th>
+                <th>Additional Emails</th>
+                <th>Lab SD</th>
+                <th>Client SD</th>
+                <th>Date Finalized</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var disOrder in Model)
+            {
+            <tr>
+                <td>@disOrder.RequestNum</td>
+                <td>@disOrder.Id</td>
+                <td>@disOrder.ClientId</td>
+                <td>@disOrder.Email</td>
+                <td>@disOrder.AdditionalEmails</td>
+                <td>@disOrder.LabworksSampleDisposition</td>
+                <td>@disOrder.SampleDisposition</td>
+                <td>@disOrder.DateFinalized.Value.ToPacificTime().ToString("g")</td>
+                <td>@disOrder.Status</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
