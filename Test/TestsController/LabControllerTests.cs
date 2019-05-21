@@ -2040,7 +2040,7 @@ namespace Test.TestsController
         [Fact]
         public void TestControllerMethodCount()
         {
-            ControllerReflection.ControllerPublicMethods(16);
+            ControllerReflection.ControllerPublicMethods(19);
         }
 
         [Fact]
@@ -2104,6 +2104,17 @@ namespace Test.TestsController
             //#16
             ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("ClearRequestNumber", 2 + countAdjustment, "ClearRequestNumber", false, showListOfAttributes: true);
             ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("ClearRequestNumber", 2 + countAdjustment, "ClearRequestNumber", false, showListOfAttributes: true);
+
+            //#17
+            ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("GenerateDisposalEmail", 2 + countAdjustment, "GenerateDisposalEmail-1", false, showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("GenerateDisposalEmail", 2 + countAdjustment, "GenerateDisposalEmail-2", false, showListOfAttributes: false);
+
+            //#18
+            ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("GenerateDisposalEmails", 2 + countAdjustment, "GenerateDisposalEmails-1", false, showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("GenerateDisposalEmails", 2 + countAdjustment, "GenerateDisposalEmails-2", false, showListOfAttributes: false);
+
+            //#17
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("DisposalList", 1 + countAdjustment, "DisposalList", false, showListOfAttributes: true);
         }
 
 

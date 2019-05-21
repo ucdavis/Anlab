@@ -17,6 +17,8 @@ namespace AnlabMvc.Services
         Task EnqueuePartialResultsMessage(Order order);
         Task EnqueueBillingOverride(Order order);
 
+        Task EnqeueDisposalMessage(Order order);
+
     }
 
     public class OrderMessageService : IOrderMessageService
@@ -190,6 +192,22 @@ namespace AnlabMvc.Services
                 Subject = "Anlab Order -- Admin Override",
                 Body = body,
                 SendTo = _appSettings.AccountsEmail,
+                Order = order,
+                User = order.Creator,
+            };
+
+            _mailService.EnqueueMessage(message);
+        }
+
+        public async Task EnqeueDisposalMessage(Order order)
+        {
+            var body = await _viewRenderService.RenderViewToStringAsync("Templates/_DisposalWarning", order);
+
+            var message = new MailMessage
+            {
+                Subject = $"Work Request Disposal Warning - {order.RequestNum}",
+                Body = body,
+                SendTo = GetSendTo(order),
                 Order = order,
                 User = order.Creator,
             };

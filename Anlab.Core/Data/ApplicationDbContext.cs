@@ -81,6 +81,8 @@ namespace Anlab.Core.Data
 
         public virtual DbSet<ReviewerOrderView> ReviewerOrderViews { get; set; }
 
+        public virtual DbSet<DisposalView> DisposalView { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Order>()
@@ -90,7 +92,8 @@ namespace Anlab.Core.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<ReviewerOrderView>()
-                .ToTable("ReviewerOrders");                
+                .ToTable("ReviewerOrders");
+
 
             base.OnModelCreating(builder);
             // Customize the ASP.NET Identity model and override the defaults if needed.
