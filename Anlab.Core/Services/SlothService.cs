@@ -196,7 +196,7 @@ namespace Anlab.Core.Services
         {
             Log.Information("Staring Credit Card process");
             var orders = _dbContext.Orders.Include(i => i.ApprovedPayment).Where(a =>
-                a.PaymentType == PaymentTypeCodes.CreditCard && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
+                a.PaymentType == PaymentTypeCodes.CreditCard && a.Paid && a.Status != OrderStatusCodes.Complete && a.ApprovedPayment != null).ToList();
             if (orders.Count == 0)
             {
                 Log.Information("No Credit Card orders to process.");
