@@ -108,12 +108,6 @@
     <Content Update="wwwroot\Images\anlab170.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\media\pdf\Client-Wrapped-for-C--N-in-Soil-ver-01.pdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\media\pdf\Client-Wrapped-for-C-N-in-Plant-ver-01.pdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Update="wwwroot\media\pdf\ClientInstructionsCreateWorkOrder9-19-18.pdf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
