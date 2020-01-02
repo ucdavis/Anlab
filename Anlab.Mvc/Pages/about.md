@@ -30,10 +30,5 @@ The laboratory performs analyses on selected chemical constituents of soil, plan
 <li>Main Laboratory Area - Room 213, Hoagland Hall</li>
 <li>Sample Receiving Area - Hoagland Annex, 530-752-0266</li>
 </ul>
-<h2>Laboratory Staffing</h2>
-<ul>
-    <li>Administrative Offices - Room 224, Hoagland Hall, 530-752-0147, <a class="external-link" href="mailto:anlab@ucdavis.edu">anlab@ucdavis.edu</a></li>
-    <li>Main Laboratory Area - Room 213, Hoagland Hall</li>
-    <li>Sample Receiving Area - Hoagland Annex, 530-752-0266</li>
-</ul>
+
 </div>
