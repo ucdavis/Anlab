@@ -33,7 +33,7 @@ title: "Using the Lab"
   <p>Samples can be delivered by hand or sent to:</p>
   <blockquote>
       <p class="callout">UC DAVIS ANALYTICAL LABORATORY<br />Hoagland Annex<br />University of California<br />One Shields Ave<br />Davis, CA 95616-5270</p>
-      <p style="color: blue">We can accept samples sent to us by all carriers: eg, UPS, FedEx, US Postal Service (USPS).  However, for timely delivery, UPS and FedEx are best. &nbsp; USPS is <u><i>not</i></u> recommended for frozen samples or samples requiring refrigeration.</p>
+      <p><strong>We can accept samples sent to us by all carriers: eg, UPS, FedEx, US Postal Service (USPS).  However, for timely delivery, UPS and FedEx are best. &nbsp; USPS is <u><i>not</i></u> recommended for frozen samples or samples requiring refrigeration.</strong></p>
       <p><a href="http://campusmap.ucdavis.edu/?b=81" target="_blank">Campus Map</a>.</p>
       <p>Our Receiving Facility staff can answer questions on sample preparation and shipping. 530-752-0266</p>
   </blockquote>
