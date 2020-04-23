@@ -25,11 +25,11 @@ steps:
 - task: UseNode@1
   inputs:
     version: '7.x'
-
-- task: Npm@1
+    
+- task: CmdLine@2
   inputs:
-    command: 'install'
-    workingDir: 'Anlab.MVC'
+    script: 'yarn install'
+    workingDirectory: 'Anlab.MVC'
 
 - task: NuGetToolInstaller@1
 
