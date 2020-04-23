@@ -24,9 +24,10 @@ steps:
 
 - task: UseNode@1
   inputs:
-    version: '7.x'
+    version: '8.x'
     
 - task: CmdLine@2
+  displayName: 'yarn install'
   inputs:
     script: 'yarn install'
     workingDirectory: 'Anlab.MVC'
@@ -50,7 +51,14 @@ steps:
     configuration: '$(buildConfiguration)'
 
 - task: Npm@1
+  displayName: 'npm test'
   inputs:
     command: 'custom'
     workingDir: 'Anlab.MVC'
     customCommand: 'test'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
