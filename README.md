@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/m3rrhp8w58kp0pxr?svg=true)](https://ci.appveyor.com/project/UCNETAdmin/anlab)
+[![Build Status](https://dev.azure.com/ucdavis/Anlab/_apis/build/status/ucdavis.Anlab?branchName=master)](https://dev.azure.com/ucdavis/Anlab/_build/latest?definitionId=19&branchName=master)
 
 [![forthebadge](http://forthebadge.com/images/badges/uses-html.svg)](http://forthebadge.com)
 # Anlab
