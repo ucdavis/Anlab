@@ -8,12 +8,7 @@ title: "About Us"
   <img class="img-respo" src="/media/about_anlab.jpg" alt="UC Davis employee in lab">
 </div>
 <p class="lead">
-The laboratory performs analyses on selected chemical constituents of soil, plant, water and waste water, and feed in support of agricultural and environmental research. Analytical Laboratory clients are University of California academics, other educational institutions, government agencies, and research-based businesses.
-
-</p>
-
-<p>The laboratory performs analyses on selected chemical constituents of soil, plant, water and waste water, and feed in support of agricultural and environmental research. Analytical Laboratory clients are University
-    of California academics, other educational institutions, government agencies, and research-based businesses.</p>
+The laboratory performs analyses on selected chemical constituents of soil, plant, water and waste water, and feed in support of agricultural and environmental research. Analytical Laboratory clients are University of California academics, other educational institutions, government agencies, and research-based businesses.</p>
 <p>In addition to analytical services, the Laboratory provides project assistance in the areas of analytical, agricultural and environmental chemistry. The Laboratory has an educational role, providing training to students and researchers in the operation
     of a number of analytical methods and instruments.</p>
 <h2>Lab History</h2>
