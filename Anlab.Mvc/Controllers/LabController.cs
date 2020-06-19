@@ -548,7 +548,7 @@ namespace AnlabMvc.Controllers
                     order.Paid = true;
                     extraMessage = " and UC Davis account marked as paid";
                 }
-                else
+                else 
                 {
                     ErrorMessage = $"There was a problem processing the payment for this account. {slothResult.Message}";
                     return RedirectToAction("Finalize");
