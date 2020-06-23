@@ -10,7 +10,7 @@ title: "Contact"
   <p>UC Davis Analytical Lab<br />Hoagland Annex<br />University of California<br />One Shields Avenue<br />Davis CA 95616-5270</p>
   <p><strong>We can accept samples sent to us by all carriers: eg, UPS, FedEx, US Postal Service (USPS).  However, for timely delivery, UPS and FedEx are best. &nbsp; USPS is <u><i>not</i></u> recommended for frozen samples or samples requiring refrigeration.</strong></p>
   <p>To <strong>Pick Up</strong> or <strong>Hand-Deliver</strong> Samples: Hoagland Annex</p>
-  <p><a href="http://campusmap.ucdavis.edu/?b=81" target="_blank">Campus Map </a><span class="external-link">— Haogland Annex
+  <p><a href="http://campusmap.ucdavis.edu/?b=81" target="_blank">Campus Map </a><span class="external-link">— Hoagland Annex
   </p>
 </address>
 <h3>Administrative Information:</h3>
