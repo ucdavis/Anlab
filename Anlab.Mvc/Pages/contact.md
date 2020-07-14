@@ -46,7 +46,7 @@ title: "Contact"
 <p><a href="mailto:tmfrancis@ucdavis.edu"><b>Traci Francis</b></a> <br><a href="mailto:tmfrancis@ucdavis.edu">tmfrancis@ucdavis.edu</a> <br>Interim Director<br>  530-752-2014<br> Room 208 Hoagland Hall</p>
 <p><a href="mailto:anlab@ucdavis.edu"><b>Main Office</b></a><br><a href="mailto:anlab@ucdavis.edu">anlab@ucdavis.edu</a><br> 530-752-0147<br> Room 224 Hoagland Hall</p>
 <p><b>Receiving Hours:</b> </br>8am - 5pm M - F, except University holidays </br>
-Sample Receiving Area: Hoagland Annex, 530-752-0266
+Sample Receiving Area: Hoagland Annex,</br>&nbsp; &nbsp; Ph: 530-752-0266
 </p>
 <p><a href="http://campusmap.ucdavis.edu/?b=82" target="_blank">Campus Map</a><span class="external-link"> — Hoagland Hall
   <a href="http://campusmap.ucdavis.edu/?b=82" target="_blank"><br /></a>
