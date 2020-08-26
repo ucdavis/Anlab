@@ -38,7 +38,8 @@ namespace Anlab.Core.Services
         {
             Log.Information($"Email Host: {_emailSettings.Host}");
 
-            var message = new System.Net.Mail.MailMessage {From = new MailAddress("anlab@ucdavis.edu", "Anlab")};
+            var message = new System.Net.Mail.MailMessage { From = new MailAddress(" anlab-notify@ucdavis.edu") };
+            message.ReplyToList.Add(new MailAddress("anlab@ucdavis.edu", "Anlab"));
 
             var sendToEmails = mailMessage.SendTo.Split(';');
             foreach (var sendToEmail in sendToEmails)
