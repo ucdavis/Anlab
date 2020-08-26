@@ -24,10 +24,11 @@ namespace AnlabMvc.Services
 
         public async Task<string> GetAccountName(string account)
         {
-            //https://kfs.ucdavis.edu/kfs-prd/api-docs/ //Documentation
+            //https://kfs.ucdavis.edu/kfs-prd/api-docs/ //Documentation Maybe this is changing to https://kfs.ucdavis.edu/fin/api-docs/ ???
             var accountModel = new AccountModel(account);
             string url;
             string validationUrl;
+            //https://financials.api.adminit.ucdavis.edu/fau/subaccount/{chart}/{account}/{subaccount}/isvalid
             if (!string.IsNullOrWhiteSpace(accountModel.SubAccount))
             {
                 validationUrl =
