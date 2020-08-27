@@ -248,3 +248,6 @@ Anlab.Mvc/anlab.db
 
 # Visual Studio SQL Projects
 *.jfm
+
+/Anlab.Mvc/Properties/serviceDependencies.json
+/Anlab.Mvc/Properties/serviceDependencies.local.json
