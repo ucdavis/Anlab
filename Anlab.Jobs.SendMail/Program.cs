@@ -16,6 +16,7 @@ namespace Anlab.Jobs.SendMail
 {
     public class Program
     {
+        private const int MaxEmails = 30;
         public static IConfigurationRoot Configuration { get; set; }
         public static IServiceProvider Provider { get; set; }
         public static IMailService MailService { get; set; }
@@ -56,7 +57,12 @@ namespace Anlab.Jobs.SendMail
 
 
             // Get all messages that have not been sent, including failed ones for now
-            var messagesToSend = dbContext.MailMessages.Where(x => x.Sent == null || x.Sent == false).ToList();
+            var skippingCount = dbContext.MailMessages.Count(a => (a.Sent == null || a.Sent == false) && a.FailureCount > 2);
+            if (skippingCount > 0)
+            {
+                Log.Information($"Emails skipped because of failure count: {skippingCount}");
+            }
+            var messagesToSend = dbContext.MailMessages.Where(x => (x.Sent == null || x.Sent == false) && x.FailureCount <= 2).Take(MaxEmails).ToList();
             Log.Information($"Emails to Send: {messagesToSend.Count}");
             var counter = 0;
 
