@@ -56,7 +56,7 @@ namespace Anlab.Jobs.SendMail
 
             var dbContext = Provider.GetService<ApplicationDbContext>();
 
-            if (MailService.DisableSend())
+            if (MailService.IsSendDisabled())
             {
                 Log.Information("Email Send Disabled");
                 return;

@@ -17,7 +17,7 @@ namespace Anlab.Core.Services
 
         void SendFailureNotification(int OrderId, string failureReason);
 
-        bool DisableSend();
+        bool IsSendDisabled();
     }
 
     public class MailService : IMailService
@@ -110,7 +110,7 @@ namespace Anlab.Core.Services
             }
         }
 
-        public bool DisableSend()
+        public bool IsSendDisabled()
         {
             return _emailSettings.DisableSend == "Yes";
         }
