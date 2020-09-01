@@ -16,6 +16,8 @@ namespace Anlab.Core.Services
         void SendMessage(MailMessage mailMessage);
 
         void SendFailureNotification(int OrderId, string failureReason);
+
+        bool IsSendDisabled();
     }
 
     public class MailService : IMailService
@@ -38,7 +40,8 @@ namespace Anlab.Core.Services
         {
             Log.Information($"Email Host: {_emailSettings.Host}");
 
-            var message = new System.Net.Mail.MailMessage {From = new MailAddress("anlab@ucdavis.edu", "Anlab")};
+            var message = new System.Net.Mail.MailMessage { From = new MailAddress("anlab-notify@ucdavis.edu", "Anlab") }; //Display name looks like it is being ignored. At least for me.
+            message.ReplyToList.Add(new MailAddress("anlab@ucdavis.edu", "Anlab"));
 
             var sendToEmails = mailMessage.SendTo.Split(';');
             foreach (var sendToEmail in sendToEmails)
@@ -105,6 +108,11 @@ namespace Anlab.Core.Services
             {
                 Log.Error($"Error sending email for Failure reason. OrderId {orderId} Exception {ex.Message}" );
             }
+        }
+
+        public bool IsSendDisabled()
+        {
+            return _emailSettings.DisableSend == "Yes";
         }
     }
 }

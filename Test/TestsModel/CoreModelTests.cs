@@ -76,6 +76,7 @@ namespace Test.TestsModel
             #region Arrange
             var expectedFields = new List<NameAndType>();
             expectedFields.Add(new NameAndType("AnlabAddress", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("DisableSend", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Host", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Password", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Port", "System.Int32", new List<string>()));

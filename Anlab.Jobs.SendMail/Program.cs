@@ -16,10 +16,11 @@ namespace Anlab.Jobs.SendMail
 {
     public class Program
     {
+        private const int MaxEmails = 30;
         public static IConfigurationRoot Configuration { get; set; }
         public static IServiceProvider Provider { get; set; }
         public static IMailService MailService { get; set; }
-
+        
         static void Main(string[] args)
         {
             // Use this to get configuration info, environmental comes in from azure
@@ -48,15 +49,27 @@ namespace Anlab.Jobs.SendMail
             services.AddTransient<IMailService, MailService>();
             
             services.Configure<EmailSettings>(Configuration.GetSection("Email"));
+            
 
             Provider = services.BuildServiceProvider();
             MailService = Provider.GetService<IMailService>();
 
             var dbContext = Provider.GetService<ApplicationDbContext>();
 
+            if (MailService.IsSendDisabled())
+            {
+                Log.Information("Email Send Disabled");
+                return;
+            }
+            
 
             // Get all messages that have not been sent, including failed ones for now
-            var messagesToSend = dbContext.MailMessages.Where(x => x.Sent == null || x.Sent == false).ToList();
+            var skippingCount = dbContext.MailMessages.Count(a => (a.Sent == null || a.Sent == false) && a.FailureCount > 2);
+            if (skippingCount > 0)
+            {
+                Log.Information($"Emails skipped because of failure count: {skippingCount}");
+            }
+            var messagesToSend = dbContext.MailMessages.Where(x => (x.Sent == null || x.Sent == false) && x.FailureCount <= 2).Take(MaxEmails).ToList();
             Log.Information($"Emails to Send: {messagesToSend.Count}");
             var counter = 0;
 
