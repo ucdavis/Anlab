@@ -11,5 +11,7 @@ namespace Anlab.Core.Models
         public string Host { get; set; }
         public int Port { get; set; }
         public string AnlabAddress { get; set; }
+
+        public string DisableSend { get; set; } = "Yes";
     }
 }
