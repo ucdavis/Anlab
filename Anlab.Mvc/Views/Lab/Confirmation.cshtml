@@ -66,9 +66,9 @@
                 var prevTotal = $('#prevTotal').val();
                 var grandTotal = $(this).val();
                 if (grandTotal) {
-                    var adjustAmt = parseFloat(grandTotal) - parseFloat(prevTotal);                    
+                    var adjustAmt = parseFloat(grandTotal) - parseFloat(prevTotal);
                 } else {
-                    var adjustAmt = 0;                    
+                    var adjustAmt = 0;
                 }
                 $('#adjustmentAmount').val(adjustAmt);
                 $('#adjustAmt').html(adjustAmt);
@@ -84,7 +84,11 @@
         $("#submit-with-bypass").on("click",
             function() {
                 $("#bypassEmail").val(true);
-                $("#form").submit();
+                if ("#form".isValid) {
+                    $("#form").submit();
+                } else {
+                    alert("Form isn't valid");
+                }
             });
     </script>
 

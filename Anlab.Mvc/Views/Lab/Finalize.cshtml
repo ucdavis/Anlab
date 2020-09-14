@@ -107,7 +107,11 @@
         $("#submit-with-bypass").on("click",
             function() {
                 $("#bypassEmail").val(true);
-                $("#form").submit();
+                if ("#form".isValid) {
+                    $("#form").submit();
+                } else {
+                    alert("Form isn't valid");
+                }
             });
     </script>
 
