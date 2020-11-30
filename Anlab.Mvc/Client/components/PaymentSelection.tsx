@@ -224,8 +224,8 @@ export class PaymentSelection extends React.Component<
     this._accountLookup();
   }
 
-  private _accountLookup = () => {
-    fetch(`/financial/info?account=${this.props.payment.account}`, {
+    private _accountLookup = () => {
+        fetch(`/financial/info?account=${this.props.payment.account}`, {
       credentials: "same-origin",
     })
       .then((response) => {
@@ -234,7 +234,7 @@ export class PaymentSelection extends React.Component<
         }
         return response;
       })
-      .then((response) => response.json())
+      .then((response) => response.text())
       .then((accountName) => {
         this.props.onPaymentSelected({
           ...this.props.payment,
