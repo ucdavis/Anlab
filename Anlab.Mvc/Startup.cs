@@ -18,12 +18,13 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.SpaServices.Webpack;
+using Microsoft.AspNetCore.SpaServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using SpaCliMiddleware;
 using StackifyLib;
 
 namespace AnlabMvc
@@ -149,14 +150,6 @@ namespace AnlabMvc
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
-
-                // TODO: if we want to use auto-refresh browerlink. Might conflict with webpack
-                //app.UseBrowserLink();
-                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions {
-                    HotModuleReplacement = true,
-                    ReactHotModuleReplacement = true
-                });
             }
             else
             {
@@ -169,16 +162,31 @@ namespace AnlabMvc
             app.UseStaticFiles();
 
             app.UseAuthentication();
+            app.UseAuthorization();
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                if (env.IsDevelopment())
+                {
+                    endpoints.MapToSpaCliProxy(
+                        "/dist/{*path}",
+                        options: new SpaOptions { SourcePath = "wwwroot/dist" },
+                        npmScript: "devpack",
+                        port: 8080,
+                        regex: "Project is running",
+                        forceKill: true, // kill anything running on our webpack port
+                        useProxy: true, // proxy webpack requests back through our aspnet server
+                        runner: ScriptRunnerType.Npm
+                    );
+                }
 
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(
                     name: "pages",
-                    template: "pages/{id}",
+                    pattern: "pages/{id}",
                     defaults: new { controller = "Pages", action = "ViewPage" });
 
                 //No fallback
