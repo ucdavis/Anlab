@@ -43,7 +43,7 @@ title: "Contact"
 <p>See also the <a class="external-link" href="http://taps.ucdavis.edu/parking/information/visitor" target="_blank" title="UCD Visitor Parking Info">University's page for more parking information</a>.</p>
 </div>
 <div class="col-4">
-<p><b>Traci Francis</b> <br>Interim Director</p>
+<p><b>Rani Youngman</b> <br>Interim Director</p>
 <p><a href="mailto:anlab@ucdavis.edu"><b>Main Office</b></a><br><a href="mailto:anlab@ucdavis.edu">anlab@ucdavis.edu</a><br> 530-752-0147<br> Room 224 Hoagland Hall</p>
 <p><b>Receiving Hours:</b> </br>8am - 5pm M - F, except University holidays </br>
 Sample Receiving Area: Hoagland Annex,</br>&nbsp; &nbsp; Ph: 530-752-0266
