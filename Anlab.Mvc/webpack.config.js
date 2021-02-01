@@ -1,17 +1,25 @@
 const path = require('path');
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin;
+
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CheckerPlugin = require("awesome-typescript-loader").CheckerPlugin;
+const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+
 const bundleOutputDir = './wwwroot/dist';
 
 module.exports = (env) => {
     const isDevBuild = !(env && env.prod);
+    const isAnalyze = env && env.analyze;
+
     const cssLoader = {
         loader: 'css-loader',
         options: {
-            modules: true,
-            importLoaders: 1,
-            localIdentName: '[name]__[local]___[hash:base64:5]',
+            //modules: {
+            //  localIdentName: '[name]__[local]___[hash:base64:5]',
+            //},
+            //importLoaders: 1,
             sourceMap: true
         }
     };
@@ -29,33 +37,66 @@ module.exports = (env) => {
             filename: '[name].js',
             publicPath: '/dist/'
         },
+        devServer: {
+            clientLogLevel: 'info',
+            compress: true,
+            port: process.env.DEV_SERVER_PORT || 8080,
+            injectClient: false,
+            // transportMode: 'ws',  // TODO: move to WS once it's no longer experimental
+            contentBase: path.resolve(__dirname, './dist'),
+            hot: true,
+            inline: true
+        },
+        mode: isDevBuild ? "development" : "production",
+        devtool: isDevBuild ? "eval-source-map" : "source-map",
         module: {
             rules: [
                 { test: /\.(js|jsx|ts|tsx)$/, include: /Client/, exclude: /node_modules/, use: 'awesome-typescript-loader?silent=true' },
-                { test: /\.css$/, use: isDevBuild ? ['style-loader', cssLoader, 'postcss-loader'] : ExtractTextPlugin.extract({ use: cssLoader }) },
-                { test: /\.scss$/, use: isDevBuild ? ['style-loader', 'css-loader', 'sass-loader'] : ExtractTextPlugin.extract({ use: ['css-loader', 'sass-loader'] }) },
+                { test: /\.css$/, use: [!isDevBuild ? MiniCssExtractPlugin.loader : { loader: "style-loader" }, cssLoader] },
+                { test: /\.scss$/, use: [!isDevBuild ? MiniCssExtractPlugin.loader : { loader: "style-loader" }, cssLoader, { loader: "sass-loader", options: { sourceMap: true } }] },
                 { test: /\.(png|jpg|jpeg|gif|woff)$/, use: 'url-loader?limit=25000' },
-                { test: /\.svg$/, include: /Client/, exclude: /node_modules/, use: ['babel-loader', 'react-svg-loader?jsx=1']},
+            {
+              test: /\.svg$/, include: /Client/, exclude: /node_modules/, use: [{
+                loader: 'babel-loader',
+                options: { plugins: ["transform-object-rest-spread"] }
+              }, 'react-svg-loader?jsx=1']
+            },
             ]
+        },
+        optimization: {
+            minimizer: isDevBuild ? [] : [
+                new TerserPlugin({
+                    cache: true,
+                    parallel: true,
+                    sourceMap: true,
+                }),
+                new OptimizeCssAssetsPlugin({}),
+            ],
+            splitChunks: {
+                chunks: 'all',
+                cacheGroups: {
+                    default: false,
+                    vendor: {
+                        name: 'vendor',
+                        test: /[\\/]node_modules[\\/]/,
+                        priority: -10
+                    },
+                }
+            }
         },
         plugins: [
             new CheckerPlugin(),
-            new webpack.DefinePlugin({
-            	'process.env.NODE_ENV': isDevBuild ? '"development"' : '"production"',
-            }),
-            new webpack.optimize.CommonsChunkPlugin({
-                name: ['react', 'root'],
-            })
-        ].concat(isDevBuild ? [
-            // Plugins that apply in development builds only
-            new webpack.SourceMapDevToolPlugin({
-                filename: '[file].map', // Remove this line if you prefer inline source maps
-                moduleFilenameTemplate: path.relative(bundleOutputDir, '[resourcePath]') // Point sourcemap entries to the original file locations on disk
-            })
-        ] : [
-            // Plugins that apply in production builds only
-            new webpack.optimize.UglifyJsPlugin(),
-            new ExtractTextPlugin({ filename: '[name].css', allChunks: true })
-        ])
+            ...isDevBuild ? [
+                // Plugins that apply in development builds only
+            ] : [
+                // Plugins that apply in production builds only
+                new MiniCssExtractPlugin({
+                    filename: '[name].css',
+                }),
+            ],
+            // Webpack Bundle Analyzer
+            // https://github.com/th0r/webpack-bundle-analyzer
+            ...isAnalyze ? [new BundleAnalyzerPlugin()] : [],
+        ]
     };
 };

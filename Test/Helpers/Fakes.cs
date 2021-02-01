@@ -41,7 +41,8 @@ namespace Test.Helpers
                 new Mock<IUserClaimsPrincipalFactory<User>>().Object,
                 new Mock<IOptions<IdentityOptions>>().Object,
                 new Mock<ILogger<SignInManager<User>>>().Object,
-                new Mock<IAuthenticationSchemeProvider>().Object)
+                new Mock<IAuthenticationSchemeProvider>().Object,
+                new Mock<IUserConfirmation<User>>().Object)
         { }
     }
 

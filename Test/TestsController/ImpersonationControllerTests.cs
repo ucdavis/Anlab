@@ -9,7 +9,6 @@ using AnlabMvc.Controllers;
 using AnlabMvc.Models.Roles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Shouldly;
 using Xunit;
 using Xunit.Abstractions;

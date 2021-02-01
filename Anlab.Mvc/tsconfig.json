@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "module": "es2015",
+    "module": "ES6",
     "moduleResolution": "node",
-    "target": "es5",
+    "target": "es2016",
     "jsx": "react",
     "sourceMap": true,
     "skipDefaultLibCheck": true,
