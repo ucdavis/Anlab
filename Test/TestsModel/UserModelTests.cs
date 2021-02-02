@@ -60,14 +60,20 @@ namespace Test.TestsModel
                 "[System.ComponentModel.DataAnnotations.EmailAddressAttribute()]",
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
-            expectedFields.Add(new NameAndType("EmailConfirmed", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("EmailConfirmed", "System.Boolean", new List<string>
+            {
+                "[Microsoft.AspNetCore.Identity.PersonalDataAttribute()]"
+            }));
             expectedFields.Add(new NameAndType("FirstName", "System.String", new List<string>
             {                
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"First Name\")]",                
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
 
             }));
-            expectedFields.Add(new NameAndType("Id", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Id", "System.String", new List<string>
+            {
+                "[Microsoft.AspNetCore.Identity.PersonalDataAttribute()]"
+            }));
             expectedFields.Add(new NameAndType("LastFirst", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("LastName", "System.String", new List<string>
             {
@@ -93,13 +99,25 @@ namespace Test.TestsModel
             {
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)256)]"
             }));
-            expectedFields.Add(new NameAndType("PhoneNumber", "System.String", new List<string>()));
-            expectedFields.Add(new NameAndType("PhoneNumberConfirmed", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("PhoneNumber", "System.String", new List<string>
+            {
+                "[Microsoft.AspNetCore.Identity.ProtectedPersonalDataAttribute()]"
+            }));
+            expectedFields.Add(new NameAndType("PhoneNumberConfirmed", "System.Boolean", new List<string>
+            {
+                "[Microsoft.AspNetCore.Identity.PersonalDataAttribute()]"
+            }));
             //expectedFields.Add(new NameAndType("Roles", "System.Collections.Generic.ICollection`1[Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserRole`1[System.String]]", new List<string>()));
             expectedFields.Add(new NameAndType("SecurityStamp", "System.String", new List<string>()));
-            expectedFields.Add(new NameAndType("TwoFactorEnabled", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("TwoFactorEnabled", "System.Boolean", new List<string>
+            {
+                "[Microsoft.AspNetCore.Identity.PersonalDataAttribute()]"
+            }));
             expectedFields.Add(new NameAndType("Updated", "System.DateTime", new List<string>()));
-            expectedFields.Add(new NameAndType("UserName", "System.String", new List<string>()));            
+            expectedFields.Add(new NameAndType("UserName", "System.String", new List<string>
+            {
+                "[Microsoft.AspNetCore.Identity.ProtectedPersonalDataAttribute()]"
+            }));            
             #endregion Arrange
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(User));

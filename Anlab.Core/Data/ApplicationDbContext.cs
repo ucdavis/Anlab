@@ -63,7 +63,7 @@ namespace Anlab.Core.Data
         [Obsolete("Just use for tests")]
         public ApplicationDbContext() { }
 
-        public new virtual DbSet<User> Users {get; set; }
+        //public new virtual DbSet<User> Users {get; set; }
 
         public virtual DbSet<Order> Orders { get; set; }
 

@@ -57,7 +57,7 @@ namespace Test.TestsController
             MockAppSettings = new Mock<IOptions<AppSettings>>();
             MockOrderMessageService = new Mock<IOrderMessageService>();
             MockClaimsPrincipal = new Mock<ClaimsPrincipal>();
-            var mockDataProvider = new Mock<SessionStateTempDataProvider>();
+            var mockDataProvider = new Mock<FakeSessionStateTempDataProvider>();
 
 
             //Data        
@@ -254,8 +254,8 @@ namespace Test.TestsController
         public async Task TestLinkCallsSetDictWhenUnpaidCreditCard()
         {
             // Arrange
-            Dictionary<string, string> dictionary = null;
-            MockDataSigningService.Setup(a => a.Sign(It.IsAny<Dictionary<string, string>>())).Returns("FakeSign").Callback<Dictionary<string, string>>(c => dictionary = c);
+            IDictionary<string, string> dictionary = null;
+            MockDataSigningService.Setup(a => a.Sign(It.IsAny<IDictionary<string, string>>())).Returns("FakeSign").Callback<IDictionary<string, string>>(c => dictionary = c);
             OrderData[1].Status = OrderStatusCodes.Finalized;
             OrderData[1].PaymentType = PaymentTypeCodes.CreditCard;
             OrderData[1].Paid = false;
@@ -273,8 +273,8 @@ namespace Test.TestsController
         public async Task TestLinkCallsSetsDictToExpectedValuesWhenUnpaidCreditCard()
         {
             // Arrange
-            Dictionary<string, string> dictionary = null;
-            MockDataSigningService.Setup(a => a.Sign(It.IsAny<Dictionary<string, string>>())).Returns("FakeSign").Callback<Dictionary<string, string>>(c => dictionary = c);
+            IDictionary<string, string> dictionary = null;
+            MockDataSigningService.Setup(a => a.Sign(It.IsAny<IDictionary<string, string>>())).Returns("FakeSign").Callback<IDictionary<string, string>>(c => dictionary = c);
             OrderData[1].Status = OrderStatusCodes.Finalized;
             OrderData[1].PaymentType = PaymentTypeCodes.CreditCard;
             OrderData[1].Paid = false;
@@ -312,8 +312,8 @@ namespace Test.TestsController
         public async Task TestLinkSetsViewbagSignature()
         {
             // Arrange
-            Dictionary<string, string> dictionary = null;
-            MockDataSigningService.Setup(a => a.Sign(It.IsAny<Dictionary<string, string>>())).Returns("FakeSign").Callback<Dictionary<string, string>>(c => dictionary = c);
+            IDictionary<string, string> dictionary = null;
+            MockDataSigningService.Setup(a => a.Sign(It.IsAny<IDictionary<string, string>>())).Returns("FakeSign").Callback<IDictionary<string, string>>(c => dictionary = c);
             OrderData[1].Status = OrderStatusCodes.Finalized;
             OrderData[1].PaymentType = PaymentTypeCodes.CreditCard;
             OrderData[1].Paid = false;
@@ -330,8 +330,8 @@ namespace Test.TestsController
         public async Task TestLinkSetsPaymentDictionary()
         {
             // Arrange
-            Dictionary<string, string> dictionary = null;
-            MockDataSigningService.Setup(a => a.Sign(It.IsAny<Dictionary<string, string>>())).Returns("FakeSign").Callback<Dictionary<string, string>>(c => dictionary = c);
+            IDictionary<string, string> dictionary = null;
+            MockDataSigningService.Setup(a => a.Sign(It.IsAny<IDictionary<string, string>>())).Returns("FakeSign").Callback<IDictionary<string, string>>(c => dictionary = c);
             OrderData[1].Status = OrderStatusCodes.Finalized;
             OrderData[1].PaymentType = PaymentTypeCodes.CreditCard;
             OrderData[1].Paid = false;
@@ -356,8 +356,8 @@ namespace Test.TestsController
         public async Task TestLinkSetsCyberSourceUrl()
         {
             // Arrange
-            Dictionary<string, string> dictionary = null;
-            MockDataSigningService.Setup(a => a.Sign(It.IsAny<Dictionary<string, string>>())).Returns("FakeSign").Callback<Dictionary<string, string>>(c => dictionary = c);
+            IDictionary<string, string> dictionary = null;
+            MockDataSigningService.Setup(a => a.Sign(It.IsAny<IDictionary<string, string>>())).Returns("FakeSign").Callback<IDictionary<string, string>>(c => dictionary = c);
             OrderData[1].Status = OrderStatusCodes.Finalized;
             OrderData[1].PaymentType = PaymentTypeCodes.CreditCard;
             OrderData[1].Paid = false;

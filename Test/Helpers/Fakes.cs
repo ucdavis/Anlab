@@ -5,6 +5,8 @@ using Anlab.Core.Domain;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -59,7 +61,18 @@ namespace Test.Helpers
             new Mock<IdentityErrorDescriber>().Object,
             new Mock<ILogger<RoleManager<IdentityRole>>>().Object)
 
+        {
+        }
+    }
+
+    /// <summary>
+    /// Mockable SessionStateTempDataProvider
+    /// </summary>
+    public class FakeSessionStateTempDataProvider : SessionStateTempDataProvider
     {
+        public FakeSessionStateTempDataProvider() : base(new Mock<TempDataSerializer>().Object)
+        {
+
         }
     }
 }

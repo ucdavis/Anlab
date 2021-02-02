@@ -66,7 +66,7 @@ namespace Test.TestsController
             MockAppSettings = new Mock<IOptions<AppSettings>>();
             MockDbContext = new Mock<ApplicationDbContext>();
             MockClaimsPrincipal = new Mock<ClaimsPrincipal>();
-            var mockDataProvider = new Mock<SessionStateTempDataProvider>();
+            var mockDataProvider = new Mock<FakeSessionStateTempDataProvider>();
 
             //Default data
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]

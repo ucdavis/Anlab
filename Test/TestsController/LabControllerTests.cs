@@ -66,7 +66,7 @@ namespace Test.TestsController
             MockFormFile = new Mock<IFormFile>();
             MockFinancialService = new Mock<IFinancialService>();
 
-            var mockDataProvider = new Mock<SessionStateTempDataProvider>();
+            var mockDataProvider = new Mock<FakeSessionStateTempDataProvider>();
 
 
 
