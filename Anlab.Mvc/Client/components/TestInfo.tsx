@@ -37,7 +37,7 @@ export class TestInfo extends React.PureComponent<ITestInfoProps, ITestInfoState
                     label={this.props.test.analysis}
                     onChange={(e) => this._onSelection(this.props.test)}
                 />
-                <Modal show={this.state.active}>
+                <Modal show={this.state.active} onHide={() => {}}>
                     <Modal.Header>
                         <Modal.Title>{this.props.test.additionalInfoPrompt}</Modal.Title>
                     </Modal.Header>

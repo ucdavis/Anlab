@@ -492,7 +492,7 @@ export default class OrderForm extends React.Component<
           </div>
         </div>
 
-        <Modal show={this.state.isErrorActive}>
+        <Modal show={this.state.isErrorActive} onHide={() => {}}>
           <Modal.Header>
             <Modal.Title>Errors Detected</Modal.Title>
           </Modal.Header>
@@ -850,7 +850,7 @@ export default class OrderForm extends React.Component<
   };
 
   private _handleChange = (name, value) => {
-    this.setState({ [name]: value }, this._validate);
+    this.setState<never>({ [name]: value }, this._validate);
   };
 
   private _switchViews = (viewName: string) => {

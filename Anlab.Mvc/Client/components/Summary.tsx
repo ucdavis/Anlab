@@ -92,7 +92,7 @@ export default class Summary extends React.PureComponent<ISummaryProps, {}> {
     private _renderSubmitButton = () => {
         if (this.props.placingOrder) {
             return (
-                <Button className="btn btn-order" disabled={!this.props.canSubmit || this.props.isSubmitting} onClick={this.props.onSubmit}>
+                <Button className="btn btn-order" disabled={!this.props.canSubmit || this.props.isSubmitting} onClick={() => this.props.onSubmit()}>
                     {this.props.isSubmitting ? <i className="fa fa-spin fa-circle-o-notch" /> : null} Save & Review
                 </Button>
             );
