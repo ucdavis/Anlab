@@ -6,6 +6,7 @@ using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using Anlab.Core.Services;
+using AnlabMvc.Middleware;
 using AnlabMvc.Models.Configuration;
 using AnlabMvc.Services;
 using AspNetCore.Security.CAS;
@@ -49,7 +50,7 @@ namespace AnlabMvc
 
             builder.AddEnvironmentVariables();
 
-            Configuration = builder.Build();            
+            Configuration = builder.Build();
 
             StackifyLib.Config.Environment = env.EnvironmentName;
             _environment = env;
@@ -84,13 +85,18 @@ namespace AnlabMvc
                         options.UseSqlite("Data Source=anlab.db")
                     );
                 }
-                }
+            }
             else
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
-                );                
+                );
             }
+
+            services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add<SerilogControllerActionFilter>();
+            });
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -99,7 +105,8 @@ namespace AnlabMvc
             //services.ConfigureApplicationCookie(options => options.LoginPath = "/Account/LogIn");
 
             services.AddAuthentication()
-                .AddCAS("UCDavis", options => {
+                .AddCAS("UCDavis", options =>
+                {
                     options.CasServerUrlBase = Configuration["AppSettings:CasBaseUrl"];
                     // options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 })
@@ -160,8 +167,10 @@ namespace AnlabMvc
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseSerilogRequestLogging();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseMiddleware<LogUserNameMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
