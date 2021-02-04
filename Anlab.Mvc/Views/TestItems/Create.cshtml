@@ -14,7 +14,7 @@
                 <span asp-validation-for="Id" class="text-danger"></span>
             </div>
         </div>
-       @Html.Partial("_TestItemsForm")
+       @await Html.PartialAsync("_TestItemsForm")
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">

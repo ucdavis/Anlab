@@ -21,7 +21,7 @@ namespace AnlabMvc.Controllers
         private readonly MarkdownPipeline _pipeline;
         private readonly Deserializer _metaReader;
 
-        public PagesController(IHostingEnvironment hostingEnvironment, IMemoryCache memoryCache)
+        public PagesController(IWebHostEnvironment hostingEnvironment, IMemoryCache memoryCache)
         {
             _cache = memoryCache;
             _fileProvider = new PhysicalFileProvider(hostingEnvironment.ContentRootPath + "/pages");

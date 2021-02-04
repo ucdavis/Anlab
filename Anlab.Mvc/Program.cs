@@ -4,6 +4,7 @@ using System.IO;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 using Serilog.Exceptions;
@@ -66,7 +67,7 @@ namespace AnlabMvc
             try
             {
                 Log.Information("Starting web host");
-                BuildWebHost(args).Run();
+                BuildWebHost(args).Build().Run();
                 return 0;
             }
             catch (Exception ex)
@@ -80,10 +81,12 @@ namespace AnlabMvc
             }
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+        public static IHostBuilder BuildWebHost(string[] args) =>
+            Host.CreateDefaultBuilder(args)
                 .UseSerilog()
-                .UseStartup<Startup>()
-                .Build();
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
     }
 }

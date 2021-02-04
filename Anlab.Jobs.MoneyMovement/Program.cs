@@ -20,7 +20,7 @@ namespace Anlab.Jobs.MoneyMovement
         
         public static ISlothService SlothService { get; set; }
 
-        static void Main(string[] args)
+        static void Main()
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())

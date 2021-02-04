@@ -4,7 +4,7 @@
     ViewBag.Title = "Your profile";
 }
 <div class="col">
-    @Html.Partial("_UserDetails")
+    @await Html.PartialAsync("_UserDetails")
 
     <a asp-action="Edit" class="btn btn-primary">Edit your profile</a>
 </div>

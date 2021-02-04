@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.SpaServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using SpaCliMiddleware;
@@ -32,31 +33,14 @@ namespace AnlabMvc
 {
     public class Startup
     {
-        private IDirectorySearchService _directorySearchService;
-        private IHostingEnvironment _environment;
-
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-
-            if (env.IsDevelopment())
-            {
-                // For more details on using the user secret store see https://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets<Startup>();
-            }
-
-            builder.AddEnvironmentVariables();
-
-            Configuration = builder.Build();
-
-            StackifyLib.Config.Environment = env.EnvironmentName;
-            _environment = env;
+            Configuration = configuration;
+            WebHostEnvironment = env;
         }
 
-        public IConfigurationRoot Configuration { get; }
+        public IConfiguration Configuration { get; }
+        private IWebHostEnvironment WebHostEnvironment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -71,7 +55,7 @@ namespace AnlabMvc
             services.Configure<EmailSettings>(Configuration.GetSection("Email"));
 
             // Add framework services.
-            if (_environment.IsDevelopment())
+            if (WebHostEnvironment.IsDevelopment())
             {
                 if (Configuration.GetSection("Dev:UseSql").Value == "Yes")
                 {
@@ -148,9 +132,9 @@ namespace AnlabMvc
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            _directorySearchService = app.ApplicationServices.GetService<IDirectorySearchService>();
+            app.ApplicationServices.GetService<IDirectorySearchService>();
 
             if (env.IsDevelopment())
             {

@@ -21,7 +21,7 @@ namespace Anlab.Jobs.SendMail
         public static IServiceProvider Provider { get; set; }
         public static IMailService MailService { get; set; }
         
-        static void Main(string[] args)
+        static void Main()
         {
             // Use this to get configuration info, environmental comes in from azure
             var builder = new ConfigurationBuilder()
