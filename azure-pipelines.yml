@@ -14,51 +14,87 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
-steps:
+stages:
+- stage: Build
+  jobs:
+  - job: InstallDependencies
+    steps:
 
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
-    useGlobalJson: true
-    workingDirectory: 'Anlab.MVC'
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core 3.1.11 sdk'
+      inputs:
+        packageType: sdk
+        version: 3.1.405
+        installationPath: $(Agent.ToolsDirectory)/dotnet
 
-- task: UseNode@1
-  inputs:
-    version: '8.x'
-    
-- task: CmdLine@2
-  displayName: 'yarn install'
-  inputs:
-    script: 'yarn install'
-    workingDirectory: 'Anlab.MVC'
+    - task: Npm@1
+      inputs:
+        command: 'install'
+        workingDir: './Anlab.MVC'
 
-- task: NuGetToolInstaller@1
+    - task: NuGetToolInstaller@1
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  - job: BuildAndTest
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: 'Build Anlab.Mvc'
+      inputs:
+        command: 'build'
+        projects: './Anlab.Mvc/AnlabMvc.csproj'
+        arguments: '--configuration $(BuildConfiguration) /property:Version=$(build.buildNumber)'
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    - task: DotNetCoreCLI@2
+      displayName: 'Run Server Tests'
+      inputs:
+        command: 'test'
 
-- task: Npm@1
-  displayName: 'npm test'
-  inputs:
-    command: 'custom'
-    workingDir: 'Anlab.MVC'
-    customCommand: 'test'
+    - task: Npm@1
+      displayName: 'npm test'
+      inputs:
+        command: 'custom'
+        workingDir: 'Anlab.MVC'
+        customCommand: 'test'
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+- stage: Deploy
+  jobs:
+  - job: PublishArtifacts
+    steps:
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish Anlab.Mvc'
+      inputs:
+        command: 'publish'
+        publishWebProjects: true
+        zipAfterPublish: true
+        modifyOutputPath: false
+        projects: './Anlab.Mvc/AnlabMvc.csproj'
+        arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish Anlab.Jobs.MoneyMovement'
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        zipAfterPublish: true
+        modifyOutputPath: false
+        projects: './Anlab.Jobs.MoneyMovement/Anlab.Jobs.MoneyMovement.csproj'
+        arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish Anlab.Jobs.SendMail'
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        zipAfterPublish: true
+        modifyOutputPath: false
+        projects: './Anlab.Jobs.SendMail/Anlab.Jobs.SendMail.csproj'
+        arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact'
+      inputs:
+        PathtoPublish: '$(build.artifactstagingdirectory)'
