@@ -16,10 +16,10 @@ module.exports = (env) => {
     const cssLoader = {
         loader: 'css-loader',
         options: {
-            //modules: {
-            //  localIdentName: '[name]__[local]___[hash:base64:5]',
-            //},
-            //importLoaders: 1,
+            modules: {
+              localIdentName: '[name]__[local]___[hash:base64:5]'
+            },
+            importLoaders: 1,
             sourceMap: true
         }
     };
@@ -53,7 +53,7 @@ module.exports = (env) => {
             rules: [
                 { test: /\.(js|jsx|ts|tsx)$/, include: /Client/, exclude: /node_modules/, use: 'awesome-typescript-loader?silent=true' },
                 { test: /\.css$/, use: [!isDevBuild ? MiniCssExtractPlugin.loader : { loader: "style-loader" }, cssLoader] },
-                { test: /\.scss$/, use: [!isDevBuild ? MiniCssExtractPlugin.loader : { loader: "style-loader" }, cssLoader, { loader: "sass-loader", options: { sourceMap: true } }] },
+                { test: /\.scss$/, use: [!isDevBuild ? MiniCssExtractPlugin.loader : { loader: "style-loader" }, { loader: 'css-loader', options: {sourceMap: true } }, { loader: "sass-loader", options: { sourceMap: true } }] },
                 { test: /\.(png|jpg|jpeg|gif|woff)$/, use: 'url-loader?limit=25000' },
             {
               test: /\.svg$/, include: /Client/, exclude: /node_modules/, use: [{

@@ -1,5 +1,7 @@
-﻿module.exports = {
-    plugins: [
-        require('postcss-cssnext')()
-    ]
+module.exports = {
+    plugins: {
+        'postcss-import': {},
+        'postcss-cssnext': {}
+        //require('postcss-cssnext')()
+    }
 }
