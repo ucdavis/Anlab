@@ -16,11 +16,13 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  npm_config_cache: $(Pipeline.Workspace)/.npm
+  NUGET_PACKAGES: $(UserProfile)/.nuget/packages
 
 stages:
 - stage: Build
   jobs:
-  - job: InstallDependencies
+  - job: BuildAndTest
     steps:
 
     - task: UseDotNet@2
@@ -30,20 +32,37 @@ stages:
         version: 3.1.405
         installationPath: $(Agent.ToolsDirectory)/dotnet
 
-    - task: Npm@1
+    - task: Cache@2
       inputs:
-        command: 'install'
+        key: 'npm | "$(Agent.OS)" | package-lock.json'
+        restoreKeys: |
+           npm | "$(Agent.OS)"
+        path: $(npm_config_cache)
+        cacheHitVar: NPM_CACHE_RESTORED
+      displayName: Cache npm
+
+    - task: Npm@1
+      condition: ne(variables.NPM_CACHE_RESTORED, 'true')
+      inputs:
+        command: 'ci'
         workingDir: './Anlab.MVC'
 
     - task: NuGetToolInstaller@1
 
+    - task: Cache@2
+      inputs:
+        key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**'
+        restoreKeys: |
+           nuget | "$(Agent.OS)"
+        path: $(NUGET_PACKAGES)
+        cacheHitVar: NUGET_CACHE_RESTORED
+      displayName: Cache NuGet packages
+
     - task: NuGetCommand@2
+      condition: ne(variables.NUGET_CACHE_RESTORED, 'true')
       inputs:
         restoreSolution: '$(solution)'
 
-  - job: BuildAndTest
-    dependsOn: InstallDependencies
-    steps:
     - task: DotNetCoreCLI@2
       displayName: 'Build Anlab.Mvc'
       inputs:
