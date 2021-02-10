@@ -39,6 +39,7 @@ stages:
         restoreSolution: '$(solution)'
 
   - job: BuildAndTest
+    dependsOn: InstallDependencies
     steps:
     - task: DotNetCoreCLI@2
       displayName: 'Build Anlab.Mvc'
