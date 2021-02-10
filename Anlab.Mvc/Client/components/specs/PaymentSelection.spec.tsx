@@ -37,7 +37,7 @@ describe('<PaymentSelection/>', () => {
                 agreementRequired: false,
             };
             const target = mount(<PaymentSelection payment={payment} onPaymentSelected={onPaymentSelected} ucAccountRef={null} creatingOrder={true} placingOrder={true} checkChart={checkChart} otherPaymentInfo={otherPaymentInfo} otherPaymentInfoRef={null} updateOtherPaymentInfo={null} updateOtherPaymentInfoType={null} changeSelectedUc={null}/>);
-            const input = target.find('Input').at(0);
+            const input = target.find('o').at(0);
 
             it('should have a type of error', () => {
                 expect(input.prop('error')).toEqual('');
@@ -68,7 +68,7 @@ describe('<PaymentSelection/>', () => {
                 agreementRequired: false,
             };
             const target = mount(<PaymentSelection payment={payment} onPaymentSelected={onPaymentSelected} ucAccountRef={null} creatingOrder={true} placingOrder={true} checkChart={checkChart} otherPaymentInfo={otherPaymentInfo} otherPaymentInfoRef={null} updateOtherPaymentInfo={null} updateOtherPaymentInfoType={null} changeSelectedUc={null}/>);
-            expect(target.find('Input').length).toEqual(7); //TODO: Write one of these for "Other" which will have 7
+            expect(target.find('input').length).toEqual(7); //TODO: Write one of these for "Other" which will have 7
 
             const inp = target.find('input').at(0);
             inp.simulate('change', { target: { value: 'xxx'} });
@@ -231,11 +231,11 @@ describe('<PaymentSelection/>', () => {
             poNum: '',
             agreementRequired: false,
         };
-        const target = mount(<PaymentSelection payment={payment} onPaymentSelected={onPaymentSelected} ucAccountRef={null} creatingOrder={true} placingOrder={true} checkChart={checkChart} otherPaymentInfo={otherPaymentInfo} otherPaymentInfoRef={null} updateOtherPaymentInfo={null} updateOtherPaymentInfoType={null} changeSelectedUc={null}/>);
+        const target = mount<PaymentSelection>(<PaymentSelection payment={payment} onPaymentSelected={onPaymentSelected} ucAccountRef={null} creatingOrder={true} placingOrder={true} checkChart={checkChart} otherPaymentInfo={otherPaymentInfo} otherPaymentInfoRef={null} updateOtherPaymentInfo={null} updateOtherPaymentInfoType={null} changeSelectedUc={null}/>);
         expect(target.find('Input').length).toEqual(2);
 
         const internal = target.instance();
-        internal._handleChange('creditcard');
+        (internal as any)._handleChange('creditcard');
 
         expect(onPaymentSelected).toHaveBeenCalled();
         expect(onPaymentSelected).toHaveBeenCalledWith({ clientType: 'creditcard', account: '123' });

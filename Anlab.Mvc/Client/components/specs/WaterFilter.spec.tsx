@@ -1,33 +1,33 @@
-﻿import * as React from 'react';
+import * as React from 'react';
 import { shallow, mount, render } from 'enzyme';
 import { WaterFilter } from '../WaterFilter';
 
 describe('<Grind />', () => {
     it('should render null when not water', () => {
         const target = mount(<WaterFilter sampleType="Dirt" handleChange={null} filterWater={false} />);
-        expect(target.find('Checkbox').length).toEqual(0);
+        expect(target.find('Themedn').length).toEqual(0);
     });
     it('should render a Checkbox when sampleType is water', () => {
         const handleChange = jasmine.createSpy('handleChange');
         const target = mount(<WaterFilter sampleType="Water" handleChange={handleChange} filterWater={false} />);
-        expect(target.find('Checkbox').length).toEqual(1);
+        expect(target.find('Themedn').length).toBeGreaterThan(0);
     });
     it('should have a checked false', () => {
         const handleChange = jasmine.createSpy('handleChange');
         const target = mount(<WaterFilter sampleType="Water" handleChange={handleChange} filterWater={false} />);
-        const input = target.find('Checkbox');
+        const input = target.find('Themedn').first();
         expect(input.prop('checked')).toEqual(false);
     });
     it('should have a checked true', () => {
         const handleChange = jasmine.createSpy('handleChange');
         const target = mount(<WaterFilter sampleType="Water" handleChange={handleChange} filterWater={true} />);
-        const input = target.find('Checkbox');
+        const input = target.find('Themedn').first();
         expect(input.prop('checked')).toEqual(true);
     });
     it('should have a lable prop', () => {
         const handleChange = jasmine.createSpy('handleChange');
         const target = mount(<WaterFilter sampleType="Water" handleChange={handleChange} filterWater={true} />);
-        const input = target.find('Checkbox');
+        const input = target.find('Themedn').first();
         expect(input.prop('label')).toEqual("Filter");
     });
 

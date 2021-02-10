@@ -47,7 +47,7 @@ describe('<SampleTypeSelection/>', () => {
         });
         it('should have soil svg', () => {
             const target = mount(<SampleTypeSelection sampleType="Soil" onSampleSelected={null} />);
-            const expectedTag = target.find('div').at(1).childAt(0).find('SVG');
+            const expectedTag = target.find('div').at(1).childAt(0).find('svg');
             //console.log(target.find('div').at(1).childAt(0).debug());
             expect(expectedTag.length).toEqual(1);
             expect(expectedTag.find('title').at(0).text()).toEqual('soil');
@@ -85,7 +85,7 @@ describe('<SampleTypeSelection/>', () => {
             expect(expectedTag.hasClass('anlab_form_samplebtn')).toEqual(true);
             expect(expectedTag.hasClass('flexcol')).toEqual(true);
         });
-        it('should have not have selected classNames when not soil', () => {
+        it('should have not have selected classNames when not plant', () => {
             const target = mount(<SampleTypeSelection sampleType="xxx" onSampleSelected={null} />);
             const expectedTag = target.find('div').at(1).childAt(1);
             expect(expectedTag.hasClass('active-bg')).toEqual(false);
@@ -93,7 +93,7 @@ describe('<SampleTypeSelection/>', () => {
             expect(expectedTag.hasClass('active-svg')).toEqual(false);
             expect(expectedTag.hasClass('active-text')).toEqual(false);
         });
-        it('should have have selected classNames when soil', () => {
+        it('should have have selected classNames when plant', () => {
             const target = mount(<SampleTypeSelection sampleType="Plant" onSampleSelected={null} />);
             const expectedTag = target.find('div').at(1).childAt(1);
             expect(expectedTag.hasClass('active-bg')).toEqual(true);
@@ -101,9 +101,9 @@ describe('<SampleTypeSelection/>', () => {
             expect(expectedTag.hasClass('active-svg')).toEqual(true);
             expect(expectedTag.hasClass('active-text')).toEqual(true);
         });
-        it('should have soil svg', () => {
+        it('should have plant svg', () => {
             const target = mount(<SampleTypeSelection sampleType="Plant" onSampleSelected={null} />);
-            const expectedTag = target.find('div').at(1).childAt(1).find('SVG');
+            const expectedTag = target.find('div').at(1).childAt(1).find('svg');
             //console.log(target.find('div').at(1).childAt(0).debug());
             expect(expectedTag.length).toEqual(1);
             expect(expectedTag.find('title').at(0).text()).toEqual('plant');
@@ -116,7 +116,7 @@ describe('<SampleTypeSelection/>', () => {
             expect(expectedTag.text()).toEqual('Plant Material');
         });
 
-        it('should call on click with soil parameter', () => {
+        it('should call on click with plant parameter', () => {
             const onSampleSelected = jasmine.createSpy('onSampleSelected');
             const target = mount(<SampleTypeSelection sampleType="Plant" onSampleSelected={onSampleSelected} />);
             const expectedTag = target.find('div').at(1).childAt(1);
@@ -149,7 +149,7 @@ describe('<SampleTypeSelection/>', () => {
             expect(expectedTag.hasClass('active-svg')).toEqual(false);
             expect(expectedTag.hasClass('active-text')).toEqual(false);
         });
-        it('should have have selected classNames when soil', () => {
+        it('should have have selected classNames when water', () => {
             const target = mount(<SampleTypeSelection sampleType="Water" onSampleSelected={null} />);
             const expectedTag = target.find('div').at(1).childAt(2);
             expect(expectedTag.hasClass('active-bg')).toEqual(true);
@@ -157,10 +157,9 @@ describe('<SampleTypeSelection/>', () => {
             expect(expectedTag.hasClass('active-svg')).toEqual(true);
             expect(expectedTag.hasClass('active-text')).toEqual(true);
         });
-        it('should have soil svg', () => {
+        it('should have water svg', () => {
             const target = mount(<SampleTypeSelection sampleType="Water" onSampleSelected={null} />);
-            const expectedTag = target.find('div').at(1).childAt(2).find('SVG');
-            //console.log(target.find('div').at(1).childAt(0).debug());
+            const expectedTag = target.find('div').at(1).childAt(2).find('svg');
             expect(expectedTag.length).toEqual(1);
             expect(expectedTag.find('title').at(0).text()).toEqual('water');
         });

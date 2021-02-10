@@ -83,9 +83,20 @@ module.exports = (env) => {
           use: [
             {
               loader: 'babel-loader',
-              options: { plugins: ["transform-object-rest-spread"] }
+              options: { plugins: ["@babel/plugin-proposal-object-rest-spread"] }
             },
-            'react-svg-loader?jsx=1'
+            {
+              loader: "react-svg-loader",
+              options: {
+                jsx: true,
+                svgo: {
+                  plugins: [
+                    { removeTitle: false }
+                  ],
+                  floatPrecision: 2
+                }
+              }
+            }
           ]
         },
       ]

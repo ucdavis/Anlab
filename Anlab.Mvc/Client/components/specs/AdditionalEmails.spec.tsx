@@ -37,7 +37,7 @@ describe("<AdditionalEmails />", () => {
     });
 
     it("should set state email value on change", () => {
-        const target = mount(<AdditionalEmails {...defaultProps} />);
+      const target = mount<AdditionalEmails>(<AdditionalEmails {...defaultProps} />);
         target.setState({ toggle: true });
         expect(target.state().email).toBe("");
 
@@ -49,7 +49,7 @@ describe("<AdditionalEmails />", () => {
 
     it("should call onEmailAdded with valid state.email onBlur event", () => {
         const onEmailAdded = jasmine.createSpy("onEmailAdded");
-        const target = shallow(
+        const target = shallow<AdditionalEmails>(
             <AdditionalEmails
                 {...defaultProps}
                 onEmailAdded={onEmailAdded}
@@ -67,7 +67,7 @@ describe("<AdditionalEmails />", () => {
 
     it("should call onEmailAdded with valid state.email onClick event and lower it", () => {
         const onEmailAdded = jasmine.createSpy("onEmailAdded");
-        const target = shallow(
+        const target = shallow<AdditionalEmails>(
             <AdditionalEmails
                 {...defaultProps}
                 onEmailAdded={onEmailAdded}
@@ -85,7 +85,7 @@ describe("<AdditionalEmails />", () => {
 
     it("should not call onEmailAdded with invalid state.email onClick event", () => {
         const onEmailAdded = jasmine.createSpy("onEmailAdded");
-        const target = shallow(
+        const target = shallow<AdditionalEmails>(
             <AdditionalEmails
                 {...defaultProps}
                 onEmailAdded={onEmailAdded}
@@ -104,7 +104,7 @@ describe("<AdditionalEmails />", () => {
 
     it("should not call onEmailAdded with duplicate state.email onClick event", () => {
         const onEmailAdded = jasmine.createSpy("onEmailAdded");
-        const target = shallow(
+        const target = shallow<AdditionalEmails>(
             <AdditionalEmails
                 {...defaultProps}
                 addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]}
@@ -123,7 +123,7 @@ describe("<AdditionalEmails />", () => {
 
     it("should not call onEmailAdded with duplicate ignoring case state.email onClick event", () => {
         const onEmailAdded = jasmine.createSpy("onEmailAdded");
-        const target = shallow(
+        const target = shallow<AdditionalEmails>(
             <AdditionalEmails
                 {...defaultProps}
                 addedEmails={["test1@testy.com", "test2@testy.com", "test3@testy.com"]}

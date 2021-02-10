@@ -98,7 +98,7 @@ export class PaymentSelection extends React.Component<
         </div>
         {this.props.placingOrder && this._renderheading()}
         {this.props.placingOrder && this._renderUcAccount()}
-        {this.props.placingOrder && this._renderOtherInfo()}
+        {this.props.placingOrder && this.props.otherPaymentInfo && this._renderOtherInfo()}
         {this._renderAgreement()}
       </div>
     );
