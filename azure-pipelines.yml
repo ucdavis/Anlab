@@ -6,6 +6,9 @@
 trigger:
 - master
 
+# name is used for the variable $(build.buildNumber)
+name: 1.0.$(Date:yyMM).$(build.buildId)
+
 pool:
   vmImage: 'windows-latest'
 
