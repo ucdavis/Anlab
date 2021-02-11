@@ -43,6 +43,7 @@ stages:
       displayName: Cache npm
 
     - script: npm ci --cache $(npm_config_cache)
+      workingDirectory: './Anlab.MVC'
       condition: ne(variables.NPM_CACHE_RESTORED, 'true')
       displayName: 'Install npm dependencies'
 
