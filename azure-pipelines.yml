@@ -17,7 +17,7 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   npm_config_cache: $(Pipeline.Workspace)/.npm
-  NUGET_PACKAGES: $(UserProfile)/.nuget/packages
+  NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
 stages:
 - stage: Build
