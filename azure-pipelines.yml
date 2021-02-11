@@ -94,8 +94,9 @@ stages:
         publishWebProjects: true
         zipAfterPublish: true
         modifyOutputPath: false
+        nobuild: true
         projects: './Anlab.Mvc/AnlabMvc.csproj'
-        arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/AnlabMvc'
+        arguments: '--no-restore --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/AnlabMvc'
 
     - task: DotNetCoreCLI@2
       displayName: 'Publish Anlab.Jobs.MoneyMovement'
@@ -104,8 +105,9 @@ stages:
         publishWebProjects: false
         zipAfterPublish: true
         modifyOutputPath: false
+        nobuild: true
         projects: './Anlab.Jobs.MoneyMovement/Anlab.Jobs.MoneyMovement.csproj'
-        arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/Anlab.Jobs.MoneyMovement'
+        arguments: '--no-restore --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/Anlab.Jobs.MoneyMovement'
 
     - task: DotNetCoreCLI@2
       displayName: 'Publish Anlab.Jobs.SendMail'
@@ -114,8 +116,9 @@ stages:
         publishWebProjects: false
         zipAfterPublish: true
         modifyOutputPath: false
+        nobuild: true
         projects: './Anlab.Jobs.SendMail/Anlab.Jobs.SendMail.csproj'
-        arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/Anlab.Jobs.SendMail'
+        arguments: '--no-restore --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/Anlab.Jobs.SendMail'
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Artifact'
