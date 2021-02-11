@@ -37,15 +37,14 @@ stages:
         key: 'npm | "$(Agent.OS)" | **/package-lock.json'
         restoreKeys: |
            npm | "$(Agent.OS)"
+           npm
         path: $(npm_config_cache)
         cacheHitVar: NPM_CACHE_RESTORED
       displayName: Cache npm
 
-    - task: Npm@1
+    - script: npm ci --cache $(npm_config_cache)
       condition: ne(variables.NPM_CACHE_RESTORED, 'true')
-      inputs:
-        command: 'ci'
-        workingDir: './Anlab.MVC'
+      displayName: 'Install npm dependencies'
 
     - task: NuGetToolInstaller@1
 
