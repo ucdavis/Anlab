@@ -20,9 +20,9 @@ variables:
   NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
 stages:
-- stage: Build
+- stage: BuildTestAndPublish
   jobs:
-  - job: BuildAndTest
+  - job: BuildTestAndPublish
     steps:
 
     - task: UseDotNet@2
@@ -81,11 +81,6 @@ stages:
         command: 'custom'
         workingDir: 'Anlab.MVC'
         customCommand: 'test'
-
-- stage: Deploy
-  jobs:
-  - job: PublishArtifacts
-    steps:
 
     - task: DotNetCoreCLI@2
       displayName: 'Publish Anlab.Mvc'
