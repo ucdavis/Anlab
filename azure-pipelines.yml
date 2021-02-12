@@ -42,10 +42,11 @@ stages:
         cacheHitVar: NPM_CACHE_RESTORED
       displayName: Cache npm
 
-    - script: npm ci --cache $(npm_config_cache)
-      workingDirectory: './Anlab.MVC'
+    - task: Npm@1
       condition: ne(variables.NPM_CACHE_RESTORED, 'true')
-      displayName: 'Install npm dependencies'
+      inputs:
+        command: 'ci'
+        workingDir: './Anlab.MVC'
 
     - task: NuGetToolInstaller@1
 
