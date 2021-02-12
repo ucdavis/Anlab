@@ -43,7 +43,6 @@ stages:
       displayName: Cache npm
 
     - task: Npm@1
-      condition: ne(variables.NPM_CACHE_RESTORED, 'true')
       inputs:
         command: 'ci'
         workingDir: './Anlab.MVC'
