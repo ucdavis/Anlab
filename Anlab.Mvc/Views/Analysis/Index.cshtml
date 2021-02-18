@@ -140,8 +140,7 @@
                 <div class="panel-body">
                     <p><strong>Sample Amount:</strong> 250 mL per sample (5 mL per element for extracts) is required.</p>
                     <p><strong>Water Preparation:</strong> Samples submitted for alkalinity, ammonium, nitrate, soluble phosphorus, solids, sulfate and turbidity analysis should be kept under refrigeration. More detailed sample preservation guidelines
-                        are available on the Lab's web site (<a class="internal-link" href="resolveuid/2c6d1f78f42a4bc1bb5f24a97041303d" target="_self" title="Sampling and preparation">http://anlab.ucdavis.edu</a>) in the section titled Sampling and
-                        Preparation).</p>
+                        are available on the Lab's web site <a class="internal-link" asp-controller="Home" asp-action="SamplingAndPreparation" target="_self" title="Sampling and preparation">Sampling and preparation</a>.</p>
                     <h3>Method Summaries</h3>
                     <ul>
                         @foreach (var method in Model.Where(x => x.Id >= 800 && x.Id < 900))

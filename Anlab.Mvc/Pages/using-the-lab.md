@@ -14,12 +14,7 @@ title: "Using the Lab"
   <!-- <p>Contact the Lab Office to initiate the process of becoming a client: 530-752-0147.</p>
   <p>Each client is assigned an unique user account called a Client ID. (A client can have more than one Client ID should circumstances warrant.) This Client ID is created from information provided by the client on the Lab's Application Form. After the client user account is established, you will receive a Work Request Form pre-printed with your specific information. (Please advise our office when changes to the pre-printed information need to be made; we will provide an updated template prior to sample submission.) This form can be copied and completed to identify requested analyses each time samples are submitted.</p>
   <p>Clients have the option of assigning a "copy to" person on the Client ID. This individual will then also receive the analytical results. If changes to the pre-printed billing account and/or "copy to" person information are needed, they can be made on a permanent basis or on a submission-by-submission basis by writing the changes on the work request form and selecting the appropriate check-box ("permanent" or "one-time only").</p> -->
-  <!-- <ul>
-      <li><a href="resolveuid/c375462e679443269dbc75fa072aeb48">UC client form</a></li>
-      <li><a href="resolveuid/c494e02842d246d5a930014a5b0974b9">Non-UC client form</a><br /> —   Non-UC Clients must also fill out an IRS W-9
-          <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf" target="_blank" title="Form W-9">form </a>and submit it via the University's <a href="https://afsapps.ucdavis.edu/vendor-w9/UploadW9.cfm" target="_blank" title="UC Davis online W9 upload page">online W9 upload page</a>.
-      </li>
-  </ul> -->
+
   <h3><a name="two"></a>Requesting Analytical Tests / Submitting Samples:</h3>
   <p>Tests are requested by creating one Work Order for every set of samples (100 samples per Work Order maximum). All samples in the Work Order must have the same tests requested.  Special requests and tests not listed on the order page can be requested in the comment field.</p>
 
