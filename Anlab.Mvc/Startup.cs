@@ -6,6 +6,7 @@ using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using Anlab.Core.Services;
+using AnlabMvc.Middleware;
 using AnlabMvc.Models.Configuration;
 using AnlabMvc.Services;
 using AspNetCore.Security.CAS;
@@ -33,28 +34,13 @@ namespace AnlabMvc
         private IDirectorySearchService _directorySearchService;
         private IHostingEnvironment _environment;
 
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-
-            if (env.IsDevelopment())
-            {
-                // For more details on using the user secret store see https://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets<Startup>();
-            }
-
-            builder.AddEnvironmentVariables();
-
-            Configuration = builder.Build();            
-
-            StackifyLib.Config.Environment = env.EnvironmentName;
+            Configuration = configuration;         
             _environment = env;
         }
 
-        public IConfigurationRoot Configuration { get; }
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -109,7 +95,10 @@ namespace AnlabMvc
                 });
 
             // TODO: require HTTPS in production.  In development it is only needed for federated auth
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+              options.Filters.Add<SerilogControllerActionFilter>();
+            });
 
 
             // app services
@@ -140,10 +129,8 @@ namespace AnlabMvc
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.ConfigureStackifyLogging(Configuration);
-
             _directorySearchService = app.ApplicationServices.GetService<IDirectorySearchService>();
 
             if (env.IsDevelopment())
@@ -168,7 +155,10 @@ namespace AnlabMvc
 
             app.UseStaticFiles();
 
+            app.UseSerilogRequestLogging();
+
             app.UseAuthentication();
+            app.UseMiddleware<LogUserNameMiddleware>();
 
             app.UseMvc(routes =>
             {
