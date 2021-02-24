@@ -83,7 +83,6 @@
                     <p>Sample Amount: Submit 20 g of dried and ground sample. For extracts/solutions, five (5) mL per element is required.</p>
                     <p>Plant Preparation: Oven-dry samples at 55-60°C. Grind to pass through a 40 mesh screen.</p>
                     <p>Containers: Submit samples in coin envelopes.</p>
-                    <p>Note: Samples for N and C analysis need to be ground to pass through a 60 mesh sieve.</p>
                     <h3>Method Summaries</h3>
                     <ul>
                         @foreach (var method in Model.Where(x => x.Category == "Plant"))
@@ -100,13 +99,14 @@
             </div>
             <div class="panel-collapse collapse" id="soil">
                 <div class="panel-body">
-                    <p><strong>Sample Amount: </strong>Submit 300-500 g of dried and ground sample. Five (5) mL per element is required for samples submitted in extract form. N &amp; C require one (1) gram of finely powdered soil (to pass through a 60
+                    <p><strong>Sample Amount: </strong>Submit 300-500 g of dried and ground sample. Five (5) mL per element is required for samples submitted in extract form. N &amp; C requires five (5) grams of finely powdered soil (to pass through a 60
                         mesh sieve).</p>
-                    <p><strong>Soil Preparation: </strong>Air or oven-dry soil at 35-55°C (the Lab oven dries at 40°C). Grind to pass through a 2 mm sieve. Analysis for N, C, TKN and "total" metal analysis require grinding to pass through a 60 mesh screen.</p>
+                    <p><strong>Soil Preparation: </strong>Air or oven-dry soil at 35-55°C (the Lab oven dries at 40°C). Grind to pass through a 2 mm sieve. 
+                        Analysis for N, C, TKN, CaCO<sub>3</sub>, and "total" metal analysis require 
+                        that the sample be ground to a powder fine enough to pass through a 60 mesh sieve (<0.25 mm).</p>
                     <p><strong>Containers: </strong>Submit samples in pint-size plastic containers or in bags (plastic or paper).</p>
                     <h3>Notes:</h3>
                     <p>Sodium Adsorption Ratio and Exchangeable Sodium Percent are calculations derived from analysis of Ca, Mg and Na.</p>
-                    <p>For N and C by combustion (Carlo-Erba), 1 gram of sample material needs to be finely ground to pass through a 60 mesh sieve.</p>
                     <p>To determine available N-P-K on California soils, we normally analyze for NO<sub>3</sub>-N, Olsen-P and Exchangeable K.</p>
                     <h3><a name="soil-salinity"></a>Soil Salinity</h3>
                     <ul>
