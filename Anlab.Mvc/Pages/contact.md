@@ -16,7 +16,7 @@ title: "Contact"
 <h3>Administrative Information:</h3>
 <p>To <strong>Mail</strong> correspondence:</p>
 <address>
-  <p>UC Davis Analytical Lab<br />University of California<br />One Shields Avenue<br />Davis CA 95616-5270</p>
+  <p>UC Davis Analytical Lab<br />University of California<br />110 Hoagland Annex<br />521 Kleiber Hall Drive<br />University of California<br />One Shields Avenue<br />Davis CA 95616-5270</p>
   <p>The <strong>Office</strong> is located in: Room 224, Hoagland Hall</p>
   <p>The <strong>Lab</strong> is located in: Room 208, Hoagland Hall</p>
 </address>
