@@ -114,6 +114,9 @@
     <Content Update="wwwroot\Images\anlab170.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\Images\AnlabFlyerThumb.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\media\pdf\Client-Wrapped-for-C--N-in-Soil-ver-01.pdf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
