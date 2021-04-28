@@ -62,7 +62,8 @@
       </callout>
 
       <callout class="primary">
-        <p>Order Total: <strong>@order.GrandTotal.ToString("C")</strong></p>
+          <p>Order Total: <strong>@order.GrandTotal.ToString("C")</strong></p>
+          <p style="margin-left: 20px; color: blue"><strong>*Non-routine matrices may incur additional charges.</strong></p>
         @if (order.RushMultiplier.HasValue && order.RushMultiplier.Value > 1)
         {
           <h4>RUSH This order is a rush and has the cost increased by a factor of @order.RushMultiplier</h4>
