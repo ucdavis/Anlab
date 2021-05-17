@@ -49,7 +49,6 @@ export class PaymentUcSelection extends React.Component<
                 <option value="UCSB">UCSB</option>
                 <option value="UCI">UCI</option>
                 <option value="UCM">UCM</option>
-                <option value="MOP">M-OP</option>
                 </select>
             </div>
             <div className="flexrow">
