@@ -141,8 +141,8 @@ export class ClientId extends React.Component<IClientIdProps, IClientIdInputStat
             this.props.updateClientInfoValid("clientInfoValid", false);
             return;
         }
-        if (value.length < 4 || value.length > 8) {
-            this.setState({ error: "Client IDs must be between 4 and 8 characters.", fetchedName: "", fetchedCopyEmail: "", fetchedEmail: "", fetchedPhoneNumber: "" });
+        if (value.length < 4 || value.length > 10) {
+            this.setState({ error: "Client IDs must be between 4 and 10 characters.", fetchedName: "", fetchedCopyEmail: "", fetchedEmail: "", fetchedPhoneNumber: "" });
             this.props.updateClientInfoValid("clientInfoValid", false);
             return;
         }
