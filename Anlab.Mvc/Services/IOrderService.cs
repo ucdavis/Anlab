@@ -141,8 +141,8 @@ namespace AnlabMvc.Services
             order.SaveTestDetails(allTests);
 
             order.Project = orderToCopy.Project;
-            order.ClientId = order.ClientId;
-            order.ClientName = order.ClientName;
+            order.ClientId = orderToCopy.ClientId;
+            order.ClientName = orderToCopy.ClientName;
             order.JsonDetails = orderToCopy.JsonDetails;
             var orderDetails = order.GetOrderDetails();
             if (!adminCopy)
