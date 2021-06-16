@@ -141,8 +141,8 @@ namespace AnlabMvc.Services
             order.SaveTestDetails(allTests);
 
             order.Project = orderToCopy.Project;
-            order.ClientId = order.ClientId;
-            order.ClientName = order.ClientName;
+            order.ClientId = orderToCopy.ClientId;
+            order.ClientName = orderToCopy.ClientName;
             order.JsonDetails = orderToCopy.JsonDetails;
             var orderDetails = order.GetOrderDetails();
             if (!adminCopy)
@@ -167,7 +167,11 @@ namespace AnlabMvc.Services
 
             order.SaveDetails(orderDetails);
 
-            order.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails);
+            var emailList = orderToCopy.AdditionalEmails.Split(";").ToList();
+            emailList.AddRange(orderDetails.AdditionalEmails.ToList());
+
+            order.AdditionalEmails = string.Join(";", emailList.Distinct());
+            //order.AdditionalEmails = string.Join(";", orderDetails.AdditionalEmails); //Don't really know why we were copying these, but try to get all emails with the list above....
 
             //order.AdditionalEmails = AdditionalEmailsHelper.AddClientInfoEmails(order, orderDetails.ClientInfo); //Maybe need to add person duplicating?
 

@@ -240,6 +240,7 @@ namespace AnlabMvc.Controllers
                 order.CreatorId = orderToCopy.CreatorId;
                 order.Creator = orderToCopy.Creator;
                 order.ClientId = orderToCopy.ClientId;
+                order.ClientName = orderToCopy.ClientName;
                 order.Status = OrderStatusCodes.Confirmed;
                 var orderDetails = order.GetOrderDetails();
                 var labComments = new StringBuilder(orderDetails.LabComments);
