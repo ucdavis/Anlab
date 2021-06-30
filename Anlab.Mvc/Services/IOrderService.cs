@@ -148,6 +148,9 @@ namespace AnlabMvc.Services
             if (!adminCopy)
             {
                 orderDetails.AdditionalInfo = string.Empty;
+                orderDetails.LabComments = string.Empty;
+                orderDetails.AdjustmentComments = string.Empty;
+                orderDetails.AdjustmentAmount = 0.0m;
             }
             var tests = CalculateTestDetails(order).ToList();
 
