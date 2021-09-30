@@ -51,7 +51,12 @@ export class TestInfo extends React.PureComponent<
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this._cancelAction}>Cancel</Button>
-            <Button onClick={this._saveAction}>Save</Button>
+            <Button
+              onClick={this._saveAction}
+              disabled={this.state.internalValue === ''}
+            >
+              Save
+            </Button>
           </Modal.Footer>
         </Modal>
       </div>
