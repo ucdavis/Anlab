@@ -45,14 +45,34 @@ namespace AnlabMvc.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var model = await _context.Orders.Where(a => a.CreatorId == CurrentUserId).ToArrayAsync();
+            var model = await _context.Orders.Where(a => a.CreatorId == CurrentUserId).Select(a => new OrderListModel
+            {
+                Id              = a.Id,
+                RequestNum      = a.RequestNum,
+                Project         = a.Project,
+                Status          = a.Status,
+                Paid            = a.Paid,
+                Created         = a.Created,
+                Updated         = a.Updated,
+                ShareIdentifier = a.ShareIdentifier
+            }).ToArrayAsync();
 
             return View(model);
         }
 
         public async Task<IActionResult> Favorites()
         {
-            var savedOrders = await _context.SavedOrders.Where(a => a.UserId == CurrentUserId).Select(s => s.Order).ToArrayAsync();
+            var savedOrders = await _context.SavedOrders.Where(a => a.UserId == CurrentUserId).Select(a => new OrderListModel
+            {
+                Id              = a.Order.Id,
+                RequestNum      = a.Order.RequestNum,
+                Project         = a.Order.Project,
+                Status          = a.Order.Status,
+                Paid            = a.Order.Paid,
+                Created         = a.Order.Created,
+                Updated         = a.Order.Updated,
+                ShareIdentifier = a.Order.ShareIdentifier
+            }).ToArrayAsync();
 
             return View(savedOrders);
         }
