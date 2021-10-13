@@ -146,10 +146,10 @@ namespace Test.TestsController
 
             //Assert
             var result = Assert.IsType<ViewResult>(controllerResult);
-            var model = Assert.IsType<Order[]>(result.Model);
+            var model = Assert.IsType<OrderListModel[]>(result.Model);
             model.Length.ShouldBe(2);
-            model[0].CreatorId.ShouldBe("Creator1");
-            model[1].CreatorId.ShouldBe("Creator1");        
+            model[0].Id.ShouldBe(1);
+            model[1].Id.ShouldBe(3);        
         }
 
        
