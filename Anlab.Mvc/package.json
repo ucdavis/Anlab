@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "scripts": {
     "debug": "ASPNETCORE_ENVIRONMENT=Development dotnet watch run",
+    "start": "node_modules/.bin/webpack-dev-server",
     "test": "karma start"
   },
   "dependencies": {
@@ -63,6 +64,7 @@
     "typescript": "2.4.1",
     "url-loader": "0.5.9",
     "webpack": "2.5.1",
+    "webpack-dev-server": "^2.5.0",
     "webpack-hot-middleware": "2.18.2"
   }
 }

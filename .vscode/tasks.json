@@ -1,20 +1,41 @@
 {
-  // See https://go.microsoft.com/fwlink/?LinkId=733558
-  // for the documentation about the tasks.json format
   "version": "2.0.0",
-  "command": "dotnet",
-  "args": [],
   "tasks": [
     {
       "label": "build",
-      "type": "shell",
       "command": "dotnet",
-      "args": ["build"],
-      "problemMatcher": "$msCompile",
-      "group": {
-        "_id": "build",
-        "isDefault": false
-      }
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/Anlab.Mvc/AnlabMvc.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publish",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "publish",
+        "${workspaceFolder}/Anlab.Mvc/AnlabMvc.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "watch",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "watch",
+        "run",
+        "--project",
+        "${workspaceFolder}/Anlab.Mvc/AnlabMvc.csproj"
+      ],
+      "problemMatcher": "$msCompile"
     }
   ]
 }

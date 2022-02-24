@@ -17,8 +17,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure;
 using Moq;
 using Shouldly;
 using Test.Helpers;
@@ -38,6 +38,7 @@ namespace Test.TestsController
 
         public Mock<FakeRoleManager> MockRolemanager { get; set; }
         public Mock<ClaimsPrincipal> MockClaimsPrincipal { get; set; }
+        public Mock<TempDataSerializer> MockTempDataSerializer { get; set; }
 
         //Setup Data
         public List<User> UserData { get; set; }
@@ -56,8 +57,9 @@ namespace Test.TestsController
 
             MockClaimsPrincipal = new Mock<ClaimsPrincipal>();
 
+            MockTempDataSerializer = new Mock<TempDataSerializer>();
 
-            var mockDataProvider = new Mock<SessionStateTempDataProvider>();
+            var mockDataProvider = new Mock<SessionStateTempDataProvider>(MockTempDataSerializer.Object);
 
 
             //Default Data
@@ -94,7 +96,7 @@ namespace Test.TestsController
         }
 
         #region Index
-        
+
         [Fact]
         public async Task TestIndexReturnsViewWithExpectedResults1()
         {
@@ -114,8 +116,8 @@ namespace Test.TestsController
             MockUserManager.Setup(a => a.GetUsersInRoleAsync(RoleCodes.Admin)).ReturnsAsync(adminUsers);
             MockUserManager.Setup(a => a.GetUsersInRoleAsync(RoleCodes.LabUser)).ReturnsAsync(labUsers);
             MockUserManager.Setup(a => a.GetUsersInRoleAsync(RoleCodes.Reports)).ReturnsAsync(reportUsers);
-            
-            
+
+
             // Act
             var controllerResult = await Controller.Index();
 
@@ -205,7 +207,7 @@ namespace Test.TestsController
         public async Task TestSearchAdminUserRedirectsToIndex1(string value)
         {
             // Arrange
-            
+
             // Act
             var controllerResult = await Controller.SearchAdminUser(value);
 
@@ -257,7 +259,7 @@ namespace Test.TestsController
         public async Task TestSearchAdminUserThrowsExceptionIfDuplicate()
         {
             // Arrange
-            UserData[1].NormalizedUserName = "XXX@XX.COM"; 
+            UserData[1].NormalizedUserName = "XXX@XX.COM";
             UserData[2].NormalizedUserName = "XXX@XX.COM"; //Should never happen...
 
             // Act
@@ -276,7 +278,7 @@ namespace Test.TestsController
         public async Task TestEditAdminReturnsNotFound()
         {
             // Arrange
-            
+
             // Act
             var controllerResult = await Controller.EditAdmin("XXX");
 
@@ -313,7 +315,7 @@ namespace Test.TestsController
         public async Task TestListClientsReturnsView()
         {
             // Arrange
-            
+
             // Act
             var controllerResult = await Controller.ListClients();
 
@@ -338,7 +340,7 @@ namespace Test.TestsController
         public async Task TestEditUserGetRedirectsWhenUserNotFound(string value)
         {
             // Arrange
-            
+
             // Act
             var controllerResult = await Controller.EditUser(value);
 
@@ -479,7 +481,7 @@ namespace Test.TestsController
         public async Task TestAddUserToRoleThrowsExceptionWhenUserNotFound(string role, bool add)
         {
             // Arrange
-            
+
             // Act
             var ex = await Assert.ThrowsAsync<InvalidOperationException>(async () => await Controller.AddUserToRole("xxx", role, add));
 
@@ -498,7 +500,7 @@ namespace Test.TestsController
         public async Task TestAddUserToRoleWhenAdd(string role)
         {
             // Arrange
-            
+
 
             // Act
             var controllerResult = await Controller.AddUserToRole(UserData[1].Id, role, true);
@@ -771,7 +773,7 @@ namespace Test.TestsController
             ControllerReflection.ControllerInherits("ApplicationController");
             var authAttribute = ControllerReflection.ClassExpectedAttribute<AuthorizeAttribute>(3);
             authAttribute.ElementAt(0).Roles.ShouldBe($"{RoleCodes.Admin},{RoleCodes.LabUser}");
-            
+
             ControllerReflection.ClassExpectedAttribute<AutoValidateAntiforgeryTokenAttribute>(3);
             ControllerReflection.ClassExpectedAttribute<ControllerAttribute>(3);
         }
@@ -823,7 +825,7 @@ namespace Test.TestsController
             ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("AddUserToRole", 3 + countAdjustment, "AddUserToRole-2", false, showListOfAttributes: false);
             ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("AddUserToRole", 3 + countAdjustment, "AddUserToRole-3", false, showListOfAttributes: false);
 
-            //8 
+            //8
             ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("MailQueue", 1 + countAdjustment, "MailQueue-1", false, showListOfAttributes: false);
 
             //9

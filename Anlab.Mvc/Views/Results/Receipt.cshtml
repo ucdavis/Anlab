@@ -160,7 +160,7 @@
     {
 
     @*don't use the partial async print style here didn't work*@
-    @Html.Partial("_PrintStyle")
+    @Html.PartialAsync("_PrintStyle")
 
     <style media="screen">
 
@@ -192,6 +192,6 @@
 }
 @section Scripts
     {
-    @Html.Partial("_PrintScript")
+    @Html.PartialAsync("_PrintScript")
 }
 

@@ -29,11 +29,11 @@
     </dl>
 
 
-    @Html.Partial("_EditAdminForm", new EditAdminModel { User = Model.User, RoleCode = RoleCodes.Admin, IsActive = Model.IsAdmin })
-    @Html.Partial("_EditAdminForm", new EditAdminModel { User = Model.User, RoleCode = RoleCodes.LabUser, IsActive = Model.IsLabUser })
-    @Html.Partial("_EditAdminForm", new EditAdminModel { User = Model.User, RoleCode = RoleCodes.Reports, IsActive = Model.IsReports })
+    @Html.PartialAsync("_EditAdminForm", new EditAdminModel { User = Model.User, RoleCode = RoleCodes.Admin, IsActive = Model.IsAdmin })
+    @Html.PartialAsync("_EditAdminForm", new EditAdminModel { User = Model.User, RoleCode = RoleCodes.LabUser, IsActive = Model.IsLabUser })
+    @Html.PartialAsync("_EditAdminForm", new EditAdminModel { User = Model.User, RoleCode = RoleCodes.Reports, IsActive = Model.IsReports })
 
-   
+
 
     <div>
         <a asp-action="Index">Back to List</a>

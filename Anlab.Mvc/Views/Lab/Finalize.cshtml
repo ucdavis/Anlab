@@ -5,7 +5,7 @@
     ViewData["Title"] = "Confirmation";
 }
 <div class="col">
-@Html.Partial("_OrderDetails")
+@Html.PartialAsync("_OrderDetails")
 
     <form id="form" method="post" asp-controller="Lab" enctype="multipart/form-data" asp-action="Finalize" asp-route-id="@Model.Order.Id">
         <div class="form-group">

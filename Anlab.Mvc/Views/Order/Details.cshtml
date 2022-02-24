@@ -18,14 +18,14 @@
 
 <div class="col">
 
-    @Html.Partial("_OrderDetails")
+    @Html.PartialAsync("_OrderDetails")
 
 </div>
 @section AdditionalStyles
     {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
 
-    @Html.Partial("_PrintStyle") 
+    @Html.PartialAsync("_PrintStyle")
 }
 
 @section Scripts
@@ -46,6 +46,6 @@
 
     @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
 
-    @Html.Partial("_PrintScript")
+    @Html.PartialAsync("_PrintScript")
 
 }
