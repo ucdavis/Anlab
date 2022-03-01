@@ -263,11 +263,12 @@ namespace Test.TestsController
             UserData[2].NormalizedUserName = "XXX@XX.COM"; //Should never happen...
 
             // Act
-            var ex = await Assert.ThrowsAsync<InvalidOperationException>(async () => await Controller.SearchAdminUser("xxx@xx.com"));
+            var ex = await Assert.ThrowsAsync<TargetInvocationException>(async () => await Controller.SearchAdminUser("xxx@xx.com"));
 
             // Assert
             ex.ShouldNotBeNull();
-            ex.Message.ShouldBe("Sequence contains more than one matching element");
+            ex.InnerException.ShouldBeOfType<InvalidOperationException>();
+            ex.InnerException.Message.ShouldBe("Sequence contains more than one matching element");
         }
 
         #endregion SearchAdminUser
@@ -483,11 +484,12 @@ namespace Test.TestsController
             // Arrange
 
             // Act
-            var ex = await Assert.ThrowsAsync<InvalidOperationException>(async () => await Controller.AddUserToRole("xxx", role, add));
+            var ex = await Assert.ThrowsAsync<TargetInvocationException>(async () => await Controller.AddUserToRole("xxx", role, add));
 
             // Assert
             ex.ShouldNotBeNull();
-            ex.Message.ShouldBe("Sequence contains no matching element");
+            ex.InnerException.ShouldBeOfType<InvalidOperationException>();
+            ex.InnerException.Message.ShouldBe("Sequence contains no matching element");
 
             MockUserManager.Verify(a => a.AddToRoleAsync(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
             MockUserManager.Verify(a => a.RemoveFromRoleAsync(It.IsAny<User>(), It.IsAny<string>()), Times.Never);

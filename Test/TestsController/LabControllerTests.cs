@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure;
 using Moq;
 using Shouldly;
 using System.Collections.Generic;
@@ -38,6 +39,7 @@ namespace Test.TestsController
         public Mock<ISlothService> MockSlothService { get; set; }
         public Mock<ClaimsPrincipal> MockClaimsPrincipal { get; set; }
         public Mock<IFinancialService> MockFinancialService { get; set; }
+        public Mock<TempDataSerializer> MockTempDataSerializer { get; set; }
 
         public Mock<IFormFile> MockFormFile { get; set; }
 
@@ -65,8 +67,9 @@ namespace Test.TestsController
             MockSlothService = new Mock<ISlothService>();
             MockFormFile = new Mock<IFormFile>();
             MockFinancialService = new Mock<IFinancialService>();
+            MockTempDataSerializer = new Mock<TempDataSerializer>();
 
-            var mockDataProvider = new Mock<SessionStateTempDataProvider>();
+            var mockDataProvider = new Mock<SessionStateTempDataProvider>(MockTempDataSerializer.Object);
 
 
 

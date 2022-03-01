@@ -14,7 +14,7 @@ namespace Anlab.Core.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-            
+
         }
 
         public override int SaveChanges()
@@ -39,7 +39,7 @@ namespace Anlab.Core.Data
             UpdateDates();
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
-        
+
 
         private void UpdateDates()
         {
@@ -63,7 +63,7 @@ namespace Anlab.Core.Data
         [Obsolete("Just use for tests")]
         public ApplicationDbContext() { }
 
-        public new virtual DbSet<User> Users {get; set; }
+        // public new virtual DbSet<User> Users {get; set; }
 
         public virtual DbSet<Order> Orders { get; set; }
 

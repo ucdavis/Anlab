@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure;
 using Microsoft.Extensions.Options;
 using Moq;
 using Newtonsoft.Json.Linq;
@@ -40,6 +41,7 @@ namespace Test.TestsController
         public Mock<IFinancialService> MockFinancialService { get; set; }
         public Mock<IOptions<AppSettings>> MockAppSettings { get; set; }
         public Mock<ClaimsPrincipal> MockClaimsPrincipal { get; set; }
+        public Mock<TempDataSerializer> MockTempDataSerializer { get; set; }
 
         //Setup Data
         public List<Order> OrderData { get; set; }
@@ -66,7 +68,8 @@ namespace Test.TestsController
             MockAppSettings = new Mock<IOptions<AppSettings>>();
             MockDbContext = new Mock<ApplicationDbContext>();
             MockClaimsPrincipal = new Mock<ClaimsPrincipal>();
-            var mockDataProvider = new Mock<SessionStateTempDataProvider>();
+            MockTempDataSerializer = new Mock<TempDataSerializer>();
+            var mockDataProvider = new Mock<SessionStateTempDataProvider>(MockTempDataSerializer.Object);
 
             //Default data
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
@@ -1095,8 +1098,8 @@ namespace Test.TestsController
 
             //7 & 8
             ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Confirmation", 1 + countAdjustment, "CopyGet-1", showListOfAttributes: false);
-            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Confirmation", 2 + countAdjustment, "CopyPost-1",true, showListOfAttributes: false);
-            ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("Confirmation", 2 + countAdjustment, "CopyPost-2",true , showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Confirmation", 2 + countAdjustment, "CopyPost-1", true, showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("Confirmation", 2 + countAdjustment, "CopyPost-2", true, showListOfAttributes: false);
 
             //9
             ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Confirmed", 1 + countAdjustment, "Confirmed-1", showListOfAttributes: false);
