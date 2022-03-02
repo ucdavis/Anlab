@@ -4,61 +4,92 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- master
+  - master
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: "ubuntu-latest"
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  solution: "**/*.sln"
+  buildPlatform: "Any CPU"
+  buildConfiguration: "Release"
 
-steps:
+stages:
+  - stage: Test
+    jobs:
+      - job:
+        steps:
+          - task: UseDotNet@2
+            displayName: "Use .NET 6 sdk"
+            inputs:
+              packageType: "sdk"
+              version: 6.x
 
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
-    useGlobalJson: true
-    workingDirectory: 'Anlab.MVC'
+          - task: NodeTool@0
+            displayName: "Use Node 14 (LTS)"
+            inputs:
+              versionSpec: "14.x"
 
-- task: UseNode@1
-  inputs:
-    version: '8.x'
-    
-- task: CmdLine@2
-  displayName: 'yarn install'
-  inputs:
-    script: 'yarn install'
-    workingDirectory: 'Anlab.MVC'
+          - task: Npm@1
+            displayName: "npm install"
+            inputs:
+              command: "install"
+              workingDir: "./Anlab.MVC"
 
-- task: NuGetToolInstaller@1
+          - task: DotNetCoreCLI@2
+            displayName: "Run Server Tests"
+            inputs:
+              command: "test"
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+          - task: Npm@1
+            displayName: "npm test"
+            inputs:
+              command: "custom"
+              workingDir: "Anlab.MVC"
+              customCommand: "test"
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  - stage: Publish
+    jobs:
+      - job:
+        steps:
+          - task: UseDotNet@2
+            displayName: "Use .NET 6 sdk"
+            inputs:
+              packageType: "sdk"
+              version: 6.x
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+          - task: DotNetCoreCLI@2
+            displayName: "Publish Anlab.Mvc"
+            inputs:
+              command: "publish"
+              publishWebProjects: true
+              zipAfterPublish: false
+              modifyOutputPath: false
+              projects: "./Anlab.Mvc/AnlabMvc.csproj"
+              arguments: "--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/"
 
-- task: Npm@1
-  displayName: 'npm test'
-  inputs:
-    command: 'custom'
-    workingDir: 'Anlab.MVC'
-    customCommand: 'test'
+          - task: DotNetCoreCLI@2
+            displayName: "Publish Anlab Jobs: MoneyMovement"
+            inputs:
+              command: "publish"
+              publishWebProjects: false
+              zipAfterPublish: false
+              projects: "./Anlab.Jobs.MoneyMovement/Anlab.Jobs.MoneyMovement.csproj"
+              arguments: "--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/app_data/jobs/triggered"
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+          - task: DotNetCoreCLI@2
+            displayName: "Publish Anlab Jobs: SendMail"
+            inputs:
+              command: "publish"
+              publishWebProjects: false
+              zipAfterPublish: false
+              projects: "./Anlab.Jobs.SendMail/Anlab.Jobs.SendMail.csproj"
+              arguments: "--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/app_data/jobs/triggered"
+
+          - task: PublishBuildArtifacts@1
+            condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+            displayName: "Publish Build Artifacts for master branch builds"
+            inputs:
+              PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+              ArtifactName: "drop"
+              publishLocation: "Container"
