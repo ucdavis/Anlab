@@ -34,7 +34,7 @@ stages:
             displayName: "npm install"
             inputs:
               command: "install"
-              workingDir: "./Anlab.MVC"
+              workingDir: "./Anlab.Mvc"
 
           - task: DotNetCoreCLI@2
             displayName: "Run Server Tests"
@@ -45,7 +45,7 @@ stages:
             displayName: "npm test"
             inputs:
               command: "custom"
-              workingDir: "Anlab.MVC"
+              workingDir: "./Anlab.Mvc"
               customCommand: "test"
 
   - stage: Publish
