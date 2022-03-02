@@ -111,7 +111,7 @@
     }
 
 
-    @Html.PartialAsync("_OrderDetails", Model.OrderReviewModel)
+    @await Html.PartialAsync("_OrderDetails", Model.OrderReviewModel)
 
 </div>
 
@@ -119,7 +119,7 @@
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
-    @Html.PartialAsync("_PrintStyle")
+    @await Html.PartialAsync("_PrintStyle")
 }
 @section Scripts
 {
@@ -147,5 +147,5 @@
         });
     </script>
 
-    @Html.PartialAsync("_PrintScript")
+    @await Html.PartialAsync("_PrintScript")
 }

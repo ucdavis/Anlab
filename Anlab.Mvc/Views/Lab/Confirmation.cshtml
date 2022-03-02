@@ -5,7 +5,7 @@
     ViewData["Title"] = "Receive Work Order";
 }
 <div class="col">
-    @Html.PartialAsync("_OrderDetails")
+    @await Html.PartialAsync("_OrderDetails")
     <form  asp-controller="Lab" asp-action="AddRequestNumber" asp-route-id="@Model.Order.Id" method="post">
         @Html.Hidden("confirm", true)
         @Html.Hidden("requestNum", Model.Order.RequestNum)

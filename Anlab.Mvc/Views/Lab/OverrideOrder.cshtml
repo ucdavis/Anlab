@@ -5,7 +5,7 @@
     ViewData["Title"] = "Override Order";
 }
 <div class="col">
-    @Html.PartialAsync("_OrderDetails", @Model.OrderReviewModel)
+    @await Html.PartialAsync("_OrderDetails", @Model.OrderReviewModel)
     <form enctype="multipart/form-data" asp-controller="Lab" asp-action="OverrideOrder" asp-route-id="@Model.OrderReviewModel.Order.Id" method="post">
         <div class="form-horizontal">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
