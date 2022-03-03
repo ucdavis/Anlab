@@ -16,15 +16,19 @@ namespace AnlabMvc.Controllers
         {
             _dbInitializationService = dbInitializationService;
         }
+
+#if DEBUG
         public async Task<IActionResult> ResetDb()
         {
-#if DEBUG
             await _dbInitializationService.RecreateAndInitialize();
-#else
-            throw new NotImplementedException("WHAT!!! Don't reset DB in Release!");
-#endif
             return RedirectToAction("LogoutDirect", "Account");
         }
+#else
+        public Task<IActionResult> ResetDb()
+        {
+            throw new NotImplementedException("WHAT!!! Don't reset DB in Release!");
+        }
+#endif
 
     }
 }
