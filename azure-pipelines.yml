@@ -58,6 +58,11 @@ stages:
               packageType: "sdk"
               version: 6.x
 
+          - task: NodeTool@0
+            displayName: "Use Node 14 (LTS)"
+            inputs:
+              versionSpec: "14.x"
+
           - task: DotNetCoreCLI@2
             displayName: "Publish Anlab.Mvc"
             inputs:
