@@ -31,7 +31,7 @@ namespace Test.TestsController
         public async Task TestResetDbCallsService()
         {
             // Arrange
-            
+
 
 
             // Act
@@ -46,7 +46,7 @@ namespace Test.TestsController
         }
 #else
         [Fact]
-        public async Task TestResetDbThrowsException()
+        public Task TestResetDbThrowsException()
         {
             // Arrange
 
@@ -55,6 +55,8 @@ namespace Test.TestsController
             // Assert
             ex.Result.Message.ShouldBe("WHAT!!! Don't reset DB in Release!");
             MockDbIntService.Verify(a => a.RecreateAndInitialize(), Times.Never);
+
+            return Task.CompletedTask;
         }
 #endif
 
