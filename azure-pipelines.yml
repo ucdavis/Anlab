@@ -30,12 +30,6 @@ stages:
             inputs:
               versionSpec: "14.x"
 
-          - task: Npm@1
-            displayName: "npm install"
-            inputs:
-              command: "install"
-              workingDir: "./Anlab.Mvc"
-
           - task: DotNetCoreCLI@2
             displayName: "Run Server Tests"
             inputs:
