@@ -123,7 +123,6 @@
   </ItemGroup>
   <Target Name="RunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-    <Exec Command="npm install" />
     <Exec Command="node node_modules/webpack/bin/webpack.js --env.prod" />
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
@@ -138,11 +137,20 @@
     <!-- File with mtime of last successful npm install -->
     <NpmInstallStampFile>node_modules/.install-stamp</NpmInstallStampFile>
   </PropertyGroup>
-  <Target Name="NpmInstall"
+  <Target Name="NpmInstallDebug"
     BeforeTargets="BeforeBuild"
+    Condition=" '$(Configuration)' == 'Debug' "
     Inputs="package.json"
     Outputs="$(NpmInstallStampFile)">
     <Exec Command="npm install" />
+    <Touch Files="$(NpmInstallStampFile)" AlwaysCreate="true" />
+  </Target>
+  <Target Name="NpmInstallRelease"
+    BeforeTargets="BeforeBuild"
+    Condition=" '$(Configuration)' == 'Release' "
+    Inputs="package.json"
+    Outputs="$(NpmInstallStampFile)">
+    <Exec Command="npm ci" />
     <Touch Files="$(NpmInstallStampFile)" AlwaysCreate="true" />
   </Target>
 </Project>
