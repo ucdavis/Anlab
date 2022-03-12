@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "scripts": {
     "debug": "ASPNETCORE_ENVIRONMENT=Development dotnet watch run",
-    "start": "node_modules/.bin/webpack-dev-server",
+    "start": "npm run killdevserver && npm run startdevserver",
+    "startdevserver": "node_modules/.bin/webpack-dev-server",
+    "killdevserver": "node node_modules/kill-port/cli 5001",
     "test": "karma start"
   },
   "dependencies": {
@@ -51,6 +53,7 @@
     "karma-jsdom-launcher": "^6.1.1",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.6",
+    "kill-port": "^1.6.1",
     "node-sass": "^4.14.1",
     "postcss-cssnext": "2.10.0",
     "postcss-loader": "1.3.3",

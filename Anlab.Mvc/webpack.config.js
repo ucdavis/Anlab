@@ -16,6 +16,15 @@ module.exports = (env) => {
         }
     };
     return {
+        devServer: {
+          contentBase: path.join(__dirname, "./wwwroot"),
+          compress: true,
+          overlay: true,
+          port: 5001,
+          proxy: {
+            "/": "http://localhost:5000",
+          },
+        },
         stats: { modules: false },
         entry: {
             'root': './Client/root.tsx',

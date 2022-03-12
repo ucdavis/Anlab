@@ -42,6 +42,7 @@
 		<PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
 		<PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1" />
     <PackageReference Include="Serilog.Sinks.Stackify" Version="2.0.2" />
+    <PackageReference Include="SpaCliMiddleware" Version="5.0.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="8.4.0" />
     <PackageReference Include="YamlDotNet" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.2" />

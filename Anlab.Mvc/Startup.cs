@@ -21,12 +21,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing.Constraints;
+using Microsoft.AspNetCore.SpaServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using SpaCliMiddleware;
 using StackifyLib;
 
 namespace AnlabMvc
@@ -197,23 +199,17 @@ namespace AnlabMvc
                     pattern: "pages/{id}",
                     defaults: new { controller = "Pages", action = "ViewPage" });
 
-                // any other nonfile route should be handled by the spa, except leave the sockjs route alone if we are in dev mode (hot reloading)
                 if (env.IsDevelopment())
                 {
-                    endpoints.MapControllerRoute(
-                        name: "react",
-                        pattern: "{*path:nonfile}",
-                        defaults: new { controller = "Home", action = "Index" },
-                        constraints: new { path = new RegexRouteConstraint("^(?!sockjs-node).*$") }
-                    );
-                }
-                else
-                {
-                    endpoints.MapControllerRoute(
-                        name: "react",
-                        pattern: "{*path:nonfile}",
-                        defaults: new { controller = "Home", action = "Index" }
-                    );
+                    endpoints.MapToSpaCliProxy(
+                        "/dist/{*path}",
+                        new SpaOptions { SourcePath = "Client" },
+                        npmScript: "start",
+                        port: 5001,
+                        regex: "Project is running",
+                        forceKill: true,
+                        useProxy: true,
+                        runner: ScriptRunnerType.Npm);
                 }
             });
 
