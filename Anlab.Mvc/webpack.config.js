@@ -21,9 +21,10 @@ module.exports = (env) => {
           compress: true,
           overlay: true,
           port: 3001,
-          proxy: {
-            "/": "http://localhost:5000",
-          },
+          // proxying back to the fronting aspnetcore app can cause an infinite loop
+          // proxy: {
+          //   "/": "http://localhost:5000",
+          // },
         },
         stats: { modules: false },
         entry: {
