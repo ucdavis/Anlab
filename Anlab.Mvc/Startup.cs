@@ -205,7 +205,7 @@ namespace AnlabMvc
                         "/dist/{*path}",
                         new SpaOptions { SourcePath = "Client" },
                         npmScript: "start",
-                        port: 5001,
+                        port: 3001,
                         regex: "Project is running",
                         forceKill: true,
                         useProxy: true,

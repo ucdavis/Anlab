@@ -5,7 +5,7 @@
     "debug": "ASPNETCORE_ENVIRONMENT=Development dotnet watch run",
     "start": "npm run killdevserver && npm run startdevserver",
     "startdevserver": "node_modules/.bin/webpack-dev-server",
-    "killdevserver": "node node_modules/kill-port/cli 5001",
+    "killdevserver": "node node_modules/kill-port/cli 3001",
     "test": "karma start"
   },
   "dependencies": {

@@ -20,7 +20,7 @@ module.exports = (env) => {
           contentBase: path.join(__dirname, "./wwwroot"),
           compress: true,
           overlay: true,
-          port: 5001,
+          port: 3001,
           proxy: {
             "/": "http://localhost:5000",
           },
