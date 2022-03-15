@@ -2,10 +2,12 @@
   "name": "anlab",
   "version": "0.1.0",
   "scripts": {
-    "debug": "ASPNETCORE_ENVIRONMENT=Development dotnet watch run",
+    "debug": "dotnet watch run",
+    "debugproduction": "npm run webpack && dotnet watch run --launch-profile AnlabMvc.Production",
     "start": "npm run killdevserver && npm run startdevserver",
     "startdevserver": "node_modules/.bin/webpack-dev-server",
     "killdevserver": "node node_modules/kill-port/cli 3001",
+    "webpack": "node node_modules/webpack/bin/webpack.js --env.prod",
     "test": "karma start"
   },
   "dependencies": {
