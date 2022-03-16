@@ -9,16 +9,16 @@
 <p>
 
     <form asp-controller="order" asp-action="Delete" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal" style="margin-left: 5px;margin-right: 5px">
-        <button type="submit" class="btn btn-small"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>  
+        <button type="submit" class="btn btn-small"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
     </form>
-    
+
     <a asp-action="Edit" asp-route-id="@Model.Order.Id" class="btn btn-small">Edit Order</a>
-    
+
     <form asp-controller="order" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal" style="margin-left: 5px;margin-right: 5px">
         @Html.Hidden("confirm", true)
         <button type="submit" class="btn btn-small"> @(string.Format("{0:C}", Model.OrderDetails.Total)) Confirm Order</button>
     </form>
-    
+
 </p>
 
 
@@ -32,7 +32,7 @@
         <p>All samples must be numbered sequentially starting at #1.</p>
         <p>If you would like your sample descriptions included in the report, you may send an Excel file with that information to the lab email: anlab@ucdavis.edu Please reference the online order number in the email subject.</p>
     </div>
-    @Html.Partial("_OrderDetails")
+    @await Html.PartialAsync("_OrderDetails")
 
 
 </div>

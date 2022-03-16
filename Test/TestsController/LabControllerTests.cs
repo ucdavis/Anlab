@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure;
 using Moq;
 using Shouldly;
 using System.Collections.Generic;
@@ -38,6 +39,7 @@ namespace Test.TestsController
         public Mock<ISlothService> MockSlothService { get; set; }
         public Mock<ClaimsPrincipal> MockClaimsPrincipal { get; set; }
         public Mock<IFinancialService> MockFinancialService { get; set; }
+        public Mock<TempDataSerializer> MockTempDataSerializer { get; set; }
 
         public Mock<IFormFile> MockFormFile { get; set; }
 
@@ -65,8 +67,9 @@ namespace Test.TestsController
             MockSlothService = new Mock<ISlothService>();
             MockFormFile = new Mock<IFormFile>();
             MockFinancialService = new Mock<IFinancialService>();
+            MockTempDataSerializer = new Mock<TempDataSerializer>();
 
-            var mockDataProvider = new Mock<SessionStateTempDataProvider>();
+            var mockDataProvider = new Mock<SessionStateTempDataProvider>(MockTempDataSerializer.Object);
 
 
 
@@ -75,7 +78,7 @@ namespace Test.TestsController
             for (int i = 0; i < 5; i++)
             {
                 var order = CreateValidEntities.Order(i + 1, true);
-                order.Creator = CreateValidEntities.User(2);                
+                order.Creator = CreateValidEntities.User(2);
                 OrderData.Add(order);
             }
 
@@ -96,7 +99,7 @@ namespace Test.TestsController
             MockClaimsPrincipal.Setup(a => a.Claims).Returns(user.Claims);
             MockClaimsPrincipal.Setup(a => a.FindFirst(It.IsAny<string>())).Returns(new Claim(ClaimTypes.NameIdentifier, "Creator1"));
             MockDbContext.Setup(m => m.Orders).Returns(OrderData.AsQueryable().MockAsyncDbSet().Object);
-            MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);  
+            MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);
             MockDbContext.Setup(a => a.History).Returns(new List<History>().AsQueryable().MockAsyncDbSet().Object);
             MockHttpContext.Setup(m => m.User).Returns(MockClaimsPrincipal.Object);
 
@@ -112,7 +115,7 @@ namespace Test.TestsController
         }
 
         #region Orders
-        
+
         [Theory]
         [InlineData(OrderStatusCodes.Confirmed, false)]
         [InlineData(OrderStatusCodes.Received, false)]
@@ -127,7 +130,7 @@ namespace Test.TestsController
             // Arrange
             foreach (var order in OrderData)
             {
-                order.Status = OrderStatusCodes.Created;               
+                order.Status = OrderStatusCodes.Created;
             }
 
             OrderData[1].Status = value;
@@ -155,8 +158,8 @@ namespace Test.TestsController
                 modelResult[1].ClientId.ShouldBe("ClientId2");
                 modelResult[1].Creator.ShouldNotBeNull();
                 modelResult[1].Creator.Email.ShouldBe("test2@testy.com");
-                modelResult[1].Created.ShouldNotBeNull();
-                modelResult[1].Updated.ShouldNotBeNull();
+                modelResult[1].Created.ShouldNotBe(default);
+                modelResult[1].Updated.ShouldNotBe(default);
                 modelResult[1].RequestNum.ShouldBe("Blah");
                 modelResult[1].Status.ShouldBe(value);
                 modelResult[1].ShareIdentifier.ShouldBe(SpecificGuid.GetGuid(2));
@@ -167,7 +170,7 @@ namespace Test.TestsController
                 modelResult[1].ClientName.ShouldBe("Hup");
             }
 
-            Controller.ViewBag.ShowComplete = showComplete;            
+            Controller.ViewBag.ShowComplete = showComplete;
 
         }
 
@@ -201,7 +204,7 @@ namespace Test.TestsController
         public async Task TestDetailsReturnsNotFound1()
         {
             // Arrange
-            
+
 
 
             // Act
@@ -255,7 +258,7 @@ namespace Test.TestsController
         public async Task TestAddRequestNumberGetReturnsNotFound()
         {
             // Arrange
-            
+
             // Act
             var cr = await Controller.AddRequestNumber(9);
 
@@ -311,7 +314,7 @@ namespace Test.TestsController
         {
             // Arrange
             OrderData[1].Status = OrderStatusCodes.Confirmed;
-            
+
             // Act
             var cr = await Controller.AddRequestNumber(OrderData[1].Id, true, value);
 
@@ -339,7 +342,7 @@ namespace Test.TestsController
             rr.ActionName.ShouldBe("AddRequestNumber");
             rr.ControllerName.ShouldBeNull();
 #endif
-            Controller.ErrorMessage.ShouldBe("That request number is already in use");            
+            Controller.ErrorMessage.ShouldBe("That request number is already in use");
         }
 
         [Fact]
@@ -355,7 +358,7 @@ namespace Test.TestsController
             // Assert
             Assert.IsType<NotFoundResult>(cr); //Because it didn't find the lower case match.
 
-            Controller.ErrorMessage.ShouldBeNull(); 
+            Controller.ErrorMessage.ShouldBeNull();
         }
 
         [Fact]
@@ -484,7 +487,7 @@ namespace Test.TestsController
         [Theory]
         [InlineData("AdditionalEmails2")]
         [InlineData("AdditionalEmails2;Email-xx")]
-        public async Task TestAddRequestNumberPostUpdatesOrderAdditionalEmails(string value) 
+        public async Task TestAddRequestNumberPostUpdatesOrderAdditionalEmails(string value)
         {
             // Arrange
             OrderData[1].Status = OrderStatusCodes.Confirmed;
@@ -574,7 +577,7 @@ namespace Test.TestsController
 
 
         [Fact]
-        public async Task TestAddRequestNumberPostUpdatesOrderWithExpectedValues2() 
+        public async Task TestAddRequestNumberPostUpdatesOrderWithExpectedValues2()
         {
             // Arrange
             OrderData[1].Status = OrderStatusCodes.Confirmed;
@@ -1017,7 +1020,7 @@ namespace Test.TestsController
         [Theory]
         [InlineData(" ")]
         [InlineData(null)]
-        [InlineData("")]        
+        [InlineData("")]
         public async Task TestConfirmationPostRedirectsWhenNoRequestNumber(string value)
         {
             // Arrange
@@ -1504,7 +1507,7 @@ namespace Test.TestsController
         public async Task TestOverrideOrderGetReturnsNotFound()
         {
             // Arrange
-            
+
             // Act
             var controllerResult = await Controller.OverrideOrder(9);
 
@@ -1560,7 +1563,7 @@ namespace Test.TestsController
         [InlineData(OrderStatusCodes.Created)]
         [InlineData(OrderStatusCodes.Received)]
         [InlineData(OrderStatusCodes.Finalized)]
-        [InlineData(OrderStatusCodes.Complete)]        
+        [InlineData(OrderStatusCodes.Complete)]
         public async Task TestOverrideOrderGetReturnsView3(string value)
         {
             // Arrange
@@ -1746,7 +1749,7 @@ namespace Test.TestsController
             Controller.Message.ShouldBe("Order Updated");
 
             MockDbContext.Verify(a => a.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-            MockFileStorageService.Verify(a => a.UploadFile(model.UploadFile), Times.Once);            
+            MockFileStorageService.Verify(a => a.UploadFile(model.UploadFile), Times.Once);
         }
 
         [Fact]
@@ -1896,7 +1899,7 @@ namespace Test.TestsController
         public void TestSearchGetReturnsView()
         {
             // Arrange
-            
+
             // Act
             var controllerResult = Controller.Search();
 
@@ -1908,7 +1911,7 @@ namespace Test.TestsController
         public async Task TestSearchPostRedirectsWhenNotFound()
         {
             // Arrange
-            
+
             // Act
             var controllerResult = await Controller.Search("99");
 
@@ -1986,7 +1989,7 @@ namespace Test.TestsController
         public async Task TestJsonDetailsReturnsNotFound()
         {
             // Arrange
-            
+
 
 
             // Act
@@ -2000,8 +2003,8 @@ namespace Test.TestsController
         public async Task TestJsonDetailsReturnsView()
         {
             // Arrange
-            
-            
+
+
             // Act
             var controllerResult = await Controller.JsonDetails(2);
 
@@ -2024,7 +2027,7 @@ namespace Test.TestsController
             ControllerReflection = new ControllerReflection(this.output, typeof(LabController));
         }
         //protected readonly Type ControllerClass = typeof(LabController);
-        
+
 
         [Fact]
         public void TestControllerClassAttributes()
@@ -2045,7 +2048,7 @@ namespace Test.TestsController
 
         [Fact]
         public void TestControllerMethodAttributes()
-        {            
+        {
 
 #if DEBUG
             var countAdjustment = 1;

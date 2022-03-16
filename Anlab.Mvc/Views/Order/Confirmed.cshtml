@@ -372,8 +372,8 @@
         }
     </style>
     @*don't use the partial async print style here didn't work*@
-    @Html.Partial("_PrintStyle")
-    
+    @await Html.PartialAsync("_PrintStyle")
+
     <style media="screen">
         table {
             width: 100%;
@@ -399,5 +399,5 @@
 }
 @section Scripts
 {
-    @Html.Partial("_PrintScript")
+    @await Html.PartialAsync("_PrintScript")
 }

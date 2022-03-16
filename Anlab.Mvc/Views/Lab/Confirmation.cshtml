@@ -5,10 +5,10 @@
     ViewData["Title"] = "Receive Work Order";
 }
 <div class="col">
-    @Html.Partial("_OrderDetails")
+    @await Html.PartialAsync("_OrderDetails")
     <form  asp-controller="Lab" asp-action="AddRequestNumber" asp-route-id="@Model.Order.Id" method="post">
         @Html.Hidden("confirm", true)
-        @Html.Hidden("requestNum", Model.Order.RequestNum)        
+        @Html.Hidden("requestNum", Model.Order.RequestNum)
         <button type="submit" class="btn btn-info"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh From Labworks</button>
     </form>
     <div style="display: inline-block;">
@@ -18,7 +18,7 @@
             <span>Add Lab Comments</span>
             <textarea class="form-control" name="LabComments"></textarea>
             <span>Adjust Final Total:</span>
-            <input type="hidden" class="form-control" id="prevTotal" value="@Model.OrderDetails.Total" />            
+            <input type="hidden" class="form-control" id="prevTotal" value="@Model.OrderDetails.Total" />
             <input type="text" class="form-control" id="GrandTotal" value="@Model.OrderDetails.Total" autocomplete="off" />
             <div id="adj-comm" style="display: none">
                 <span>Adjustment Comments</span>

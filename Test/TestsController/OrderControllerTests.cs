@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure;
 using Microsoft.Extensions.Options;
 using Moq;
 using Newtonsoft.Json.Linq;
@@ -40,12 +41,13 @@ namespace Test.TestsController
         public Mock<IFinancialService> MockFinancialService { get; set; }
         public Mock<IOptions<AppSettings>> MockAppSettings { get; set; }
         public Mock<ClaimsPrincipal> MockClaimsPrincipal { get; set; }
+        public Mock<TempDataSerializer> MockTempDataSerializer { get; set; }
 
         //Setup Data
         public List<Order> OrderData { get; set; }
         public List<TestItemModel> TestItemModelData { get; set; }
         public List<User> UserData { get; set; }
-        
+
 
 
         //Controller
@@ -66,7 +68,8 @@ namespace Test.TestsController
             MockAppSettings = new Mock<IOptions<AppSettings>>();
             MockDbContext = new Mock<ApplicationDbContext>();
             MockClaimsPrincipal = new Mock<ClaimsPrincipal>();
-            var mockDataProvider = new Mock<SessionStateTempDataProvider>();
+            MockTempDataSerializer = new Mock<TempDataSerializer>();
+            var mockDataProvider = new Mock<SessionStateTempDataProvider>(MockTempDataSerializer.Object);
 
             //Default data
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
@@ -112,7 +115,7 @@ namespace Test.TestsController
 
 
             MockDbContext.Setup(m => m.Orders).Returns(OrderData.AsQueryable().MockAsyncDbSet().Object);
-            MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);            
+            MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);
             MockOrderService.Setup(a => a.PopulateTestItemModel(It.IsAny<bool>())).ReturnsAsync(TestItemModelData);
             MockOrderService.Setup(a => a.PopulateOrder(It.IsAny<OrderSaveModel>(), It.IsAny<Order>()));
             MockLabworksService.Setup(a => a.GetPrice("PROC")).ReturnsAsync(proc);
@@ -131,16 +134,16 @@ namespace Test.TestsController
                 {
                     HttpContext = MockHttpContext.Object
                 },
-                TempData = new TempDataDictionary(MockHttpContext.Object, mockDataProvider.Object) 
+                TempData = new TempDataDictionary(MockHttpContext.Object, mockDataProvider.Object)
             };
         }
         [Fact]
         public async Task OrderIndexReturnsView()
         {
-            //Arrange        
+            //Arrange
             OrderData[2].CreatorId = "Creator1";
             OrderData[0].CreatorId = "Creator1";
-            
+
             //Act
             var controllerResult = await Controller.Index();
 
@@ -149,10 +152,10 @@ namespace Test.TestsController
             var model = Assert.IsType<OrderListModel[]>(result.Model);
             model.Length.ShouldBe(2);
             model[0].Id.ShouldBe(1);
-            model[1].Id.ShouldBe(3);        
+            model[1].Id.ShouldBe(3);
         }
 
-       
+
 
 
         [Fact]
@@ -223,7 +226,7 @@ namespace Test.TestsController
             var result = Assert.IsType<ViewResult>(controllerResult);
             var model = Assert.IsType<OrderEditModel>(result.Model);
             var defaults = Assert.IsType<OrderEditDefaults>(model.Defaults);
-            defaults.DefaultAccount.ShouldBe("DefaultAccount3"); 
+            defaults.DefaultAccount.ShouldBe("DefaultAccount3");
         }
 
         [Fact]
@@ -295,7 +298,7 @@ namespace Test.TestsController
         public async Task TestCopyReturnsNotFoundIfOrderNotFound()
         {
             // Arrange
-            
+
 
 
             // Act
@@ -528,14 +531,14 @@ namespace Test.TestsController
             savedResult.Creator.ShouldNotBeNull();
             savedResult.Creator.Id.ShouldBe("Creator1");
             savedResult.Status.ShouldBe(OrderStatusCodes.Created);
-            savedResult.ShareIdentifier.ShouldNotBeNull();
+            savedResult.ShareIdentifier.ShouldNotBe(default);
         }
 
         [Fact]
         public async Task TestDetailsReturnsNotFound()
         {
             // Arrange
-            
+
             // Act
             var controllerResult = await Controller.Details(99);
 
@@ -634,7 +637,7 @@ namespace Test.TestsController
 
             // Act
             var controllerResult = await Controller.Confirmation(2);
-            
+
             // Assert
             var result = Assert.IsType<ViewResult>(controllerResult);
             var resultModel = Assert.IsType<OrderReviewModel>(result.Model);
@@ -757,7 +760,7 @@ namespace Test.TestsController
             // Arrange
             OrderData[1].CreatorId = "Creator1";
             OrderData[1].Status = OrderStatusCodes.Created;
-            OrderData[1].PaymentType = PaymentTypeCodes.UcDavisAccount;            
+            OrderData[1].PaymentType = PaymentTypeCodes.UcDavisAccount;
             Controller.ErrorMessage = null;
 
 
@@ -870,7 +873,7 @@ namespace Test.TestsController
             orderDetails.OtherPaymentInfo.PaymentType = "SomethingElse";
             orderDetails.ClientInfo.ClientId = "FAKE1";
             OrderData[1].SaveDetails(orderDetails);
-            
+
             MockLabworksService.Setup(a => a.GetClientDetails(It.IsAny<string>())).ReturnsAsync(CreateValidEntities.ClientDetailsLookupModel(2));
 
             // Act
@@ -1021,7 +1024,7 @@ namespace Test.TestsController
         [Fact]
         public async Task TestLookupClinetIdReturnsExpectedValues()
         {
-            // Arrange           
+            // Arrange
 
 
             // Act
@@ -1095,8 +1098,8 @@ namespace Test.TestsController
 
             //7 & 8
             ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Confirmation", 1 + countAdjustment, "CopyGet-1", showListOfAttributes: false);
-            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Confirmation", 2 + countAdjustment, "CopyPost-1",true, showListOfAttributes: false);
-            ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("Confirmation", 2 + countAdjustment, "CopyPost-2",true , showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Confirmation", 2 + countAdjustment, "CopyPost-1", true, showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("Confirmation", 2 + countAdjustment, "CopyPost-2", true, showListOfAttributes: false);
 
             //9
             ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Confirmed", 1 + countAdjustment, "Confirmed-1", showListOfAttributes: false);

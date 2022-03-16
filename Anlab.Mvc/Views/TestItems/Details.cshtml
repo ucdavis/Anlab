@@ -1,6 +1,6 @@
 @model Anlab.Core.Domain.TestItem
 
-@{ 
+@{
     ViewData["Title"] = "Test Code Details";
 }
 
@@ -14,7 +14,7 @@
 
 <div class="col">
     <div>
-        @Html.Partial("_TestItemsDetails")
+        @await Html.PartialAsync("_TestItemsDetails")
     </div>
     <div>
         <a asp-action="Index">Back to List</a>

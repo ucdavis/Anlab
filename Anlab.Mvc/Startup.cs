@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -19,12 +20,15 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.SpaServices.Webpack;
+using Microsoft.AspNetCore.Routing.Constraints;
+using Microsoft.AspNetCore.SpaServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using SpaCliMiddleware;
 using StackifyLib;
 
 namespace AnlabMvc
@@ -32,11 +36,11 @@ namespace AnlabMvc
     public class Startup
     {
         private IDirectorySearchService _directorySearchService;
-        private IHostingEnvironment _environment;
+        private IWebHostEnvironment _environment;
 
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
-            Configuration = configuration;         
+            Configuration = configuration;
             _environment = env;
         }
 
@@ -57,6 +61,8 @@ namespace AnlabMvc
             // Add framework services.
             if (_environment.IsDevelopment())
             {
+                services.AddDatabaseDeveloperPageExceptionFilter();
+
                 if (Configuration.GetSection("Dev:UseSql").Value == "Yes")
                 {
                     services.AddDbContext<ApplicationDbContext>(options =>
@@ -69,12 +75,12 @@ namespace AnlabMvc
                         options.UseSqlite("Data Source=anlab.db")
                     );
                 }
-                }
+            }
             else
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
-                );                
+                );
             }
 
             services.AddIdentity<User, IdentityRole>()
@@ -84,7 +90,8 @@ namespace AnlabMvc
             //services.ConfigureApplicationCookie(options => options.LoginPath = "/Account/LogIn");
 
             services.AddAuthentication()
-                .AddCAS("UCDavis", options => {
+                .AddCAS("UCDavis", options =>
+                {
                     options.CasServerUrlBase = Configuration["AppSettings:CasBaseUrl"];
                     // options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 })
@@ -97,7 +104,8 @@ namespace AnlabMvc
             // TODO: require HTTPS in production.  In development it is only needed for federated auth
             services.AddMvc(options =>
             {
-              options.Filters.Add<SerilogControllerActionFilter>();
+                options.EnableEndpointRouting = false;
+                options.Filters.Add<SerilogControllerActionFilter>();
             });
 
 
@@ -126,24 +134,25 @@ namespace AnlabMvc
             services.AddSingleton<IDataSigningService, DataSigningService>();
             services.AddTransient<IFinancialService, FinancialService>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+            // In production, the React files will be served from this directory
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "wwwroot";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             _directorySearchService = app.ApplicationServices.GetService<IDirectorySearchService>();
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
 
                 // TODO: if we want to use auto-refresh browerlink. Might conflict with webpack
                 //app.UseBrowserLink();
-                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions {
-                    HotModuleReplacement = true,
-                    ReactHotModuleReplacement = true
-                });
             }
             else
             {
@@ -154,25 +163,56 @@ namespace AnlabMvc
             app.UseStatusCodePagesWithReExecute("/Error/Index/{0}");
 
             app.UseStaticFiles();
+            app.UseSpaStaticFiles(new StaticFileOptions()
+            {
+                OnPrepareResponse = (context) =>
+                {
+                    // cache our static assest, i.e. CSS and JS, for a long time
+                    if (context.Context.Request.Path.Value.StartsWith("/dist"))
+                    {
+                        var headers = context.Context.Response.GetTypedHeaders();
+                        headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
+                        {
+                            Public = true,
+                            MaxAge = TimeSpan.FromDays(365)
+                        };
+                    }
+                }
+            });
 
             app.UseSerilogRequestLogging();
 
+            app.UseRouting();
+
             app.UseAuthentication();
+            app.UseAuthorization();
             app.UseMiddleware<LogUserNameMiddleware>();
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
 
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "pages",
-                    template: "pages/{id}",
+                    pattern: "pages/{id}",
                     defaults: new { controller = "Pages", action = "ViewPage" });
 
-                //No fallback
+                if (env.IsDevelopment())
+                {
+                    endpoints.MapToSpaCliProxy(
+                        "/dist/{*path}",
+                        new SpaOptions { SourcePath = "Client" },
+                        npmScript: "start",
+                        port: 3001,
+                        regex: "Project is running",
+                        forceKill: true,
+                        useProxy: true,
+                        runner: ScriptRunnerType.Npm);
+                }
             });
+
         }
     }
 }

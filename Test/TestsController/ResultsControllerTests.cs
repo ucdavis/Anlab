@@ -10,6 +10,7 @@ using AnlabMvc.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure;
 using Microsoft.Extensions.Options;
 using Moq;
 using Shouldly;
@@ -38,6 +39,7 @@ namespace Test.TestsController
         public Mock<IOptions<AppSettings>> MockAppSettings { get; set; }
         public Mock<IOrderMessageService> MockOrderMessageService { get; set; }
         public Mock<ClaimsPrincipal> MockClaimsPrincipal { get; set; }
+        public Mock<TempDataSerializer> MockTempDataSerializer { get; set; }
 
         //Setup Data
         public List<Order> OrderData { get; set; }
@@ -57,10 +59,11 @@ namespace Test.TestsController
             MockAppSettings = new Mock<IOptions<AppSettings>>();
             MockOrderMessageService = new Mock<IOrderMessageService>();
             MockClaimsPrincipal = new Mock<ClaimsPrincipal>();
-            var mockDataProvider = new Mock<SessionStateTempDataProvider>();
+            MockTempDataSerializer = new Mock<TempDataSerializer>();
+            var mockDataProvider = new Mock<SessionStateTempDataProvider>(MockTempDataSerializer.Object);
 
 
-            //Data        
+            //Data
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.NameIdentifier, "Creator1"),
@@ -81,7 +84,7 @@ namespace Test.TestsController
             CyberSourceSettings = new CyberSourceSettings();
             CyberSourceSettings.AccessKey = "123";
             CyberSourceSettings.ProfileId = "myProfile";
-            
+
             AppSettings = new AppSettings();
             AppSettings.CyberSourceUrl = "Http://FakeUrl.com";
 
@@ -89,7 +92,7 @@ namespace Test.TestsController
             MockClaimsPrincipal.Setup(a => a.Claims).Returns(user.Claims);
             MockClaimsPrincipal.Setup(a => a.FindFirst(It.IsAny<string>())).Returns(new Claim(ClaimTypes.NameIdentifier, "Creator1"));
             MockDbContext.Setup(a => a.Orders).Returns(OrderData.AsQueryable().MockAsyncDbSet().Object);
-            MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);   
+            MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);
             MockCyberSourceSettings.Setup(a => a.Value).Returns(CyberSourceSettings);
             MockAppSettings.Setup(a => a.Value).Returns(AppSettings);
             MockHttpContext.Setup(m => m.User).Returns(MockClaimsPrincipal.Object);
@@ -113,10 +116,10 @@ namespace Test.TestsController
         public async Task TestLinkReturnsNotFound()
         {
             // Arrange
-            
+
             // Act
             var controllerResult = await Controller.Link(SpecificGuid.GetGuid(15));
-            
+
             // Assert
             Assert.IsType<NotFoundResult>(controllerResult);
         }
@@ -129,7 +132,7 @@ namespace Test.TestsController
         {
             // Arrange
             OrderData[1].Status = status;
-            
+
 
             // Act
             var controllerResult = await Controller.Link(OrderData[1].ShareIdentifier);
@@ -254,8 +257,8 @@ namespace Test.TestsController
         public async Task TestLinkCallsSetDictWhenUnpaidCreditCard()
         {
             // Arrange
-            Dictionary<string, string> dictionary = null;
-            MockDataSigningService.Setup(a => a.Sign(It.IsAny<Dictionary<string, string>>())).Returns("FakeSign").Callback<Dictionary<string, string>>(c => dictionary = c);
+            IDictionary<string, string> dictionary = null;
+            MockDataSigningService.Setup(a => a.Sign(It.IsAny<IDictionary<string, string>>())).Returns("FakeSign").Callback<IDictionary<string, string>>(c => dictionary = c);
             OrderData[1].Status = OrderStatusCodes.Finalized;
             OrderData[1].PaymentType = PaymentTypeCodes.CreditCard;
             OrderData[1].Paid = false;
@@ -273,8 +276,8 @@ namespace Test.TestsController
         public async Task TestLinkCallsSetsDictToExpectedValuesWhenUnpaidCreditCard()
         {
             // Arrange
-            Dictionary<string, string> dictionary = null;
-            MockDataSigningService.Setup(a => a.Sign(It.IsAny<Dictionary<string, string>>())).Returns("FakeSign").Callback<Dictionary<string, string>>(c => dictionary = c);
+            IDictionary<string, string> dictionary = null;
+            MockDataSigningService.Setup(a => a.Sign(It.IsAny<IDictionary<string, string>>())).Returns("FakeSign").Callback<IDictionary<string, string>>(c => dictionary = c);
             OrderData[1].Status = OrderStatusCodes.Finalized;
             OrderData[1].PaymentType = PaymentTypeCodes.CreditCard;
             OrderData[1].Paid = false;
@@ -312,8 +315,8 @@ namespace Test.TestsController
         public async Task TestLinkSetsViewbagSignature()
         {
             // Arrange
-            Dictionary<string, string> dictionary = null;
-            MockDataSigningService.Setup(a => a.Sign(It.IsAny<Dictionary<string, string>>())).Returns("FakeSign").Callback<Dictionary<string, string>>(c => dictionary = c);
+            IDictionary<string, string> dictionary = null;
+            MockDataSigningService.Setup(a => a.Sign(It.IsAny<IDictionary<string, string>>())).Returns("FakeSign").Callback<IDictionary<string, string>>(c => dictionary = c);
             OrderData[1].Status = OrderStatusCodes.Finalized;
             OrderData[1].PaymentType = PaymentTypeCodes.CreditCard;
             OrderData[1].Paid = false;
@@ -330,8 +333,8 @@ namespace Test.TestsController
         public async Task TestLinkSetsPaymentDictionary()
         {
             // Arrange
-            Dictionary<string, string> dictionary = null;
-            MockDataSigningService.Setup(a => a.Sign(It.IsAny<Dictionary<string, string>>())).Returns("FakeSign").Callback<Dictionary<string, string>>(c => dictionary = c);
+            IDictionary<string, string> dictionary = null;
+            MockDataSigningService.Setup(a => a.Sign(It.IsAny<IDictionary<string, string>>())).Returns("FakeSign").Callback<IDictionary<string, string>>(c => dictionary = c);
             OrderData[1].Status = OrderStatusCodes.Finalized;
             OrderData[1].PaymentType = PaymentTypeCodes.CreditCard;
             OrderData[1].Paid = false;
@@ -356,8 +359,8 @@ namespace Test.TestsController
         public async Task TestLinkSetsCyberSourceUrl()
         {
             // Arrange
-            Dictionary<string, string> dictionary = null;
-            MockDataSigningService.Setup(a => a.Sign(It.IsAny<Dictionary<string, string>>())).Returns("FakeSign").Callback<Dictionary<string, string>>(c => dictionary = c);
+            IDictionary<string, string> dictionary = null;
+            MockDataSigningService.Setup(a => a.Sign(It.IsAny<IDictionary<string, string>>())).Returns("FakeSign").Callback<IDictionary<string, string>>(c => dictionary = c);
             OrderData[1].Status = OrderStatusCodes.Finalized;
             OrderData[1].PaymentType = PaymentTypeCodes.CreditCard;
             OrderData[1].Paid = false;
@@ -375,7 +378,7 @@ namespace Test.TestsController
         public async Task TestDownloadReturnsNotFound()
         {
             // Arrange
-            
+
 
             // Act
             var controllerResult = await Controller.Download(SpecificGuid.GetGuid(15));
@@ -407,7 +410,7 @@ namespace Test.TestsController
         public async Task TestConfirmPaymentGetReturnsNotFound()
         {
             // Arrange
-            
+
             // Act
             var controllerResult = await Controller.ConfirmPayment(SpecificGuid.GetGuid(15));
 
@@ -626,14 +629,14 @@ namespace Test.TestsController
             var op = CreateValidEntities.OtherPaymentInfo(5);
             op.PaymentType = "Changed";
             Order savedOrder = null;
-            string savedSubject = null;            
+            string savedSubject = null;
             MockOrderMessageService.Setup(a => a.EnqueueBillingMessage(It.IsAny<Order>(), It.IsAny<string>()))
                 .Callback<Order, string>((or, sub) =>
                 {
                     savedOrder = or;
                     savedSubject = sub;
                 }).Returns(Task.CompletedTask);
-            
+
             savedOrder.ShouldBeNull();
             savedSubject.ShouldBeNull();
 
@@ -645,7 +648,7 @@ namespace Test.TestsController
             redirectResult.ActionName.ShouldBe("Link");
             redirectResult.ControllerName.ShouldBeNull();
             redirectResult.RouteValues["id"].ShouldBe(OrderData[1].ShareIdentifier);
-            
+
             MockOrderMessageService.Verify(a => a.EnqueueBillingMessage(It.IsAny<Order>(), It.IsAny<string>()), Times.Once); //TODO: Examine passed Parameters
             savedOrder.ShouldNotBeNull();
             savedOrder.Id.ShouldBe(OrderData[1].Id);

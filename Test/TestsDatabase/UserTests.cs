@@ -59,17 +59,25 @@ namespace Test.TestsDatabase
             }));
             expectedFields.Add(new NameAndType("ConcurrencyStamp", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Created", "System.DateTime", new List<string>()));
-            expectedFields.Add(new NameAndType("Email", "System.String", new List<string>{
+            expectedFields.Add(new NameAndType("Email", "System.String", new List<string>
+            {
+                //"[Microsoft.AspNetCore.Identity.ProtectedPersonalDataAttribute()]", // Hidden by override
                 "[System.ComponentModel.DataAnnotations.EmailAddressAttribute()]",
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
-            expectedFields.Add(new NameAndType("EmailConfirmed", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("EmailConfirmed", "System.Boolean", new List<string>
+            {
+                "[Microsoft.AspNetCore.Identity.PersonalDataAttribute()]"
+            }));
             expectedFields.Add(new NameAndType("FirstName", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"First Name\")]",
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
             }));
-            expectedFields.Add(new NameAndType("Id", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Id", "System.String", new List<string>
+            {
+                "[Microsoft.AspNetCore.Identity.PersonalDataAttribute()]"
+            }));
             expectedFields.Add(new NameAndType("LastFirst", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("LastName", "System.String", new List<string>
             {
@@ -85,7 +93,7 @@ namespace Test.TestsDatabase
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Name\")]",
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)256)]"
-                
+
             }));
             expectedFields.Add(new NameAndType("NormalizedEmail", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("NormalizedUserName", "System.String", new List<string>()));
@@ -94,13 +102,25 @@ namespace Test.TestsDatabase
             {
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)256)]"
             }));
-            expectedFields.Add(new NameAndType("PhoneNumber", "System.String", new List<string>()));
-            expectedFields.Add(new NameAndType("PhoneNumberConfirmed", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("PhoneNumber", "System.String", new List<string>
+            {
+                "[Microsoft.AspNetCore.Identity.ProtectedPersonalDataAttribute()]"
+            }));
+            expectedFields.Add(new NameAndType("PhoneNumberConfirmed", "System.Boolean", new List<string>
+            {
+                "[Microsoft.AspNetCore.Identity.PersonalDataAttribute()]"
+            }));
             //expectedFields.Add(new NameAndType("Roles", "System.Collections.Generic.ICollection`1[Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserRole`1[System.String]]", new List<string>()));
             expectedFields.Add(new NameAndType("SecurityStamp", "System.String", new List<string>()));
-            expectedFields.Add(new NameAndType("TwoFactorEnabled", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("TwoFactorEnabled", "System.Boolean", new List<string>
+            {
+                "[Microsoft.AspNetCore.Identity.PersonalDataAttribute()]"
+            }));
             expectedFields.Add(new NameAndType("Updated", "System.DateTime", new List<string>()));
-            expectedFields.Add(new NameAndType("UserName", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("UserName", "System.String", new List<string>
+            {
+                "[Microsoft.AspNetCore.Identity.ProtectedPersonalDataAttribute()]"
+            }));
 
             #endregion Arrange
 
@@ -108,6 +128,6 @@ namespace Test.TestsDatabase
 
         }
 
-        #endregion Reflection of Database.	
+        #endregion Reflection of Database.
     }
 }

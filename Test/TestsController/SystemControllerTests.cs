@@ -26,38 +26,24 @@ namespace Test.TestsController
             MockDbIntService = new Mock<IDbInitializationService>();
             Controller = new SystemController(MockDbIntService.Object);
         }
-#if DEBUG
+
         [Fact]
-        public async Task TestResetDbCallsService()
-        {
-            // Arrange
-            
-
-
-            // Act
-            var controllerResult = await Controller.ResetDb();
-
-            // Assert
-            var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
-            redirectResult.ActionName.ShouldBe("LogoutDirect");
-            redirectResult.ControllerName.ShouldBe("Account");
-
-            MockDbIntService.Verify(a => a.RecreateAndInitialize(), Times.Once);
-        }
-#else
-        [Fact]
-        public async Task TestResetDbThrowsException()
+        public Task TestResetDbThrowsException()
         {
             // Arrange
 
             // Act
             var ex = Assert.ThrowsAsync<NotImplementedException>(async () => await Controller.ResetDb());
             // Assert
+#if DEBUG
+            ex.Result.Message.ShouldBe("Only enable this when working against a local database.");
+#else
             ex.Result.Message.ShouldBe("WHAT!!! Don't reset DB in Release!");
-            MockDbIntService.Verify(a => a.RecreateAndInitialize(), Times.Never);
-        }
 #endif
+            MockDbIntService.Verify(a => a.RecreateAndInitialize(), Times.Never);
 
+            return Task.CompletedTask;
+        }
     }
 
     [Trait("Category", "Controller Reflection")]
@@ -89,20 +75,5 @@ namespace Test.TestsController
         {
             ControllerReflection.ControllerPublicMethods(1);
         }
-
-        [Fact]
-        public void TestControllerMethodAttributes()
-        {
-
-#if DEBUG
-            var countAdjustment = 1;
-#else
-            var countAdjustment = 0;
-#endif
-            //1
-            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("ResetDb", 1 + countAdjustment, "ResetDb-1", showListOfAttributes: false);
-
-        }
-
     }
 }

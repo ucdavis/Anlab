@@ -2,7 +2,12 @@
   "name": "anlab",
   "version": "0.1.0",
   "scripts": {
-    "debug": "ASPNETCORE_ENVIRONMENT=Development dotnet watch run",
+    "debug": "dotnet watch run",
+    "debugproduction": "npm run webpack && dotnet watch run --launch-profile AnlabMvc.Production",
+    "start": "npm run killdevserver && npm run startdevserver",
+    "startdevserver": "node_modules/.bin/webpack-dev-server",
+    "killdevserver": "node node_modules/kill-port/cli 3001",
+    "webpack": "node node_modules/webpack/bin/webpack.js --env.prod",
     "test": "karma start"
   },
   "dependencies": {
@@ -50,6 +55,7 @@
     "karma-jsdom-launcher": "^6.1.1",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.6",
+    "kill-port": "^1.6.1",
     "node-sass": "^4.14.1",
     "postcss-cssnext": "2.10.0",
     "postcss-loader": "1.3.3",
@@ -63,6 +69,7 @@
     "typescript": "2.4.1",
     "url-loader": "0.5.9",
     "webpack": "2.5.1",
+    "webpack-dev-server": "^2.5.0",
     "webpack-hot-middleware": "2.18.2"
   }
 }

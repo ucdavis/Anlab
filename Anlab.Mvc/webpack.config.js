@@ -16,6 +16,16 @@ module.exports = (env) => {
         }
     };
     return {
+        devServer: {
+          contentBase: path.join(__dirname, "./wwwroot"),
+          compress: true,
+          overlay: true,
+          port: 3001,
+          // proxying back to the fronting aspnetcore app can cause an infinite loop
+          // proxy: {
+          //   "/": "http://localhost:5000",
+          // },
+        },
         stats: { modules: false },
         entry: {
             'root': './Client/root.tsx',
