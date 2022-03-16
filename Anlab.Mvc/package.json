@@ -62,7 +62,7 @@
     "react-addons-test-utils": "^15.6.2",
     "react-test-renderer": "^15.6.2",
     "sass-loader": "^6.0.3",
-    "showdown": "^1.8.4",
+    "showdown": "^1.9.1",
     "style-loader": "0.18.2",
     "tslint": "^5.7.0",
     "tslint-react": "^3.2.0",
