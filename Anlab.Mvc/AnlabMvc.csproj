@@ -3,6 +3,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <IsPackable>false</IsPackable>
+    <SpaRoot>ClientApp\</SpaRoot>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
     <UserSecretsId>f3c999a5-2304-44e0-a49e-f43333bf9ccf</UserSecretsId>
     <Version>1.1.0.0</Version>
     <Description>Order and results management system for AnLab@UCDavis</Description>
@@ -47,21 +49,15 @@
     <PackageReference Include="YamlDotNet" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.2" />
   </ItemGroup>
-  <ItemGroup>
-    <!-- Files not to show in IDE -->
-    <None Remove="Client\components\DateSampled.tsx" />
-    <None Remove="Client\components\TestInfo.tsx" />
-    <None Remove="yarn.lock" />
+    <ItemGroup>
+    <!-- Files not to publish (note that the 'dist' subfolders are re-added below) -->
+    <Content Remove="ClientApp\**"/>
   </ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\Images\Error.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Anlab.Core\Anlab.Core.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="Client\components\DateSampled.tsx" />
-    <TypeScriptCompile Include="Client\components\TestInfo.tsx" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Pages\**\*.md">
@@ -122,36 +118,27 @@
       <LastGenOutput>QueryResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Target Name="RunWebpack" AfterTargets="ComputeFilesToPublish">
-    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-    <Exec Command="node node_modules/webpack/bin/webpack.js --env.prod" />
-    <!-- Include the newly-built files in the publish output -->
-    <ItemGroup>
-      <DistFiles Include="wwwroot\dist\**" />
-      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-        <RelativePath>%(DistFiles.Identity)</RelativePath>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </ResolvedFileToPublish>
-    </ItemGroup>
-  </Target>
-  <PropertyGroup>
-    <!-- File with mtime of last successful npm install -->
-    <NpmInstallStampFile>node_modules/.install-stamp</NpmInstallStampFile>
-  </PropertyGroup>
-  <Target Name="NpmInstallDebug"
-    BeforeTargets="BeforeBuild"
-    Condition=" '$(Configuration)' == 'Debug' "
-    Inputs="package.json"
-    Outputs="$(NpmInstallStampFile)">
-    <Exec Command="npm install" />
-    <Touch Files="$(NpmInstallStampFile)" AlwaysCreate="true" />
-  </Target>
-  <Target Name="NpmInstallRelease"
-    BeforeTargets="BeforeBuild"
-    Condition=" '$(Configuration)' == 'Release' "
-    Inputs="package.json"
-    Outputs="$(NpmInstallStampFile)">
-    <Exec Command="npm ci" />
-    <Touch Files="$(NpmInstallStampFile)" AlwaysCreate="true" />
-  </Target>
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+		<!-- Ensure Node.js is installed -->
+		<Exec Command="node --version" ContinueOnError="true">
+			<Output TaskParameter="ExitCode" PropertyName="ErrorCode"/>
+		</Exec>
+		<Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE."/>
+		<Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..."/>
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm install"/>
+	</Target>
+	<Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+		<!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm install"/>
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm run build"/>
+		<!-- Include the newly-built files in the publish output -->
+		<ItemGroup>
+			<DistFiles Include="$(SpaRoot)build\**"/>
+			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+				<RelativePath>%(DistFiles.Identity)</RelativePath>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+				<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			</ResolvedFileToPublish>
+		</ItemGroup>
+	</Target>
 </Project>
