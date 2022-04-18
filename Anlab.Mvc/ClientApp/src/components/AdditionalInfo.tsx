@@ -16,7 +16,7 @@ export class AdditionalInfo extends React.Component<IAdditionalInfoProps, {}> {
         </label>
         <textarea
           className="form-control"
-          label="Additional Information"
+          placeholder="Additional Information"
           name={this.props.name}
           value={this.props.value}
           onChange={this._onChange}

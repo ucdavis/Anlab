@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import * as moment from "moment";
+import moment from "moment";
 import { Collapse, Fade } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
 import { AdditionalEmails } from "./AdditionalEmails";
@@ -850,7 +850,7 @@ export default class OrderForm extends React.Component<
   };
 
   private _handleChange = (name, value) => {
-    this.setState({ [name]: value }, this._validate);
+    this.setState({ [name]: value } as any, this._validate);
   };
 
   private _switchViews = (viewName: string) => {

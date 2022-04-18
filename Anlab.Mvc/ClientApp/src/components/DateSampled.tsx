@@ -1,7 +1,7 @@
 import * as React from "react";
 import DatePicker from "react-datepicker";
 import Input from "./ui/input/input";
-import * as moment from "moment";
+import moment from "moment";
 
 interface IDateSampledProps {
     date?: any;
