@@ -14,8 +14,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Routing.Constraints;
-using Microsoft.AspNetCore.SpaServices;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -186,33 +184,14 @@ namespace AnlabMvc
 
             app.UseEndpoints(endpoints =>
             {
-                if (env.IsDevelopment())
-                {
-                    // Specific route for HMR websocket.
-                    var spaHmrSocketRegex = "^(?!sockjs-node).*$";
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
 
-                    endpoints.MapControllerRoute(
-                        name: "default",
-                        pattern: "{controller=Home}/{action=Index}/{id?}",
-                        constraints: new { path = new RegexRouteConstraint(spaHmrSocketRegex) });
-
-                    endpoints.MapControllerRoute(
-                        name: "pages",
-                        pattern: "pages/{id}",
-                        defaults: new { controller = "Pages", action = "ViewPage" },
-                        constraints: new { path = new RegexRouteConstraint("^(?!sockjs-node).*$") });
-
-                } else {
-                    endpoints.MapControllerRoute(
-                        name: "default",
-                        pattern: "{controller=Home}/{action=Index}/{id?}");
-
-                    endpoints.MapControllerRoute(
-                        name: "pages",
-                        pattern: "pages/{id}",
-                        defaults: new { controller = "Pages", action = "ViewPage" });
-                }
-
+                endpoints.MapControllerRoute(
+                    name: "pages",
+                    pattern: "pages/{id}",
+                    defaults: new { controller = "Pages", action = "ViewPage" });
             });
 
             app.UseSpa(spa =>
