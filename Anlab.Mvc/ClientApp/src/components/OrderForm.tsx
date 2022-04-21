@@ -154,7 +154,7 @@ export default class OrderForm extends React.Component<
       initialState.additionalInfo = orderInfo.AdditionalInfo;
       initialState.additionalEmails = orderInfo.AdditionalEmails;
       initialState.sampleType = orderInfo.SampleType;
-      (initialState.sampleTypeQuestions = {
+      initialState.sampleTypeQuestions = {
           plantReportingBasis: orderInfo.SampleTypeQuestions.PlantReportingBasis,
           soilImported: orderInfo.SampleTypeQuestions.SoilImported,
           waterFiltered: orderInfo.SampleTypeQuestions.WaterFiltered,
@@ -163,7 +163,7 @@ export default class OrderForm extends React.Component<
           waterPreservativeInfo:
           orderInfo.SampleTypeQuestions.WaterPreservativeInfo,
           waterReportedInMgL: orderInfo.SampleTypeQuestions.WaterReportedInMgL
-      }),
+      };
       initialState.sampleDisposition = orderInfo.SampleDisposition;
       initialState.project = orderInfo.Project;
       initialState.commodity = orderInfo.Commodity;

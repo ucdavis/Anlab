@@ -1,7 +1,7 @@
 import * as React from "react";
-import PlantSvg from "../media/plant.svg";
-import SoilSvg from "../media/soil.svg";
-import WaterSvg from "../media/water.svg";
+import { ReactComponent as PlantSvg } from "../media/plant.svg";
+import { ReactComponent as SoilSvg } from "../media/soil.svg";
+import { ReactComponent as WaterSvg } from "../media/water.svg";
 
 interface ISampleTypeProps {
     sampleType: string;
