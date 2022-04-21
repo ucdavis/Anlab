@@ -39,8 +39,16 @@ stages:
             displayName: "npm test"
             inputs:
               command: "custom"
-              workingDir: "./Anlab.Mvc"
-              customCommand: "test"
+              workingDir: "./Anlab.Mvc/ClientApp"
+              customCommand: "run citest"
+
+          - task: PublishTestResults@2
+            displayName: 'Publish Client Test Results'
+            inputs:
+              searchFolder: './Anlab.Mvc/ClientApp'
+              testResultsFormat: 'VSTest'
+              testResultsFiles: '**/test-results.trx'
+              testRunTitle: 'Client Tests'
 
   - stage: Publish
     jobs:
