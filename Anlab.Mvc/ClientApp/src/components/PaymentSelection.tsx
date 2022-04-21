@@ -131,6 +131,7 @@ export class PaymentSelection extends React.Component<
       return(
         <Input
           label="UC Account"
+          name="ucAccount"
           value={this.props.payment.account}
           error={this.state.error}
           maxLength={50}
