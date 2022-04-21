@@ -23,7 +23,7 @@ export class Commodity extends React.Component<ICommodityProps, ICommodityState>
         return (
             <Input
                 label="Type of Material / Commodity"
-              value={this.state.internalValue}
+              value={this.state.internalValue || ""}
               onChange={this._onChange}
               onBlur={this._onBlur}
             />

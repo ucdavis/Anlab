@@ -29,7 +29,5 @@ export const Order = () => {
     props.orderInfo = JSON.parse(window.App.orderData.order.jsonDetails);
   }
 
-  console.log('OrderForm props:', props);
-
   return <OrderForm {...props} />;
 };

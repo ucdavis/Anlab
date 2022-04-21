@@ -18,7 +18,7 @@ export class AdditionalInfo extends React.Component<IAdditionalInfoProps, {}> {
           className="form-control"
           placeholder="Additional Information"
           name={this.props.name}
-          value={this.props.value}
+          value={this.props.value || ""}
           onChange={this._onChange}
           maxLength={2000}
           rows={4}

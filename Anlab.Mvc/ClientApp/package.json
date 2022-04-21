@@ -8,7 +8,6 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "testoriginal": "karma start",
     "citest": "npx cross-env CI=true react-scripts test --coverage --coverageDirectory=./ --reporters default --reporters jest-trx-results-processor",
     "eject": "react-scripts eject",
     "testwatch": "jest --watchAll",
