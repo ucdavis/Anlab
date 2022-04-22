@@ -13,6 +13,7 @@
     <script>
         App = {};
         App.orderData = @Json.Serialize(Model);
+        App.orderId = @Model.Order.Id;
         App.defaults = @Json.Serialize(Model.Defaults);
     </script>
 }
