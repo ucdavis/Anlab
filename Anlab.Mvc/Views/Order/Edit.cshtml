@@ -7,20 +7,19 @@
 
 @Html.AntiForgeryToken()
 
-<div id="react-app" class="col"></div>
+<div id="root" class="col"></div>
 
-@section Scripts
-{
+@section ScriptVariables {
     <script>
         App = {};
         App.orderData = @Json.Serialize(Model);
         App.orderId = @Model.Order.Id;
         App.defaults = @Json.Serialize(Model.Defaults);
     </script>
-    
-    <script src="~/dist/react.js" asp-append-version="true"></script>
-    <script src="~/dist/order.js" asp-append-version="true"></script>
+}
 
+@section Scripts
+{
     <script type="text/javascript">
         $(function() {
             $('body').tooltip({

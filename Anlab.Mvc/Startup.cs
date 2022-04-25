@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+using System.IO;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
@@ -11,25 +8,19 @@ using AnlabMvc.Middleware;
 using AnlabMvc.Models.Configuration;
 using AnlabMvc.Services;
 using AspNetCore.Security.CAS;
-using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Routing.Constraints;
-using Microsoft.AspNetCore.SpaServices;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Serilog;
-using SpaCliMiddleware;
-using StackifyLib;
 
 namespace AnlabMvc
 {
@@ -135,10 +126,13 @@ namespace AnlabMvc
             services.AddTransient<IFinancialService, FinancialService>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
+            // Used by dynamic scripts/styles loader
+            services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory())); // lgtm [cs/local-not-disposed] 
+
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "wwwroot";
+                configuration.RootPath = "ClientApp/build";
             });
         }
 
@@ -168,7 +162,7 @@ namespace AnlabMvc
                 OnPrepareResponse = (context) =>
                 {
                     // cache our static assest, i.e. CSS and JS, for a long time
-                    if (context.Context.Request.Path.Value.StartsWith("/dist"))
+                    if (context.Context.Request.Path.Value.StartsWith("/static"))
                     {
                         var headers = context.Context.Response.GetTypedHeaders();
                         headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
@@ -198,18 +192,15 @@ namespace AnlabMvc
                     name: "pages",
                     pattern: "pages/{id}",
                     defaults: new { controller = "Pages", action = "ViewPage" });
+            });
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "ClientApp";
 
                 if (env.IsDevelopment())
                 {
-                    endpoints.MapToSpaCliProxy(
-                        "/dist/{*path}",
-                        new SpaOptions { SourcePath = "Client" },
-                        npmScript: "start",
-                        port: 3001,
-                        regex: "Project is running",
-                        forceKill: true,
-                        useProxy: true,
-                        runner: ScriptRunnerType.Npm);
+                    spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
 
