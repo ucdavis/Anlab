@@ -46,7 +46,7 @@ export class PaymentSelection extends React.Component<
 
   public shouldComponentUpdate(
     nextProps: IPaymentSelectionProps,
-    nextState: IPaymentSelectionState,
+    nextState: IPaymentSelectionState
   ) {
     return (
       nextProps.placingOrder !== this.props.placingOrder ||
@@ -108,7 +108,7 @@ export class PaymentSelection extends React.Component<
     if (this.props.payment.clientType !== "uc") {
       return;
     }
-    return(
+    return (
       <div>
         <p className="help-block">
           UC Davis accounts require the chart.{" "}
@@ -123,12 +123,13 @@ export class PaymentSelection extends React.Component<
           </strong>
         </p>
         {this._renderUcAccountInput()}
-      </div>);
-  }
+      </div>
+    );
+  };
 
   private _renderUcAccountInput = () => {
     if (!this.props.creatingOrder) {
-      return(
+      return (
         <Input
           label="UC Account"
           name="ucAccount"
@@ -138,7 +139,8 @@ export class PaymentSelection extends React.Component<
           onChange={this._handleAccountChange}
           onBlur={this._lookupAccount}
           inputRef={this.props.ucAccountRef}
-        />);
+        />
+      );
     } else {
       return (
         <div>
@@ -154,7 +156,7 @@ export class PaymentSelection extends React.Component<
         </div>
       );
     }
-  }
+  };
 
   private _renderheading = () => {
     if (
@@ -169,7 +171,7 @@ export class PaymentSelection extends React.Component<
         </div>
       );
     }
-  }
+  };
 
   private _renderAgreement = () => {
     if (!this.props.placingOrder || this.props.payment.clientType !== "other") {
@@ -185,19 +187,21 @@ export class PaymentSelection extends React.Component<
         I require an agreement{" "}
       </Checkbox>
     );
-  }
+  };
 
   private _changeAgreementReq = () => {
     this.props.updateOtherPaymentInfoType(
       this.props.payment.clientType,
-      !this.props.otherPaymentInfo.agreementRequired,
+      !this.props.otherPaymentInfo.agreementRequired
     );
-  }
+  };
 
   private _renderOtherInfo = () => {
     if (
       this.props.payment.clientType === "other" ||
-      (this.props.payment.clientType === "uc" && !this.props.payment.isUcdAccount)) {
+      (this.props.payment.clientType === "uc" &&
+        !this.props.payment.isUcdAccount)
+    ) {
       return (
         <OtherPaymentInfo
           otherPaymentInfo={this.props.otherPaymentInfo}
@@ -207,7 +211,7 @@ export class PaymentSelection extends React.Component<
         />
       );
     }
-  }
+  };
 
   private _lookupAccount = () => {
     if (
@@ -223,10 +227,10 @@ export class PaymentSelection extends React.Component<
     }
 
     this._accountLookup();
-  }
+  };
 
-    private _accountLookup = () => {
-        fetch(`/financial/info?account=${this.props.payment.account}`, {
+  private _accountLookup = () => {
+    fetch(`/financial/info?account=${this.props.payment.account}`, {
       credentials: "same-origin",
     })
       .then((response) => {
@@ -249,12 +253,12 @@ export class PaymentSelection extends React.Component<
           accountName: null,
         });
       });
-  }
+  };
 
   private _handleChange = (clientType: string) => {
     this._validateAccount(this.props.payment.account, clientType);
     this.props.onPaymentSelected({ ...this.props.payment, clientType });
-  }
+  };
 
   private _handleAccountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const account = e.target.value;
@@ -264,24 +268,27 @@ export class PaymentSelection extends React.Component<
       account,
       accountName: null,
     });
-  }
+  };
 
   private _handleSelectionChange = (ucName: string) => {
     const isUcd = ucName === "UCD";
     this.setState({ ucName });
-    this.props.changeSelectedUc({
-      ...this.props.payment,
-      isUcdAccount: isUcd,
-      accountName: null,
-    }, ucName);
+    this.props.changeSelectedUc(
+      {
+        ...this.props.payment,
+        isUcdAccount: isUcd,
+        accountName: null,
+      },
+      ucName
+    );
     this._validateAccount(
       this.props.payment.account,
-      this.props.payment.clientType,
+      this.props.payment.clientType
     );
     if (isUcd) {
       this._accountLookup();
     }
-  }
+  };
 
   private _validateAccount = (account: string, clientType: string) => {
     if (clientType !== "uc") {
@@ -295,5 +302,5 @@ export class PaymentSelection extends React.Component<
     }
 
     this.setState({ error: "Account is required" });
-  }
+  };
 }

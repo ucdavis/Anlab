@@ -23,7 +23,7 @@ export class SampleWaterQuestions extends React.Component<
 
     this.state = {
       waterPreservativeInfo: this.props.questions.waterPreservativeInfo,
-      error: null
+      error: null,
     };
   }
 
@@ -57,7 +57,6 @@ export class SampleWaterQuestions extends React.Component<
       this.state.waterPreservativeInfo
     );
   };
-
 
   private _validate = (v: string) => {
     let error = null;

@@ -12,7 +12,8 @@ export class AdditionalInfo extends React.Component<IAdditionalInfoProps, {}> {
     return (
       <div className="form-group">
         <label htmlFor="additionalInfo">
-          Comments, sampled date range, special test requests, and missing samples
+          Comments, sampled date range, special test requests, and missing
+          samples
         </label>
         <textarea
           className="form-control"
@@ -28,7 +29,7 @@ export class AdditionalInfo extends React.Component<IAdditionalInfoProps, {}> {
     );
   }
 
-  private _onChange = e => {
+  private _onChange = (e) => {
     this.props.handleChange("additionalInfo", e.target.value);
   };
 }
