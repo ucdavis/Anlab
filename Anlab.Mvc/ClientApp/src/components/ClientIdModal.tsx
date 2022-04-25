@@ -4,69 +4,129 @@ import { ClientIdModalInput } from "./ClientIdModalInput";
 import { IClientInfo } from "./ClientId";
 
 interface IClientIdModalProps {
-    clientInfo: IClientInfo;
-    onClose: () => void;
-    onClear: () => void;
-    handleChange: (keys: string[], values: string[]) => void;
-    disabled: boolean;
-    style: string;
+  clientInfo: IClientInfo;
+  onClose: () => void;
+  onClear: () => void;
+  handleChange: (keys: string[], values: string[]) => void;
+  disabled: boolean;
+  style: string;
 }
 
 interface IClientIdModalState {
-    active: boolean;
+  active: boolean;
 }
 
-export class ClientIdModal extends React.Component<IClientIdModalProps, IClientIdModalState> {
-    constructor(props) {
-        super(props);
+export class ClientIdModal extends React.Component<
+  IClientIdModalProps,
+  IClientIdModalState
+> {
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            active: false,
-        };
-    }
+    this.state = {
+      active: false,
+    };
+  }
 
-    toggleModal = () => {
-        this.setState({ ...this.state, active: !this.state.active });
-    }
+  toggleModal = () => {
+    this.setState({ ...this.state, active: !this.state.active });
+  };
 
-    closeAction = () => {
-        this.props.onClose();
-        this.setState({  active: false });
-    }
+  closeAction = () => {
+    this.props.onClose();
+    this.setState({ active: false });
+  };
 
-    clearAction = () => {
-        this.props.onClear();
-    }
+  clearAction = () => {
+    this.props.onClear();
+  };
 
-    render() {
-        let title = "Please input the following information";
+  render() {
+    let title = "Please input the following information";
 
-        return (
-            <span>
-                <div>
-                    <label>Need a new Client ID</label>
-                </div>
-                <Button className={this.props.style} onClick={this.toggleModal} disabled={this.props.disabled} > New Client</Button>
+    return (
+      <span>
+        <div>
+          <label>Need a new Client ID</label>
+        </div>
+        <Button
+          className={this.props.style}
+          onClick={this.toggleModal}
+          disabled={this.props.disabled}
+        >
+          {" "}
+          New Client
+        </Button>
 
-                <Modal show={this.state.active} onHide={this.closeAction} >
-                    <Modal.Header closeButton={true}>
-                        <Modal.Title>{title}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <ClientIdModalInput property="name" value={this.props.clientInfo.name} label="Name" handleChange={this.props.handleChange} required={true} />
-                        <ClientIdModalInput property="employer" value={this.props.clientInfo.employer} label="Employer" handleChange={this.props.handleChange} required={true} />
-                        <ClientIdModalInput property="department" value={this.props.clientInfo.department} label="Department/Unit" handleChange={this.props.handleChange} required={false} />
-                        <ClientIdModalInput property="email" value={this.props.clientInfo.email} label="Client Email" handleChange={this.props.handleChange} required={true} />
-                        <ClientIdModalInput property="phoneNumber" value={this.props.clientInfo.phoneNumber} label="Phone Number" handleChange={this.props.handleChange} required={true} />
-                        <ClientIdModalInput property="piName" value={this.props.clientInfo.piName} label="PI Name" handleChange={this.props.handleChange} required={true} />
-                        <ClientIdModalInput property="piEmail" value={this.props.clientInfo.piEmail} label="PI Email" handleChange={this.props.handleChange} required={true} />
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button className="btn btn-newClient" onClick={this.clearAction} type="reset">Clear</Button>
-                        <Button className="btn" onClick={this.closeAction}>Save</Button>
-                    </Modal.Footer>
-                </Modal>
-            </span>
-        );
-    }
+        <Modal show={this.state.active} onHide={this.closeAction}>
+          <Modal.Header closeButton={true}>
+            <Modal.Title>{title}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <ClientIdModalInput
+              property="name"
+              value={this.props.clientInfo.name}
+              label="Name"
+              handleChange={this.props.handleChange}
+              required={true}
+            />
+            <ClientIdModalInput
+              property="employer"
+              value={this.props.clientInfo.employer}
+              label="Employer"
+              handleChange={this.props.handleChange}
+              required={true}
+            />
+            <ClientIdModalInput
+              property="department"
+              value={this.props.clientInfo.department}
+              label="Department/Unit"
+              handleChange={this.props.handleChange}
+              required={false}
+            />
+            <ClientIdModalInput
+              property="email"
+              value={this.props.clientInfo.email}
+              label="Client Email"
+              handleChange={this.props.handleChange}
+              required={true}
+            />
+            <ClientIdModalInput
+              property="phoneNumber"
+              value={this.props.clientInfo.phoneNumber}
+              label="Phone Number"
+              handleChange={this.props.handleChange}
+              required={true}
+            />
+            <ClientIdModalInput
+              property="piName"
+              value={this.props.clientInfo.piName}
+              label="PI Name"
+              handleChange={this.props.handleChange}
+              required={true}
+            />
+            <ClientIdModalInput
+              property="piEmail"
+              value={this.props.clientInfo.piEmail}
+              label="PI Email"
+              handleChange={this.props.handleChange}
+              required={true}
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              className="btn btn-newClient"
+              onClick={this.clearAction}
+              type="reset"
+            >
+              Clear
+            </Button>
+            <Button className="btn" onClick={this.closeAction}>
+              Save
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </span>
+    );
+  }
 }

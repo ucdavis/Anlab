@@ -1,8 +1,8 @@
-import * as React from 'react';
-import { Modal, Button } from 'react-bootstrap';
-import FancyCheckbox from './ui/fancyCheckbox/fancyCheckbox';
-import Input from './ui/input/input';
-import { ITestItem } from './TestList';
+import * as React from "react";
+import { Modal, Button } from "react-bootstrap";
+import FancyCheckbox from "./ui/fancyCheckbox/fancyCheckbox";
+import Input from "./ui/input/input";
+import { ITestItem } from "./TestList";
 
 interface ITestInfoProps {
   test: ITestItem;
@@ -26,7 +26,7 @@ export class TestInfo extends React.PureComponent<
 
     this.state = {
       active: false,
-      internalValue: ''
+      internalValue: "",
     };
   }
 
@@ -36,7 +36,7 @@ export class TestInfo extends React.PureComponent<
         <FancyCheckbox
           checked={this.props.selected}
           label={this.props.test.analysis}
-          onChange={e => this._onSelection(this.props.test)}
+          onChange={(e) => this._onSelection(this.props.test)}
         />
         <Modal show={this.state.active}>
           <Modal.Header>
@@ -46,14 +46,14 @@ export class TestInfo extends React.PureComponent<
             <Input
               value={this.state.internalValue}
               onChange={this._onChange}
-              label='Additional Info Required'
+              label="Additional Info Required"
             />
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this._cancelAction}>Cancel</Button>
             <Button
               onClick={this._saveAction}
-              disabled={this.state.internalValue === ''}
+              disabled={this.state.internalValue === ""}
             >
               Save
             </Button>
@@ -71,7 +71,7 @@ export class TestInfo extends React.PureComponent<
     this.props.onSelection(test, !this.props.selected);
   };
 
-  private _onChange = e => {
+  private _onChange = (e) => {
     const v = e.target.value;
     this.setState({ internalValue: v });
   };
