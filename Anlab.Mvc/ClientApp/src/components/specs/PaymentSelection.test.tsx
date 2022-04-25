@@ -1,28 +1,28 @@
-import * as React from 'react';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import * as React from "react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
-import { PaymentSelection } from '../PaymentSelection';
-import { IPayment } from '../PaymentUcSelection';
+import { PaymentSelection } from "../PaymentSelection";
+import { IPayment } from "../PaymentUcSelection";
 
 const fakeOtherPaymentInfo = {
   paymentType:
-    'Tenetur eius aspernatur asperiores et iusto non. Sequi inventore assumenda itaque ad. Ab mollitia non.',
+    "Tenetur eius aspernatur asperiores et iusto non. Sequi inventore assumenda itaque ad. Ab mollitia non.",
   companyName:
-    'Animi architecto unde non est asperiores. Hic ex ut quis sit. Soluta quis facere repudiandae quas rerum eligendi. Adipisci animi doloremque error laboriosam tempora illo. Veniam modi magni aut illo sint inventore quasi beatae. Laudantium aut quae dolor maiores incidunt.',
-  acName: 'deserunt',
-  acAddr: 'Molestias ab ex voluptates totam.',
-  acEmail: 'Quidem nihil quae.',
+    "Animi architecto unde non est asperiores. Hic ex ut quis sit. Soluta quis facere repudiandae quas rerum eligendi. Adipisci animi doloremque error laboriosam tempora illo. Veniam modi magni aut illo sint inventore quasi beatae. Laudantium aut quae dolor maiores incidunt.",
+  acName: "deserunt",
+  acAddr: "Molestias ab ex voluptates totam.",
+  acEmail: "Quidem nihil quae.",
   acPhone:
-    'Minus dolorem fuga minima perferendis omnis dolor.\nAut ipsa sit quidem molestias mollitia qui.\nId accusamus odit quae eos nemo.',
-  poNum: 'commodi odio dicta',
-  agreementRequired: true
+    "Minus dolorem fuga minima perferendis omnis dolor.\nAut ipsa sit quidem molestias mollitia qui.\nId accusamus odit quae eos nemo.",
+  poNum: "commodi odio dicta",
+  agreementRequired: true,
 };
 
-describe('<PaymentSelection/>', () => {
-  it('should render', () => {
+describe("<PaymentSelection/>", () => {
+  it("should render", () => {
     const onPaymentSelected = jest.fn() as (payment: IPayment) => void;
-    const payment = { clientType: 'uc', account: '' };
+    const payment = { clientType: "uc", account: "" };
     render(
       <PaymentSelection
         payment={payment}
@@ -38,12 +38,12 @@ describe('<PaymentSelection/>', () => {
         changeSelectedUc={null}
       />
     );
-    expect(screen.getByText('UC Funds')).toBeInTheDocument();
+    expect(screen.getByText("UC Funds")).toBeInTheDocument();
   });
-  describe('<Input /> (Uc Account Entry)', () => {
-    it('should not render when creditcard payment method', () => {
+  describe("<Input /> (Uc Account Entry)", () => {
+    it("should not render when creditcard payment method", () => {
       const onPaymentSelected = jest.fn() as (payment: IPayment) => void;
-      const payment = { clientType: 'creditcard', account: '' };
+      const payment = { clientType: "creditcard", account: "" };
       render(
         <PaymentSelection
           payment={payment}
@@ -59,11 +59,11 @@ describe('<PaymentSelection/>', () => {
           changeSelectedUc={null}
         />
       );
-      expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+      expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
     });
-    it('should render when uc payment method', () => {
+    it("should render when uc payment method", () => {
       const onPaymentSelected = jest.fn() as (payment: IPayment) => void;
-      const payment = { clientType: 'uc', account: '' };
+      const payment = { clientType: "uc", account: "" };
       render(
         <PaymentSelection
           payment={payment}
@@ -80,13 +80,13 @@ describe('<PaymentSelection/>', () => {
         />
       );
       // look for our UC select box
-      expect(screen.getByRole('combobox')).toBeInTheDocument();
+      expect(screen.getByRole("combobox")).toBeInTheDocument();
     });
 
-    it('should call checkChart when the account is changed', async () => {
+    it("should call checkChart when the account is changed", async () => {
       const onPaymentSelected = jest.fn() as (payment: IPayment) => void;
       const checkChart = jest.fn() as (account: string) => void;
-      const payment = { clientType: 'uc', account: '123' };
+      const payment = { clientType: "uc", account: "123" };
 
       render(
         <PaymentSelection
@@ -107,16 +107,16 @@ describe('<PaymentSelection/>', () => {
       const user = userEvent.setup();
 
       // find account box and type something in
-      await user.type(screen.getByDisplayValue('123'), 'xxx');
+      await user.type(screen.getByDisplayValue("123"), "xxx");
 
       expect(checkChart).toHaveBeenCalled();
     });
   });
 
-  describe('Credit Card Selection div', () => {
+  describe("Credit Card Selection div", () => {
     const onPaymentSelected = jest.fn() as (payment: IPayment) => void;
-    it('should add active class if selected', () => {
-      const payment = { clientType: 'creditcard', account: '' };
+    it("should add active class if selected", () => {
+      const payment = { clientType: "creditcard", account: "" };
       render(
         <PaymentSelection
           payment={payment}
@@ -133,18 +133,18 @@ describe('<PaymentSelection/>', () => {
         />
       );
 
-      const creditCardSelection = screen.getByText('Credit Card');
+      const creditCardSelection = screen.getByText("Credit Card");
 
       expect(creditCardSelection.parentElement.classList).toContain(
-        'active-text'
+        "active-text"
       );
     });
   });
 
-  describe('UC Selection div', () => {
+  describe("UC Selection div", () => {
     const onPaymentSelected = jest.fn() as (payment: IPayment) => void;
-    it('should add active class if selected', () => {
-      const payment = { clientType: 'uc', account: '' };
+    it("should add active class if selected", () => {
+      const payment = { clientType: "uc", account: "" };
       render(
         <PaymentSelection
           payment={payment}
@@ -161,18 +161,18 @@ describe('<PaymentSelection/>', () => {
         />
       );
 
-      const creditCardSelection = screen.getByText('UC Funds');
+      const creditCardSelection = screen.getByText("UC Funds");
 
       expect(creditCardSelection.parentElement.classList).toContain(
-        'active-text'
+        "active-text"
       );
     });
   });
 
-  describe('other div', () => {
+  describe("other div", () => {
     const onPaymentSelected = jest.fn() as (payment: IPayment) => void;
-    it('should add active class if selected', () => {
-      const payment = { clientType: 'other', account: '' };
+    it("should add active class if selected", () => {
+      const payment = { clientType: "other", account: "" };
       render(
         <PaymentSelection
           payment={payment}
@@ -189,15 +189,15 @@ describe('<PaymentSelection/>', () => {
         />
       );
 
-      const creditCardSelection = screen.getByText('Other');
+      const creditCardSelection = screen.getByText("Other");
 
       expect(creditCardSelection.parentElement.classList).toContain(
-        'active-text'
+        "active-text"
       );
     });
 
-    it('should ask for company name if selected', () => {
-      const payment = { clientType: 'other', account: '' };
+    it("should ask for company name if selected", () => {
+      const payment = { clientType: "other", account: "" };
       render(
         <PaymentSelection
           payment={payment}
@@ -220,9 +220,9 @@ describe('<PaymentSelection/>', () => {
     });
   });
 
-  it('should call onPaymentSelected when the payment method is changed', async () => {
+  it("should call onPaymentSelected when the payment method is changed", async () => {
     const onPaymentSelected = jest.fn() as (payment: IPayment) => void;
-    const payment = { clientType: 'creditcard', account: '' };
+    const payment = { clientType: "creditcard", account: "" };
     render(
       <PaymentSelection
         payment={payment}
@@ -241,7 +241,7 @@ describe('<PaymentSelection/>', () => {
 
     const user = userEvent.setup();
 
-    const ucFundButton = screen.getByText('UC Funds');
+    const ucFundButton = screen.getByText("UC Funds");
 
     // click on the UC Funds button
     await user.click(ucFundButton);

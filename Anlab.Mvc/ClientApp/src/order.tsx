@@ -1,5 +1,5 @@
-import * as React from 'react';
-import OrderForm, { IOrderFormProps } from './components/OrderForm';
+import * as React from "react";
+import OrderForm, { IOrderFormProps } from "./components/OrderForm";
 
 declare var window: any;
 
@@ -21,7 +21,7 @@ export const Order = () => {
     testItems: window.App.orderData.testItems,
     internalProcessingFee: window.App.orderData.internalProcessingFee,
     externalProcessingFee: window.App.orderData.externalProcessingFee,
-    orderId: window.App.orderId
+    orderId: window.App.orderId,
   } as IOrderFormProps;
 
   // existing order info
