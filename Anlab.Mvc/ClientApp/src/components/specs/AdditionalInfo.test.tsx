@@ -1,38 +1,37 @@
-﻿import * as React from 'react';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+﻿import * as React from "react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { AdditionalInfo, IAdditionalInfoProps } from "../AdditionalInfo";
 
 describe("<AdditionalInfo />", () => {
+  const defaultProps = {
+    handleChange: null,
+    name: "",
+    value: "",
+  } as IAdditionalInfoProps;
 
-    const defaultProps = {
-        handleChange: null,
-        name: "",
-        value: "",
-    } as IAdditionalInfoProps;
+  it("should render an input", () => {
+    render(<AdditionalInfo {...defaultProps} />);
 
-    it("should render an input", () => {
-        render(<AdditionalInfo {...defaultProps} />);
+    expect(screen.getByRole("textbox")).toBeInTheDocument();
+  });
 
-        expect(screen.getByRole("textbox")).toBeInTheDocument();
-    });
+  it("should have a value of Test1", () => {
+    render(<AdditionalInfo {...defaultProps} value="Test1" />);
 
-    it("should have a value of Test1", () => {
-        render(<AdditionalInfo {...defaultProps} value="Test1" />);
+    expect(screen.getByRole("textbox")).toHaveValue("Test1");
+  });
 
-        expect(screen.getByRole("textbox")).toHaveValue("Test1");
-    });
+  it("should call handleChange with on change event", async () => {
+    const handleChange = jest.fn() as (value: string) => void;
 
-    it("should call handleChange with on change event", async () => {
-        const handleChange = jest.fn() as (value: string) => void;
+    render(<AdditionalInfo {...defaultProps} handleChange={handleChange} />);
 
-        render(<AdditionalInfo {...defaultProps} handleChange={handleChange}/>);
+    const user = userEvent.setup();
 
-        const user = userEvent.setup();
+    await user.type(screen.getByRole("textbox"), "Test1");
 
-        await user.type(screen.getByRole("textbox"), "Test1");
-
-        expect(handleChange).toHaveBeenCalled();
-    });
+    expect(handleChange).toHaveBeenCalled();
+  });
 });

@@ -8,14 +8,17 @@ import { AdditionalInfo } from "./AdditionalInfo";
 import { ClientId, IClientInfo } from "./ClientId";
 import { Commodity } from "./Commodity";
 import { DateSampled } from "./DateSampled";
-import { SampleDisposition, SampleDispositionOptions } from "./SampleDisposition";
+import {
+  SampleDisposition,
+  SampleDispositionOptions,
+} from "./SampleDisposition";
 import { IPayment, PaymentSelection } from "./PaymentSelection";
 import { IOtherPaymentInfo } from "./OtherPaymentQuestions";
 import { Project } from "./Project";
 import { Quantity } from "./Quantity";
 import {
   ISampleTypeQuestions,
-  SampleTypeQuestions
+  SampleTypeQuestions,
 } from "./SampleTypeQuestions";
 import { SampleTypeSelection } from "./SampleTypeSelection";
 import Summary from "./Summary";
@@ -89,7 +92,11 @@ export default class OrderForm extends React.Component<
     super(props);
 
     const initialState: IOrderFormState = {
-        additionalEmails: (this.props.defaultCopyEmail && this.props.defaultCopyEmail !== this.props.defaultEmail) ? [this.props.defaultCopyEmail] : [],
+      additionalEmails:
+        this.props.defaultCopyEmail &&
+        this.props.defaultCopyEmail !== this.props.defaultEmail
+          ? [this.props.defaultCopyEmail]
+          : [],
       additionalInfo: "",
       additionalInfoList: {},
       commodity: "",
@@ -100,18 +107,23 @@ export default class OrderForm extends React.Component<
       isSubmitting: false,
       isValid: false,
       clientInfo: {
-          clientId: this.props.defaultClientId ? this.props.defaultClientId : "",
-        email: this.props.defaultSubEmail ? this.props.defaultSubEmail : this.props.defaultEmail,
+        clientId: this.props.defaultClientId ? this.props.defaultClientId : "",
+        email: this.props.defaultSubEmail
+          ? this.props.defaultSubEmail
+          : this.props.defaultEmail,
         employer: "",
         department: "",
         name: this.props.defaultClientIdName
-            ? this.props.defaultClientIdName
-            : "",
+          ? this.props.defaultClientIdName
+          : "",
         phoneNumber: "",
         piName: "",
         piEmail: "",
       },
-      clientInfoValid: (this.props.defaultClientId && this.props.defaultClientIdName) ? true: false,
+      clientInfoValid:
+        this.props.defaultClientId && this.props.defaultClientIdName
+          ? true
+          : false,
       payment: { clientType: "uc", account: "", isUcdAccount: true },
       otherPaymentInfo: {
         paymentType: this.props.defaultAccount ? "IOC" : "",
@@ -121,7 +133,7 @@ export default class OrderForm extends React.Component<
         acEmail: this.props.defaultAcEmail || "",
         acPhone: this.props.defaultAcPhone || "",
         poNum: "",
-        agreementRequired: false
+        agreementRequired: false,
       },
       placingOrder: true,
       project: "",
@@ -134,11 +146,11 @@ export default class OrderForm extends React.Component<
         waterFiltered: false,
         waterPreservativeAdded: false,
         waterPreservativeInfo: "",
-        waterReportedInMgL: false
+        waterReportedInMgL: false,
       },
       selectedCodes: {},
       selectedTests: [],
-      status: ""
+      status: "",
     };
 
     if (this.props.defaultAccount) {
@@ -155,14 +167,14 @@ export default class OrderForm extends React.Component<
       initialState.additionalEmails = orderInfo.AdditionalEmails;
       initialState.sampleType = orderInfo.SampleType;
       initialState.sampleTypeQuestions = {
-          plantReportingBasis: orderInfo.SampleTypeQuestions.PlantReportingBasis,
-          soilImported: orderInfo.SampleTypeQuestions.SoilImported,
-          waterFiltered: orderInfo.SampleTypeQuestions.WaterFiltered,
-          waterPreservativeAdded:
+        plantReportingBasis: orderInfo.SampleTypeQuestions.PlantReportingBasis,
+        soilImported: orderInfo.SampleTypeQuestions.SoilImported,
+        waterFiltered: orderInfo.SampleTypeQuestions.WaterFiltered,
+        waterPreservativeAdded:
           orderInfo.SampleTypeQuestions.WaterPreservativeAdded,
-          waterPreservativeInfo:
+        waterPreservativeInfo:
           orderInfo.SampleTypeQuestions.WaterPreservativeInfo,
-          waterReportedInMgL: orderInfo.SampleTypeQuestions.WaterReportedInMgL
+        waterReportedInMgL: orderInfo.SampleTypeQuestions.WaterReportedInMgL,
       };
       initialState.sampleDisposition = orderInfo.SampleDisposition;
       initialState.project = orderInfo.Project;
@@ -181,12 +193,17 @@ export default class OrderForm extends React.Component<
           acPhone: orderInfo.OtherPaymentInfo.AcPhone,
           companyName: orderInfo.OtherPaymentInfo.CompanyName,
           paymentType: orderInfo.OtherPaymentInfo.PaymentType,
-          poNum: orderInfo.OtherPaymentInfo.PoNum ? orderInfo.OtherPaymentInfo.PoNum : "",
-          agreementRequired: orderInfo.OtherPaymentInfo.PaymentType === "Agreement"
+          poNum: orderInfo.OtherPaymentInfo.PoNum
+            ? orderInfo.OtherPaymentInfo.PoNum
+            : "",
+          agreementRequired:
+            orderInfo.OtherPaymentInfo.PaymentType === "Agreement",
         };
       }
       initialState.clientInfo = {
-        clientId: orderInfo.ClientInfo.ClientId ? orderInfo.ClientInfo.ClientId : "",
+        clientId: orderInfo.ClientInfo.ClientId
+          ? orderInfo.ClientInfo.ClientId
+          : "",
         email: orderInfo.ClientInfo.Email,
         employer: orderInfo.ClientInfo.Employer,
         department: orderInfo.ClientInfo.Department,
@@ -198,14 +215,14 @@ export default class OrderForm extends React.Component<
       initialState.clientInfoValid = true;
       initialState.additionalInfoList = orderInfo.AdditionalInfoList;
       initialState.filteredTests = this.props.testItems.filter(
-        item => item.categories.indexOf(orderInfo.SampleType) !== -1
+        (item) => item.categories.indexOf(orderInfo.SampleType) !== -1
       );
 
-      orderInfo.SelectedTests.forEach(test => {
+      orderInfo.SelectedTests.forEach((test) => {
         initialState.selectedCodes[test.Id] = true;
       });
       initialState.selectedTests = initialState.filteredTests.filter(
-        t => !!initialState.selectedCodes[t.id]
+        (t) => !!initialState.selectedCodes[t.id]
       );
     }
 
@@ -216,7 +233,7 @@ export default class OrderForm extends React.Component<
     const {
       defaultEmail,
       internalProcessingFee,
-      externalProcessingFee
+      externalProcessingFee,
     } = this.props;
     const {
       payment,
@@ -236,7 +253,7 @@ export default class OrderForm extends React.Component<
       filteredTests,
       selectedCodes,
       placingOrder,
-      otherPaymentInfo
+      otherPaymentInfo,
     } = this.state;
 
     const isUcClient = this.state.payment.clientType === "uc";
@@ -246,7 +263,15 @@ export default class OrderForm extends React.Component<
 
     return (
       <div>
-            <div><a href="/media/pdf/ClientInstructionsCreateWorkOrder9-19-18.pdf" target="_blank"><i className="fa fa-question-circle-o"></i> Click here for instructions on how to complete this form</a></div>
+        <div>
+          <a
+            href="/media/pdf/ClientInstructionsCreateWorkOrder9-19-18.pdf"
+            target="_blank"
+          >
+            <i className="fa fa-question-circle-o"></i> Click here for
+            instructions on how to complete this form
+          </a>
+        </div>
         <div>
           <div className="form_wrap">
             <ViewMode
@@ -259,10 +284,11 @@ export default class OrderForm extends React.Component<
             <div className="form_wrap">
               <label className="form_header">Do you have a Client ID?</label>
               <p className="help-block">
-                Client IDs are typically assigned only to principal investigators or organizations.
+                Client IDs are typically assigned only to principal
+                investigators or organizations.
               </p>
               <ClientId
-                clientIdRef={inputRef => {
+                clientIdRef={(inputRef) => {
                   this.clientIdRef = inputRef;
                 }}
                 clientInfo={clientInfo}
@@ -276,8 +302,8 @@ export default class OrderForm extends React.Component<
           <Collapse
             in={
               !placingOrder ||
-              (this.state.clientInfoValid ||
-                !!this.state.payment.clientType.trim())
+              this.state.clientInfoValid ||
+              !!this.state.payment.clientType.trim()
             }
           >
             <div className="form_wrap">
@@ -293,10 +319,10 @@ export default class OrderForm extends React.Component<
                 updateOtherPaymentInfo={this._updateOtherPaymentInfo}
                 updateOtherPaymentInfoType={this._changeOtherPaymentInfoType}
                 changeSelectedUc={this._changeSelectedUc}
-                otherPaymentInfoRef={inputRef => {
+                otherPaymentInfoRef={(inputRef) => {
                   this.otherPaymentInfoRef = inputRef;
                 }}
-                ucAccountRef={inputRef => {
+                ucAccountRef={(inputRef) => {
                   this.ucAccountRef = inputRef;
                 }}
                 creatingOrder={!this.props.orderId}
@@ -310,73 +336,79 @@ export default class OrderForm extends React.Component<
               (!!this.state.payment.clientType.trim() ||
                 !!this.state.project.trim())
             }
-                >
-                    <div>
-            <div className="form_wrap">
-              <label className="form_header">
-                What is the project title associated with this order?
-              </label>
-              <Project
-                project={project}
-                handleChange={this._handleChange}
-                projectRef={inputRef => {
-                  this.projectRef = inputRef;
-                }}
-              />
-              <Commodity
-                commodity={commodity}
-                handleChange={this._handleChange}
-              />
-                        </div>
-
-                        </div>
+          >
+            <div>
+              <div className="form_wrap">
+                <label className="form_header">
+                  What is the project title associated with this order?
+                </label>
+                <Project
+                  project={project}
+                  handleChange={this._handleChange}
+                  projectRef={(inputRef) => {
+                    this.projectRef = inputRef;
+                  }}
+                />
+                <Commodity
+                  commodity={commodity}
+                  handleChange={this._handleChange}
+                />
+              </div>
+            </div>
           </Collapse>
 
           <Collapse
             in={
-                !placingOrder ||
-                (!!this.state.project.trim() ||
-                this.state.quantity > 0 ||
-                !!this.state.sampleType.trim())
+              !placingOrder ||
+              !!this.state.project.trim() ||
+              this.state.quantity > 0 ||
+              !!this.state.sampleType.trim()
             }
           >
-                    <div>
-
-                {placingOrder && (<div>
-                    <div className="form_wrap">
-                        <label className="form_header">What date were the items sampled?</label>
-                        <p className="help-block">
-                            Note: If you have a date range or the sample date is not applicable, please specifiy that in the comments below.
-                        </p>
-                        <DateSampled
-                            date={dateSampled}
-                            handleChange={this._handleChange}
-                            dateRef={inputRef => {
-                                this.sampleDateRef = inputRef;
-                            }} />
-                    </div>
-                    <div className="form_wrap">
-                        <label className="form_header">How would you like your samples disposed of?</label>
-                        <SampleDisposition
-                            disposition={sampleDisposition}
-                            handleChange={this._handleChange}
-                            sampleDispositionRef={inputRef => {
-                                this.sampleDispositionRef = inputRef;
-                            }} />
-                    </div>
-                    <div className="form_wrap">
-                      <label className="form_header">
-                        Who should receive emails and results for this sample
-                        submission?
-                      </label>
-                      <AdditionalEmails
-                        addedEmails={additionalEmails}
-                        defaultEmail={defaultEmail}
-                        clientEmail={clientInfo.email}
-                        onEmailAdded={this._onEmailAdded}
-                        onDeleteEmail={this._onDeleteEmail}
-                      />
-                    </div>
+            <div>
+              {placingOrder && (
+                <div>
+                  <div className="form_wrap">
+                    <label className="form_header">
+                      What date were the items sampled?
+                    </label>
+                    <p className="help-block">
+                      Note: If you have a date range or the sample date is not
+                      applicable, please specifiy that in the comments below.
+                    </p>
+                    <DateSampled
+                      date={dateSampled}
+                      handleChange={this._handleChange}
+                      dateRef={(inputRef) => {
+                        this.sampleDateRef = inputRef;
+                      }}
+                    />
+                  </div>
+                  <div className="form_wrap">
+                    <label className="form_header">
+                      How would you like your samples disposed of?
+                    </label>
+                    <SampleDisposition
+                      disposition={sampleDisposition}
+                      handleChange={this._handleChange}
+                      sampleDispositionRef={(inputRef) => {
+                        this.sampleDispositionRef = inputRef;
+                      }}
+                    />
+                  </div>
+                  <div className="form_wrap">
+                    <label className="form_header">
+                      Who should receive emails and results for this sample
+                      submission?
+                    </label>
+                    <AdditionalEmails
+                      addedEmails={additionalEmails}
+                      defaultEmail={defaultEmail}
+                      clientEmail={clientInfo.email}
+                      onEmailAdded={this._onEmailAdded}
+                      onDeleteEmail={this._onDeleteEmail}
+                    />
+                  </div>
                 </div>
               )}
 
@@ -385,15 +417,17 @@ export default class OrderForm extends React.Component<
                   How many samples will you be submitting?
                 </label>
                 <p className="help-block">
-                    Note: 100 sample limit per work order. If submitting more than 100 sample please create additional work orders.
+                  Note: 100 sample limit per work order. If submitting more than
+                  100 sample please create additional work orders.
                 </p>
                 <p className="help-block">
-                    Each sample container must be numbered consecutively beginning with number 1.
+                  Each sample container must be numbered consecutively beginning
+                  with number 1.
                 </p>
                 <Quantity
                   quantity={quantity}
                   onQuantityChanged={this._onQuantityChanged}
-                  quantityRef={numberRef => {
+                  quantityRef={(numberRef) => {
                     this.quantityRef = numberRef;
                   }}
                 />
@@ -416,10 +450,10 @@ export default class OrderForm extends React.Component<
               />
               {placingOrder && (
                 <SampleTypeQuestions
-                  waterPreservativeRef={inputRef => {
+                  waterPreservativeRef={(inputRef) => {
                     this.waterPreservativeRef = inputRef;
                   }}
-                  plantReportingRef={inputRef => {
+                  plantReportingRef={(inputRef) => {
                     this.plantReportingRef = inputRef;
                   }}
                   sampleType={sampleType}
@@ -453,9 +487,9 @@ export default class OrderForm extends React.Component<
                   What tests would you like?
                 </label>
                 <p className="help-block">
-                    Note: Tests selected can only be from one sample type and 
-                    are assigned to all the samples in the order.  Write in test 
-                    requests from the other sample types in the comment section
+                  Note: Tests selected can only be from one sample type and are
+                  assigned to all the samples in the order. Write in test
+                  requests from the other sample types in the comment section
                 </p>
                 <TestList
                   items={filteredTests}
@@ -546,12 +580,11 @@ export default class OrderForm extends React.Component<
     }
 
     // check sample date
-    if (!moment.isMoment(this.state.dateSampled))
-        valid = false;
+    if (!moment.isMoment(this.state.dateSampled)) valid = false;
 
-      //check sample disposition is entered 
+    //check sample disposition is entered
     if (!this.state.sampleDisposition || !this.state.sampleDisposition.trim())
-        valid = false;
+      valid = false;
 
     // check special water requirements
     if (
@@ -565,7 +598,8 @@ export default class OrderForm extends React.Component<
 
     if (
       this.state.sampleType === "Plant" &&
-      !this.state.sampleTypeQuestions.plantReportingBasis) {
+      !this.state.sampleTypeQuestions.plantReportingBasis
+    ) {
       valid = false;
     }
 
@@ -590,22 +624,25 @@ export default class OrderForm extends React.Component<
   };
 
   private _checkUcChart = (chart: string) => {
-      if (!chart) {
-          return(false);
-      }
-      return this.state.payment.isUcdAccount; //Note, this replaced checking the chart
+    if (!chart) {
+      return false;
+    }
+    return this.state.payment.isUcdAccount; //Note, this replaced checking the chart
   };
 
   private _changeSelectedUc = (payment: IPayment, ucName: string) => {
-    this.setState({
-      ...this.state,
-      otherPaymentInfo: {
-        ...this.state.otherPaymentInfo,
-        companyName: ucName,
+    this.setState(
+      {
+        ...this.state,
+        otherPaymentInfo: {
+          ...this.state.otherPaymentInfo,
+          companyName: ucName,
+        },
+        payment,
       },
-      payment,
-     }, this._validate);
-  }
+      this._validate
+    );
+  };
 
   private _onSampleSelected = (sampleType: string) => {
     var agree = true;
@@ -616,10 +653,10 @@ export default class OrderForm extends React.Component<
     }
     if (agree) {
       const filteredTests = this.props.testItems.filter(
-        item => item.categories.indexOf(sampleType) !== -1
+        (item) => item.categories.indexOf(sampleType) !== -1
       );
       const selectedTests = filteredTests.filter(
-        t => !!this.state.selectedCodes[t.id]
+        (t) => !!this.state.selectedCodes[t.id]
       );
 
       this.setState(
@@ -631,24 +668,33 @@ export default class OrderForm extends React.Component<
 
   private _onTestSelectionChanged = (test: ITestItem, selected: boolean) => {
     if (test.id === "DM") {
-     if (selected && // if user selects DM, change to individual reporting
-          this.state.sampleTypeQuestions.plantReportingBasis !== SamplePlantQuestionsOptions.individual) {
-        this._changeSampleQuestion("plantReportingBasis", SamplePlantQuestionsOptions.individual);
-      } else if (!selected && // if a user deselects DM, deselect reporting
-          this.state.sampleTypeQuestions.plantReportingBasis === SamplePlantQuestionsOptions.individual) {
+      if (
+        selected && // if user selects DM, change to individual reporting
+        this.state.sampleTypeQuestions.plantReportingBasis !==
+          SamplePlantQuestionsOptions.individual
+      ) {
+        this._changeSampleQuestion(
+          "plantReportingBasis",
+          SamplePlantQuestionsOptions.individual
+        );
+      } else if (
+        !selected && // if a user deselects DM, deselect reporting
+        this.state.sampleTypeQuestions.plantReportingBasis ===
+          SamplePlantQuestionsOptions.individual
+      ) {
         this._changeSampleQuestion("plantReportingBasis", null);
       }
-    } 
+    }
     this._changeTest(test, selected);
   };
 
   private _changeTest = (test: ITestItem, selected: boolean) => {
     const selectedCodes = {
       ...this.state.selectedCodes,
-      [test.id]: selected
+      [test.id]: selected,
     };
     const selectedTests = this.state.filteredTests.filter(
-      t => !!selectedCodes[t.id]
+      (t) => !!selectedCodes[t.id]
     );
 
     this.setState({ selectedCodes, selectedTests }, this._validate);
@@ -656,7 +702,9 @@ export default class OrderForm extends React.Component<
 
   private _onSampleQuestionChanged = (question: string, answer: any) => {
     if (question === "plantReportingBasis") {
-      const dryMatterTest = this.props.testItems.filter(x => x.id === "DM")[0];
+      const dryMatterTest = this.props.testItems.filter(
+        (x) => x.id === "DM"
+      )[0];
       if (answer === SamplePlantQuestionsOptions.individual) {
         // if user selects individual basis, add dry matter test
         this._changeTest(dryMatterTest, true);
@@ -673,8 +721,8 @@ export default class OrderForm extends React.Component<
       {
         sampleTypeQuestions: {
           ...this.state.sampleTypeQuestions,
-          [question]: answer
-        }
+          [question]: answer,
+        },
       },
       this._validate
     );
@@ -684,41 +732,54 @@ export default class OrderForm extends React.Component<
     this.setState({ quantity }, this._validate);
   };
 
-  private _updateClientInfo = (keys: string[], values: string[], copyToEmail?: string) => {
-      let newState = { ...this.state.clientInfo }
-      let newAdditionalEmails = [...this.state.additionalEmails];
-      for (var i = 0; i < keys.length; i++)
+  private _updateClientInfo = (
+    keys: string[],
+    values: string[],
+    copyToEmail?: string
+  ) => {
+    let newState = { ...this.state.clientInfo };
+    let newAdditionalEmails = [...this.state.additionalEmails];
+    for (var i = 0; i < keys.length; i++) {
+      newState[keys[i]] = values[i];
+    }
+    if (
+      !!copyToEmail &&
+      copyToEmail !== this.props.defaultEmail &&
+      this.state.additionalEmails.indexOf(copyToEmail) === -1
+    ) {
+      newAdditionalEmails = [...newAdditionalEmails, copyToEmail];
+    }
+    this.setState(
       {
-          newState[keys[i]] = values[i];
-      }
-      if (!!copyToEmail && copyToEmail !== this.props.defaultEmail &&
-          this.state.additionalEmails.indexOf(copyToEmail) === -1) {
-          newAdditionalEmails = [...newAdditionalEmails, copyToEmail];
-      }
-      this.setState({
-          ...this.state, clientInfo: newState, additionalEmails: newAdditionalEmails
-      }, this._validate);
-  }
+        ...this.state,
+        clientInfo: newState,
+        additionalEmails: newAdditionalEmails,
+      },
+      this._validate
+    );
+  };
 
   private _clearClientInfo = () => {
-      const clearInfo = {
-            clientId: "",
-            employer: "",
-            department: "",
-            name: "",
-            email: "",
-            phoneNumber: "",
-            piName: "",
-            piEmail: "",
-        };
-      this.setState({
-          ...this.state, clientInfo: clearInfo, clientInfoValid: false,
-        });
-  }
+    const clearInfo = {
+      clientId: "",
+      employer: "",
+      department: "",
+      name: "",
+      email: "",
+      phoneNumber: "",
+      piName: "",
+      piEmail: "",
+    };
+    this.setState({
+      ...this.state,
+      clientInfo: clearInfo,
+      clientInfoValid: false,
+    });
+  };
 
   private _onEmailAdded = (additionalEmail: string) => {
     this.setState({
-      additionalEmails: [...this.state.additionalEmails, additionalEmail]
+      additionalEmails: [...this.state.additionalEmails, additionalEmail],
     });
   };
 
@@ -736,30 +797,33 @@ export default class OrderForm extends React.Component<
       return;
     }
     if (!this.state.clientInfoValid) {
-        this._focusInput(this.clientIdRef);
+      this._focusInput(this.clientIdRef);
     } else if (
-        this.state.payment.clientType === "uc" &&
-        (!this.state.payment.account ||
-            !this.state.payment.account.trim() ||
-            (this._checkUcChart(this.state.payment.account.charAt(0)) &&
-                this.state.payment.accountName == null))
+      this.state.payment.clientType === "uc" &&
+      (!this.state.payment.account ||
+        !this.state.payment.account.trim() ||
+        (this._checkUcChart(this.state.payment.account.charAt(0)) &&
+          this.state.payment.accountName == null))
     ) {
-        this._focusInput(this.ucAccountRef);
+      this._focusInput(this.ucAccountRef);
     } else if (
-        (this.state.payment.clientType === "other" &&
-            !this._checkOtherPaymentInfo()) ||
-        (this.state.payment.clientType === "uc" &&
-            !this._checkUcChart(this.state.payment.account.charAt(0)) &&
-            !this._checkOtherPaymentInfo())
+      (this.state.payment.clientType === "other" &&
+        !this._checkOtherPaymentInfo()) ||
+      (this.state.payment.clientType === "uc" &&
+        !this._checkUcChart(this.state.payment.account.charAt(0)) &&
+        !this._checkOtherPaymentInfo())
     ) {
-        this._focusInput(this.otherPaymentInfoRef);
+      this._focusInput(this.otherPaymentInfoRef);
     } else if (!this.state.project || !this.state.project.trim()) {
-        this._focusInput(this.projectRef);
+      this._focusInput(this.projectRef);
     } else if (!moment.isMoment(this.state.dateSampled)) {
-        this._focusInput(this.sampleDateRef);
-        this.sampleDateRef.click();
-    } else if (!this.state.sampleDisposition || !this.state.sampleDisposition.trim()) {
-        this._focusInput(this.sampleDispositionRef);
+      this._focusInput(this.sampleDateRef);
+      this.sampleDateRef.click();
+    } else if (
+      !this.state.sampleDisposition ||
+      !this.state.sampleDisposition.trim()
+    ) {
+      this._focusInput(this.sampleDispositionRef);
     } else if (this.state.quantity <= 0 || this.state.quantity > 100) {
       this._focusInput(this.quantityRef);
     } else if (
@@ -769,16 +833,16 @@ export default class OrderForm extends React.Component<
         !this.state.sampleTypeQuestions.waterPreservativeInfo.trim())
     ) {
       this._focusInput(this.waterPreservativeRef);
-    } else if(
-      this.state.sampleType === "Plant" && !this.state.sampleTypeQuestions.plantReportingBasis
+    } else if (
+      this.state.sampleType === "Plant" &&
+      !this.state.sampleTypeQuestions.plantReportingBasis
     ) {
       this._focusInput(this.plantReportingRef);
     }
   };
 
   private _focusInput = (component: any) => {
-    if (!component)
-    {
+    if (!component) {
       return;
     }
     component.focus();
@@ -791,8 +855,8 @@ export default class OrderForm extends React.Component<
       {
         additionalInfoList: {
           ...this.state.additionalInfoList,
-          [id]: value
-        }
+          [id]: value,
+        },
       },
       this._validate
     );
@@ -808,8 +872,8 @@ export default class OrderForm extends React.Component<
         ...this.state,
         otherPaymentInfo: {
           ...this.state.otherPaymentInfo,
-          [property]: value
-        }
+          [property]: value,
+        },
       },
       this._validate
     );
@@ -828,8 +892,8 @@ export default class OrderForm extends React.Component<
         otherPaymentInfo: {
           ...this.state.otherPaymentInfo,
           agreementRequired: agreementRequired,
-          paymentType: paymentType
-        }
+          paymentType: paymentType,
+        },
       },
       this._validate
     );
@@ -876,13 +940,13 @@ export default class OrderForm extends React.Component<
 
     // find selected tests and associated additional info, map to dictionary array
     const selectedCodes = Object.keys(this.state.selectedCodes).filter(
-      k => !!k
+      (k) => !!k
     );
 
     // return in dictionary format
     const additionalInfoList = Object.keys(this.state.additionalInfoList)
-      .filter(k => selectedCodes.indexOf(k) > -1)
-      .map(k => ({ key: k, value: this.state.additionalInfoList[k] }));
+      .filter((k) => selectedCodes.indexOf(k) > -1)
+      .map((k) => ({ key: k, value: this.state.additionalInfoList[k] }));
 
     // build order
     const order = {
@@ -894,7 +958,7 @@ export default class OrderForm extends React.Component<
       externalProcessingFee: this.props.externalProcessingFee,
       internalProcessingFee: this.props.internalProcessingFee,
       clientInfo: {
-          ...this.state.clientInfo,
+        ...this.state.clientInfo,
       },
       orderId: this.props.orderId,
       otherPaymentInfo: this.state.otherPaymentInfo,
@@ -904,7 +968,7 @@ export default class OrderForm extends React.Component<
       sampleDisposition: this.state.sampleDisposition,
       sampleType: this.state.sampleType,
       sampleTypeQuestions: this.state.sampleTypeQuestions,
-      selectedTests: this.state.selectedTests
+      selectedTests: this.state.selectedTests,
     };
     //If a CC, clear out the otherPaymentInfo to avoid triggering validation server side.
     if (
@@ -922,9 +986,9 @@ export default class OrderForm extends React.Component<
     const antiforgery = $("input[name='__RequestVerificationToken']").val();
     $.post({
       url: postUrl,
-      data: { model: order, __RequestVerificationToken: antiforgery }
+      data: { model: order, __RequestVerificationToken: antiforgery },
     })
-      .success(response => {
+      .success((response) => {
         if (response.success === true) {
           const redirectId = response.id;
           window.location.replace(returnUrl + redirectId);
@@ -932,7 +996,7 @@ export default class OrderForm extends React.Component<
           that.setState({
             isSubmitting: false,
             isErrorActive: true,
-            errorMessage: response.message
+            errorMessage: response.message,
           });
         }
       })
@@ -940,7 +1004,7 @@ export default class OrderForm extends React.Component<
         that.setState({
           isSubmitting: false,
           isErrorActive: true,
-          errorMessage: "An internal error occured..."
+          errorMessage: "An internal error occured...",
         });
       });
   };
