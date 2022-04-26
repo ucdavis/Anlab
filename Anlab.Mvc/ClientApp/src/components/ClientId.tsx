@@ -61,8 +61,8 @@ export class ClientId extends React.Component<
   componentDidMount() {
     //if we are editing an order with new clientInfo, validate modal info
     if (
-      this.props.clientInfo.clientId == "" &&
-      this.props.clientInfo.name != ""
+      this.props.clientInfo.clientId === "" &&
+      this.props.clientInfo.name !== ""
     )
       this._validateModal();
   }
@@ -71,7 +71,7 @@ export class ClientId extends React.Component<
     //if modal filled properly, set button style to filled it
     let style = this.state.modalValid ? "btn" : "btn-newClient";
     //set border red if modal has error
-    if (this.state.error == this._modalError) style += " btn-error";
+    if (this.state.error === this._modalError) style += " btn-error";
     return (
       <div className="row">
         <div className="col-3">
@@ -93,14 +93,14 @@ export class ClientId extends React.Component<
             clientInfo={this.props.clientInfo}
             handleChange={this.props.handleClientInfoChange}
             onClear={this.props.clearClientInfo}
-            disabled={this.props.clientInfo.clientId != ""}
+            disabled={this.props.clientInfo.clientId !== ""}
             style={style}
             onClose={this._onModalClose}
           />
-          {this.state.modalValid && this.state.error == "" && (
+          {this.state.modalValid && this.state.error === "" && (
             <i className="fa fa-check" aria-hidden="true"></i>
           )}
-          {this.state.error == this._modalError && (
+          {this.state.error === this._modalError && (
             <i className="fa fa-times" aria-hidden="true"></i>
           )}
         </div>
