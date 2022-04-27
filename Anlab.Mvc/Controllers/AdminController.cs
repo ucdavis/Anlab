@@ -251,9 +251,10 @@ namespace AnlabMvc.Controllers
                 if (model.Resend)
                 {
                     mm.Sent = null;
+                    mm.FailureCount = 0;
                 }
 
-                var extraMessage = mm.Sent == null
+                var extraMessage = model.Resend
                     ? "The mail message will attempt to send again."
                     : "You did not choose to try and re-send";
 

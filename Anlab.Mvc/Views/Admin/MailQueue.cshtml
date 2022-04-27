@@ -44,15 +44,15 @@ else
         <tr>
             <td></td>
             <td>
-                @if (message.Sent.HasValue)
+                @if (message.Sent.HasValue || message.FailureCount > 2)
                 {
                     <a asp-controller="Admin" asp-action="FixEmail" asp-route-id="@message.Id">Edit</a>
                 }
             </td>
             <td>
-                @if (message.Sent.HasValue)
+                @if (message.Sent.HasValue || message.FailureCount > 2)
                 {
-                    if (message.Sent.Value)
+                    if (message.Sent.HasValue && message.Sent.Value)
                     {
                         <span data-toggle="tooltip" title="Sent"><i class="fa fa-check-circle" aria-hidden="true"></i> Sent</span>
                     }
