@@ -20,7 +20,7 @@
                 <strong>Failure Count</strong>
                 <span>@Model.FailureCount</span>
             </div>
-            @if (Model.Sent != null && Model.Sent.Value == false)
+            @if ((Model.Sent != null && Model.Sent.Value == false) || Model.FailureCount > 2)
             {
                 <div class="form-group">
                     <strong>Last Failure Reason</strong>
