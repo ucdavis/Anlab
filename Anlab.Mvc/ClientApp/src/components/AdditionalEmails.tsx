@@ -40,8 +40,8 @@ export class AdditionalEmails extends React.Component<
         <div>
           <Badge>{this.props.defaultEmail}</Badge>
           {this.props.clientEmail &&
-            this.props.clientEmail != this.props.defaultEmail &&
-            this.props.addedEmails.indexOf(this.props.clientEmail) == -1 && (
+            this.props.clientEmail !== this.props.defaultEmail &&
+            this.props.addedEmails.indexOf(this.props.clientEmail) === -1 && (
               <Badge>{this.props.clientEmail}</Badge>
             )}
           {this._renderEmails()}
