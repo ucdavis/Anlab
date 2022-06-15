@@ -38,7 +38,7 @@ namespace Anlab.Jobs.Core.Logging
             {
                 LogConfiguration.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(elasticUri)
                 {
-                    IndexFormat = "aspnet-anlab-{0:yyyy.MM.dd}"
+                    IndexFormat = "aspnet-anlab-{0:yyyy.MM}"
                 });
             }
 
