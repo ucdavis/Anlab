@@ -72,7 +72,7 @@ namespace AnlabMvc.Controllers
         {
             var alert = await _dbContext.SystemAlerts.SingleAsync(x => x.Id == id);
             alert.IsActive = !alert.IsActive;
-            _dbContext.Update(alert);
+
             await _dbContext.SaveChangesAsync();
 
             Message = $"Alert has been {(alert.IsActive ? "activated" : "deactivated")}.";
@@ -102,7 +102,7 @@ namespace AnlabMvc.Controllers
 
                 var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().UseBootstrap().Build();
                 alertToUpdate.Content = Markdown.ToHtml(alertToUpdate.Markdown, pipeline);
-                _dbContext.Update(alertToUpdate);
+
                 await _dbContext.SaveChangesAsync();
                 Message = "Alert Updated. Activate it if it looks good.";
                 return RedirectToAction("Details", new { id = alertToUpdate.Id });
