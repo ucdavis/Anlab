@@ -1,13 +1,25 @@
+using Anlab.Core.Data;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
+using AnlabMvc.Models;
 
 namespace AnlabMvc.Controllers
 {
     public class HomeController : ApplicationController
     {
-        public IActionResult Index()
+        private readonly ApplicationDbContext _dbContext;
+        
+        public HomeController(ApplicationDbContext dbContext)
         {
-            return View();
+            _dbContext = dbContext;
+        }
+        public async Task<IActionResult> Index()
+        {
+            var alerts = await _dbContext.SystemAlerts.Where(a => a.IsActive).OrderByDescending(a => a.Updated).Select(a => new AlertModel{ Content = a.Content, Danger = a.Danger}).ToListAsync();
+            return View(alerts);
         }
         public IActionResult SamplingAndPreparation()
         {
