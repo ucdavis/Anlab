@@ -1,5 +1,84 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+@using Anlab.Core.Models
+@using AnlabMvc.Models.Order;
+@model IList<SystemAlert>
 @{
+    ViewData["Title"] = "System Alerts";
+}
+
+@section ActionButtons
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create</a>
+    </p>
+}
+
+<div class="col">
+
+
+    <table id="table" class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Description</th>
+                <th>Active</th>
+                <th>Danger</th>
+                <th>Created</th>
+                <th>Updated</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Description</td>
+                <td>@(item.IsActive ? "Yes" : "No")</td>
+                <td>@(item.Danger ? "Yes" : "No")</td>
+                <td>@item.Created</td>
+                <td>@item.Updated</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+</div>
+
+@section AdditionalStyles
+    {
+    @{
+        await Html.RenderPartialAsync("_DataTableStylePartial");
+    }
+    }
+
+    @section Scripts
+    {
+    @{
+        await Html.RenderPartialAsync("_DataTableScriptsPartial");
+    }
+
+
+    <script type="text/javascript">
+        $(function() {
+            var table = $("#table").DataTable({
+                "sorting": [[2, "desc"], [5, "desc"]],
+                "columnDefs": [
+                    {
+                        "type": "date", "targets": [4, 5]
+                    }
+                ],
+                "stateSave": true,
+                "stateDuration": 60 * 10,
+            });
+
+        });
+
+    </script>
 }

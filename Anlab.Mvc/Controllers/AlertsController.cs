@@ -22,9 +22,10 @@ namespace AnlabMvc.Controllers
         {
             _dbContext = dbContext;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var alerts = await _dbContext.SystemAlerts.OrderBy(a => a.IsActive).ThenBy(a => a.Updated).ToListAsync();
+            return View(alerts);
         }
 
         // GET: AdminAnalysis/Create
@@ -33,7 +34,6 @@ namespace AnlabMvc.Controllers
             return View();
         }
 
-        // POST: AdminAnalysis/Create
         [HttpPost]
         public async Task<ActionResult> Create(SystemAlert systemAlert)
         {
@@ -113,9 +113,20 @@ namespace AnlabMvc.Controllers
             return View(systemAlert);
         }
 
-        //TODO: Call above with form on details page.
-        //Add an edit page
-        //Add an index page with a toggle to activate/deactivate...
-        //Update SQL project
+        public async Task<ActionResult> Delete(int id)
+        {
+            var alert = await _dbContext.SystemAlerts.SingleAsync(x => x.Id == id);
+            return View(alert);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Delete(SystemAlert systemAlert)
+        {
+            var alertToDelete = await _dbContext.SystemAlerts.SingleAsync(x => x.Id == systemAlert.Id);
+            _dbContext.Remove(alertToDelete);
+            await _dbContext.SaveChangesAsync();
+            Message = "Alert Deleted.";
+            return RedirectToAction("Index");
+        }
     }
 }
