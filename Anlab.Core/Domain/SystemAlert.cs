@@ -17,5 +17,9 @@ namespace Anlab.Core.Domain
         [Required]
         public string Markdown { get; set; }
         public bool Danger { get; set; } = false;
+        
+        [Required]
+        [MaxLength(50)]
+        public string Description { get; set; }
     }
 }
