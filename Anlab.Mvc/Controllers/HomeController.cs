@@ -4,7 +4,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using AnlabMvc.Models;
+using AnlabMvc.Models.SystemAlertModels;
 
 namespace AnlabMvc.Controllers
 {

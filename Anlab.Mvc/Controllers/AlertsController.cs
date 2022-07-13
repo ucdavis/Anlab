@@ -1,6 +1,7 @@
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using AnlabMvc.Models.Roles;
+using AnlabMvc.Models.SystemAlertModels;
 using Markdig;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +34,7 @@ namespace AnlabMvc.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(SystemAlert systemAlert)
+        public async Task<ActionResult> Create(SystemAlertEditModel systemAlert)
         {
             ModelState.Clear();
             TryValidateModel(systemAlert);
@@ -42,7 +43,7 @@ namespace AnlabMvc.Controllers
             {
                 var alertToCreate = new SystemAlert
                 {
-                    IsActive    = systemAlert.IsActive,
+                    IsActive    = false,
                     Markdown    = systemAlert.Markdown,
                     Danger      = systemAlert.Danger,
                     Created     = DateTime.UtcNow,
@@ -82,12 +83,12 @@ namespace AnlabMvc.Controllers
 
         public async Task<ActionResult> Edit(int id)
         {
-            var alert = await _dbContext.SystemAlerts.SingleAsync(x => x.Id == id);
+            var alert = await _dbContext.SystemAlerts.Select(a => new SystemAlertEditModel { Id = a.Id, Description = a.Description, Markdown = a.Markdown, Danger = a.Danger}).SingleAsync(x => x.Id == id);
             return View(alert);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Edit(SystemAlert systemAlert)
+        public async Task<ActionResult> Edit(SystemAlertEditModel systemAlert)
         {
             ModelState.Clear();
             TryValidateModel(systemAlert);
