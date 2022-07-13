@@ -36,8 +36,8 @@
                 <td>@item.Description</td>
                 <td>@(item.IsActive ? "Yes" : "No")</td>
                 <td>@(item.Danger ? "Yes" : "No")</td>
-                <td>@item.Created</td>
-                <td>@item.Updated</td>
+                <td>@item.Created.ToPacificTime()</td>
+                <td>@item.Updated.ToPacificTime()</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
