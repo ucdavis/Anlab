@@ -1,0 +1,29 @@
+@model SystemAlert
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div class="col-8">
+    <div class="alert @(Model.Danger ? "alert-danger" : "alert-info")">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @Html.Raw(Model.Content)
+    </div>
+</div>
+
+
+<div class="col-8">
+
+
+    <form asp-action="ToggleActive" asp-route-id="@Model.Id">
+        <div class="form-group">
+
+            <button type="submit" class="btn btn-primary">@(Model.IsActive ? "Deactivate" : "Activate")</button>
+
+        </div>
+    </form>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-primary">Delete</a>
+    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+</div>

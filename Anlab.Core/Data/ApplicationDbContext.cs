@@ -83,6 +83,8 @@ namespace Anlab.Core.Data
 
         public virtual DbSet<DisposalView> DisposalView { get; set; }
 
+        public virtual DbSet<SystemAlert> SystemAlerts { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Order>()
