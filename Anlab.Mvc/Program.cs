@@ -8,7 +8,6 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
-using StackifyLib;
 
 namespace AnlabMvc
 {
@@ -51,7 +50,6 @@ namespace AnlabMvc
               .Enrich.WithExceptionDetails()
               .Enrich.WithProperty("Application", loggingSection.GetValue<string>("AppName"))
               .Enrich.WithProperty("AppEnvironment", loggingSection.GetValue<string>("Environment"))
-              .WriteTo.Stackify()
               .WriteTo.Console();
       
 
