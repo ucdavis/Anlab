@@ -33,8 +33,6 @@ namespace AnlabMvc
             }
             var configuration = builder.Build();
 
-            configuration.ConfigureStackifyLogging();
-
             var loggingSection = configuration.GetSection("Stackify");
 
             var loggerConfig = new LoggerConfiguration()

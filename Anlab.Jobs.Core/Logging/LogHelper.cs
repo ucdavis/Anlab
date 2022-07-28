@@ -4,7 +4,6 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
-using StackifyLib;
 
 namespace Anlab.Jobs.Core.Logging
 {
@@ -15,8 +14,6 @@ namespace Anlab.Jobs.Core.Logging
 
         public static void ConfigureLogging(IConfigurationRoot configuration) {
             if (_loggingSetup) return;
-
-            configuration.ConfigureStackifyLogging(); // use the config setting keys
 
             var loggingSection = configuration.GetSection("Stackify");
 
@@ -30,7 +27,6 @@ namespace Anlab.Jobs.Core.Logging
                 .Enrich.WithExceptionDetails()
                 .Enrich.WithProperty("Application", loggingSection.GetValue<string>("AppName"))
                 .Enrich.WithProperty("AppEnvironment", loggingSection.GetValue<string>("Environment"))
-                .WriteTo.Stackify()
                 .WriteTo.Console();
 
             // add in elastic search sink if the uri is valid
