@@ -34,13 +34,14 @@ title: "Contact"
 </ul>
 <p>(Note: If coming from the North, take Highway 113 South. Exit on UC Davis Hutchison Drive ramp. Turn Left onto Hutchison and then follow the directions above beginning with turning onto Kleiber Hall Drive.)</p>
 <p>Once in Parking Lot 27, proceed straight ahead until you must turn left or right. Turn Left and go to the end of the lane. The Sample Receiving Facility is located in the last room in the building on your right. If you are merely dropping off samples or picking up samples (i.e., you are only stopping momentarily), you should be able to do so from this spot without purchasing a parking permit.</p>
-<p>Parking Lot 27 does not have any metered parking, and although a Visitor Parking permit (daily) can be purchased at the lot as described below, spaces are normally not available. Parking Lot 25 (Recreation Hall/ARC) is an option if you need to park for an extended period of time. See information below.</p>
-<p>Directions to Parking Lot 25 (Recreation Hall / ARC)</p>
-<p>From Interstate 80 take the Highway 113 north exit. Exit on Hutchison Drive ramp and turn Right<br />onto Hutchison Drive. At the traffic light, turn Left onto La Rue Road. At the next traffic light,<br />Orchard Park Drive, turn Right and pull
-    into Parking Lot 25.</p>
-<p>Visitor Parking Information</p>
-<p>Visitor Parking is available in staff parking lots after 5:00 pm, as well.<br />Parking costs $10.00 per day, Monday through Friday. Permits may be purchased from the dispensers in the parking lots. The machines will accept quarters, $1 bills, $5 bills, Visa or MasterCard credit cards. Parking is free on weekends and observed holidays, except during special events.</p>
-<p>See also the <a class="external-link" href="http://taps.ucdavis.edu/parking/information/visitor" target="_blank" title="UCD Visitor Parking Info">University's page for more parking information</a>.</p>
+<p> <a class="external-link" href="https://campusmap.ucdavis.edu/?l=67" target="_blank" title="Parking Lot 27">See this link to find Parking Lot 27.</a></p>
+<h3>Directions to Parking Lot 25</h3>
+<p>From Interstate 80 take the Highway 113 north exit. Exit on Hutchison Drive ramp and turn Right<br />onto Hutchison Drive. At the traffic light, turn Left onto La Rue Road. At the next traffic light,<br />Orchard Park Drive, turn Right and pull into Parking Lot 25.<br /><br />
+<a class="external-link" href="https://campusmap.ucdavis.edu/?l=39" target="_blank" title="Parking Lot 25">See this link to find Parking Lot 25.</a></p>
+<p>Alternatively, the Pavilion Parking Structure on Hutchinson Drive has visitor parking.<br />
+<a class="external-link" href="https://campusmap.ucdavis.edu/?l=55" target="_blank" title="Pavilion Parking Structure">See this link to find the Pavilion Parking Structure.</a></p>
+<p>Please see the 
+<a class="external-link" href="https://taps.ucdavis.edu/parking/guide#visitor" target="_blank" title="UC Davis Visitor Parking Information">UC Davis Parking Page</a> for information on parking and daily rates.</p>
 </div>
 <div class="col-4">
 <p><b>Rani Youngman</b> <br>Director</p>
