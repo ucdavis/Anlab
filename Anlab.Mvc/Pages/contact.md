@@ -37,11 +37,11 @@ title: "Contact"
 <p> <a class="external-link" href="https://campusmap.ucdavis.edu/?l=67" target="_blank" title="Parking Lot 27">See this link to find Parking Lot 27.</a></p>
 <h3>Directions to Parking Lot 25</h3>
 <p>From Interstate 80 take the Highway 113 north exit. Exit on Hutchison Drive ramp and turn Right<br />onto Hutchison Drive. At the traffic light, turn Left onto La Rue Road. At the next traffic light,<br />Orchard Park Drive, turn Right and pull into Parking Lot 25.<br /><br />
-<a class="external-link" href="https://campusmap.ucdavis.edu/?l=39" target="_blank" title="Parking Lot 25">ee this link to find Parking Lot 25.</a></p>
+<a class="external-link" href="https://campusmap.ucdavis.edu/?l=39" target="_blank" title="Parking Lot 25">See this link to find Parking Lot 25.</a></p>
 <p>Alternatively, the Pavilion Parking Structure on Hutchinson Drive has visitor parking.<br />
 <a class="external-link" href="https://campusmap.ucdavis.edu/?l=55" target="_blank" title="Pavilion Parking Structure">See this link to find the Pavilion Parking Structure.</a></p>
 <p>Please see the 
-<a class="external-link" href="https://taps.ucdavis.edu/parking/guide#visitor" target="_blank" title="UC Davis Visitor Parking Information">UC Davis Parking Page for information on parking and daily rates</a>.</p>
+<a class="external-link" href="https://taps.ucdavis.edu/parking/guide#visitor" target="_blank" title="UC Davis Visitor Parking Information">UC Davis Parking Page</a> for information on parking and daily rates.</p>
 </div>
 <div class="col-4">
 <p><b>Rani Youngman</b> <br>Director</p>
