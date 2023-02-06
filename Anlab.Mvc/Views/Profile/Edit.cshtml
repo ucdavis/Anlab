@@ -2,6 +2,8 @@
 
 @{
     ViewBag.Title = "Edit profile";
+    ViewBag.Title = "Edit profile";
+    var useCoA = ViewBag.UseCoA;
 }
 <div class="col">
     <form asp-action="Edit" method="post" asp-antiforgery="true">
@@ -58,6 +60,12 @@
                 <label asp-for="Account" class="col-md-2 control-label">Default UC Account</label>
                 <div class="col-md-10">
                     <input asp-for="Account" class="form-control"/>
+                    @if (useCoA)
+                    {
+                        <div class="input-group-append">
+                            <button id="ccoa-picker" class="btn btn-primary" type="button">UCD COA Picker</button>
+                        </div>
+                    }
                     <span asp-validation-for="Account" class="text-danger"></span>
                 </div>
             </div>

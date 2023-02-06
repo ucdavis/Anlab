@@ -44,6 +44,7 @@ namespace AnlabMvc
 
             services.Configure<AzureOptions>(Configuration.GetSection("Authentication:Azure"));
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.Configure<AggieEnterpriseSettings>(Configuration.GetSection("AggieEnterprise"));
             services.Configure<ConnectionSettings>(Configuration.GetSection("ConnectionSettings"));
             services.Configure<CyberSourceSettings>(Configuration.GetSection("CyberSourceSettings"));
             services.Configure<FinancialSettings>(Configuration.GetSection("Financial"));

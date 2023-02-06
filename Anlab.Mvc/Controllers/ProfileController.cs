@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
+using Anlab.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace AnlabMvc.Controllers
 {
@@ -15,10 +17,12 @@ namespace AnlabMvc.Controllers
     public class ProfileController : ApplicationController
     {
         private readonly ApplicationDbContext _context;
+        private readonly AggieEnterpriseSettings _AeSettings;
 
-        public ProfileController(ApplicationDbContext context)
+        public ProfileController(ApplicationDbContext context, IOptions<AggieEnterpriseSettings> aeSettings)
         {
             _context = context;
+            _AeSettings = aeSettings.Value;
         }
 
         public async Task<IActionResult> Index()
@@ -28,6 +32,7 @@ namespace AnlabMvc.Controllers
 
         public async Task<IActionResult> Edit()
         {
+            ViewBag.UseCoA = _AeSettings.UseCoA;
             return View(await _context.Users.SingleOrDefaultAsync(x => x.Id == CurrentUserId));
         }
 
@@ -35,6 +40,7 @@ namespace AnlabMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(User user)
         {
+            ViewBag.UseCoA = _AeSettings.UseCoA;
             var userToUpdate = await _context.Users.SingleOrDefaultAsync(x => x.Id == CurrentUserId);
 
             if (ModelState.IsValid)
