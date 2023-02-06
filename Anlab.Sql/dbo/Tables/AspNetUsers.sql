@@ -1,7 +1,7 @@
 CREATE TABLE [dbo].[AspNetUsers] (
     [Id]                   NVARCHAR (450)     NOT NULL,
     [AccessFailedCount]    INT                NOT NULL,
-    [Account]              NVARCHAR (50)      NULL,
+    [Account]              NVARCHAR (100)      NULL,
     [ClientId]             NVARCHAR (16)      NULL,
     [ConcurrencyStamp]     NVARCHAR (MAX)     NULL,
     [Email]                NVARCHAR (256)     NULL,
