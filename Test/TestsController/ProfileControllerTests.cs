@@ -19,14 +19,28 @@ using Test.Helpers;
 using TestHelpers.Helpers;
 using Xunit;
 using Xunit.Abstractions;
-
+using Anlab.Core.Models;
+using Microsoft.Extensions.Options;
 
 namespace Test.TestsController
 {
     [Trait("Category", "ControllerTests")]
     public class ProfileControllerTests
     {
-        
+        public Mock<IOptions<AggieEnterpriseSettings>> MockAeSettings { get; set; }
+
+        public AggieEnterpriseSettings AeSettings { get; set; } = new AggieEnterpriseSettings()
+        {
+            UseCoA = true,
+            GraphQlUrl = "http://fake.ucdavis.edu/graphql",
+            Token = "Fake"
+        };
+
+        public ProfileControllerTests()
+        {
+            MockAeSettings = new Mock<IOptions<AggieEnterpriseSettings>>();
+            MockAeSettings.SetupGet(x => x.Value).Returns(AeSettings);
+        }
 
         [Fact]
         public async Task TestIndex()
@@ -57,8 +71,8 @@ namespace Test.TestsController
             //To return the user so can check identity.
             var mockHttpContext = new Mock<HttpContext>();
             mockHttpContext.Setup(m => m.User).Returns(user2);
-            
-            var controller = new ProfileController(mockContext.Object);
+
+            var controller = new ProfileController(mockContext.Object, MockAeSettings.Object);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = mockHttpContext.Object
@@ -100,7 +114,7 @@ namespace Test.TestsController
             var mockHttpContext = new Mock<HttpContext>();
             mockHttpContext.Setup(m => m.User).Returns(user2);
 
-            var controller = new ProfileController(mockContext.Object);
+            var controller = new ProfileController(mockContext.Object, MockAeSettings.Object);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = mockHttpContext.Object
@@ -139,7 +153,7 @@ namespace Test.TestsController
             var mockHttpContext = new Mock<HttpContext>();
             mockHttpContext.Setup(m => m.User).Returns(user2);
 
-            var controller = new ProfileController(mockContext.Object);
+            var controller = new ProfileController(mockContext.Object, MockAeSettings.Object);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = mockHttpContext.Object
@@ -202,7 +216,7 @@ namespace Test.TestsController
             var mockHttpContext = new Mock<HttpContext>();
             mockHttpContext.Setup(m => m.User).Returns(user2);
 
-            var controller = new ProfileController(mockContext.Object);
+            var controller = new ProfileController(mockContext.Object, MockAeSettings.Object);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = mockHttpContext.Object,
