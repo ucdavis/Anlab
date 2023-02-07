@@ -19,8 +19,8 @@ using Test.Helpers;
 using TestHelpers.Helpers;
 using Xunit;
 using Xunit.Abstractions;
-using Anlab.Core.Models;
 using Microsoft.Extensions.Options;
+using Anlab.Core.Models.AggieEnterpriseModels;
 
 namespace Test.TestsController
 {

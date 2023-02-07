@@ -3,6 +3,7 @@ using System.IO;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
+using Anlab.Core.Models.AggieEnterpriseModels;
 using Anlab.Core.Services;
 using AnlabMvc.Middleware;
 using AnlabMvc.Models.Configuration;

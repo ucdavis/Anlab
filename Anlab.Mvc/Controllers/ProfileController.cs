@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
-using Anlab.Core.Models;
+using Anlab.Core.Models.AggieEnterpriseModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
