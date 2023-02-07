@@ -1,5 +1,18 @@
 //sampling and preparation
-
+.form-horizontal {
+  .control-label {
+    text-align: left !important;
+  }
+  input,select {
+    max-width: 670px;
+  }
+} 
+.d-flex {
+.form-control {
+  width:inherit;
+}
+}
+  
 .sampling-buttons {
     text-align: center;
     align-self: flex-end;

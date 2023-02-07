@@ -58,14 +58,18 @@
             </div>
             <div class="form-group">
                 <label asp-for="Account" class="col-md-2 control-label">Default UC Account</label>
+                
                 <div class="col-md-10">
-                    <input asp-for="Account" class="form-control"/>
+                <div class="d-flex">
+                <input asp-for="Account" class="form-control"/>
                     @if (useCoA)
                     {
-                        <div class="input-group-append">
+                        
                             <button id="ccoa-picker" class="btn btn-primary" type="button">UCD COA Picker</button>
-                        </div>
+                       
                     }
+                </div>
+                    
                     <span asp-validation-for="Account" class="text-danger"></span>
                 </div>
             </div>
@@ -104,12 +108,12 @@
                     <span asp-validation-for="BillingContactPhone" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Save" class="btn btn-default"/>
-                </div>
+            <div style="display:flex;justify-content:flex-end;margin-top:16px;" class="form-group">
+                <a class="btn btn-order" style="margin-right:16px;" asp-action="Index">Cancel</a>
+                <input type="submit" value="Save" class="btn btn-default"/>
+                
             </div>
-            <a asp-action="Index">Cancel</a>
+            
         </div>
     </form>
 </div>

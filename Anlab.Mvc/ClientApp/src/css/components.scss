@@ -32,7 +32,27 @@
   max-width: 100%;
   height: auto;
 }
-
+input#Account{
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  width:540px;
+}
+button#ccoa-picker {
+  box-shadow: none;
+  font-size:1.4rem;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  box-shadow: none;
+  height: inherit;
+  padding: 7px 10px;
+  line-height: inherit;
+  &:hover{
+    transform: none;
+  }
+}
+.btn-default {
+font-weight:bold;
+}
 .btn {
     white-space: nowrap;
     display: inline-block;
@@ -317,4 +337,7 @@ table.table {
 .inline-block {
     padding-left: 1em;
     display: inline-block;
+}
+.d-flex {
+  display:flex;
 }
