@@ -125,4 +125,22 @@
     </script>
 
     @{     await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
+    <script src="https://finjector.ucdavis.edu/finjector.js?v=1" type="text/javascript" asp-add-nonce="true"></script>
+
+    <script type="text/javascript" asp-add-nonce="true">
+
+        $("#ccoa-picker").on("click",
+
+            async function () {
+                const chart = await window.Finjector.findChartSegmentString();
+                if (chart && chart.status === "success") {
+                    $("#Account").val(chart.data);
+                }
+                else {
+                    alert("Something went wrong with the CCOA picker")
+                }
+                return false;
+            });
+
+    </script>
 }
