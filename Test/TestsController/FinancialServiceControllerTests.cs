@@ -1,7 +1,10 @@
+using Anlab.Core.Models.AggieEnterpriseModels;
+using Anlab.Core.Services;
 using AnlabMvc.Controllers;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Moq;
 using Shouldly;
 using System;
@@ -18,14 +21,25 @@ namespace Test.TestsController
     [Trait("Category", "ControllerTests")]
     public class FinancialServiceControllerTests
     {
+        public AggieEnterpriseSettings AeSettings { get; set; } = new AggieEnterpriseSettings()
+        {
+            UseCoA = false,
+            GraphQlUrl = "http://fake.ucdavis.edu/graphql",
+            Token = "Fake"
+        };
+        
         [Fact]
         public async Task TestGetAccountInfoCallsService()
         {
             // Arrange
             var mockService = new Mock<IFinancialService>();
-            mockService.Setup(a => a.GetAccountName(It.IsAny<string>())).ReturnsAsync("Fake");            
+            var mockAggieEnterpriseService = new Mock<IAggieEnterpriseService>();
+            var mockAeSettings = new Mock<IOptions<AggieEnterpriseSettings>>();
+            mockAeSettings.Setup(a => a.Value).Returns(AeSettings);
 
-            var controller = new FinancialServiceController(mockService.Object);
+            mockService.Setup(a => a.GetAccountName(It.IsAny<string>())).ReturnsAsync("Fake");
+
+            var controller = new FinancialServiceController(mockService.Object, mockAggieEnterpriseService.Object, mockAeSettings.Object);
 
             // Act
             var controllerResult = await controller.GetAccountInfo("test");
