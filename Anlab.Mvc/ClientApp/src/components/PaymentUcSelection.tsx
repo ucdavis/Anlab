@@ -56,7 +56,7 @@ export class PaymentUcSelection extends React.Component<
               label={`${this.props.ucName} Account`}
               value={this.props.payment.account}
               error={this.props.error}
-              maxLength={50}
+              maxLength={100}
               onChange={this.props.handleAccountChange}
               onBlur={this.props.lookupAccount}
               inputRef={this.props.ucAccountRef}

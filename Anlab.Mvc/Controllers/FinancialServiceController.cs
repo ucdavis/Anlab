@@ -5,6 +5,7 @@ using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System;
 using System.Threading.Tasks;
 
 namespace AnlabMvc.Controllers
@@ -37,7 +38,7 @@ namespace AnlabMvc.Controllers
                         //Number = accountValidation.FinancialSegmentString
                     return name;
                 }
-                return string.Empty;
+                throw new Exception("Invalid Account"); // Yuck, need to return a model with errors
             }
             
             var result = await _financialService.GetAccountName(account);

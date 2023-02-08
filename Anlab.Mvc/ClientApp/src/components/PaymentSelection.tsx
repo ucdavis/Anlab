@@ -141,7 +141,7 @@ export class PaymentSelection extends React.Component<
           name="ucAccount"
           value={this.props.payment.account}
           error={this.state.error}
-          maxLength={50}
+          maxLength={100}
           onChange={this._handleAccountChange}
           onBlur={this._lookupAccount}
           inputRef={this.props.ucAccountRef}
