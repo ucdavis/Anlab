@@ -112,8 +112,8 @@ export class PaymentSelection extends React.Component<
     return (
       <div>
             <p className="help-block">
-                {env.useCoa && <div>UC Davis accounts require a valid PPM or GL COA</div>}
-                {!env.useCoa && <div>UC Davis accounts require the chart.</div>}
+                {env.useCoa && ("UC Davis accounts require a valid PPM or GL COA")}
+                {!env.useCoa && ("UC Davis accounts require the chart.")}
           {" "}
           <strong>
             <a
