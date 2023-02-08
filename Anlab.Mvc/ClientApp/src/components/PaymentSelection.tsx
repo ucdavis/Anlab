@@ -239,31 +239,39 @@ export class PaymentSelection extends React.Component<
     this._accountLookup();
   };
 
-  private _accountLookup = () => {
-    fetch(`/financial/info?account=${this.props.payment.account}`, {
-      credentials: "same-origin",
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw Error("The account you entered could not be found");
-        }
-        return response;
-      })
-      .then((response) => response.text())
-      .then((accountName) => {
-        this.props.onPaymentSelected({
-          ...this.props.payment,
-          accountName,
+    private _accountLookup = () => {
+        fetch(`/financial/info?account=${this.props.payment.account}`, {
+            credentials: "same-origin",
+        })
+        .then((response) => {
+            if (response === null || response.status !== 200) {
+                throw Error("The account you entered could not be found");
+            }
+            return response;
+        })
+        .then((response) => response.json())
+        .then((response) => {
+            if (!response.isValid) {
+                this.setState({ error: response.message });
+                this.props.onPaymentSelected({
+                    ...this.props.payment,
+                    accountName: null,
+                });
+            } else {
+                this.props.onPaymentSelected({
+                    ...this.props.payment,
+                    accountName: response.displayName,
+                });
+            }
+        })
+        .catch((error: Error) => {
+            this.setState({ error: error.message });
+            this.props.onPaymentSelected({
+                ...this.props.payment,
+                accountName: null,
+            });
         });
-      })
-      .catch((error: Error) => {
-        this.setState({ error: error.message });
-        this.props.onPaymentSelected({
-          ...this.props.payment,
-          accountName: null,
-        });
-      });
-  };
+    };
 
   private _handleChange = (clientType: string) => {
     this._validateAccount(this.props.payment.account, clientType);
