@@ -5,6 +5,7 @@ using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Serilog;
 using System;
 using System.Threading.Tasks;
 
@@ -25,25 +26,35 @@ namespace AnlabMvc.Controllers
         }
 
         [HttpGet("financial/info")]
-        public async Task<string> GetAccountInfo(string account)
+        public async Task<AccountValidationModel> GetAccountInfo(string account)
         {
-            if(_aeSettings.UseCoA)
+            var rtValue = new AccountValidationModel();
+            if (_aeSettings.UseCoA)
             {
-                var accountValidation = await _aggieEnterpriseService.IsAccountValid(account);
-                if (accountValidation.IsValid)
+                rtValue = await _aggieEnterpriseService.IsAccountValid(account);
+                if (rtValue.IsValid)
                 {
-                    var name = accountValidation.CoaChartType == FinancialChartStringType.Ppm ? $"PPM: {accountValidation.ProjectName} ({accountValidation.AccountManager})" : "GL Account";
+                    rtValue.DisplayName = rtValue.CoaChartType == FinancialChartStringType.Ppm ? $"PPM: {rtValue.ProjectName} ({rtValue.AccountManager})" : "GL Account";
                         //AccountManagerName = accountValidation.AccountManager,
                         //AccountManagerEmail = accountValidation.AccountManagerEmail, 
                         //Number = accountValidation.FinancialSegmentString
-                    return name;
                 }
-                throw new Exception("Invalid Account"); // Yuck, need to return a model with errors
-            }
-            
-            var result = await _financialService.GetAccountName(account);
 
-            return result;
-        }
+                return rtValue;
+            }
+            try
+            { 
+                var result = await _financialService.GetAccountName(account);
+                rtValue.DisplayName = result;
+                rtValue.IsValid = true;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Unable to validate/find KFS account");
+                rtValue.IsValid = false;
+                rtValue.Messages.Add("Unable to validate/find KFS account");
+            }
+            return rtValue;
+        }       
     }
 }

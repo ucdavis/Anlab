@@ -27,7 +27,7 @@ namespace Test.TestsController
             GraphQlUrl = "http://fake.ucdavis.edu/graphql",
             Token = "Fake"
         };
-        
+
         [Fact]
         public async Task TestGetAccountInfoCallsService()
         {
@@ -45,7 +45,7 @@ namespace Test.TestsController
             var controllerResult = await controller.GetAccountInfo("test");
 
             // Assert
-            controllerResult.ShouldBe("Fake");
+            controllerResult.DisplayName.ShouldBe("Fake");
             mockService.Verify(a => a.GetAccountName("test"), Times.Once);
         }
     }
@@ -260,6 +260,6 @@ namespace Test.TestsController
         }
 #endif
 
-            #endregion Controller Method Tests
-        }
+        #endregion Controller Method Tests
     }
+}

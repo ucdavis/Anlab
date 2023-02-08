@@ -17,6 +17,8 @@ namespace Anlab.Core.Models.AggieEnterpriseModels
         public string AccountManagerEmail { get; set; }
         public string ProjectName { get; set; }
 
+        public string DisplayName { get; set; }
+
 
         /// <summary>
         /// Return Segment info.
