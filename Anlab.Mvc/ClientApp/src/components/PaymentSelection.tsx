@@ -131,27 +131,25 @@ export class PaymentSelection extends React.Component<
   };
 
   private _renderUcAccountInput = () => {
-    if (!this.props.creatingOrder) {
-        return (
-            <div className="flexrow">
-
-                    <div className="flexcol">
-        <Input
-          label="UC Account"
-          name="ucAccount"
-          value={this.props.payment.account}
-          error={this.state.error}
-          maxLength={100}
-          onChange={this._handleAccountChange}
-          onBlur={this._lookupAccount}
-          inputRef={this.props.ucAccountRef}
-                />
-                
-                </div>
-                {env.useCoa && this.props.payment.isUcdAccount && (<div className="flexcol"><Button className="btn">COA PICKER</Button></div>)}
-            </div>
-      );
-    } else {
+      if (!this.props.creatingOrder) {
+          return (
+              <div className="flexrow">
+                  <div className="flexcol">
+                      <Input
+                          label="UC Account"
+                          name="ucAccount"
+                          value={this.props.payment.account}
+                          error={this.state.error}
+                          maxLength={100}
+                          onChange={this._handleAccountChange}
+                          onBlur={this._lookupAccount}
+                          inputRef={this.props.ucAccountRef}
+                      />
+                  </div>
+                  {env.useCoa && this.props.payment.isUcdAccount && (<div className="flexcol"><Button className="btn">COA PICKER</Button></div>)}
+              </div>
+          );
+      } else {
       return (
         <div>
           <PaymentUcSelection
