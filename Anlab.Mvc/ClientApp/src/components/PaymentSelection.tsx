@@ -1,9 +1,10 @@
 import "isomorphic-fetch";
 import * as React from "react";
-import { Checkbox } from "react-bootstrap";
+import { Checkbox, Button } from "react-bootstrap";
 import { IOtherPaymentInfo, OtherPaymentInfo } from "./OtherPaymentQuestions";
 import { PaymentUcSelection } from "./PaymentUcSelection";
 import Input from "./ui/input/input";
+import { env } from "../util/env";
 
 export interface IPayment {
   clientType: string;
@@ -110,8 +111,10 @@ export class PaymentSelection extends React.Component<
     }
     return (
       <div>
-        <p className="help-block">
-          UC Davis accounts require the chart.{" "}
+            <p className="help-block">
+                {env.useCoa && <div>UC Davis accounts require a valid PPM or GL COA</div>}
+                {!env.useCoa && <div>UC Davis accounts require the chart.</div>}
+          {" "}
           <strong>
             <a
               href="https://afs.ucdavis.edu/our_services/accounting-e-financial-reporting/intercampus-transactions/other-uc-campus-info.html"
@@ -129,7 +132,10 @@ export class PaymentSelection extends React.Component<
 
   private _renderUcAccountInput = () => {
     if (!this.props.creatingOrder) {
-      return (
+        return (
+            <div className="flexrow">
+
+                    <div className="flexcol">
         <Input
           label="UC Account"
           name="ucAccount"
@@ -139,7 +145,11 @@ export class PaymentSelection extends React.Component<
           onChange={this._handleAccountChange}
           onBlur={this._lookupAccount}
           inputRef={this.props.ucAccountRef}
-        />
+                />
+                
+                </div>
+                {env.useCoa && this.props.payment.isUcdAccount && (<div className="flexcol"><Button className="btn">COA PICKER</Button></div>)}
+            </div>
       );
     } else {
       return (

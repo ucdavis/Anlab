@@ -1,4 +1,4 @@
-export function getOptions() {
+export function getOptions(useCoa: boolean) {
     return {
         UCB: {
             detail: "Loc(1) - Acct(5) - Fund(5) - Org(5) - Prog(2) - Proj(6) - Flex(5) ",
@@ -10,9 +10,9 @@ export function getOptions() {
             example: "2-A2345-12345-1234-123456-A234567-12-12-A23456",
             name: "UCSF",
         },
-        UCD: {
-            detail: "Loc(1) - Acct(7) / Subacct(5)",
-            example: "3-ABCDE12/12345",
+        UCD: {           
+            detail: useCoa ? "Use the Coa Picker to build a PPM or GL account" : "Loc(1) - Acct(7) / Subacct(5)",
+            example: useCoa ? "SP00000001-000001-0000000-000000" :"3-ABCDE12/12345",
             name: "UCD",
         },
         UCLA: {

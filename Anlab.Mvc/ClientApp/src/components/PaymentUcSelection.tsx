@@ -1,7 +1,9 @@
 import "isomorphic-fetch";
 import * as React from "react";
 import { getOptions } from "../util/ucAccountsHelper";
+import { env } from "../util/env";
 import Input from "./ui/input/input";
+import { Button } from "react-bootstrap";
 
 export interface IPayment {
   clientType: string;
@@ -24,11 +26,11 @@ export class PaymentUcSelection extends React.Component<
   IPaymentUcSelectionProps,
   {}
 > {
-  public render() {
-    const options = getOptions();
+    public render() {
+        const options = getOptions(env.useCoa);
 
     return (
-      <div>
+        <div>
         <div>
           <label>Select UC</label>
           <select
@@ -58,9 +60,11 @@ export class PaymentUcSelection extends React.Component<
               onChange={this.props.handleAccountChange}
               onBlur={this.props.lookupAccount}
               inputRef={this.props.ucAccountRef}
-            />
+                    />
+                    
             {this.props.payment.accountName}
-          </div>
+                </div>
+                {env.useCoa && this.props.ucName === "UCD" && (<div className="flexcol"><Button className="btn">COA PICKER</Button></div>)}
           {this._renderDetails(options[this.props.ucName])}
         </div>
       </div>

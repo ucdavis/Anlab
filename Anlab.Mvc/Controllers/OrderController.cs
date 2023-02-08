@@ -18,6 +18,7 @@ using AnlabMvc.Extensions;
 using AnlabMvc.Models.Roles;
 using Microsoft.AspNetCore.Identity;
 using Serilog;
+using Anlab.Core.Models.AggieEnterpriseModels;
 
 namespace AnlabMvc.Controllers
 {
@@ -29,17 +30,19 @@ namespace AnlabMvc.Controllers
         private readonly IOrderMessageService _orderMessageService;
         private readonly ILabworksService _labworksService;
         private readonly IFinancialService _financialService;
+        private readonly AggieEnterpriseSettings _aeSettings;
         private readonly AppSettings _appSettings;
 
         private const string processingCode = "PROC";
 
-        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ILabworksService labworksService, IFinancialService financialService, IOptions<AppSettings> appSettings)
+        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ILabworksService labworksService, IFinancialService financialService, IOptions<AppSettings> appSettings, IOptions<AggieEnterpriseSettings> aeSettings)
         {
             _context = context;
             _orderService = orderService;
             _orderMessageService = orderMessageService;
             _labworksService = labworksService;
             _financialService = financialService;
+            _aeSettings = aeSettings.Value;
             _appSettings = appSettings.Value;
         }
 
@@ -156,6 +159,7 @@ namespace AnlabMvc.Controllers
                     DefaultAcName = user.BillingContactName,
                     DefaultAcPhone = user.BillingContactPhone,
                 },
+                UseCoa = _aeSettings.UseCoA,
             };
 
             if (!string.IsNullOrWhiteSpace(user.ClientId))
@@ -230,7 +234,8 @@ namespace AnlabMvc.Controllers
                 Defaults = new OrderEditDefaults
                 {
                     DefaultEmail = order.Creator.Email
-                }
+                },
+                UseCoa = _aeSettings.UseCoA,
             };
 
             return View(model);
