@@ -140,7 +140,11 @@ export class PaymentSelection extends React.Component<
         <div className="flexrow">
           <div className="flexcol">
             <Input
-              label="UC Account"
+              label={
+                this.props.payment.isUcdAccount
+                  ? "UC Davis Account"
+                  : "UC Account"
+              }
               name="ucAccount"
               value={this.props.payment.account}
               error={this.state.error}
