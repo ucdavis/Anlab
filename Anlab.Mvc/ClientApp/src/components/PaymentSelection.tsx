@@ -32,6 +32,11 @@ interface IPaymentSelectionState {
   ucName: string;
 }
 
+declare const window: Window &
+  typeof globalThis & {
+    Finjector: any;
+  };
+
 export class PaymentSelection extends React.Component<
   IPaymentSelectionProps,
   IPaymentSelectionState
@@ -147,7 +152,9 @@ export class PaymentSelection extends React.Component<
           </div>
           {env.useCoa && this.props.payment.isUcdAccount && (
             <div className="flexcol">
-              <Button className="btn">COA PICKER</Button>
+              <Button className="btn" onClick={this._lookupcoa}>
+                COA Picker
+              </Button>
             </div>
           )}
         </div>
@@ -321,5 +328,17 @@ export class PaymentSelection extends React.Component<
     }
 
     this.setState({ error: "Account is required" });
+  };
+
+  private _lookupcoa = async () => {
+    const chart = await window.Finjector.findChartSegmentString();
+
+    if (chart.status === "success") {
+      //Call handle account change to set the account
+      this._handleAccountChange({
+        target: { value: chart.data },
+      } as React.ChangeEvent<HTMLInputElement>);
+      this._lookupAccount();
+    }
   };
 }
