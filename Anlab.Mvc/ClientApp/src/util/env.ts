@@ -1,4 +1,4 @@
 declare var window: any;
 export const env = {
-    useCoa: window?.App?.useCoa
-}
+  useCoa: window?.App?.useCoa,
+};
