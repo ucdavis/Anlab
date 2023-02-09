@@ -16,5 +16,7 @@ namespace AnlabMvc.Models.Order
         public decimal ExternalProcessingFee { get; set; }
 
         public OrderEditDefaults Defaults { get; set; }
+
+        public bool UseCoa { get; set; }
     }
 }

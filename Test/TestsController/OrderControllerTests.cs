@@ -1,6 +1,7 @@
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
+using Anlab.Core.Models.AggieEnterpriseModels;
 using AnlabMvc;
 using AnlabMvc.Controllers;
 using AnlabMvc.Models.Order;
@@ -48,7 +49,16 @@ namespace Test.TestsController
         public List<TestItemModel> TestItemModelData { get; set; }
         public List<User> UserData { get; set; }
 
+        public Mock<IOptions<AggieEnterpriseSettings>> MockAeSettings { get; set; }
 
+        public AggieEnterpriseSettings AeSettings { get; set; } = new AggieEnterpriseSettings()
+        {
+            UseCoA = true,
+            GraphQlUrl = "http://fake.ucdavis.edu/graphql",
+            Token = "Fake"
+        };
+
+        
 
         //Controller
         public OrderController Controller { get; set; }
@@ -70,6 +80,10 @@ namespace Test.TestsController
             MockClaimsPrincipal = new Mock<ClaimsPrincipal>();
             MockTempDataSerializer = new Mock<TempDataSerializer>();
             var mockDataProvider = new Mock<SessionStateTempDataProvider>(MockTempDataSerializer.Object);
+
+
+            MockAeSettings = new Mock<IOptions<AggieEnterpriseSettings>>();
+            MockAeSettings.SetupGet(x => x.Value).Returns(AeSettings);
 
             //Default data
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
@@ -128,7 +142,8 @@ namespace Test.TestsController
                 MockOrderMessagingService.Object,
                 MockLabworksService.Object,
                 MockFinancialService.Object,
-                MockAppSettings.Object)
+                MockAppSettings.Object,
+                MockAeSettings.Object)
             {
                 ControllerContext = new ControllerContext
                 {

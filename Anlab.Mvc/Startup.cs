@@ -3,6 +3,7 @@ using System.IO;
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
+using Anlab.Core.Models.AggieEnterpriseModels;
 using Anlab.Core.Services;
 using AnlabMvc.Middleware;
 using AnlabMvc.Models.Configuration;
@@ -126,6 +127,7 @@ namespace AnlabMvc
             services.AddSingleton<IDataSigningService, DataSigningService>();
             services.AddTransient<IFinancialService, FinancialService>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddSingleton<IAggieEnterpriseService, AggieEnterpriseService>();
 
             // Used by dynamic scripts/styles loader
             services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory())); // lgtm [cs/local-not-disposed] 
