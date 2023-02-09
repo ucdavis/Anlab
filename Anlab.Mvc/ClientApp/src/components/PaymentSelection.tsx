@@ -149,6 +149,7 @@ export class PaymentSelection extends React.Component<
               onBlur={this._lookupAccount}
               inputRef={this.props.ucAccountRef}
             />
+            {this.props.payment.accountName}
           </div>
           {env.useCoa && this.props.payment.isUcdAccount && (
             <div className="flexcol">
