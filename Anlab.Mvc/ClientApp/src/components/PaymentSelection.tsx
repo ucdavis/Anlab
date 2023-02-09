@@ -111,10 +111,9 @@ export class PaymentSelection extends React.Component<
     }
     return (
       <div>
-            <p className="help-block">
-                {env.useCoa && ("UC Davis accounts require a valid PPM or GL COA")}
-                {!env.useCoa && ("UC Davis accounts require the chart.")}
-          {" "}
+        <p className="help-block">
+          {env.useCoa && "UC Davis accounts require a valid PPM or GL COA"}
+          {!env.useCoa && "UC Davis accounts require the chart."}{" "}
           <strong>
             <a
               href="https://afs.ucdavis.edu/our_services/accounting-e-financial-reporting/intercampus-transactions/other-uc-campus-info.html"
@@ -131,25 +130,29 @@ export class PaymentSelection extends React.Component<
   };
 
   private _renderUcAccountInput = () => {
-      if (!this.props.creatingOrder) {
-          return (
-              <div className="flexrow">
-                  <div className="flexcol">
-                      <Input
-                          label="UC Account"
-                          name="ucAccount"
-                          value={this.props.payment.account}
-                          error={this.state.error}
-                          maxLength={100}
-                          onChange={this._handleAccountChange}
-                          onBlur={this._lookupAccount}
-                          inputRef={this.props.ucAccountRef}
-                      />
-                  </div>
-                  {env.useCoa && this.props.payment.isUcdAccount && (<div className="flexcol"><Button className="btn">COA PICKER</Button></div>)}
-              </div>
-          );
-      } else {
+    if (!this.props.creatingOrder) {
+      return (
+        <div className="flexrow">
+          <div className="flexcol">
+            <Input
+              label="UC Account"
+              name="ucAccount"
+              value={this.props.payment.account}
+              error={this.state.error}
+              maxLength={100}
+              onChange={this._handleAccountChange}
+              onBlur={this._lookupAccount}
+              inputRef={this.props.ucAccountRef}
+            />
+          </div>
+          {env.useCoa && this.props.payment.isUcdAccount && (
+            <div className="flexcol">
+              <Button className="btn">COA PICKER</Button>
+            </div>
+          )}
+        </div>
+      );
+    } else {
       return (
         <div>
           <PaymentUcSelection
@@ -237,39 +240,39 @@ export class PaymentSelection extends React.Component<
     this._accountLookup();
   };
 
-    private _accountLookup = () => {
-        fetch(`/financial/info?account=${this.props.payment.account}`, {
-            credentials: "same-origin",
-        })
-        .then((response) => {
-            if (response === null || response.status !== 200) {
-                throw Error("The account you entered could not be found");
-            }
-            return response;
-        })
-        .then((response) => response.json())
-        .then((response) => {
-            if (!response.isValid) {
-                this.setState({ error: response.message });
-                this.props.onPaymentSelected({
-                    ...this.props.payment,
-                    accountName: null,
-                });
-            } else {
-                this.props.onPaymentSelected({
-                    ...this.props.payment,
-                    accountName: response.displayName,
-                });
-            }
-        })
-        .catch((error: Error) => {
-            this.setState({ error: error.message });
-            this.props.onPaymentSelected({
-                ...this.props.payment,
-                accountName: null,
-            });
+  private _accountLookup = () => {
+    fetch(`/financial/info?account=${this.props.payment.account}`, {
+      credentials: "same-origin",
+    })
+      .then((response) => {
+        if (response === null || response.status !== 200) {
+          throw Error("The account you entered could not be found");
+        }
+        return response;
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        if (!response.isValid) {
+          this.setState({ error: response.message });
+          this.props.onPaymentSelected({
+            ...this.props.payment,
+            accountName: null,
+          });
+        } else {
+          this.props.onPaymentSelected({
+            ...this.props.payment,
+            accountName: response.displayName,
+          });
+        }
+      })
+      .catch((error: Error) => {
+        this.setState({ error: error.message });
+        this.props.onPaymentSelected({
+          ...this.props.payment,
+          accountName: null,
         });
-    };
+      });
+  };
 
   private _handleChange = (clientType: string) => {
     this._validateAccount(this.props.payment.account, clientType);
