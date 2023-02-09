@@ -22,6 +22,11 @@ interface IPaymentUcSelectionProps {
   handleSelectionChange: (ucName: string) => void;
 }
 
+declare const window: Window &
+  typeof globalThis & {
+    Finjector: any;
+  };
+
 export class PaymentUcSelection extends React.Component<
   IPaymentUcSelectionProps,
   {}
@@ -66,7 +71,9 @@ export class PaymentUcSelection extends React.Component<
           </div>
           {env.useCoa && this.props.ucName === "UCD" && (
             <div className="flexcol">
-              <Button className="btn">COA PICKER</Button>
+              <Button className="btn" onClick={this._lookupcoa}>
+                COA Picker
+              </Button>
             </div>
           )}
           {this._renderDetails(options[this.props.ucName])}
@@ -93,5 +100,16 @@ export class PaymentUcSelection extends React.Component<
         />
       </div>
     );
+  };
+  private _lookupcoa = async () => {
+    const chart = await window.Finjector.findChartSegmentString();
+
+    if (chart.status === "success") {
+      this.props.handleAccountChange({
+        target: { value: chart.data },
+      } as React.ChangeEvent<HTMLInputElement>);
+      //then call this.props.lookupAccount
+      this.props.lookupAccount();
+    }
   };
 }
