@@ -156,13 +156,14 @@ export class PaymentSelection extends React.Component<
 
             {this.props.payment.accountName}
           </div>
-          <div className="col-3 coa-wrapper">
-            {env.useCoa && this.props.payment.isUcdAccount && (
+
+          {env.useCoa && this.props.payment.isUcdAccount && (
+            <div className="col-3 coa-wrapper">
               <Button className="btn-coa" onClick={this._lookupcoa}>
                 COA Picker
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       );
     } else {
