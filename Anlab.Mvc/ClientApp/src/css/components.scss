@@ -37,17 +37,34 @@ input#Account{
   border-bottom-right-radius: 0;
   width:540px;
 }
-button#ccoa-picker {
-  box-shadow: none;
-  font-size:1.4rem;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  box-shadow: none;
-  height: inherit;
-  padding: 7px 10px;
-  line-height: inherit;
+.coa-input-row {
+  justify-content: flex-start;
+  input {
+    max-width: 400px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+.mt-2 {
+  margin-top:16px;
+}
+.mb-2 {
+  margin-bottom:16px;
+}
+.coa-wrapper {
+  margin-top:25px;
+}
+.btn-coa {
+  box-shadow: none !important;
+  font-size:1.4rem !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  box-shadow: none !important;
+  height: inherit !important;
+  padding: 7px 10px !important;
+  line-height: inherit !important;
   &:hover{
-    transform: none;
+    transform: none !important;
   }
 }
 .btn-default {
