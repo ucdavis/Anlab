@@ -27,7 +27,10 @@ declare const window: Window &
     Finjector: any;
   };
 
-export class PaymentUcSelection extends React.Component<IPaymentUcSelectionProps, {}> {
+export class PaymentUcSelection extends React.Component<
+  IPaymentUcSelectionProps,
+  {}
+> {
   public render() {
     const options = getOptions(env.useCoa);
 
@@ -51,8 +54,8 @@ export class PaymentUcSelection extends React.Component<IPaymentUcSelectionProps
             <option value="UCI">UCI</option>
             <option value="UCM">UCM</option>
           </select>
-            </div>
-            {this._renderDetails(options[this.props.ucName])}
+        </div>
+        {this._renderDetails(options[this.props.ucName])}
         <div className="flexrow coa-input-row">
           <div className="col-4">
             <Input
@@ -74,7 +77,6 @@ export class PaymentUcSelection extends React.Component<IPaymentUcSelectionProps
               </Button>
             </div>
           )}
-          
         </div>
       </div>
     );
