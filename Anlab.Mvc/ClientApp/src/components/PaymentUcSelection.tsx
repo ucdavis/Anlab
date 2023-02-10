@@ -27,10 +27,7 @@ declare const window: Window &
     Finjector: any;
   };
 
-export class PaymentUcSelection extends React.Component<
-  IPaymentUcSelectionProps,
-  {}
-> {
+export class PaymentUcSelection extends React.Component<IPaymentUcSelectionProps, {}> {
   public render() {
     const options = getOptions(env.useCoa);
 
@@ -54,9 +51,10 @@ export class PaymentUcSelection extends React.Component<
             <option value="UCI">UCI</option>
             <option value="UCM">UCM</option>
           </select>
-        </div>
-        <div className="flexrow">
-          <div className="flexcol">
+            </div>
+            {this._renderDetails(options[this.props.ucName])}
+        <div className="flexrow coa-input-row">
+          <div className="col-4">
             <Input
               label={`${this.props.ucName} Account`}
               value={this.props.payment.account}
@@ -70,13 +68,13 @@ export class PaymentUcSelection extends React.Component<
             {this.props.payment.accountName}
           </div>
           {env.useCoa && this.props.ucName === "UCD" && (
-            <div className="flexcol">
-              <Button className="btn" onClick={this._lookupcoa}>
+            <div className="col-3 coa-wrapper">
+              <Button className="btn-coa" onClick={this._lookupcoa}>
                 COA Picker
               </Button>
             </div>
           )}
-          {this._renderDetails(options[this.props.ucName])}
+          
         </div>
       </div>
     );
@@ -91,7 +89,7 @@ export class PaymentUcSelection extends React.Component<
       return;
     }
     return (
-      <div className="flexcol">
+      <div className="mt-2 mb-2">
         <Input
           label={`Example ${option.name} Account`}
           value={option.example}

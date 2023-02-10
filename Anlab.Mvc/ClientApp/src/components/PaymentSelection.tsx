@@ -137,8 +137,8 @@ export class PaymentSelection extends React.Component<
   private _renderUcAccountInput = () => {
     if (!this.props.creatingOrder) {
       return (
-        <div className="flexrow">
-          <div className="flexcol">
+        <div className="flexrow coa-input-row">
+          <div className="col-4">
             <Input
               label={
                 this.props.payment.isUcdAccount
@@ -153,15 +153,16 @@ export class PaymentSelection extends React.Component<
               onBlur={this._lookupAccount}
               inputRef={this.props.ucAccountRef}
             />
+
             {this.props.payment.accountName}
           </div>
-          {env.useCoa && this.props.payment.isUcdAccount && (
-            <div className="flexcol">
-              <Button className="btn" onClick={this._lookupcoa}>
+          <div className="col-3 coa-wrapper">
+            {env.useCoa && this.props.payment.isUcdAccount && (
+              <Button className="btn-coa" onClick={this._lookupcoa}>
                 COA Picker
               </Button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       );
     } else {
