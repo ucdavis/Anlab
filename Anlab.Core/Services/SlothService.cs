@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Anlab.Core.Extensions;
 using Serilog;
 using static Anlab.Jobs.MoneyMovement.TransferViewModel;
+using Anlab.Core.Models.AggieEnterpriseModels;
 
 namespace Anlab.Core.Services
 {
@@ -27,22 +28,34 @@ namespace Anlab.Core.Services
     public class SlothService : ISlothService
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly AggieEnterpriseSettings _aeSettings;
         private readonly FinancialSettings _appSettings;
 
-        public SlothService(ApplicationDbContext dbContext, IOptions<FinancialSettings> appSettings)
+        public SlothService(ApplicationDbContext dbContext, IOptions<FinancialSettings> appSettings, IOptions<AggieEnterpriseSettings> aeSettings)
         {
             _dbContext = dbContext;
+            _aeSettings = aeSettings.Value;
             _appSettings = appSettings.Value;
         }
 
 
-
+        
         //TODO: Add validation?
         public async Task<SlothResponseModel> MoveMoney(Order order)
         {
             var orderDetails = order.GetOrderDetails();
             var token = _appSettings.SlothApiKey;
             var url = _appSettings.SlothApiUrl;
+            if (_aeSettings.UseCoA)
+            {
+                url = $"{url}v2/"; //Config Change!!!
+            }
+            else
+            {
+                url = $"{url}v1/";
+            }
+
+
             var creditAccount = new AccountModel(_appSettings.AnlabAccount);
             var debitAccount = new AccountModel(orderDetails.Payment.Account);
 
@@ -131,6 +144,16 @@ namespace Anlab.Core.Services
 
         public async Task MoneyHasMoved()
         {
+            var url = _appSettings.SlothApiUrl;
+            if (_aeSettings.UseCoA)
+            {
+                url = $"{url}v2/"; //Config Change!!!
+            }
+            else
+            {
+                url = $"{url}v1/";
+            }
+            
             Log.Information("Beginning UCD money has moved");
             var orders = _dbContext.Orders.Where(a =>
                 a.PaymentType == PaymentTypeCodes.UcDavisAccount && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
@@ -141,7 +164,7 @@ namespace Anlab.Core.Services
             }
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri($"{_appSettings.SlothApiUrl}Transactions/");
+                client.BaseAddress = new Uri($"{url}Transactions/");
                 client.DefaultRequestHeaders.Add("X-Auth-Token", _appSettings.SlothApiKey);
 
                 Log.Information($"Processing {orders.Count} orders");
@@ -213,6 +236,16 @@ namespace Anlab.Core.Services
 
         public async Task ProcessCreditCards()
         {
+            var url = _appSettings.SlothApiUrl;
+            if (_aeSettings.UseCoA)
+            {
+                url = $"{url}v2/"; //Config Change!!!
+            }
+            else
+            {
+                url = $"{url}v1/";
+            }
+            
             Log.Information("Staring Credit Card process");
             var orders = _dbContext.Orders.Include(i => i.ApprovedPayment).Where(a =>
                 a.PaymentType == PaymentTypeCodes.CreditCard && a.Paid && a.Status != OrderStatusCodes.Complete && a.ApprovedPayment != null).ToList();
@@ -224,7 +257,7 @@ namespace Anlab.Core.Services
 
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri($"{_appSettings.SlothApiUrl}Transactions/processor/");
+                client.BaseAddress = new Uri($"{url}Transactions/processor/");
                 client.DefaultRequestHeaders.Add("X-Auth-Token", _appSettings.SlothApiKey);
 
                 Log.Information($"Processing Credit Card {orders.Count} orders");
