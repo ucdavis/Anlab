@@ -280,17 +280,33 @@ namespace Anlab.Core.Services
                         var content = await response.Content.ReadAsStringAsync();
                         var slothResponse = JsonConvert.DeserializeObject<SlothResponseModel>(content);
 
-                        updatedCount++;
-                        order.KfsTrackingNumber = slothResponse.KfsTrackingNumber;
-                        order.SlothTransactionId = slothResponse.Id;
-                        order.Status = OrderStatusCodes.Complete;
-                        order.History.Add(new History
+                        if(slothResponse.Status == SlothStatus.Completed)
                         {
-                            Action = "Move CC Money",
-                            Status = order.Status,
-                            ActorName = "Job",
-                            JsonDetails = order.JsonDetails,
-                        });
+                            updatedCount++;
+                            order.KfsTrackingNumber = slothResponse.KfsTrackingNumber;
+                            order.SlothTransactionId = slothResponse.Id;
+                            order.Status = OrderStatusCodes.Complete;
+                            order.History.Add(new History
+                            {
+                                Action = "Move CC Money",
+                                Status = order.Status,
+                                ActorName = "Job",
+                                JsonDetails = order.JsonDetails,
+                            });
+                        }
+                        else
+                        {
+                            if(slothResponse.Status == SlothStatus.Rejected)
+                            {
+                                //This is bad, very very bad.
+                                Log.Error($"Credit Card transaction id {order.ApprovedPayment.Transaction_Id} sloth status {slothResponse.Status} was unexpectedly Rejected for order id {order.Id}");
+                            }
+                            else
+                            {
+                                Log.Information($"Credit Card transaction id {order.ApprovedPayment.Transaction_Id} sloth status {slothResponse.Status} was not Completed yet for order id {order.Id}");
+                            }
+                        }
+
                     }
                     else
                     {

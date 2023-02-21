@@ -12,4 +12,13 @@ namespace Anlab.Jobs.MoneyMovement
         public bool Success { get; set; } = true;
         public string Message { get; set; } //Error Message
     }
+    public class SlothStatus
+    {
+        public const string PendingApproval = "PendingApproval";
+        public const string Scheduled = "Scheduled";
+        public const string Processing = "Processing";
+        public const string Completed = "Completed";
+        public const string Rejected = "Rejected";
+        public const string Cancelled = "Cancelled";
+    }
 }
