@@ -47,6 +47,8 @@ namespace Anlab.Core.Services
         //TODO: Add validation?
         public async Task<SlothResponseModel> MoveMoney(Order order)
         {
+            var log = Log.ForContext("OrderId", order.Id);
+            
             var orderDetails = order.GetOrderDetails();
             var token = _appSettings.SlothApiKey;
             var url = _appSettings.SlothApiUrl;
@@ -61,7 +63,7 @@ namespace Anlab.Core.Services
 
             if (string.IsNullOrWhiteSpace(token))
             {
-                Log.Error("Sloth Token missing");
+                log.Error("Sloth Token missing");
             }
 
             var model = new TransactionViewModel();
@@ -76,12 +78,21 @@ namespace Anlab.Core.Services
                     var coa = await _aggieEnterpriseService.ConvertKfsAccount(orderDetails.Payment.Account);
                     if (coa != null)
                     {
-                        Log.Warning("Payment Account updated to COA, using KFS Convert. Order Id: {id}, KFS Account: {kfs}, COA: {coa}", order.Id, orderDetails.Payment.Account, coa);
+                        log.Warning("Payment Account updated to COA, using KFS Convert. Order Id: {id}, KFS Account: {kfs}, COA: {coa}", order.Id, orderDetails.Payment.Account, coa);
                         orderDetails.Payment.Account = coa; // Assign it here so we can follow through with the validation. Will this get updated in the DB if everything else goes though I think.
                     }
                 }
 
                 var accountValidation = await _aggieEnterpriseService.IsAccountValid(orderDetails.Payment.Account);
+                if (!accountValidation.IsValid)
+                {
+                    log.Error("Invalid Account: {account}", orderDetails.Payment.Account);
+                    return new SlothResponseModel
+                    {
+                        Success = false,
+                        Message = "Invalid Account"
+                    };
+                }
             }
             else
             {
@@ -120,23 +131,23 @@ namespace Anlab.Core.Services
                 client.BaseAddress = new Uri(url);
                 client.DefaultRequestHeaders.Add("X-Auth-Token", token);
 
-                Log.Information(JsonConvert.SerializeObject(model));
+                log.Information(JsonConvert.SerializeObject(model));
 
                 var response = await client.PostAsync("Transactions", new StringContent(JsonConvert.SerializeObject(model), System.Text.Encoding.UTF8, "application/json"));
                 if (response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    Log.Information($"Sloth Response Not Found for order id {order.Id}");
+                    log.Information($"Sloth Response Not Found for order id {order.Id}");
                 }
                 if (response.StatusCode == HttpStatusCode.NoContent)
                 {
-                    Log.Information($"Sloth Response No Content for order id {order.Id}");
+                    log.Information($"Sloth Response No Content for order id {order.Id}");
                 }
 
                 if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    Log.Error("Sloth Response Bad Request for order {id}", order.Id);
+                    log.Error("Sloth Response Bad Request for order {id}", order.Id);
                     var badrequest = await response.Content.ReadAsStringAsync();
-                    Log.ForContext("data", badrequest, true).Information("Sloth message response");
+                    log.ForContext("data", badrequest, true).Information("Sloth message response");
                     var badRtValue = new SlothResponseModel
                     {
                         Success = false,
@@ -151,15 +162,15 @@ namespace Anlab.Core.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    Log.Information("Sloth Success Response", content);
+                    log.Information("Sloth Success Response", content);
 
                     return JsonConvert.DeserializeObject<SlothResponseModel>(content);
                 }
 
 
-                Log.Information("Sloth Response didn't have a success code for order {id}", order.Id);
-                var badContent = await response.Content.ReadAsStringAsync();                    
-                Log.ForContext("data", badContent, true).Information("Sloth message response");
+                log.Information("Sloth Response didn't have a success code for order {id}", order.Id);
+                var badContent = await response.Content.ReadAsStringAsync();
+                log.ForContext("data", badContent, true).Information("Sloth message response");
                 var rtValue = JsonConvert.DeserializeObject<SlothResponseModel>(badContent);
                 rtValue.Success = false;
 
