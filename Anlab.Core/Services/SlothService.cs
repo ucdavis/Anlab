@@ -14,6 +14,8 @@ using Anlab.Core.Extensions;
 using Serilog;
 using static Anlab.Jobs.MoneyMovement.TransferViewModel;
 using Anlab.Core.Models.AggieEnterpriseModels;
+using AggieEnterpriseApi.Validation;
+using System.Security.Principal;
 
 namespace Anlab.Core.Services
 {
@@ -28,12 +30,14 @@ namespace Anlab.Core.Services
     public class SlothService : ISlothService
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly IAggieEnterpriseService _aggieEnterpriseService;
         private readonly AggieEnterpriseSettings _aeSettings;
         private readonly FinancialSettings _appSettings;
 
-        public SlothService(ApplicationDbContext dbContext, IOptions<FinancialSettings> appSettings, IOptions<AggieEnterpriseSettings> aeSettings)
+        public SlothService(ApplicationDbContext dbContext, IAggieEnterpriseService aggieEnterpriseService, IOptions<FinancialSettings> appSettings, IOptions<AggieEnterpriseSettings> aeSettings)
         {
             _dbContext = dbContext;
+            _aggieEnterpriseService = aggieEnterpriseService;
             _aeSettings = aeSettings.Value;
             _appSettings = appSettings.Value;
         }
@@ -55,39 +59,61 @@ namespace Anlab.Core.Services
                 url = $"{url}v1/";
             }
 
-
-            var creditAccount = new AccountModel(_appSettings.AnlabAccount);
-            var debitAccount = new AccountModel(orderDetails.Payment.Account);
-
             if (string.IsNullOrWhiteSpace(token))
             {
                 Log.Error("Sloth Token missing");
             }
 
-
             var model = new TransactionViewModel();
-            model.MerchantTrackingNumber = order.Id.ToString();
-            model.MerchantTrackingUrl = $"https://anlab.ucdavis.edu/Reviewer/Details/{order.Id}";
-            model.Transfers.Add(new TransferViewModel
+
+            if (_aeSettings.UseCoA)
             {
-                Account = debitAccount.Account.SafeToUpper(),
-                Amount = orderDetails.GrandTotal,
-                Chart = debitAccount.Chart.SafeToUpper(),
-                SubAccount = debitAccount.SubAccount.SafeToUpper(),
-                Description = $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}",
-                Direction = Directions.Debit,
-                ObjectCode = _appSettings.DebitObjectCode
-            });
-            model.Transfers.Add(new TransferViewModel
+                var creditAccount = _aeSettings.UseCoA;
+
+                if (FinancialChartValidation.GetFinancialChartStringType(orderDetails.Payment.Account) == FinancialChartStringType.Invalid)
+                {
+                    //Ok, it is an invalid COA format, so 99.99% chance this is still a KFS account. Lets try and convert it:
+                    var coa = await _aggieEnterpriseService.ConvertKfsAccount(orderDetails.Payment.Account);
+                    if (coa != null)
+                    {
+                        Log.Warning("Payment Account updated to COA, using KFS Convert. Order Id: {id}, KFS Account: {kfs}, COA: {coa}", order.Id, orderDetails.Payment.Account, coa);
+                        orderDetails.Payment.Account = coa; // Assign it here so we can follow through with the validation. Will this get updated in the DB if everything else goes though I think.
+                    }
+                }
+
+                var accountValidation = await _aggieEnterpriseService.IsAccountValid(orderDetails.Payment.Account);
+            }
+            else
             {
-                Account = creditAccount.Account.SafeToUpper(),
-                Amount = orderDetails.GrandTotal,
-                Chart = creditAccount.Chart.SafeToUpper(),
-                SubAccount = creditAccount.SubAccount.SafeToUpper(),
-                Description = $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}",
-                Direction = Directions.Credit,
-                ObjectCode = _appSettings.CreditObjectCode
-            });
+                var creditAccount = new AccountModel(_appSettings.AnlabAccount);
+                var debitAccount = new AccountModel(orderDetails.Payment.Account);
+
+
+                model.MerchantTrackingNumber = order.Id.ToString();
+                model.MerchantTrackingUrl = $"https://anlab.ucdavis.edu/Reviewer/Details/{order.Id}";
+                model.Transfers.Add(new TransferViewModel
+                {
+                    Account = debitAccount.Account.SafeToUpper(),
+                    Amount = orderDetails.GrandTotal,
+                    Chart = debitAccount.Chart.SafeToUpper(),
+                    SubAccount = debitAccount.SubAccount.SafeToUpper(),
+                    Description = $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}",
+                    Direction = Directions.Debit,
+                    ObjectCode = _appSettings.DebitObjectCode
+                });
+                model.Transfers.Add(new TransferViewModel
+                {
+                    Account = creditAccount.Account.SafeToUpper(),
+                    Amount = orderDetails.GrandTotal,
+                    Chart = creditAccount.Chart.SafeToUpper(),
+                    SubAccount = creditAccount.SubAccount.SafeToUpper(),
+                    Description = $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}",
+                    Direction = Directions.Credit,
+                    ObjectCode = _appSettings.CreditObjectCode
+                });
+            }
+
+
 
             using (var client = new HttpClient())
             {
@@ -193,7 +219,7 @@ namespace Anlab.Core.Services
                         var content = await response.Content.ReadAsStringAsync();
                         var slothResponse = JsonConvert.DeserializeObject<SlothResponseModel>(content);
                         Log.Information($"Order {order.Id} SlothResponseModel status {slothResponse.Status}. SlothTransactionId {order.SlothTransactionId.ToString()}");
-                        if (slothResponse.Status == "Completed")
+                        if (slothResponse.Status == SlothStatus.Completed)
                         {
                             updatedCount++;
                             order.Status = OrderStatusCodes.Complete;
@@ -206,7 +232,7 @@ namespace Anlab.Core.Services
                                 Notes = "Money Moved",
                             });
                         }
-                        if (slothResponse.Status == "Cancelled")
+                        if (slothResponse.Status == SlothStatus.Cancelled)
                         {
                             order.Paid = false;
                             order.History.Add(new History

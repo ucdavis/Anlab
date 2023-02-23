@@ -86,6 +86,7 @@ namespace Anlab.Core.Services
 
                 rtValue.GlSegments = FinancialChartValidation.GetGlSegments(financialSegmentString);
 
+                rtValue.Description = $"{data.GlValidateChartstring.SegmentNames.DepartmentName} - {data.GlValidateChartstring.SegmentNames.FundName}";
 
                 return rtValue;
             }
@@ -187,7 +188,7 @@ namespace Anlab.Core.Services
             {
                 rtValue.AccountManager = data.PpmProjectByNumber.PrimaryProjectManagerName;
                 rtValue.AccountManagerEmail = data.PpmProjectByNumber.PrimaryProjectManagerEmail;
-                rtValue.ProjectName = data.PpmProjectByNumber.Name;
+                rtValue.Description = data.PpmProjectByNumber.Name;
             }
             return;
         }

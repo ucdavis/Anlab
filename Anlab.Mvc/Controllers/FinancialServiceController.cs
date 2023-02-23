@@ -34,7 +34,7 @@ namespace AnlabMvc.Controllers
                 rtValue = await _aggieEnterpriseService.IsAccountValid(account);
                 if (rtValue.IsValid)
                 {
-                    rtValue.DisplayName = rtValue.CoaChartType == FinancialChartStringType.Ppm ? $"PPM: {rtValue.ProjectName} ({rtValue.AccountManager})" : "GL Account";
+                    rtValue.DisplayName = rtValue.CoaChartType == FinancialChartStringType.Ppm ? $"PPM: {rtValue.Description} ({rtValue.AccountManager})" : $"GL: {rtValue.Description}";
                         //AccountManagerName = accountValidation.AccountManager,
                         //AccountManagerEmail = accountValidation.AccountManagerEmail, 
                         //Number = accountValidation.FinancialSegmentString

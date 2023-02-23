@@ -50,6 +50,9 @@ namespace Anlab.Jobs.MoneyMovement
             services.Configure<FinancialSettings>(Configuration.GetSection("Financial"));
             services.Configure<AggieEnterpriseSettings>(Configuration.GetSection("AggieEnterprise"));
 
+            
+            services.AddTransient<IAggieEnterpriseService, AggieEnterpriseService>();
+
             services.AddTransient<ISlothService, SlothService>();           
             Provider = services.BuildServiceProvider();
             

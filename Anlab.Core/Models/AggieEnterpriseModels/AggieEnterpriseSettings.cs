@@ -12,5 +12,7 @@ namespace Anlab.Core.Models.AggieEnterpriseModels
         public string Token { get; set; }
 
         public bool UseCoA { get; set; }
+
+        public string AnlabCoa { get; set; }
     }
 }

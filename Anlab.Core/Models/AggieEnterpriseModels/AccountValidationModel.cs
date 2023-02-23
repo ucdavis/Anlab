@@ -15,7 +15,7 @@ namespace Anlab.Core.Models.AggieEnterpriseModels
 
         public string AccountManager { get; set; }
         public string AccountManagerEmail { get; set; }
-        public string ProjectName { get; set; }
+        public string Description { get; set; } //Description of COA
 
         public string DisplayName { get; set; }
 
