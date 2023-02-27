@@ -70,7 +70,7 @@ namespace Anlab.Core.Services
 
             if (_aeSettings.UseCoA)
             {
-                var creditAccount = _aeSettings.UseCoA;
+                var creditAccount = _aeSettings.AnlabCoa;
 
                 if (FinancialChartValidation.GetFinancialChartStringType(orderDetails.Payment.Account) == FinancialChartStringType.Invalid)
                 {
@@ -93,6 +93,31 @@ namespace Anlab.Core.Services
                         Message = "Invalid Account"
                     };
                 }
+
+                var debitAccount = orderDetails.Payment.Account;
+
+                model.MerchantTrackingNumber = order.Id.ToString();
+                model.MerchantTrackingUrl = $"https://anlab.ucdavis.edu/Reviewer/Details/{order.Id}";
+                model.Description = $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}";
+                model.AddMetadata("Project", order.Project);
+                model.AddMetadata("RequestNum", order.RequestNum);
+                model.AddMetadata("Client Id", order.ClientId);
+
+                model.Transfers.Add(new TransferViewModel
+                {
+                    FinancialSegmentString = debitAccount,
+                    Amount = orderDetails.GrandTotal,
+                    Description = $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}",
+                    Direction = Directions.Debit,
+                });
+                model.Transfers.Add(new TransferViewModel
+                {
+                    FinancialSegmentString = creditAccount,
+                    Amount = orderDetails.GrandTotal,
+                    Description = $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}",
+                    Direction = Directions.Credit,
+                });
+
             }
             else
             {
