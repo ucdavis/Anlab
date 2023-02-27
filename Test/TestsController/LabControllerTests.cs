@@ -1,6 +1,7 @@
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
+using Anlab.Core.Models.AggieEnterpriseModels;
 using Anlab.Core.Services;
 using Anlab.Jobs.MoneyMovement;
 using AnlabMvc.Controllers;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure;
+using Microsoft.Extensions.Options;
 using Moq;
 using Shouldly;
 using System.Collections.Generic;
@@ -43,6 +45,16 @@ namespace Test.TestsController
 
         public Mock<IFormFile> MockFormFile { get; set; }
 
+        public Mock<IAggieEnterpriseService> MockAggieEnterpriseService { get; set; }
+        public Mock<IOptions<AggieEnterpriseSettings>> MockAeSettings { get; set; }
+
+        public AggieEnterpriseSettings AeSettings { get; set; } = new AggieEnterpriseSettings()
+        {
+            UseCoA = false,
+            GraphQlUrl = "http://fake.ucdavis.edu/graphql",
+            Token = "Fake"
+        };
+
 
         //Setup Data
         public List<Order> OrderData { get; set; }
@@ -68,10 +80,12 @@ namespace Test.TestsController
             MockFormFile = new Mock<IFormFile>();
             MockFinancialService = new Mock<IFinancialService>();
             MockTempDataSerializer = new Mock<TempDataSerializer>();
+            MockAggieEnterpriseService = new Mock<IAggieEnterpriseService>();
 
             var mockDataProvider = new Mock<SessionStateTempDataProvider>(MockTempDataSerializer.Object);
 
-
+            MockAeSettings = new Mock<IOptions<AggieEnterpriseSettings>>();
+            MockAeSettings.SetupGet(x => x.Value).Returns(AeSettings);
 
             //Default Data
             OrderData = new List<Order>();
@@ -94,7 +108,7 @@ namespace Test.TestsController
             };
             UserData[0].Id = "Creator1";
 
-
+            
             //Setups
             MockClaimsPrincipal.Setup(a => a.Claims).Returns(user.Claims);
             MockClaimsPrincipal.Setup(a => a.FindFirst(It.IsAny<string>())).Returns(new Claim(ClaimTypes.NameIdentifier, "Creator1"));
@@ -104,7 +118,8 @@ namespace Test.TestsController
             MockHttpContext.Setup(m => m.User).Returns(MockClaimsPrincipal.Object);
 
             Controller = new LabController(MockDbContext.Object, MockOrderService.Object, MockLabworksService.Object,
-                MockOrderMessagingService.Object, MockFileStorageService.Object, MockSlothService.Object, MockFinancialService.Object)
+                MockOrderMessagingService.Object, MockFileStorageService.Object, MockSlothService.Object, MockFinancialService.Object, MockAeSettings.Object,
+                MockAggieEnterpriseService.Object)
             {
                 ControllerContext = new ControllerContext
                 {
