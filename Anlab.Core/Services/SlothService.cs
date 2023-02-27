@@ -71,6 +71,7 @@ namespace Anlab.Core.Services
             if (_aeSettings.UseCoA)
             {
                 var creditAccount = _aeSettings.AnlabCoa;
+                var detailsChanged = false;
 
                 if (FinancialChartValidation.GetFinancialChartStringType(orderDetails.Payment.Account) == FinancialChartStringType.Invalid)
                 {
@@ -79,7 +80,9 @@ namespace Anlab.Core.Services
                     if (coa != null)
                     {
                         log.Warning("Payment Account updated to COA, using KFS Convert. Order Id: {id}, KFS Account: {kfs}, COA: {coa}", order.Id, orderDetails.Payment.Account, coa);
-                        orderDetails.Payment.Account = coa; // Assign it here so we can follow through with the validation. Will this get updated in the DB if everything else goes though I think.
+                        orderDetails.Payment.AccountName = $"KFS Converted Account: {orderDetails.Payment.Account}";
+                        orderDetails.Payment.Account = coa; // Assign it here so we can follow through with the validation. Will this get updated in the DB if everything else goes though I think.                        
+                        detailsChanged = true;
                     }
                 }
 
@@ -93,12 +96,16 @@ namespace Anlab.Core.Services
                         Message = "Invalid Account"
                     };
                 }
+                if (detailsChanged)
+                {
+                    order.SaveDetails(orderDetails);
+                }
 
                 var debitAccount = orderDetails.Payment.Account;
 
                 model.MerchantTrackingNumber = order.Id.ToString();
                 model.MerchantTrackingUrl = $"https://anlab.ucdavis.edu/Reviewer/Details/{order.Id}";
-                model.Description = $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}";
+                model.Description = $"{order.RequestNum} - {order.Project}".SpecialTruncation(0,40);
                 model.AddMetadata("Project", order.Project);
                 model.AddMetadata("RequestNum", order.RequestNum);
                 model.AddMetadata("Client Id", order.ClientId);
