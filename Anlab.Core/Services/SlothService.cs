@@ -72,6 +72,7 @@ namespace Anlab.Core.Services
             {
                 var creditAccount = _aeSettings.AnlabCoa;
                 var detailsChanged = false;
+                var savedAccount = orderDetails.Payment.Account;
 
                 if (FinancialChartValidation.GetFinancialChartStringType(orderDetails.Payment.Account) == FinancialChartStringType.Invalid)
                 {
@@ -80,7 +81,7 @@ namespace Anlab.Core.Services
                     if (coa != null)
                     {
                         log.Warning("Payment Account updated to COA, using KFS Convert. Order Id: {id}, KFS Account: {kfs}, COA: {coa}", order.Id, orderDetails.Payment.Account, coa);
-                        orderDetails.Payment.AccountName = $"KFS Converted Account: {orderDetails.Payment.Account}";
+                        orderDetails.Payment.AccountName = $"KFS Converted Account: {savedAccount}";
                         orderDetails.Payment.Account = coa; // Assign it here so we can follow through with the validation. Will this get updated in the DB if everything else goes though I think.                        
                         detailsChanged = true;
                     }
@@ -109,12 +110,16 @@ namespace Anlab.Core.Services
                 model.AddMetadata("Project", order.Project);
                 model.AddMetadata("RequestNum", order.RequestNum);
                 model.AddMetadata("Client Id", order.ClientId);
+                if (debitAccount != savedAccount)
+                {
+                    model.AddMetadata("Converted Account", $"From: {savedAccount} To: {debitAccount}");
+                }
 
                 model.Transfers.Add(new TransferViewModel
                 {
                     FinancialSegmentString = debitAccount,
                     Amount = orderDetails.GrandTotal,
-                    Description = $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}",
+                    Description = debitAccount != savedAccount ? $"Converted: {savedAccount}".SpecialTruncation(0,40) : $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}",
                     Direction = Directions.Debit,
                 });
                 model.Transfers.Add(new TransferViewModel
