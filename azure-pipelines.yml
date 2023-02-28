@@ -5,6 +5,7 @@
 
 trigger:
   - master
+  - dev
 
 pool:
   vmImage: "ubuntu-latest"
@@ -94,7 +95,6 @@ stages:
               arguments: "--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/app_data/jobs/triggered"
 
           - task: PublishBuildArtifacts@1
-            condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
             displayName: "Publish Build Artifacts for master branch builds"
             inputs:
               PathtoPublish: "$(Build.ArtifactStagingDirectory)"
