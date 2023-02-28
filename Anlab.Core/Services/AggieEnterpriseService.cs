@@ -86,6 +86,13 @@ namespace Anlab.Core.Services
 
                 rtValue.GlSegments = FinancialChartValidation.GetGlSegments(financialSegmentString);
 
+                rtValue.Description = $"{data.GlValidateChartstring.SegmentNames.DepartmentName} - {data.GlValidateChartstring.SegmentNames.FundName}";
+                
+                if(rtValue.GlSegments.Account != AeSettings.NaturalAccount)
+                {
+                    rtValue.Messages.Add($"Natural Account must be {AeSettings.NaturalAccount}");
+                    rtValue.IsValid = false;
+                }
 
                 return rtValue;
             }
@@ -125,6 +132,12 @@ namespace Anlab.Core.Services
 
                 await GetPpmAccountManager(rtValue);
 
+                if(rtValue.PpmSegments.ExpenditureType != AeSettings.NaturalAccount)
+                {
+                    rtValue.Messages.Add($"Expenditure Type must be {AeSettings.NaturalAccount}");
+                    rtValue.IsValid = false;
+                }
+
                 return rtValue;
             }
 
@@ -161,14 +174,14 @@ namespace Anlab.Core.Services
             if (data.KfsConvertAccount.GlSegments != null)
             {
                 var tempGlSegments = new GlSegments(data.KfsConvertAccount.GlSegments);
-                //tempGlSegments.Account = Replace Natural Account?
+                tempGlSegments.Account = AeSettings.NaturalAccount;
                 return tempGlSegments.ToSegmentString();
             }
 
             if (data.KfsConvertAccount.PpmSegments != null)
             {
                 var tempPpmSegments = new PpmSegments(data.KfsConvertAccount.PpmSegments);
-                //tempPpmSegments.ExpenditureType = Replace Natural Account?
+                tempPpmSegments.ExpenditureType = AeSettings.NaturalAccount;
                 return tempPpmSegments.ToSegmentString();
             }
             else
@@ -187,7 +200,7 @@ namespace Anlab.Core.Services
             {
                 rtValue.AccountManager = data.PpmProjectByNumber.PrimaryProjectManagerName;
                 rtValue.AccountManagerEmail = data.PpmProjectByNumber.PrimaryProjectManagerEmail;
-                rtValue.ProjectName = data.PpmProjectByNumber.Name;
+                rtValue.Description = data.PpmProjectByNumber.Name;
             }
             return;
         }

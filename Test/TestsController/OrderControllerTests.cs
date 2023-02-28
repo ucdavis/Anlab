@@ -2,6 +2,7 @@ using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using Anlab.Core.Models.AggieEnterpriseModels;
+using Anlab.Core.Services;
 using AnlabMvc;
 using AnlabMvc.Controllers;
 using AnlabMvc.Models.Order;
@@ -43,6 +44,7 @@ namespace Test.TestsController
         public Mock<IOptions<AppSettings>> MockAppSettings { get; set; }
         public Mock<ClaimsPrincipal> MockClaimsPrincipal { get; set; }
         public Mock<TempDataSerializer> MockTempDataSerializer { get; set; }
+        public Mock<IAggieEnterpriseService> MockAggieEnterpriseService { get; set; }
 
         //Setup Data
         public List<Order> OrderData { get; set; }
@@ -53,7 +55,7 @@ namespace Test.TestsController
 
         public AggieEnterpriseSettings AeSettings { get; set; } = new AggieEnterpriseSettings()
         {
-            UseCoA = true,
+            UseCoA = false,
             GraphQlUrl = "http://fake.ucdavis.edu/graphql",
             Token = "Fake"
         };
@@ -76,9 +78,11 @@ namespace Test.TestsController
             MockLabworksService = new Mock<ILabworksService>();
             MockFinancialService = new Mock<IFinancialService>();
             MockAppSettings = new Mock<IOptions<AppSettings>>();
+            MockAggieEnterpriseService = new Mock<IAggieEnterpriseService>();
             MockDbContext = new Mock<ApplicationDbContext>();
             MockClaimsPrincipal = new Mock<ClaimsPrincipal>();
             MockTempDataSerializer = new Mock<TempDataSerializer>();
+            MockAggieEnterpriseService = new Mock<IAggieEnterpriseService>();
             var mockDataProvider = new Mock<SessionStateTempDataProvider>(MockTempDataSerializer.Object);
 
 
@@ -143,7 +147,8 @@ namespace Test.TestsController
                 MockLabworksService.Object,
                 MockFinancialService.Object,
                 MockAppSettings.Object,
-                MockAeSettings.Object)
+                MockAeSettings.Object,
+                MockAggieEnterpriseService.Object)
             {
                 ControllerContext = new ControllerContext
                 {

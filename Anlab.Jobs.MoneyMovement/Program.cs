@@ -10,6 +10,7 @@ using Anlab.Core.Models;
 using Microsoft.Extensions.Options;
 using Anlab.Jobs.Core.Logging;
 using Serilog;
+using Anlab.Core.Models.AggieEnterpriseModels;
 
 namespace Anlab.Jobs.MoneyMovement
 {
@@ -47,6 +48,10 @@ namespace Anlab.Jobs.MoneyMovement
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
             services.Configure<FinancialSettings>(Configuration.GetSection("Financial"));
+            services.Configure<AggieEnterpriseSettings>(Configuration.GetSection("AggieEnterprise"));
+
+            
+            services.AddTransient<IAggieEnterpriseService, AggieEnterpriseService>();
 
             services.AddTransient<ISlothService, SlothService>();           
             Provider = services.BuildServiceProvider();
