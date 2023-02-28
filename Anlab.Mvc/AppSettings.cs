@@ -18,5 +18,7 @@ namespace AnlabMvc
         /// Email for account managers
         /// </summary>
         public string AccountsEmail { get; set; }
+
+        public bool AllowDuplicateRequestNums { get; set; } = false;
     }
 }
