@@ -20,6 +20,8 @@ using Anlab.Core.Services;
 using AnlabMvc.Extensions;
 using Serilog;
 using AnlabMvc.Helpers;
+using Microsoft.Extensions.Options;
+using Anlab.Core.Models.AggieEnterpriseModels;
 
 namespace AnlabMvc.Controllers
 {
@@ -33,10 +35,21 @@ namespace AnlabMvc.Controllers
         private readonly IFileStorageService _fileStorageService;
         private readonly ISlothService _slothService;
         private readonly IFinancialService _financialService;
-
+        private readonly AggieEnterpriseSettings _aeSettings;
+        private readonly IAggieEnterpriseService _aggieEnterpriseService;
+        private readonly AppSettings _appSettings;
         private const int _maxShownOrders = 1000;
 
-        public LabController(ApplicationDbContext dbContext, IOrderService orderService, ILabworksService labworksService, IOrderMessageService orderMessageService, IFileStorageService fileStorageService, ISlothService slothService, IFinancialService financialService)
+        public LabController(ApplicationDbContext dbContext,
+            IOrderService orderService,
+            ILabworksService labworksService,
+            IOrderMessageService orderMessageService,
+            IFileStorageService fileStorageService,
+            ISlothService slothService,
+            IFinancialService financialService,
+            IOptions<AggieEnterpriseSettings> aeSettings,
+            IAggieEnterpriseService aggieEnterpriseService,
+            IOptions<AppSettings> appSettings)
         {
             _dbContext = dbContext;
             _orderService = orderService;
@@ -45,6 +58,9 @@ namespace AnlabMvc.Controllers
             _fileStorageService = fileStorageService;
             _slothService = slothService;
             _financialService = financialService;
+            _aeSettings = aeSettings.Value;
+            _aggieEnterpriseService = aggieEnterpriseService;
+            _appSettings = appSettings.Value;
         }
 
         [HttpGet]
@@ -198,9 +214,10 @@ namespace AnlabMvc.Controllers
             if (checkReqNum)
             {
                 ErrorMessage = "That request number is already in use";
-#if !DEBUG
-                return RedirectToAction("AddRequestNumber");
-#endif
+                if(!_appSettings.AllowDuplicateRequestNums)
+                {
+                    return RedirectToAction("AddRequestNumber");
+                }
             }
 
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
@@ -657,7 +674,22 @@ namespace AnlabMvc.Controllers
                     {
                         try
                         {
-                            orderDetails.Payment.AccountName = await _financialService.GetAccountName(model.Account);
+                            if (_aeSettings.UseCoA)
+                            {
+                                var validateAccount = await _aggieEnterpriseService.IsAccountValid(model.Account);
+                                if (validateAccount.IsValid)
+                                {
+                                    orderDetails.Payment.AccountName = validateAccount.Description;
+                                }
+                                else
+                                {
+                                    orderDetails.Payment.AccountName = string.Empty;
+                                }
+                            }
+                            else
+                            {
+                                orderDetails.Payment.AccountName = await _financialService.GetAccountName(model.Account);
+                            }
                         }
                         catch
                         {

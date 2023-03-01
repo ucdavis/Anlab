@@ -15,6 +15,7 @@
         App.orderData = @Json.Serialize(Model);
         App.orderId = @Model.Order.Id;
         App.defaults = @Json.Serialize(Model.Defaults);
+        App.useCoa = @Json.Serialize(Model.UseCoa);
     </script>
 }
 
@@ -27,4 +28,7 @@
             });
         });
     </script>
+    @{
+        <script src="https://finjector.ucdavis.edu/finjector.js?v=1" type="text/javascript" asp-add-nonce="true"></script>
+    }
 }

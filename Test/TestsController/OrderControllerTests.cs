@@ -1,6 +1,8 @@
 using Anlab.Core.Data;
 using Anlab.Core.Domain;
 using Anlab.Core.Models;
+using Anlab.Core.Models.AggieEnterpriseModels;
+using Anlab.Core.Services;
 using AnlabMvc;
 using AnlabMvc.Controllers;
 using AnlabMvc.Models.Order;
@@ -42,13 +44,23 @@ namespace Test.TestsController
         public Mock<IOptions<AppSettings>> MockAppSettings { get; set; }
         public Mock<ClaimsPrincipal> MockClaimsPrincipal { get; set; }
         public Mock<TempDataSerializer> MockTempDataSerializer { get; set; }
+        public Mock<IAggieEnterpriseService> MockAggieEnterpriseService { get; set; }
 
         //Setup Data
         public List<Order> OrderData { get; set; }
         public List<TestItemModel> TestItemModelData { get; set; }
         public List<User> UserData { get; set; }
 
+        public Mock<IOptions<AggieEnterpriseSettings>> MockAeSettings { get; set; }
 
+        public AggieEnterpriseSettings AeSettings { get; set; } = new AggieEnterpriseSettings()
+        {
+            UseCoA = false,
+            GraphQlUrl = "http://fake.ucdavis.edu/graphql",
+            Token = "Fake"
+        };
+
+        
 
         //Controller
         public OrderController Controller { get; set; }
@@ -66,10 +78,16 @@ namespace Test.TestsController
             MockLabworksService = new Mock<ILabworksService>();
             MockFinancialService = new Mock<IFinancialService>();
             MockAppSettings = new Mock<IOptions<AppSettings>>();
+            MockAggieEnterpriseService = new Mock<IAggieEnterpriseService>();
             MockDbContext = new Mock<ApplicationDbContext>();
             MockClaimsPrincipal = new Mock<ClaimsPrincipal>();
             MockTempDataSerializer = new Mock<TempDataSerializer>();
+            MockAggieEnterpriseService = new Mock<IAggieEnterpriseService>();
             var mockDataProvider = new Mock<SessionStateTempDataProvider>(MockTempDataSerializer.Object);
+
+
+            MockAeSettings = new Mock<IOptions<AggieEnterpriseSettings>>();
+            MockAeSettings.SetupGet(x => x.Value).Returns(AeSettings);
 
             //Default data
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
@@ -128,7 +146,9 @@ namespace Test.TestsController
                 MockOrderMessagingService.Object,
                 MockLabworksService.Object,
                 MockFinancialService.Object,
-                MockAppSettings.Object)
+                MockAppSettings.Object,
+                MockAeSettings.Object,
+                MockAggieEnterpriseService.Object)
             {
                 ControllerContext = new ControllerContext
                 {
