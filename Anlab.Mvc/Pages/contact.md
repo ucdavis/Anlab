@@ -21,7 +21,7 @@ title: "Contact"
   <p>The <strong>Lab</strong> is located in: Room 208, Hoagland Hall</p>
 </address>
 <h3>Directions</h3>
-<p>Directions to the UC Davis Analytical Lab Sample Receiving Facility:</p>
+<p>Directions to the UC Davis Analytical Lab Sample Receiving Facility :</p>
 <p>Room 110, Hoagland Annex<br />University of California<br />Davis</p>
 <p>FROM INTERSTATE 80 (directions are the same from I-80 West or East)</p>
 <ul>
