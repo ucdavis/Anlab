@@ -15,7 +15,7 @@ namespace AnlabMvc.Controllers
     public class FinancialServiceController : ApplicationController
     {
         private readonly IFinancialService _financialService;
-        private readonly IAggieEnterpriseService _aggieEnterpriseService;
+        private IAggieEnterpriseService _aggieEnterpriseService;
         private readonly AggieEnterpriseSettings _aeSettings;
 
         public FinancialServiceController(IFinancialService financialService, IAggieEnterpriseService aggieEnterpriseService, IOptions<AggieEnterpriseSettings> aeSettings)

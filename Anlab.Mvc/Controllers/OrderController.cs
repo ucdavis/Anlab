@@ -31,7 +31,7 @@ namespace AnlabMvc.Controllers
         private readonly IOrderMessageService _orderMessageService;
         private readonly ILabworksService _labworksService;
         private readonly IFinancialService _financialService;
-        private readonly IAggieEnterpriseService _aggieEnterpriseService;
+        private IAggieEnterpriseService _aggieEnterpriseService;
         private readonly AggieEnterpriseSettings _aeSettings;
         private readonly AppSettings _appSettings;
 

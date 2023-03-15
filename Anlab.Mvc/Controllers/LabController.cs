@@ -36,7 +36,7 @@ namespace AnlabMvc.Controllers
         private readonly ISlothService _slothService;
         private readonly IFinancialService _financialService;
         private readonly AggieEnterpriseSettings _aeSettings;
-        private readonly IAggieEnterpriseService _aggieEnterpriseService;
+        private IAggieEnterpriseService _aggieEnterpriseService;
         private readonly AppSettings _appSettings;
         private const int _maxShownOrders = 1000;
 

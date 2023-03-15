@@ -24,7 +24,7 @@ namespace Anlab.Core.Services
 
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
-        private readonly IAggieEnterpriseClient _aggieClient;
+        private IAggieEnterpriseClient _aggieClient;
 
         public AggieEnterpriseSettings AeSettings { get; set; }
 
@@ -34,11 +34,13 @@ namespace Anlab.Core.Services
 
             try
             {
-                _aggieClient = GraphQlClient.Get(AeSettings.GraphQlUrl, AeSettings.Token);
+                //_aggieClient = GraphQlClient.Get(AeSettings.GraphQlUrl, AeSettings.Token);
+                _aggieClient = GraphQlClient.Get(AeSettings.GraphQlUrl, AeSettings.TokenEndpoint, AeSettings.ConsumerKey, AeSettings.ConsumerSecret, $"{AeSettings.ScopeApp}-{AeSettings.ScopeEnv}");
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Error creating Aggie Enterprise Client");
+                Log.Information("Aggie Enterprise Scope {scope}", $"{AeSettings.ScopeApp}-{AeSettings.ScopeEnv}");
                 _aggieClient = null;
             }
         }
