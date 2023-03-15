@@ -30,7 +30,7 @@ namespace Anlab.Core.Services
     public class SlothService : ISlothService
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly IAggieEnterpriseService _aggieEnterpriseService;
+        private IAggieEnterpriseService _aggieEnterpriseService;
         private readonly AggieEnterpriseSettings _aeSettings;
         private readonly FinancialSettings _appSettings;
 
