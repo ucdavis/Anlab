@@ -56,7 +56,8 @@ namespace AnlabMvc
             {
                 loggerConfig.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(elasticUri)
                 {
-                    IndexFormat = "aspnet-anlab-{0:yyyy.MM}"
+                    IndexFormat = "aspnet-anlab-{0:yyyy.MM}",
+                    TypeName = null
                 });
             }
 
