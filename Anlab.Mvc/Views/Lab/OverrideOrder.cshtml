@@ -118,8 +118,8 @@
             var extension = fullFileName.split('.').pop();
 
             var error = "";
-            if (extension !== 'XLS' && extension !== 'XLSX' && extension !== 'ZIP') {
-                error = "Only XLS, XLSX, and ZIP files can be uploaded";
+            if (extension !== 'XLS' && extension !== 'XLSX' && extension !== 'ZIP' && extension !== 'PDF') {
+                error = "Only XLS, XLSX, PDF, and ZIP files can be uploaded";
             }
             var expectedFileName = '@Model.OrderReviewModel.Order.RequestNum'.toUpperCase();
             if (fileName.indexOf(expectedFileName) === -1) {
