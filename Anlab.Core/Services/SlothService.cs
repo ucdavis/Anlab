@@ -15,8 +15,6 @@ using Serilog;
 using static Anlab.Jobs.MoneyMovement.TransferViewModel;
 using Anlab.Core.Models.AggieEnterpriseModels;
 using AggieEnterpriseApi.Validation;
-using System.Security.Principal;
-using System.Runtime;
 
 namespace Anlab.Core.Services
 {
