@@ -15,7 +15,6 @@ using Serilog;
 using static Anlab.Jobs.MoneyMovement.TransferViewModel;
 using Anlab.Core.Models.AggieEnterpriseModels;
 using AggieEnterpriseApi.Validation;
-using System.Security.Principal;
 
 namespace Anlab.Core.Services
 {
@@ -47,6 +46,12 @@ namespace Anlab.Core.Services
         //TODO: Add validation?
         public async Task<SlothResponseModel> MoveMoney(Order order)
         {
+            if (_appSettings.SlothApiUrl.EndsWith("v1/", StringComparison.OrdinalIgnoreCase) || _appSettings.SlothApiUrl.EndsWith("v2/", StringComparison.OrdinalIgnoreCase))
+            {
+                Log.Error("Sloth SlothApiUrl should not end with version");
+                //Replace the end of the string
+                _appSettings.SlothApiUrl = _appSettings.SlothApiUrl.Substring(0, _appSettings.SlothApiUrl.Length - 3);
+            }
             var log = Log.ForContext("OrderId", order.Id);
             
             var orderDetails = order.GetOrderDetails();
