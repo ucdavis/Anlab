@@ -106,6 +106,12 @@ export class PaymentSelection extends React.Component<
         {this.props.placingOrder && this._renderUcAccount()}
         {this.props.placingOrder && this._renderOtherInfo()}
         {this._renderAgreement()}
+        {this.props.otherPaymentInfo.agreementRequired && (
+          <div className="alert alert-warning" role="alert">
+            Yo! You have selected that you require and agreement. There are some
+            things you need to know.{" "}
+          </div>
+        )}
       </div>
     );
   }
