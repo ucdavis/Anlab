@@ -53,6 +53,7 @@ namespace Test.TestsDatabase
             expectedFields.Add(new NameAndType("Notes", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("NotesEncoded", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Public", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("Reporting", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("RequestOrder", "System.Int32", new List<string>()));
             #endregion Arrange
 
