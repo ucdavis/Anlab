@@ -1,4 +1,4 @@
-﻿@model Anlab.Core.Domain.TestItem
+@model Anlab.Core.Domain.TestItem
 
 <dl class="dl-horizontal">
     <dt>
@@ -41,6 +41,21 @@
         @Html.DisplayNameFor(model => model.Public)
     </dt>
     @if (Model.Public)
+    {
+        <dd>
+            Yes
+        </dd>
+    }
+    else
+    {
+        <dd>
+            No
+        </dd>
+    }
+    <dt>
+    @Html.DisplayNameFor(model => model.Reporting)
+    </dt>
+    @if (Model.Reporting)
     {
         <dd>
             Yes
