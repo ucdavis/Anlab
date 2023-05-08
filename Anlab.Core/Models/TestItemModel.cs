@@ -19,6 +19,7 @@ namespace Anlab.Core.Models
         public string Description { get; set; }
         public string Notes { get; set; }
         public bool Public { get; set; }
+        public bool Reporting { get; set; } = false;
         public string AdditionalInfoPrompt { get; set; }        
         public string Sop { get; set; }
         public int RequestOrder { get; set; }
