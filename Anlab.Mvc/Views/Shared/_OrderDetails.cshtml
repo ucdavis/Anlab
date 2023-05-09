@@ -4,6 +4,11 @@
 @using Humanizer
 @model AnlabMvc.Models.Order.OrderReviewModel
 
+@if (Model.Order.IsDeleted)
+{
+    <div class="alert alert-danger"><h2>WARNING!!!</h2><br/> This order is <strong>Deleted</strong> and can no longer be acted on.</div>
+}
+
 <div class="space_between border-bottom">
     <div class="row no-margin">
         <div class="form-group no-margin detail-bumper">

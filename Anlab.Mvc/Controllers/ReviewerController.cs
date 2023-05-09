@@ -73,7 +73,7 @@ namespace AnlabMvc.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id && o.Status != OrderStatusCodes.Created);
+            var order = await _context.Orders.IgnoreQueryFilters().Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id && o.Status != OrderStatusCodes.Created);
 
             if (order == null)
             {
