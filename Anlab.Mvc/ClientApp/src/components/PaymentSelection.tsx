@@ -203,14 +203,27 @@ export class PaymentSelection extends React.Component<
       return;
     }
     return (
-      <Checkbox
-        checked={this.props.otherPaymentInfo.agreementRequired}
-        onChange={this._changeAgreementReq}
-        inline={true}
-      >
-        {" "}
-        I require an agreement{" "}
-      </Checkbox>
+      <div>
+        <Checkbox
+          checked={this.props.otherPaymentInfo.agreementRequired}
+          onChange={this._changeAgreementReq}
+          inline={true}
+        >
+          {" "}
+          I require an agreement{" "}
+        </Checkbox>
+        {this.props.otherPaymentInfo.agreementRequired && (
+          <div className="alert alert-warning" role="alert">
+            You have selected that you require an agreement. We can proceed with
+            a general agreement, which would take a few days, or with a formal
+            agreement, which may take six weeks or more to finalize. In either
+            case, we cannot start work on this order until the agreement is
+            signed. If you choose to continue, you may proceed with placing your
+            order and you will be contacted by our lab. You may unclick the box
+            to stop the agreement process.{" "}
+          </div>
+        )}
+      </div>
     );
   };
 
