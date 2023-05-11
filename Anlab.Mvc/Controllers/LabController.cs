@@ -836,6 +836,33 @@ namespace AnlabMvc.Controllers
                 order = await _dbContext.Orders.FirstOrDefaultAsync(a => a.RequestNum == term.SafeToUpper());
             }
 
+            if(order == null)
+            {
+                //Ok, we didn't find it, but lets check the deleted ones
+                if (Guid.TryParse(term, out guidSearch))
+                {
+                    order = await _dbContext.Orders.IgnoreQueryFilters().SingleOrDefaultAsync(a => a.ShareIdentifier == guidSearch);
+                }
+                else if (int.TryParse(term, out intSearch))
+                {
+                    order = await _dbContext.Orders.IgnoreQueryFilters().SingleOrDefaultAsync(a => a.Id == intSearch);
+                }
+                else
+                {
+                    order = await _dbContext.Orders.IgnoreQueryFilters().FirstOrDefaultAsync(a => a.RequestNum == term.SafeToUpper());
+                }
+
+                if(order != null)
+                {
+                    if(order.Status == OrderStatusCodes.Created)
+                    {
+                        ErrorMessage = "A deleted order in the Created status was found. But these can't be viewed.";
+                        return RedirectToAction("Search");
+                    }
+                    return RedirectToAction("Details", "Reviewer", new { id = order.Id });
+                }
+            }
+
             if (order == null)
             {
                 ErrorMessage = "Order Not Found";
