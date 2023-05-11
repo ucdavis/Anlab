@@ -45,9 +45,11 @@ namespace Anlab.Core.Models
                 {
                     return 0;
                 }
-                return Math.Ceiling(SetupCost * Multiplier);
+                //return Math.Ceiling(SetupCost * Multiplier);
+                return SetupCost; //Can't apply the multiplier here because of rounding.
             }
         }
+
         public decimal InternalCost { get; set; }
         public decimal SetupCost { get; set; } 
         public string Name { get; set; }
