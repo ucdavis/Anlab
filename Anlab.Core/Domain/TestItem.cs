@@ -35,6 +35,7 @@ namespace Anlab.Core.Domain
         public string Group { get; set; }
 
         public bool Public { get; set; }
+        public bool Reporting { get; set; } = false;
 
         public string AdditionalInfoPrompt { get; set; }
 

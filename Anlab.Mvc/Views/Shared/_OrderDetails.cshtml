@@ -266,7 +266,7 @@
             {
 
                 var temp = Model.Order.GetTestDetails().Where(a => a.Id == test.Id).FirstOrDefault();
-                if (Model.HideLabDetails && !temp.Public)
+                if (Model.HideLabDetails && (!temp.Public && !temp.Reporting))
                 {
                     hiddenCosts += test.Total;
                     continue;
@@ -278,7 +278,16 @@
                         {
                             <i class="analysisTooltip fa fa-info-circle" onshow="renderTitle('@temp.Notes')" title="@temp.Notes" aria-hidden="true" data-toggle="tooltip" data-html="true"></i>
                         }
-                    </td>
+                        @if( temp != null && !temp.Public && temp.Reporting)
+                        {
+                        <sup>
+                            <i class="analysisTooltip fa fa-bookmark"
+                                aria-hidden="true"
+                                data-toggle="tooltip"
+                               title="Office Reporting Analysis"></i>
+                        </sup>
+                        }
+                </td>
                     <td>
                         @if (Model.HideLabDetails)
                         {

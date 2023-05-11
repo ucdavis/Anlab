@@ -89,6 +89,7 @@ namespace AnlabMvc.Services
                     InternalSetupCost = Math.Ceiling(p.SetupPrice) * p.Multiplier,
                     Notes = i.NotesEncoded,
                     Public = i.Public,
+                    Reporting = i.Reporting,
                     AdditionalInfoPrompt = i.AdditionalInfoPrompt,
                     Sop = p.Sop,
                     RequestOrder = i.RequestOrder,
