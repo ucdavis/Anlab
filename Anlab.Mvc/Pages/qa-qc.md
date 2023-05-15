@@ -4,8 +4,6 @@ title: "QA/QC"
 
 ---
 
-@*<p class="lead">The Analytical Laboratory's policies and procedures related to quality control/quality assurance are available in its <a href="/media/pdf/qual-manual-ver-02.pdf" target="_blank" title="QA/QC Manual">QA/QC Manual (PDF)</a>.
-    Click here to view the <a href="/media/pdf/an-lab-qual-statement.pdf" target="_blank" title="The Lab's Quality Policy Statement">Lab's Quality Policy Statement</a>.</p>*@
 <p>The goal of the Analytical Laboratory QA/QC Program is to guarantee the generation of precise and accurate analytical data.</p>
 <p>Quality assurance involves the planned and systematic actions necessary to provide confidence in each analytical result. The QA/QC Program has two components: Quality Assurance (QA) - the system used to verify that the entire analytical process
     is operating within acceptable limits and Quality Control (QC) - the mechanisms established to measure non-conforming method performance.</p>
