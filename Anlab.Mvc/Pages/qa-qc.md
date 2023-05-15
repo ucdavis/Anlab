@@ -4,8 +4,8 @@ title: "QA/QC"
 
 ---
 
-<p class="lead">The Analytical Laboratory's policies and procedures related to quality control/quality assurance are available in its <a href="/media/pdf/qual-manual-ver-02.pdf" target="_blank" title="QA/QC Manual">QA/QC Manual (PDF)</a>.
-    Click here to view the <a href="/media/pdf/an-lab-qual-statement.pdf" target="_blank" title="The Lab's Quality Policy Statement">Lab's Quality Policy Statement</a>.</p>
+@*<p class="lead">The Analytical Laboratory's policies and procedures related to quality control/quality assurance are available in its <a href="/media/pdf/qual-manual-ver-02.pdf" target="_blank" title="QA/QC Manual">QA/QC Manual (PDF)</a>.
+    Click here to view the <a href="/media/pdf/an-lab-qual-statement.pdf" target="_blank" title="The Lab's Quality Policy Statement">Lab's Quality Policy Statement</a>.</p>*@
 <p>The goal of the Analytical Laboratory QA/QC Program is to guarantee the generation of precise and accurate analytical data.</p>
 <p>Quality assurance involves the planned and systematic actions necessary to provide confidence in each analytical result. The QA/QC Program has two components: Quality Assurance (QA) - the system used to verify that the entire analytical process
     is operating within acceptable limits and Quality Control (QC) - the mechanisms established to measure non-conforming method performance.</p>
@@ -26,4 +26,4 @@ title: "QA/QC"
     material that falls outside the acceptable range are reanalyzed, including digestion or extraction if necessary.</p>
 <p><strong>SPIKE SAMPLES</strong> - Sample fortifications or spikes are used to verify accuracy of tests requiring extensive sample manipulation (such as acid digestion) or for non-standard sample types.</p>
 <p><strong>PROFICIENCY PROGRAMS</strong> - The Analytical Laboratory participates in several proficiency programs: The North American Proficiency Testing Program for soils, water, and plant material; the Agriculture Laboratory Proficiency Program for plant tissue; and the Association of American Feed Control Officials for feed tests.</p>
-<p><strong>CERTIFICATION PROGRAMS</strong> - The Laboratory is certified by the National Forage Testing Association for the analysis of moisture, crude protein, acid detergent fiber, and neutral detergent fiber in feed.  The lab is in the process of acquiring ISO 17025:2017 accreditation.</p>
+<p><strong>CERTIFICATION PROGRAMS</strong> - The Laboratory is certified by the National Forage Testing Association for the analysis of moisture, crude protein, acid detergent fiber, and neutral detergent fiber in feed.  The lab is ISO 17025:2017 accredited.  For our certificate and the scope of our accreditation, please click <a href=https://customer.a2la.org/index.cfm?event=directory.detail&labPID=8D6BE538-5850-42BE-8565-6B693298B8D7>here</a>.</p>
