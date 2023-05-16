@@ -1,7 +1,9 @@
 import "isomorphic-fetch";
 import * as React from "react";
 import { getOptions } from "../util/ucAccountsHelper";
+import { env } from "../util/env";
 import Input from "./ui/input/input";
+import { Button } from "react-bootstrap";
 
 export interface IPayment {
   clientType: string;
@@ -20,12 +22,17 @@ interface IPaymentUcSelectionProps {
   handleSelectionChange: (ucName: string) => void;
 }
 
+declare const window: Window &
+  typeof globalThis & {
+    Finjector: any;
+  };
+
 export class PaymentUcSelection extends React.Component<
   IPaymentUcSelectionProps,
   {}
 > {
   public render() {
-    const options = getOptions();
+    const options = getOptions(env.useCoa);
 
     return (
       <div>
@@ -48,20 +55,28 @@ export class PaymentUcSelection extends React.Component<
             <option value="UCM">UCM</option>
           </select>
         </div>
-        <div className="flexrow">
-          <div className="flexcol">
+        {this._renderDetails(options[this.props.ucName])}
+        <div className="flexrow coa-input-row">
+          <div className="col-4">
             <Input
               label={`${this.props.ucName} Account`}
               value={this.props.payment.account}
               error={this.props.error}
-              maxLength={50}
+              maxLength={100}
               onChange={this.props.handleAccountChange}
               onBlur={this.props.lookupAccount}
               inputRef={this.props.ucAccountRef}
             />
+
             {this.props.payment.accountName}
           </div>
-          {this._renderDetails(options[this.props.ucName])}
+          {env.useCoa && this.props.ucName === "UCD" && (
+            <div className="col-3 coa-wrapper">
+              <Button className="btn-coa" onClick={this._lookupcoa}>
+                COA Picker
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -76,7 +91,7 @@ export class PaymentUcSelection extends React.Component<
       return;
     }
     return (
-      <div className="flexcol">
+      <div className="mt-2 mb-2">
         <Input
           label={`Example ${option.name} Account`}
           value={option.example}
@@ -85,5 +100,16 @@ export class PaymentUcSelection extends React.Component<
         />
       </div>
     );
+  };
+  private _lookupcoa = async () => {
+    const chart = await window.Finjector.findChartSegmentString();
+
+    if (chart.status === "success") {
+      this.props.handleAccountChange({
+        target: { value: chart.data },
+      } as React.ChangeEvent<HTMLInputElement>);
+      //then call this.props.lookupAccount
+      this.props.lookupAccount();
+    }
   };
 }

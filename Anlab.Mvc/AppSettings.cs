@@ -7,7 +7,7 @@ namespace AnlabMvc
 {
     public class AppSettings
     {
-        public decimal NonUcRate { get; set; } = 1.5m;
+        public decimal NonUcRate { get; set; } = 1.63m;
         public string StorageUrlBase { get; set; }
         public string StorageContainerName { get; set; }
         public string CyberSourceUrl { get; set; }
@@ -18,5 +18,7 @@ namespace AnlabMvc
         /// Email for account managers
         /// </summary>
         public string AccountsEmail { get; set; }
+
+        public bool AllowDuplicateRequestNums { get; set; } = false;
     }
 }

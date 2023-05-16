@@ -32,7 +32,44 @@
   max-width: 100%;
   height: auto;
 }
-
+input#Account{
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  width:540px;
+}
+.coa-input-row {
+  justify-content: flex-start;
+  input {
+    max-width: 400px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+.mt-2 {
+  margin-top:16px;
+}
+.mb-2 {
+  margin-bottom:16px;
+}
+.coa-wrapper {
+  margin-top:25px;
+}
+.btn-coa {
+  box-shadow: none !important;
+  font-size:1.4rem !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  box-shadow: none !important;
+  height: inherit !important;
+  padding: 7px 10px !important;
+  line-height: inherit !important;
+  &:hover{
+    transform: none !important;
+  }
+}
+.btn-default {
+font-weight:bold;
+}
 .btn {
     white-space: nowrap;
     display: inline-block;
@@ -317,4 +354,7 @@ table.table {
 .inline-block {
     padding-left: 1em;
     display: inline-block;
+}
+.d-flex {
+  display:flex;
 }

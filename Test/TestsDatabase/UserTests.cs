@@ -25,7 +25,7 @@ namespace Test.TestsDatabase
             expectedFields.Add(new NameAndType("AccessFailedCount", "System.Int32", new List<string>()));
             expectedFields.Add(new NameAndType("Account", "System.String", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)100)]"
             }));
             expectedFields.Add(new NameAndType("BillingContactAddress", "System.String", new List<string>
             {

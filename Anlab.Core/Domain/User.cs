@@ -29,7 +29,7 @@ namespace Anlab.Core.Domain
         [StringLength(256)]
         public string Phone { get; set; } //Note, there is also a "PhoneNumber" field in the DB...
 
-        [StringLength(50)]       
+        [StringLength(100)]       
         public string Account { get; set; }
 
         [StringLength(1000)]

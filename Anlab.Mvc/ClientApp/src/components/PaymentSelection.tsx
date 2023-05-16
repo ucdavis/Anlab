@@ -1,9 +1,10 @@
 import "isomorphic-fetch";
 import * as React from "react";
-import { Checkbox } from "react-bootstrap";
+import { Checkbox, Button } from "react-bootstrap";
 import { IOtherPaymentInfo, OtherPaymentInfo } from "./OtherPaymentQuestions";
 import { PaymentUcSelection } from "./PaymentUcSelection";
 import Input from "./ui/input/input";
+import { env } from "../util/env";
 
 export interface IPayment {
   clientType: string;
@@ -30,6 +31,11 @@ interface IPaymentSelectionState {
   error: string;
   ucName: string;
 }
+
+declare const window: Window &
+  typeof globalThis & {
+    Finjector: any;
+  };
 
 export class PaymentSelection extends React.Component<
   IPaymentSelectionProps,
@@ -111,7 +117,8 @@ export class PaymentSelection extends React.Component<
     return (
       <div>
         <p className="help-block">
-          UC Davis accounts require the chart.{" "}
+          {env.useCoa && "UC Davis accounts require a valid PPM or GL COA"}
+          {!env.useCoa && "UC Davis accounts require the chart."}{" "}
           <strong>
             <a
               href="https://afs.ucdavis.edu/our_services/accounting-e-financial-reporting/intercampus-transactions/other-uc-campus-info.html"
@@ -130,16 +137,34 @@ export class PaymentSelection extends React.Component<
   private _renderUcAccountInput = () => {
     if (!this.props.creatingOrder) {
       return (
-        <Input
-          label="UC Account"
-          name="ucAccount"
-          value={this.props.payment.account}
-          error={this.state.error}
-          maxLength={50}
-          onChange={this._handleAccountChange}
-          onBlur={this._lookupAccount}
-          inputRef={this.props.ucAccountRef}
-        />
+        <div className="flexrow coa-input-row">
+          <div className="col-4">
+            <Input
+              label={
+                this.props.payment.isUcdAccount
+                  ? "UC Davis Account"
+                  : "UC Account"
+              }
+              name="ucAccount"
+              value={this.props.payment.account}
+              error={this.state.error}
+              maxLength={100}
+              onChange={this._handleAccountChange}
+              onBlur={this._lookupAccount}
+              inputRef={this.props.ucAccountRef}
+            />
+
+            {this.props.payment.accountName}
+          </div>
+
+          {env.useCoa && this.props.payment.isUcdAccount && (
+            <div className="col-3 coa-wrapper">
+              <Button className="btn-coa" onClick={this._lookupcoa}>
+                COA Picker
+              </Button>
+            </div>
+          )}
+        </div>
       );
     } else {
       return (
@@ -178,14 +203,27 @@ export class PaymentSelection extends React.Component<
       return;
     }
     return (
-      <Checkbox
-        checked={this.props.otherPaymentInfo.agreementRequired}
-        onChange={this._changeAgreementReq}
-        inline={true}
-      >
-        {" "}
-        I require an agreement{" "}
-      </Checkbox>
+      <div>
+        <Checkbox
+          checked={this.props.otherPaymentInfo.agreementRequired}
+          onChange={this._changeAgreementReq}
+          inline={true}
+        >
+          {" "}
+          I require an agreement{" "}
+        </Checkbox>
+        {this.props.otherPaymentInfo.agreementRequired && (
+          <div className="alert alert-warning" role="alert">
+            You have selected that you require an agreement. We can proceed with
+            a general agreement, which would take a few days, or with a formal
+            agreement, which may take six weeks or more to finalize. In either
+            case, we cannot start work on this order until the agreement is
+            signed. If you choose to continue, you may proceed with placing your
+            order and you will be contacted by our lab. You may unclick the box
+            to stop the agreement process.{" "}
+          </div>
+        )}
+      </div>
     );
   };
 
@@ -234,17 +272,25 @@ export class PaymentSelection extends React.Component<
       credentials: "same-origin",
     })
       .then((response) => {
-        if (!response.ok) {
+        if (response === null || response.status !== 200) {
           throw Error("The account you entered could not be found");
         }
         return response;
       })
-      .then((response) => response.text())
-      .then((accountName) => {
-        this.props.onPaymentSelected({
-          ...this.props.payment,
-          accountName,
-        });
+      .then((response) => response.json())
+      .then((response) => {
+        if (!response.isValid) {
+          this.setState({ error: response.message });
+          this.props.onPaymentSelected({
+            ...this.props.payment,
+            accountName: null,
+          });
+        } else {
+          this.props.onPaymentSelected({
+            ...this.props.payment,
+            accountName: response.displayName,
+          });
+        }
       })
       .catch((error: Error) => {
         this.setState({ error: error.message });
@@ -302,5 +348,17 @@ export class PaymentSelection extends React.Component<
     }
 
     this.setState({ error: "Account is required" });
+  };
+
+  private _lookupcoa = async () => {
+    const chart = await window.Finjector.findChartSegmentString();
+
+    if (chart.status === "success") {
+      //Call handle account change to set the account
+      this._handleAccountChange({
+        target: { value: chart.data },
+      } as React.ChangeEvent<HTMLInputElement>);
+      this._lookupAccount();
+    }
   };
 }

@@ -5,17 +5,18 @@
     <UserSecretsId>f3c999a5-2304-44e0-a49e-f43333bf9ccf</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-		<FrameworkReference Include="Microsoft.AspNetCore.App"/>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AggieEnterpriseApi" Version="0.2.167" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="1.1.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-		<PackageReference Include="Serilog" Version="2.10.0"/>
+		<PackageReference Include="Serilog" Version="2.10.0" />
   </ItemGroup>
 
 </Project>

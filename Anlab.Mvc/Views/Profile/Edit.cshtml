@@ -2,6 +2,8 @@
 
 @{
     ViewBag.Title = "Edit profile";
+    ViewBag.Title = "Edit profile";
+    var useCoA = ViewBag.UseCoA;
 }
 <div class="col">
     <form asp-action="Edit" method="post" asp-antiforgery="true">
@@ -56,8 +58,18 @@
             </div>
             <div class="form-group">
                 <label asp-for="Account" class="col-md-2 control-label">Default UC Account</label>
+                
                 <div class="col-md-10">
-                    <input asp-for="Account" class="form-control"/>
+                <div class="d-flex">
+                <input asp-for="Account" class="form-control"/>
+                    @if (useCoA)
+                    {
+                        
+                            <button id="ccoa-picker" class="btn btn-primary btn-coa" type="button">UCD COA Picker</button>
+                       
+                    }
+                </div>
+                    
                     <span asp-validation-for="Account" class="text-danger"></span>
                 </div>
             </div>
@@ -96,12 +108,12 @@
                     <span asp-validation-for="BillingContactPhone" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Save" class="btn btn-default"/>
-                </div>
+            <div style="display:flex;justify-content:flex-end;margin-top:16px;" class="form-group">
+                <a class="btn btn-order" style="margin-right:16px;" asp-action="Index">Cancel</a>
+                <input type="submit" value="Save" class="btn btn-default"/>
+                
             </div>
-            <a asp-action="Index">Cancel</a>
+            
         </div>
     </form>
 </div>
@@ -117,4 +129,22 @@
     </script>
 
     @{     await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
+    <script src="https://finjector.ucdavis.edu/finjector.js?v=1" type="text/javascript" asp-add-nonce="true"></script>
+
+    <script type="text/javascript" asp-add-nonce="true">
+
+        $("#ccoa-picker").on("click",
+
+            async function () {
+                const chart = await window.Finjector.findChartSegmentString();
+                if (chart && chart.status === "success") {
+                    $("#Account").val(chart.data);
+                }
+                else {
+                    alert("Something went wrong with the CCOA picker")
+                }
+                return false;
+            });
+
+    </script>
 }

@@ -54,6 +54,16 @@
         </div>
     </div>
     <div class="form-group">
+        <label asp-for="Reporting" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <select asp-for="Reporting" class="form-control">
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+            </select>
+            <span asp-validation-for="Reporting" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
         <label asp-for="Notes" class="col-md-2 control-label"></label>
         <div class="col-md-10">
             <textarea asp-for="Notes" class="form-control" rows="3"> </textarea>

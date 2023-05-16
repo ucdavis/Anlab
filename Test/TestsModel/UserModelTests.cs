@@ -20,7 +20,7 @@ namespace Test.TestsModel
 
             expectedFields.Add(new NameAndType("Account", "System.String", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)100)]"
             }));
             expectedFields.Add(new NameAndType("BillingContactAddress", "System.String", new List<string>
             {

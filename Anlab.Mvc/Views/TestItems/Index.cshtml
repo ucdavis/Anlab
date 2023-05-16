@@ -50,6 +50,9 @@
                 @Html.DisplayNameFor(model => model.Public)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Reporting)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Notes)
             </th>
             <th>
@@ -87,7 +90,12 @@
                 @if (item.Public)
                 {
                     <i class="fa fa-check" aria-hidden="true"></i>
-
+                }
+            </td>
+            <td style="text-align: center">
+                @if (item.Reporting)
+                {
+                    <i class="fa fa-check" aria-hidden="true"></i>
                 }
             </td>
             <td>

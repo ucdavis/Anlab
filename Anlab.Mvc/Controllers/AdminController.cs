@@ -196,7 +196,7 @@ namespace AnlabMvc.Controllers
             }
             if (id.HasValue)
             {
-                messages = await _dbContext.MailMessages.Include(i => i.Order).Where(x => x.Order.Id == id).AsNoTracking().ToListAsync();
+                messages = await _dbContext.MailMessages.IgnoreQueryFilters().Include(i => i.Order).Where(x => x.Order.Id == id).AsNoTracking().ToListAsync();
             }
             else
             {

@@ -12,6 +12,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Anlab.Core.Extensions;
 using Serilog;
+using static Anlab.Jobs.MoneyMovement.TransferViewModel;
+using Anlab.Core.Models.AggieEnterpriseModels;
+using AggieEnterpriseApi.Validation;
 
 namespace Anlab.Core.Services
 {
@@ -26,59 +29,167 @@ namespace Anlab.Core.Services
     public class SlothService : ISlothService
     {
         private readonly ApplicationDbContext _dbContext;
+        private IAggieEnterpriseService _aggieEnterpriseService;
+        private readonly AggieEnterpriseSettings _aeSettings;
         private readonly FinancialSettings _appSettings;
 
-        public SlothService(ApplicationDbContext dbContext, IOptions<FinancialSettings> appSettings)
+        public SlothService(ApplicationDbContext dbContext, IAggieEnterpriseService aggieEnterpriseService, IOptions<FinancialSettings> appSettings, IOptions<AggieEnterpriseSettings> aeSettings)
         {
             _dbContext = dbContext;
+            _aggieEnterpriseService = aggieEnterpriseService;
+            _aeSettings = aeSettings.Value;
             _appSettings = appSettings.Value;
         }
 
 
-
+        
         //TODO: Add validation?
         public async Task<SlothResponseModel> MoveMoney(Order order)
         {
+            if (_appSettings.SlothApiUrl.EndsWith("v1/", StringComparison.OrdinalIgnoreCase) || _appSettings.SlothApiUrl.EndsWith("v2/", StringComparison.OrdinalIgnoreCase))
+            {
+                Log.Error("Sloth SlothApiUrl should not end with version");
+                //Replace the end of the string
+                _appSettings.SlothApiUrl = _appSettings.SlothApiUrl.Substring(0, _appSettings.SlothApiUrl.Length - 3);
+            }
+            var log = Log.ForContext("OrderId", order.Id);
+            
             var orderDetails = order.GetOrderDetails();
             var token = _appSettings.SlothApiKey;
             var url = _appSettings.SlothApiUrl;
-            var creditAccount = new AccountModel(_appSettings.AnlabAccount);
-            var debitAccount = new AccountModel(orderDetails.Payment.Account);
+            if (_aeSettings.UseCoA)
+            {
+                url = $"{url}v2/"; //Config Change!!!
+            }
+            else
+            {
+                url = $"{url}v1/";
+            }
 
             if (string.IsNullOrWhiteSpace(token))
             {
-                Log.Error("Sloth Token missing");
+                log.Error("Sloth Token missing");
+            }
+
+            var model = new TransactionViewModel();
+
+            if (_aeSettings.UseCoA)
+            {
+                var creditAccount = _aeSettings.AnlabCoa;
+                var detailsChanged = false;
+                var savedAccount = orderDetails.Payment.Account;
+
+                if (FinancialChartValidation.GetFinancialChartStringType(orderDetails.Payment.Account) == FinancialChartStringType.Invalid)
+                {
+                    //Ok, it is an invalid COA format, so 99.99% chance this is still a KFS account. Lets try and convert it:
+                    var coa = await _aggieEnterpriseService.ConvertKfsAccount(orderDetails.Payment.Account);
+                    if (coa != null)
+                    {
+                        log.Warning("Payment Account updated to COA, using KFS Convert. Order Id: {id}, KFS Account: {kfs}, COA: {coa}", order.Id, orderDetails.Payment.Account, coa);
+                        orderDetails.Payment.AccountName = $"KFS Converted Account: {savedAccount}";
+                        orderDetails.Payment.Account = coa; // Assign it here so we can follow through with the validation. Will this get updated in the DB if everything else goes though I think.                        
+                        detailsChanged = true;
+                    }
+                }
+
+                var accountValidation = await _aggieEnterpriseService.IsAccountValid(orderDetails.Payment.Account);
+                if (!accountValidation.IsValid)
+                {
+                    log.Error("Invalid Account: {account}", orderDetails.Payment.Account);
+                    return new SlothResponseModel
+                    {
+                        Success = false,
+                        Message = "Invalid Account"
+                    };
+                }
+                if (detailsChanged)
+                {
+                    order.SaveDetails(orderDetails);
+                }
+
+                var debitAccount = orderDetails.Payment.Account;
+
+                model.MerchantTrackingNumber = order.Id.ToString();
+                model.MerchantTrackingUrl = $"https://anlab.ucdavis.edu/Reviewer/Details/{order.Id}";
+                model.Description = $"{order.RequestNum} - {order.Project}".SpecialTruncation(0,40);
+                model.AddMetadata("Project", order.Project);
+                model.AddMetadata("RequestNum", order.RequestNum);
+                model.AddMetadata("Client Id", order.ClientId);
+                if (debitAccount != savedAccount)
+                {
+                    model.AddMetadata("Converted Account", $"From: {savedAccount} To: {debitAccount}");
+                }
+
+                model.Transfers.Add(new TransferViewModel
+                {
+                    FinancialSegmentString = debitAccount,
+                    Amount = orderDetails.GrandTotal,
+                    Description = debitAccount != savedAccount ? $"Converted: {savedAccount}".SpecialTruncation(0,40) : $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}",
+                    Direction = Directions.Debit,
+                });
+                model.Transfers.Add(new TransferViewModel
+                {
+                    FinancialSegmentString = creditAccount,
+                    Amount = orderDetails.GrandTotal,
+                    Description = $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}",
+                    Direction = Directions.Credit,
+                });
+
+            }
+            else
+            {
+                var creditAccount = new AccountModel(_appSettings.AnlabAccount);
+                var debitAccount = new AccountModel(orderDetails.Payment.Account);
+
+
+                model.MerchantTrackingNumber = order.Id.ToString();
+                model.MerchantTrackingUrl = $"https://anlab.ucdavis.edu/Reviewer/Details/{order.Id}";
+                model.Transfers.Add(new TransferViewModel
+                {
+                    Account = debitAccount.Account.SafeToUpper(),
+                    Amount = orderDetails.GrandTotal,
+                    Chart = debitAccount.Chart.SafeToUpper(),
+                    SubAccount = debitAccount.SubAccount.SafeToUpper(),
+                    Description = $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}",
+                    Direction = Directions.Debit,
+                    ObjectCode = _appSettings.DebitObjectCode
+                });
+                model.Transfers.Add(new TransferViewModel
+                {
+                    Account = creditAccount.Account.SafeToUpper(),
+                    Amount = orderDetails.GrandTotal,
+                    Chart = creditAccount.Chart.SafeToUpper(),
+                    SubAccount = creditAccount.SubAccount.SafeToUpper(),
+                    Description = $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}",
+                    Direction = Directions.Credit,
+                    ObjectCode = _appSettings.CreditObjectCode
+                });
             }
 
 
-            var model = new TransactionViewModel();
-            model.MerchantTrackingNumber = order.Id.ToString();
-            model.MerchantTrackingUrl = $"https://anlab.ucdavis.edu/Reviewer/Details/{order.Id}";
-            model.Transfers.Add(new TransferViewModel { Account = debitAccount.Account.SafeToUpper() , Amount = orderDetails.GrandTotal, Chart = debitAccount.Chart.SafeToUpper(), SubAccount = debitAccount.SubAccount.SafeToUpper(), Description = $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}", Direction = "Debit", ObjectCode = _appSettings.DebitObjectCode });
-            model.Transfers.Add(new TransferViewModel { Account = creditAccount.Account.SafeToUpper(), Amount = orderDetails.GrandTotal, Chart = creditAccount.Chart.SafeToUpper(), SubAccount = creditAccount.SubAccount.SafeToUpper(), Description = $"{order.Project.SpecialTruncation((order.RequestNum.Length + 3), 40)} - {order.RequestNum}", Direction = "Credit", ObjectCode = _appSettings.CreditObjectCode });
 
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(url);
                 client.DefaultRequestHeaders.Add("X-Auth-Token", token);
 
-                Log.Information(JsonConvert.SerializeObject(model));
+                log.Information(JsonConvert.SerializeObject(model));
 
                 var response = await client.PostAsync("Transactions", new StringContent(JsonConvert.SerializeObject(model), System.Text.Encoding.UTF8, "application/json"));
                 if (response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    Log.Information($"Sloth Response Not Found for order id {order.Id}");
+                    log.Information($"Sloth Response Not Found for order id {order.Id}");
                 }
                 if (response.StatusCode == HttpStatusCode.NoContent)
                 {
-                    Log.Information($"Sloth Response No Content for order id {order.Id}");
+                    log.Information($"Sloth Response No Content for order id {order.Id}");
                 }
 
                 if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    Log.Error("Sloth Response Bad Request for order {id}", order.Id);
+                    log.Error("Sloth Response Bad Request for order {id}", order.Id);
                     var badrequest = await response.Content.ReadAsStringAsync();
-                    Log.ForContext("data", badrequest, true).Information("Sloth message response");
+                    log.ForContext("data", badrequest, true).Information("Sloth message response");
                     var badRtValue = new SlothResponseModel
                     {
                         Success = false,
@@ -93,15 +204,15 @@ namespace Anlab.Core.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    Log.Information("Sloth Success Response", content);
+                    log.Information("Sloth Success Response", content);
 
                     return JsonConvert.DeserializeObject<SlothResponseModel>(content);
                 }
 
 
-                Log.Information("Sloth Response didn't have a success code for order {id}", order.Id);
-                var badContent = await response.Content.ReadAsStringAsync();                    
-                Log.ForContext("data", badContent, true).Information("Sloth message response");
+                log.Information("Sloth Response didn't have a success code for order {id}", order.Id);
+                var badContent = await response.Content.ReadAsStringAsync();
+                log.ForContext("data", badContent, true).Information("Sloth message response");
                 var rtValue = JsonConvert.DeserializeObject<SlothResponseModel>(badContent);
                 rtValue.Success = false;
 
@@ -112,6 +223,16 @@ namespace Anlab.Core.Services
 
         public async Task MoneyHasMoved()
         {
+            var url = _appSettings.SlothApiUrl;
+            if (_aeSettings.UseCoA)
+            {
+                url = $"{url}v2/"; //Config Change!!!
+            }
+            else
+            {
+                url = $"{url}v1/";
+            }
+            
             Log.Information("Beginning UCD money has moved");
             var orders = _dbContext.Orders.Where(a =>
                 a.PaymentType == PaymentTypeCodes.UcDavisAccount && a.Paid && a.Status != OrderStatusCodes.Complete).ToList();
@@ -122,7 +243,7 @@ namespace Anlab.Core.Services
             }
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri($"{_appSettings.SlothApiUrl}Transactions/");
+                client.BaseAddress = new Uri($"{url}Transactions/");
                 client.DefaultRequestHeaders.Add("X-Auth-Token", _appSettings.SlothApiKey);
 
                 Log.Information($"Processing {orders.Count} orders");
@@ -151,7 +272,7 @@ namespace Anlab.Core.Services
                         var content = await response.Content.ReadAsStringAsync();
                         var slothResponse = JsonConvert.DeserializeObject<SlothResponseModel>(content);
                         Log.Information($"Order {order.Id} SlothResponseModel status {slothResponse.Status}. SlothTransactionId {order.SlothTransactionId.ToString()}");
-                        if (slothResponse.Status == "Completed")
+                        if (slothResponse.Status == SlothStatus.Completed)
                         {
                             updatedCount++;
                             order.Status = OrderStatusCodes.Complete;
@@ -164,7 +285,7 @@ namespace Anlab.Core.Services
                                 Notes = "Money Moved",
                             });
                         }
-                        if (slothResponse.Status == "Cancelled")
+                        if (slothResponse.Status == SlothStatus.Cancelled)
                         {
                             order.Paid = false;
                             order.History.Add(new History
@@ -194,6 +315,16 @@ namespace Anlab.Core.Services
 
         public async Task ProcessCreditCards()
         {
+            var url = _appSettings.SlothApiUrl;
+            if (_aeSettings.UseCoA)
+            {
+                url = $"{url}v2/"; //Config Change!!!
+            }
+            else
+            {
+                url = $"{url}v1/";
+            }
+            
             Log.Information("Staring Credit Card process");
             var orders = _dbContext.Orders.Include(i => i.ApprovedPayment).Where(a =>
                 a.PaymentType == PaymentTypeCodes.CreditCard && a.Paid && a.Status != OrderStatusCodes.Complete && a.ApprovedPayment != null).ToList();
@@ -205,7 +336,7 @@ namespace Anlab.Core.Services
 
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri($"{_appSettings.SlothApiUrl}Transactions/processor/");
+                client.BaseAddress = new Uri($"{url}Transactions/processor/");
                 client.DefaultRequestHeaders.Add("X-Auth-Token", _appSettings.SlothApiKey);
 
                 Log.Information($"Processing Credit Card {orders.Count} orders");
@@ -228,17 +359,33 @@ namespace Anlab.Core.Services
                         var content = await response.Content.ReadAsStringAsync();
                         var slothResponse = JsonConvert.DeserializeObject<SlothResponseModel>(content);
 
-                        updatedCount++;
-                        order.KfsTrackingNumber = slothResponse.KfsTrackingNumber;
-                        order.SlothTransactionId = slothResponse.Id;
-                        order.Status = OrderStatusCodes.Complete;
-                        order.History.Add(new History
+                        if(slothResponse.Status == SlothStatus.Completed)
                         {
-                            Action = "Move CC Money",
-                            Status = order.Status,
-                            ActorName = "Job",
-                            JsonDetails = order.JsonDetails,
-                        });
+                            updatedCount++;
+                            order.KfsTrackingNumber = slothResponse.KfsTrackingNumber;
+                            order.SlothTransactionId = slothResponse.Id;
+                            order.Status = OrderStatusCodes.Complete;
+                            order.History.Add(new History
+                            {
+                                Action = "Move CC Money",
+                                Status = order.Status,
+                                ActorName = "Job",
+                                JsonDetails = order.JsonDetails,
+                            });
+                        }
+                        else
+                        {
+                            if(slothResponse.Status == SlothStatus.Rejected)
+                            {
+                                //This is bad, very very bad.
+                                Log.Error($"Credit Card transaction id {order.ApprovedPayment.Transaction_Id} sloth status {slothResponse.Status} was unexpectedly Rejected for order id {order.Id}");
+                            }
+                            else
+                            {
+                                Log.Information($"Credit Card transaction id {order.ApprovedPayment.Transaction_Id} sloth status {slothResponse.Status} was not Completed yet for order id {order.Id}");
+                            }
+                        }
+
                     }
                     else
                     {

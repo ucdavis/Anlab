@@ -97,7 +97,7 @@ namespace Test.TestsModel
             theThing.Nonrep = true;
             theThing.Id = value;
 
-            theThing.SetupPrice.ShouldBe(6);
+            theThing.SetupPrice.ShouldBe(2); //SetupPrice is not multiplied anymore
         }
         [Theory]
         [InlineData("GRNDONLY")]
@@ -133,7 +133,7 @@ namespace Test.TestsModel
             theThing.Multiplier = 3;
             theThing.Nonrep = false;
 
-            theThing.SetupPrice.ShouldBe(6);
+            theThing.SetupPrice.ShouldBe(2); //SetupPrice is not multiplied anymore
         }
         [Fact]
         public void SetupPriceReturnsExpectedValues3()
@@ -143,7 +143,7 @@ namespace Test.TestsModel
             theThing.Multiplier = 4;
             theThing.Nonrep = false;
 
-            theThing.SetupPrice.ShouldBe(8);
+            theThing.SetupPrice.ShouldBe(2); //SetupPrice is not multiplied anymore
         }
 
         [Fact]
@@ -154,7 +154,7 @@ namespace Test.TestsModel
             theThing.Multiplier = 1;
             theThing.Nonrep = false;
 
-            theThing.SetupPrice.ShouldBe(2);
+            theThing.SetupPrice.ShouldBe(1.49m); //SetupPrice is not multiplied anymore or rounded. This happens after.
         }
         [Fact]
         public void SetupPriceReturnsExpectedValues5()
@@ -164,7 +164,7 @@ namespace Test.TestsModel
             theThing.Multiplier = 1;
             theThing.Nonrep = false;
 
-            theThing.SetupPrice.ShouldBe(2);
+            theThing.SetupPrice.ShouldBe(1.44m); //SetupPrice is not multiplied anymore or rounded. This happens after.
         }
         [Fact]
         public void SetupPriceReturnsExpectedValues6()
@@ -174,7 +174,7 @@ namespace Test.TestsModel
             theThing.Multiplier = 1;
             theThing.Nonrep = false;
 
-            theThing.SetupPrice.ShouldBe(2);
+            theThing.SetupPrice.ShouldBe(1.0001m); //SetupPrice is not multiplied anymore or rounded. This happens after.
         }
         [Fact]
         public void SetupPriceReturnsExpectedValues7()
@@ -194,7 +194,7 @@ namespace Test.TestsModel
             theThing.Multiplier = 1;
             theThing.Nonrep = false;
 
-            theThing.SetupPrice.ShouldBe(1);
+            theThing.SetupPrice.ShouldBe(0.99m); //SetupPrice is not multiplied anymore or rounded. This happens after.
         }
         #endregion SetupPrice Tests
 

@@ -297,6 +297,7 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("LabOrder", "System.Int32", new List<string>()));
             expectedFields.Add(new NameAndType("Notes", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Public", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("Reporting", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("RequestOrder", "System.Int32", new List<string>()));
             expectedFields.Add(new NameAndType("Sop", "System.String", new List<string>()));
             #endregion Arrange
@@ -308,9 +309,11 @@ namespace Test.TestsModel
         {
             #region Arrange
             var expectedFields = new List<NameAndType>();
+            expectedFields.Add(new NameAndType("Description", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("MerchantTrackingNumber", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("MerchantTrackingUrl", "System.String", new List<string>()));
-            expectedFields.Add(new NameAndType("Source", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Metadata", "System.Collections.Generic.IList`1[Anlab.Jobs.MoneyMovement.TransactionViewModel+MetadataEntry]", new List<string>()));
+            expectedFields.Add(new NameAndType("Source", "System.String", new List<string>()));                       
             expectedFields.Add(new NameAndType("SourceType", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("TransactionDate", "System.DateTime", new List<string>()));
             expectedFields.Add(new NameAndType("Transfers", "System.Collections.Generic.IList`1[Anlab.Jobs.MoneyMovement.TransferViewModel]", new List<string>()));
@@ -328,8 +331,9 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("Chart", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Description", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Direction", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("FinancialSegmentString", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("ObjectCode", "System.String", new List<string>()));
-            expectedFields.Add(new NameAndType("SubAccount", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("SubAccount", "System.String", new List<string>()));            
             #endregion Arrange
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(TransferViewModel));
