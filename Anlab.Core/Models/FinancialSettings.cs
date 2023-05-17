@@ -17,6 +17,7 @@ namespace Anlab.Core.Models
         {
             get
             {
+                Log.Information("SlothApiUrl: {SlothApiUrl}", SlothApiUrl);
                 if (SlothApiUrl.EndsWith("v1/", StringComparison.OrdinalIgnoreCase) || SlothApiUrl.EndsWith("v2/", StringComparison.OrdinalIgnoreCase))
                 {
                     Log.Error("Sloth SlothApiUrl should not end with version");
