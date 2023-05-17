@@ -223,6 +223,12 @@ namespace Anlab.Core.Services
 
         public async Task MoneyHasMoved()
         {
+            if (_appSettings.SlothApiUrl.EndsWith("v1/", StringComparison.OrdinalIgnoreCase) || _appSettings.SlothApiUrl.EndsWith("v2/", StringComparison.OrdinalIgnoreCase))
+            {
+                Log.Error("Sloth SlothApiUrl should not end with version");
+                //Replace the end of the string
+                _appSettings.SlothApiUrl = _appSettings.SlothApiUrl.Substring(0, _appSettings.SlothApiUrl.Length - 3);
+            }
             var url = _appSettings.SlothApiUrl;
             if (_aeSettings.UseCoA)
             {
@@ -315,6 +321,12 @@ namespace Anlab.Core.Services
 
         public async Task ProcessCreditCards()
         {
+            if (_appSettings.SlothApiUrl.EndsWith("v1/", StringComparison.OrdinalIgnoreCase) || _appSettings.SlothApiUrl.EndsWith("v2/", StringComparison.OrdinalIgnoreCase))
+            {
+                Log.Error("Sloth SlothApiUrl should not end with version");
+                //Replace the end of the string
+                _appSettings.SlothApiUrl = _appSettings.SlothApiUrl.Substring(0, _appSettings.SlothApiUrl.Length - 3);
+            }
             var url = _appSettings.SlothApiUrl;
             if (_aeSettings.UseCoA)
             {
