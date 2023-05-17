@@ -94,6 +94,7 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("AnlabAccount", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("CreditObjectCode", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("DebitObjectCode", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("SafeSlothApiUrl", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("SlothApiKey", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("SlothApiUrl", "System.String", new List<string>()));
             #endregion Arrange
