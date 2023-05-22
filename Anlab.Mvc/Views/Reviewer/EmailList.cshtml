@@ -1,0 +1,114 @@
+@model AnlabMvc.Models.Reviewer.EmailListModel
+
+@{
+    ViewData["Title"] = "Email List";
+    var isChecked = "checked='checked'";
+}
+
+<div class="col">
+    <form asp-action="EmailList">
+        <table id="table-filter" border="0" cellspacing="5" cellpadding="5" align="left">
+            <tbody>
+                <tr>
+                    <td><label asp-for="Start" class="col-md-2 control-label"></label></td>
+                    <td><label asp-for="End" class="col-md-2 control-label"></label></td>
+                    <td><label asp-for="EmailType" class="col-md-2 control-label"></label></td>
+                    <td><label asp-for="OrderAction" class="col-md-2 control-label"></label></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><input asp-for="Start" class="datepicker datepicker-input" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
+                    <td><input asp-for="End" class="datepicker datepicker-input" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
+                    <td>
+                        <input type="radio" name="EmailType" value="PI" @(Model.EmailType == "PI" ? @isChecked : "") /> <span>PI</span>
+                    </td>
+                    <td>
+                        <input type="radio" name="OrderAction" value="Confirmed" @(Model.OrderAction == "Confirmed" ? @isChecked : "") /> <span>Confirmed</span>
+                    </td>
+                    <td><input type="submit" value="Apply" class="btn btn-default" /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <input type="radio" name="EmailType" value="CC" @(Model.EmailType == "CC" ? @isChecked : "") /> <span>CC</span>
+                    </td>
+                    <td>
+                        <input type="radio" name="OrderAction" value="Finalized" @(Model.OrderAction == "Finalized" ? @isChecked : "") /> <span>Finalized</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    <table id="table" class="table">
+        <thead>
+            <tr>
+                <th>Email(s)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.EmailAddresses)
+            {
+                <tr>
+                    <td>@item</td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+
+@section AdditionalStyles
+    {
+    @{
+        await Html.RenderPartialAsync("_DataTableStylePartial");
+    }
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" />
+
+    <style>
+        .hide-line {
+            border: none !important;
+            border-bottom: 1px solid !important;
+        }
+
+        .datepicker-input {
+            margin: 0 5px 5px 0;
+            height: 30px;
+        }
+    </style>
+}
+
+@section Scripts
+    {
+    @{
+        await Html.RenderPartialAsync("_DataTableScriptsPartial");
+    }
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $(".datepicker").datepicker();
+            $("#table").DataTable({
+                "dom": 'Bfrtip',
+                "buttons": [
+                    { extend: 'copyHtml5' },
+                    { extend: 'excelHtml5' },
+                    { extend: 'csvHtml5', },
+                    { extend: 'pdfHtml5', },
+                    { extend: 'print', },
+                ],
+                "iDisplayLength": -1,
+
+            });
+        });
+    </script>
+}

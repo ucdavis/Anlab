@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Anlab.Core.Extensions;
 using Anlab.Core.Domain;
 using AnlabMvc.Models.Reviewer;
+using Markdig.Extensions.Tables;
 
 namespace AnlabMvc.Controllers
 {
@@ -89,6 +90,30 @@ namespace AnlabMvc.Controllers
 
             return View(model);
         }
+
+        public async Task<IActionResult> EmailList(DateTime? start, DateTime? end, string emailType, string orderAction)
+        {
+            var model = new EmailListModel();
+            if(start == null && end == null)
+            {
+                model.Start = DateTime.UtcNow.ToPacificTime().Date.AddDays(-30);
+                model.End = DateTime.UtcNow.ToPacificTime().Date;
+            }
+            else
+            {
+                model.Start = start?.Date;
+                model.End = end?.Date;
+            }
+            model.EmailType = emailType ?? "PI";
+            model.OrderAction = orderAction ?? "Finalized";
+
+            //TODO Query
+
+
+            return View(model);
+        }
+
+
 
         private async Task GetHistories(int id, OrderReviewModel model)
         {
