@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using Anlab.Core.Extensions;
 using Anlab.Core.Domain;
 using AnlabMvc.Models.Reviewer;
-using Markdig.Extensions.Tables;
 
 namespace AnlabMvc.Controllers
 {
