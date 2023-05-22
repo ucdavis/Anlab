@@ -8,4 +8,5 @@ public class ESignatureOptions
     public string AuthorizationEndpoint { get; set; }
     public string PrivateKeyBase64 { get; set; }
 
+    public string ApplicationBaseUri { get; set; }
 }

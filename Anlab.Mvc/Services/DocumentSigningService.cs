@@ -1,34 +1,47 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Anlab.Core.Data;
+using Anlab.Core.Domain;
 using AnlabMvc.Models.Configuration;
 using DocuSign.eSign.Api;
 using DocuSign.eSign.Client;
 using DocuSign.eSign.Client.Auth;
 using DocuSign.eSign.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace AnlabMvc.Services;
 
 public interface IDocumentSigningService
 {
-    Task<string> SendForEmbeddedSigning(string email, string name);
+    Task<string> SendForEmbeddedSigning(int orderId);
 }
 
 public class DocumentSigningService : IDocumentSigningService
 {
-    private static readonly string SignerClientId = "1000";
-
+    private readonly ApplicationDbContext _dbContext;
     private readonly ESignatureOptions _eSignatureSettings;
 
-    public DocumentSigningService(IOptions<ESignatureOptions> eSignatureSettings)
+    private static readonly string SignerClientId = "1000";
+
+    public DocumentSigningService(IOptions<ESignatureOptions> eSignatureSettings, ApplicationDbContext dbContext)
     {
+        _dbContext = dbContext;
         _eSignatureSettings = eSignatureSettings.Value;
     }
 
     // TODO: need to pull in content based on the order
-    public async Task<string> SendForEmbeddedSigning(string email, string name)
+    public async Task<string> SendForEmbeddedSigning(int orderId)
     {
+        var order = await _dbContext.Orders.Include(o=>o.Creator).SingleAsync(a => a.Id == orderId);
+
+        if (order == null)
+        {
+            throw new ArgumentException("Order not found");
+        }
+
         // first, get auth token
         var authToken = AuthenticateWithJwt();
 
@@ -40,7 +53,7 @@ public class DocumentSigningService : IDocumentSigningService
         var basePath = account.BaseUri;
 
         // next, make the envelope
-        var envelope = await MakeEnvelope(email, name);
+        var envelope = await MakeEnvelope(order);
 
         // now create the envelope via api
         var client = new DocuSignClient(basePath + "/restapi");
@@ -53,11 +66,11 @@ public class DocumentSigningService : IDocumentSigningService
         // finally, redirect to the signing url
         var viewRequest = new RecipientViewRequest
         {
-            ReturnUrl = "https://localhost:7108/", // TODO: need to set this to the return url
+            ReturnUrl = _eSignatureSettings.ApplicationBaseUri + "/order/confirmed2/" + orderId,
             ClientUserId = SignerClientId,
             AuthenticationMethod = "none",
-            UserName = name,
-            Email = email
+            UserName = order.Creator.Name,
+            Email = order.Creator.Email
         };
 
         var view = await envelopesApi.CreateRecipientViewAsync(acctId, results.EnvelopeId, viewRequest);
@@ -78,7 +91,7 @@ public class DocumentSigningService : IDocumentSigningService
         return userInfo;
     }
 
-    private async Task<EnvelopeDefinition> MakeEnvelope(string email, string name)
+    private async Task<EnvelopeDefinition> MakeEnvelope(Order order)
     {
         // add html doc and add signer tag to it
         var env = new EnvelopeDefinition
@@ -86,8 +99,10 @@ public class DocumentSigningService : IDocumentSigningService
             EmailSubject = "Please sign this document"
         };
 
-        // read html from file
-        var html = "<h1>TEST</h1>"; // TODO: need to read from url
+        // read html from url /order/document/{id}
+        var client = new HttpClient();
+        client.BaseAddress = new Uri(_eSignatureSettings.ApplicationBaseUri);
+        var html = await client.GetStringAsync("/order/document/" + order.Id);
 
         // add a document to the envelope
         var doc = new Document
@@ -103,8 +118,8 @@ public class DocumentSigningService : IDocumentSigningService
         // add a signer to the envelope
         var signer = new Signer
         {
-            Email = email,
-            Name = name,
+            Email = order.Creator.Email,
+            Name = order.Creator.Name,
             ClientUserId = SignerClientId,
             RecipientId = "1",
         };
