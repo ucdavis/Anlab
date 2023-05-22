@@ -129,6 +129,7 @@ namespace AnlabMvc
             services.AddTransient<IFinancialService, FinancialService>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddTransient<IAggieEnterpriseService, AggieEnterpriseService>();
+            services.AddTransient<IDocumentSigningService, DocumentSigningService>();
 
             // Used by dynamic scripts/styles loader
             services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory())); // lgtm [cs/local-not-disposed]
