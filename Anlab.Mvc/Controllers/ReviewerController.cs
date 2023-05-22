@@ -94,7 +94,7 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> EmailList(DateTime? start, DateTime? end, string emailType, string orderAction)
         {
             var model = new EmailListModel();
-            if(start == null && end == null)
+            if (start == null && end == null)
             {
                 model.Start = DateTime.UtcNow.ToPacificTime().Date.AddDays(-30);
                 model.End = DateTime.UtcNow.ToPacificTime().Date;
@@ -107,9 +107,26 @@ namespace AnlabMvc.Controllers
             model.EmailType = emailType ?? "PI";
             model.OrderAction = orderAction ?? "Finalized";
 
-            //TODO Query
-
-
+            //Could potentially use the history table, but them it needs a foreign key to the order table
+            var query = _context.MailMessages.Include(a => a.Order).ThenInclude(a => a.Creator).Include(a => a.Order).AsQueryable();
+            if (model.Start != null)
+            {
+                query = query.Where(a => a.CreatedAt >= model.Start.Value.Date.FromPacificTime());
+            }
+            if (model.End != null)
+            {
+                query = query.Where(a => a.CreatedAt <= model.End.Value.Date.AddDays(1).FromPacificTime());
+            }
+            if(model.OrderAction == "Confirmed")
+            {
+                query = query.Where(a => a.Subject == "Work Order Confirmation" || a.Subject.StartsWith("Work Request Confirmation"));
+            }
+            else
+            {
+                query = query.Where(a => a.Subject.StartsWith("Work Request Finalized"));
+            }
+            model.EmailAddresses = await query.Select(EmailListModel.Projection(model.EmailType == "PI")).Distinct().Where(a => a != null && a != string.Empty).ToListAsync();
+          
             return View(model);
         }
 

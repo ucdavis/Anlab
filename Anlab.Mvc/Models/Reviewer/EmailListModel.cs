@@ -1,6 +1,8 @@
+using Anlab.Core.Domain;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 
 namespace AnlabMvc.Models.Reviewer
 {
@@ -17,5 +19,10 @@ namespace AnlabMvc.Models.Reviewer
         public string OrderAction { get; set; }
 
         public List<string> EmailAddresses { get; set; } = new List<string>();
+
+        public static Expression<Func<MailMessage, string>> Projection(bool PiOnly = true)
+        {
+            return x =>  PiOnly ? x.Order.Creator.Email : x.Order.AdditionalEmails;
+        }
     }
 }
