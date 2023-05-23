@@ -595,6 +595,17 @@ namespace AnlabMvc.Controllers
         // Page that docusign redirects to after signing
         public IActionResult SignatureCallback(int id)
         {
+            // Check if the signature was successful by inspecting the "event" query string parameter
+            var eventStatus = Request.Query["event"];
+
+            if (eventStatus != "signing_complete")
+            {
+                ErrorMessage = "Unable to get signature";
+                return RedirectToAction("Index");
+            }
+
+            // TODO: update database and set status to signed/confirmed
+
             return Content("Thank you for signing.");
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
@@ -9,6 +10,7 @@ using DocuSign.eSign.Api;
 using DocuSign.eSign.Client;
 using DocuSign.eSign.Client.Auth;
 using DocuSign.eSign.Model;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -22,13 +24,15 @@ public interface IDocumentSigningService
 public class DocumentSigningService : IDocumentSigningService
 {
     private readonly ApplicationDbContext _dbContext;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ESignatureOptions _eSignatureSettings;
 
     private static readonly string SignerClientId = "1000";
 
-    public DocumentSigningService(IOptions<ESignatureOptions> eSignatureSettings, ApplicationDbContext dbContext)
+    public DocumentSigningService(IOptions<ESignatureOptions> eSignatureSettings, ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor)
     {
         _dbContext = dbContext;
+        _httpContextAccessor = httpContextAccessor;
         _eSignatureSettings = eSignatureSettings.Value;
     }
 
@@ -93,6 +97,10 @@ public class DocumentSigningService : IDocumentSigningService
 
     private async Task<EnvelopeDefinition> MakeEnvelope(Order order)
     {
+        Debug.Assert(_httpContextAccessor.HttpContext != null, "_httpContextAccessor.HttpContext != null");
+
+        var cookies = _httpContextAccessor.HttpContext.Request.Cookies;
+
         // add html doc and add signer tag to it
         var env = new EnvelopeDefinition
         {
@@ -100,8 +108,16 @@ public class DocumentSigningService : IDocumentSigningService
         };
 
         // read html from url /order/document/{id}
-        var client = new HttpClient();
+        using var handler = new HttpClientHandler { UseCookies = false };
+        using var client = new HttpClient(handler);
         client.BaseAddress = new Uri(_eSignatureSettings.ApplicationBaseUri);
+
+        // add all cookies to the request
+        foreach (var cookie in cookies)
+        {
+            client.DefaultRequestHeaders.Add("Cookie", cookie.Key + "=" + cookie.Value);
+        }
+
         var html = await client.GetStringAsync("/order/document/" + order.Id);
 
         // add a document to the envelope
