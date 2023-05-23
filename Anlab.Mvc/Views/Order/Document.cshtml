@@ -1,0 +1,315 @@
+@using AnlabMvc.Extensions
+@model AnlabMvc.Models.Order.OrderReviewModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Order Confirmed";
+}
+
+<div style="padding:8px 16px; border:1px solid #347694; margin: 8px;">
+    <p>
+        <strong>Please remember:</strong>
+    </p>
+    <p>All samples must be numbered sequentially starting at #1.</p>
+    <p>If you would like your sample descriptions included in the report, you may send an Excel file with that information to the lab email: anlab@ucdavis.edu Please reference the online order number in the email subject.</p>
+</div>
+<div style="display:flex;">
+    <div style="margin-right:40px;">
+
+        <p>
+            Thank you for placing a work request order with the UC Davis Analytical Laboratory.
+            Below is a summary of the tests you requested and an estimate of your charges.
+            <br>
+            <strong>
+                Please print this page and include a copy with the samples.
+            </strong>
+        </p>
+        <p>
+            Please number each sample container consecutively beginning with number 1. Results are reported on the basis of those numbers so please document your numbering scheme. Sample containers are often not retained.
+        </p>
+        <p>You will be billed when the work has been completed.</p>
+
+        <strong>Online Order Number:</strong>
+        <span>@Model.Order.Id</span>
+
+        @if (Model.Order.ClientId != null)
+        {
+            <h4>Client Info</h4>
+            <table>
+                <tbody>
+                <tr>
+                    <td>
+                        <strong>ID:</strong>
+                    </td>
+                    <td>@Model.Order.ClientId</td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Name:</strong>
+                    </td>
+                    <td>@Model.OrderDetails.ClientInfo.Name</td>
+                </tr>
+                @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.Department))
+                {
+                    <tr>
+                        <td>
+                            <strong>Department/Unit:</strong>
+                        </td>
+                        <td>@Model.OrderDetails.ClientInfo.Department</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.Email))
+                {
+                    <tr>
+                        <td>
+                            <strong>Email:</strong>
+                        </td>
+                        <td>@Model.OrderDetails.ClientInfo.Email</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.PhoneNumber))
+                {
+                    <tr>
+                        <td>
+                            <strong>Phone Number:</strong>
+                        </td>
+                        <td>@Model.OrderDetails.ClientInfo.PhoneNumber.FormatPhone()</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <h4>New Client Info</h4>
+            <table>
+                <tbody>
+                <tr>
+                    <td>
+                        <strong>Client Name:</strong>
+                    </td>
+                    <td>@Model.OrderDetails.ClientInfo.Name</td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Employer:</strong>
+                    </td>
+                    <td>@Model.OrderDetails.ClientInfo.Employer</td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Department/Unit:</strong>
+                    </td>
+                    <td>@Model.OrderDetails.ClientInfo.Department</td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Email:</strong>
+                    </td>
+                    <td>@Model.OrderDetails.ClientInfo.Email</td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Phone Number:</strong>
+                    </td>
+                    <td>@Model.OrderDetails.ClientInfo.PhoneNumber.FormatPhone()</td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>PI Name:</strong>
+                    </td>
+                    <td>@Model.OrderDetails.ClientInfo.PiName</td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>PI Email:</strong>
+                    </td>
+                    <td>@Model.OrderDetails.ClientInfo.PiEmail</td>
+                </tr>
+                </tbody>
+            </table>
+        }
+
+        <h4>Submitter Info</h4>
+        <table>
+
+            <tbody>
+            <tr>
+                <td>
+                    <strong>Name:</strong>
+                </td>
+                <td>@Model.Order.Creator.Name</td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Email:</strong>
+                </td>
+                <td>@Model.Order.Creator.Email</td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Phone:</strong>
+                </td>
+                <td>@Model.Order.Creator.Phone.FormatPhone()</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <strong>Payment Method:</strong>
+        @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
+        {
+            <span>UC Account: @Model.OrderDetails.Payment.Account</span>
+            @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.Payment.AccountName))
+            {
+                <span> (@Model.OrderDetails.Payment.AccountName)</span>
+            }
+            else
+            {
+                if (Model.OrderDetails.OtherPaymentInfo != null && !string.IsNullOrWhiteSpace(Model.OrderDetails.OtherPaymentInfo.PaymentType))
+                {
+                    <span> (@Model.OrderDetails.OtherPaymentInfo.PaymentType)</span>
+                }
+            }
+        }
+        else if (string.Equals(Model.OrderDetails.Payment.ClientType, "creditcard", StringComparison.OrdinalIgnoreCase))
+        {
+            <span>Credit Card</span>
+        }
+        else
+        {
+            <span>Other</span>
+            if (Model.OrderDetails.OtherPaymentInfo != null && !string.IsNullOrWhiteSpace(Model.OrderDetails.OtherPaymentInfo.PaymentType))
+            {
+                <span> (@Model.OrderDetails.OtherPaymentInfo.PaymentType)</span>
+            }
+        }
+
+        <strong>Project Title / Location:</strong>
+        <span>@Model.Order.Project</span>
+
+        @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.Commodity))
+        {
+            <strong>Commodity:</strong>
+            <span>@Model.OrderDetails.Commodity</span>
+        }
+
+        <strong>Date Sampled:</strong>
+        <span>@Model.OrderDetails.DateSampled.ToLongDateString()</span>
+
+        <strong>Sample Disposition:</strong>
+        <span>@Model.OrderDetails.SampleDisposition</span>
+
+        <strong>Number of Samples Submitted:</strong>
+        <span>@Model.OrderDetails.Quantity</span>
+    </div>
+    <div style="width:50%">
+        <h1>@Model.OrderDetails.SampleType</h1>
+        <img style="width: 350px; height: 350px;" src="/images/lab-only-section.png" alt="lab use only section"/>
+    </div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.OrderDetails.AdditionalInfo))
+{
+    <strong>Comments, special test requests and missing samples:</strong>
+    <div style="white-space: pre-wrap">@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</div>
+}
+<p>
+    The following estimate of charges is based on routine testing. Should non-routine testing be required you will be contacted to discuss any additional costs.
+</p>
+<table>
+    <thead>
+    <tr>
+        <th>Test(s)</th>
+        <th>Code</th>
+        <th>Ref</th>
+        <th>Per Test</th>
+        <th>Quantity</th>
+        <th>Subtotal</th>
+        <th>Setup Cost</th>
+        <th>Test Total</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var test in @Model.OrderDetails.SelectedTests)
+    {
+        var temp = Model.Order.GetTestDetails().Where(a => a.Id == test.Id).FirstOrDefault();
+        if (Model.HideLabDetails && !temp.Public)
+        {
+            continue;
+        }
+        <tr>
+            <td>@test.Analysis</td>
+            <td>@test.Id</td>
+            <td>@temp.Sop</td>
+            <td>@test.Cost.ToString("C")</td>
+            <td>x @Model.OrderDetails.Quantity</td>
+            <td>@test.SubTotal.ToString("C")</td>
+            <td>@test.SetupCost.ToString("C")</td>
+            <td>@test.Total.ToString("C")</td>
+        </tr>
+    }
+    </tbody>
+    <tfoot>
+    <tr>
+        <td>Processing Fee</td>
+        <td>
+            @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
+            {
+                <span>@(string.Format("{0:C}", Model.OrderDetails.InternalProcessingFee))</span>
+            }
+            else
+            {
+                <span>@(string.Format("{0:C}", Model.OrderDetails.ExternalProcessingFee))</span>
+            }
+        </td>
+    </tr>
+    <tr>
+
+        <th>Total</th>
+        <th>@(string.Format("{0:C}", Model.OrderDetails.GrandTotal))</th>
+    </tr>
+    </tfoot>
+</table>
+<br/><br/>
+
+<span>Work Authorized By:</span>
+<div style="border-bottom: 2px solid black; margin-top:36px; width:336px;">
+    **signature_1**
+</div>
+<span>Client / Responsible Party Signature (Required)</span>
+<span>Date</span>
+
+<br><br><br>
+<input type="checkbox"/> <small>Mailed/Shipped</small>
+<input type="checkbox"/> <small>Hand Delivered By:</small>
+
+<br>
+<br><br>
+
+<div style="border-bottom: 2px solid black; margin-top:36px; width:336px;">
+    **signature_2**
+</div>
+
+<span>Print Name</span>
+<span class="pull-right">Date</span>
+
+<br><br>
+
+<address>
+    <strong>Submit Samples to:</strong><br>
+    <strong>UC Davis Analytical Lab</strong><br>
+    Hoagland Annex<br>
+    University of California<br>
+    One Shields Avenue<br>
+    Davis, CA 95616-5270
+</address>
+
+<address>
+    <strong>UC Davis Analytical Lab</strong><br>
+    Office Phone: 530-752-0147<br>
+    Receiving Phone: 530-752-0266<br>
+    Email: <a href="mailto:anlab@ucdavis.edu">anlab@ucdavis.edu</a>
+</address>
+
+<a asp-action="Index" class="btn btn-default">Back to Orders</a>
+<a href="#" class="btn btn-default" type="button" onclick="window.print()">Print this page</a>

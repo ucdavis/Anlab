@@ -66,7 +66,7 @@ public class DocumentSigningService : IDocumentSigningService
         // finally, redirect to the signing url
         var viewRequest = new RecipientViewRequest
         {
-            ReturnUrl = _eSignatureSettings.ApplicationBaseUri + "/order/confirmed2/" + orderId,
+            ReturnUrl = _eSignatureSettings.ApplicationBaseUri + "/order/SignatureCallback/" + orderId,
             ClientUserId = SignerClientId,
             AuthenticationMethod = "none",
             UserName = order.Creator.Name,

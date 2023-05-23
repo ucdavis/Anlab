@@ -32,12 +32,13 @@ namespace AnlabMvc.Controllers
         private readonly ILabworksService _labworksService;
         private readonly IFinancialService _financialService;
         private IAggieEnterpriseService _aggieEnterpriseService;
+        private readonly IDocumentSigningService _documentSigningService;
         private readonly AggieEnterpriseSettings _aeSettings;
         private readonly AppSettings _appSettings;
 
         private const string processingCode = "PROC";
 
-        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ILabworksService labworksService, IFinancialService financialService, IOptions<AppSettings> appSettings, IOptions<AggieEnterpriseSettings> aeSettings, IAggieEnterpriseService aggieEnterpriseService)
+        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ILabworksService labworksService, IFinancialService financialService, IOptions<AppSettings> appSettings, IOptions<AggieEnterpriseSettings> aeSettings, IAggieEnterpriseService aggieEnterpriseService, IDocumentSigningService documentSigningService)
         {
             _context = context;
             _orderService = orderService;
@@ -45,6 +46,7 @@ namespace AnlabMvc.Controllers
             _labworksService = labworksService;
             _financialService = financialService;
             _aggieEnterpriseService = aggieEnterpriseService;
+            _documentSigningService = documentSigningService;
             _aeSettings = aeSettings.Value;
             _appSettings = appSettings.Value;
         }
@@ -259,7 +261,7 @@ namespace AnlabMvc.Controllers
             order.Creator = user;
             order.ShareIdentifier = Guid.NewGuid();
 
-            if (adminCopy) 
+            if (adminCopy)
             {
                 if (!User.IsInRole(RoleCodes.Admin))
                 {
@@ -576,6 +578,52 @@ namespace AnlabMvc.Controllers
 
         }
 
+        // Interacts with docusign to get the signature url
+        public async Task<IActionResult> PendingSignature(int id)
+        {
+            var signatureUrl = await _documentSigningService.SendForEmbeddedSigning(id);
+
+            if (string.IsNullOrWhiteSpace(signatureUrl))
+            {
+                ErrorMessage = "Unable to get signature url";
+                return RedirectToAction("Index");
+            }
+
+            return Redirect(signatureUrl);
+        }
+
+        // Page that docusign redirects to after signing
+        public IActionResult SignatureCallback(int id)
+        {
+            return Content("Thank you for signing.");
+        }
+
+        // Page not visible by user which will be used to generate the signature document content
+        public async Task<IActionResult> Document(int id)
+        {
+            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if (order.CreatorId != CurrentUserId)
+            {
+                if (!User.IsInRole(RoleCodes.Admin))
+                {
+                    ErrorMessage = "You don't have access to this order.";
+                    return NotFound();
+                }
+            }
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+
+            return View(model);
+        }
+
         public async Task<IActionResult> Confirmed(int id)
         {
             var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
@@ -641,7 +689,7 @@ namespace AnlabMvc.Controllers
             }
             return result;
         }
-  
+
     }
-   
+
 }
