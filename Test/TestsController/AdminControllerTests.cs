@@ -13,6 +13,7 @@ using Anlab.Core.Domain;
 using AnlabMvc.Controllers;
 using AnlabMvc.Models.Roles;
 using AnlabMvc.Models.User;
+using AnlabMvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -40,6 +41,8 @@ namespace Test.TestsController
         public Mock<ClaimsPrincipal> MockClaimsPrincipal { get; set; }
         public Mock<TempDataSerializer> MockTempDataSerializer { get; set; }
 
+        public Mock<IDocumentSigningService> MockDocumentSigningService { get; set; }
+
         //Setup Data
         public List<User> UserData { get; set; }
 
@@ -58,6 +61,8 @@ namespace Test.TestsController
             MockClaimsPrincipal = new Mock<ClaimsPrincipal>();
 
             MockTempDataSerializer = new Mock<TempDataSerializer>();
+
+            MockDocumentSigningService = new Mock<IDocumentSigningService>();
 
             var mockDataProvider = new Mock<SessionStateTempDataProvider>(MockTempDataSerializer.Object);
 
@@ -85,7 +90,7 @@ namespace Test.TestsController
 
             MockHttpContext.Setup(m => m.User).Returns(MockClaimsPrincipal.Object);
 
-            Controller = new AdminController(MockDbContext.Object, MockUserManager.Object, MockRolemanager.Object)
+            Controller = new AdminController(MockDbContext.Object, MockUserManager.Object, MockRolemanager.Object, MockDocumentSigningService.Object)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -783,7 +788,7 @@ namespace Test.TestsController
         [Fact]
         public void TestControllerMethodCount()
         {
-            ControllerReflection.ControllerPublicMethods(11);
+            ControllerReflection.ControllerPublicMethods(12);
         }
 
         [Fact]
@@ -843,6 +848,11 @@ namespace Test.TestsController
             ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("FixEmail", 3 + countAdjustment, "FixEmailPost-2", true, showListOfAttributes: false);
             var fixEmailUserAuthPost = ControllerReflection.MethodExpectedAttribute<AuthorizeAttribute>("FixEmail", 3 + countAdjustment, "FixEmail-1", true, showListOfAttributes: false);
             fixEmailUserAuthPost.ElementAt(0).Roles.ShouldBe(RoleCodes.Admin);
+
+            //12
+            ControllerReflection.MethodExpectedAttribute<HttpGetAttribute>("Docusign", 2 + countAdjustment, "Docusign-1", false, showListOfAttributes: false);
+            addUserToRoleAuth = ControllerReflection.MethodExpectedAttribute<AuthorizeAttribute>("Docusign", 2 + countAdjustment, "Docusign-2", false, showListOfAttributes: false);
+            addUserToRoleAuth.ElementAt(0).Roles.ShouldBe(RoleCodes.Admin);
 
         }
     }
