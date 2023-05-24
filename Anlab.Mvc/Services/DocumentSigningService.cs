@@ -21,6 +21,9 @@ public interface IDocumentSigningService
 {
     Task<string> SendForEmbeddedSigning(int orderId);
     Task<FileStreamResult> DownloadEnvelope(string envelopeId);
+    OAuth.UserInfo GetAccountInfo(OAuth.OAuthToken authToken);
+    OAuth.OAuthToken AuthenticateWithJwt();
+    string BuildConsentUrl();
 }
 
 public class DocumentSigningService : IDocumentSigningService
@@ -111,7 +114,7 @@ public class DocumentSigningService : IDocumentSigningService
         return new FileStreamResult(results, "application/pdf");
     }
 
-    private OAuth.UserInfo GetAccountInfo(OAuth.OAuthToken authToken)
+    public OAuth.UserInfo GetAccountInfo(OAuth.OAuthToken authToken)
     {
         var client = new DocuSignClient();
 
@@ -120,6 +123,42 @@ public class DocumentSigningService : IDocumentSigningService
         var userInfo = client.GetUserInfo(authToken.access_token);
 
         return userInfo;
+    }
+
+    public OAuth.OAuthToken AuthenticateWithJwt()
+    {
+        var docuSignClient = new DocuSignClient();
+
+        var scopes = new List<string>
+        {
+            OAuth.Scope_SIGNATURE,
+            OAuth.Scope_IMPERSONATION
+        };
+
+        // get the private key from base64 encoded string
+        var privateKey = Convert.FromBase64String(_eSignatureSettings.PrivateKeyBase64);
+
+        return docuSignClient.RequestJWTUserToken(
+            _eSignatureSettings.ClientId,
+            _eSignatureSettings.ImpersonatedUserId,
+            _eSignatureSettings.AuthServer,
+            privateKey,
+            1,
+            scopes);
+    }
+
+    public string BuildConsentUrl()
+    {
+        var scopes = "signature impersonation";
+
+        Debug.Assert(_httpContextAccessor.HttpContext != null, "_httpContextAccessor.HttpContext != null");
+
+        var path = new Uri(_httpContextAccessor.HttpContext.Request.Scheme + "://" + _httpContextAccessor.HttpContext.Request.Host);
+
+        return _eSignatureSettings.AuthorizationEndpoint + "?response_type=code" +
+               "&scope=" + scopes +
+               "&client_id=" + _eSignatureSettings.ClientId +
+               "&redirect_uri=" + path + "admin";
     }
 
     private async Task<EnvelopeDefinition> MakeEnvelope(Order order)
@@ -186,27 +225,5 @@ public class DocumentSigningService : IDocumentSigningService
         env.Status = "sent";
 
         return env;
-    }
-
-    private OAuth.OAuthToken AuthenticateWithJwt()
-    {
-        var docuSignClient = new DocuSignClient();
-
-        var scopes = new List<string>
-        {
-            OAuth.Scope_SIGNATURE,
-            OAuth.Scope_IMPERSONATION
-        };
-
-        // get the private key from base64 encoded string
-        var privateKey = Convert.FromBase64String(_eSignatureSettings.PrivateKeyBase64);
-
-        return docuSignClient.RequestJWTUserToken(
-            _eSignatureSettings.ClientId,
-            _eSignatureSettings.ImpersonatedUserId,
-            _eSignatureSettings.AuthServer,
-            privateKey,
-            1,
-            scopes);
     }
 }

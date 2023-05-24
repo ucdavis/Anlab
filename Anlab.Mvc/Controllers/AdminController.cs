@@ -9,6 +9,8 @@ using AnlabMvc.Models.Order;
 using AnlabMvc.Models.Roles;
 using AnlabMvc.Models.User;
 using AnlabMvc.Services;
+using DocuSign.eSign.Client;
+using DocuSign.eSign.Client.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -23,13 +25,15 @@ namespace AnlabMvc.Controllers
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IDocumentSigningService _documentSigningService;
 
 
-        public AdminController(ApplicationDbContext dbContext, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public AdminController(ApplicationDbContext dbContext, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IDocumentSigningService documentSigningService)
         {
             _dbContext = dbContext;
             _userManager = userManager;
             _roleManager = roleManager;
+            _documentSigningService = documentSigningService;
         }
 
         [Authorize(Roles = RoleCodes.Admin)]
@@ -175,7 +179,7 @@ namespace AnlabMvc.Controllers
         }
 
         //[Authorize(Roles =  RoleCodes.Admin)] //Enable if we need to add roles
-        //public async Task<IActionResult> CreateRole(string role) 
+        //public async Task<IActionResult> CreateRole(string role)
         //{
         //    await _roleManager.CreateAsync(new IdentityRole(role));
         //    return Content($"Added {role} Role");
@@ -204,7 +208,7 @@ namespace AnlabMvc.Controllers
                     x.Sent == null || !x.Sent.Value || x.Sent.Value && x.SentAt != null &&
                     x.SentAt.Value >= DateTime.UtcNow.AddDays(-30)).AsNoTracking().ToListAsync();
             }
-            
+
             return View(messages);
         }
 
@@ -216,6 +220,37 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
             return View(message);
+        }
+
+        /// <summary>
+        /// Verify service user is setup correct for docusign
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = RoleCodes.Admin)]
+        [HttpGet]
+        public IActionResult Docusign()
+        {
+            OAuth.OAuthToken authToken = null;
+
+            try
+            {
+                authToken = _documentSigningService.AuthenticateWithJwt();
+            }
+            catch (ApiException e)
+            {
+                if (e.Message.Contains("consent_required"))
+                {
+                    // Consent required, redirecting
+                    var consentUrl = _documentSigningService.BuildConsentUrl();
+
+                    return Redirect(consentUrl);
+                }
+            }
+
+            // We made it and have consent, now we can get the account info
+            var account = _documentSigningService.GetAccountInfo(authToken!);
+
+            return Content($"Authenticated as {account.Name}. Sub = {account.Sub}. Ready to send envelopes.");
         }
 
         [Authorize(Roles = RoleCodes.Admin)]
@@ -242,7 +277,7 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
 
-            var saveSendTo = mm.SendTo;            
+            var saveSendTo = mm.SendTo;
 
             if (ModelState.IsValid)
             {
