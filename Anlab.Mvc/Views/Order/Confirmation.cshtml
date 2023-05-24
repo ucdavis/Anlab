@@ -14,8 +14,7 @@
 
     <a asp-action="Edit" asp-route-id="@Model.Order.Id" class="btn btn-small">Edit Order</a>
 
-    <form asp-controller="order" asp-action="Confirmation" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal" style="margin-left: 5px;margin-right: 5px">
-        @Html.Hidden("confirm", true)
+    <form asp-controller="order" asp-action="PendingSignature" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal" style="margin-left: 5px;margin-right: 5px">
         <button type="submit" class="btn btn-small"> @(string.Format("{0:C}", Model.OrderDetails.Total)) Confirm Order</button>
     </form>
 
