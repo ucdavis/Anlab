@@ -850,8 +850,8 @@ namespace Test.TestsController
             fixEmailUserAuthPost.ElementAt(0).Roles.ShouldBe(RoleCodes.Admin);
 
             //12
-            ControllerReflection.MethodExpectedAttribute<HttpGetAttribute>("Docusign", 2 + countAdjustment, "Docusign-1", false, showListOfAttributes: false);
-            addUserToRoleAuth = ControllerReflection.MethodExpectedAttribute<AuthorizeAttribute>("Docusign", 2 + countAdjustment, "Docusign-2", false, showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<HttpGetAttribute>("Docusign", 2, "Docusign-1", false, showListOfAttributes: true);
+            addUserToRoleAuth = ControllerReflection.MethodExpectedAttribute<AuthorizeAttribute>("Docusign", 2, "Docusign-2", false, showListOfAttributes: false);
             addUserToRoleAuth.ElementAt(0).Roles.ShouldBe(RoleCodes.Admin);
 
         }
