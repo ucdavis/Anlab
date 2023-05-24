@@ -11,6 +11,7 @@ using DocuSign.eSign.Client;
 using DocuSign.eSign.Client.Auth;
 using DocuSign.eSign.Model;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -19,6 +20,7 @@ namespace AnlabMvc.Services;
 public interface IDocumentSigningService
 {
     Task<string> SendForEmbeddedSigning(int orderId);
+    Task<FileStreamResult> DownloadEnvelope(string envelopeId);
 }
 
 public class DocumentSigningService : IDocumentSigningService
@@ -36,7 +38,6 @@ public class DocumentSigningService : IDocumentSigningService
         _eSignatureSettings = eSignatureSettings.Value;
     }
 
-    // TODO: need to pull in content based on the order
     public async Task<string> SendForEmbeddedSigning(int orderId)
     {
         var order = await _dbContext.Orders.Include(o=>o.Creator).SingleAsync(a => a.Id == orderId);
@@ -84,6 +85,30 @@ public class DocumentSigningService : IDocumentSigningService
         var url = view.Url; // url to redirect to -- can save state via query params on return url if needed
 
         return url;
+    }
+
+    public async Task<FileStreamResult> DownloadEnvelope(string envelopeId)
+    {
+        // first, get auth token
+        var authToken = AuthenticateWithJwt();
+
+        var user = GetAccountInfo(authToken);
+
+        var account = user.Accounts[0]; // TODO: what if there are multiple accounts?  need to select one somehow perhaps
+
+        var acctId = account.AccountId;
+        var basePath = account.BaseUri;
+
+        // now create the envelope via api
+        var client = new DocuSignClient(basePath + "/restapi");
+        client.Configuration.DefaultHeader.Add("Authorization", "Bearer " + authToken.access_token);
+
+        var envelopesApi = new EnvelopesApi(client);
+
+        // "combined" is the type of document to download.  Other options include "archive" and "certificate"
+        var results = await envelopesApi.GetDocumentAsync(acctId, envelopeId, "combined");
+
+        return new FileStreamResult(results, "application/pdf");
     }
 
     private OAuth.UserInfo GetAccountInfo(OAuth.OAuthToken authToken)

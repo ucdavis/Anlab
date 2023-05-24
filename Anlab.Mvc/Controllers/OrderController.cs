@@ -562,6 +562,34 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> ViewSignedDocument(int id)
+        {
+            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            // make sure the order has a signed envelope
+            if (string.IsNullOrWhiteSpace(order.SignedEnvelopeId))
+            {
+                ErrorMessage = "No signed document found.";
+                return RedirectToAction("Index");
+            }
+
+            if (order.CreatorId != CurrentUserId)
+            {
+                if (!User.IsInRole(RoleCodes.Admin))
+                {
+                    ErrorMessage = "You don't have access to this order.";
+                    return NotFound();
+                }
+            }
+
+            return await _documentSigningService.DownloadEnvelope(order.SignedEnvelopeId);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
