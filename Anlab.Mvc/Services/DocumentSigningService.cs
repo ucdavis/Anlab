@@ -67,10 +67,12 @@ public class DocumentSigningService : IDocumentSigningService
 
         var results = await envelopesApi.CreateEnvelopeAsync(acctId, envelope);
 
+        var returnUrl = _eSignatureSettings.ApplicationBaseUri + "/order/SignatureCallback/" + orderId + "?envelopeId=" + results.EnvelopeId;
+
         // finally, redirect to the signing url
         var viewRequest = new RecipientViewRequest
         {
-            ReturnUrl = _eSignatureSettings.ApplicationBaseUri + "/order/SignatureCallback/" + orderId,
+            ReturnUrl = returnUrl,
             ClientUserId = SignerClientId,
             AuthenticationMethod = "none",
             UserName = order.Creator.Name,
@@ -145,7 +147,7 @@ public class DocumentSigningService : IDocumentSigningService
         {
             AnchorString = "**signature_1**",
             AnchorUnits = "pixels",
-            AnchorYOffset = "10",
+            // AnchorYOffset = "10",
             AnchorXOffset = "20",
         };
 

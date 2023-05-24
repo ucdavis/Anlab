@@ -46,6 +46,8 @@ namespace Test.TestsController
         public Mock<TempDataSerializer> MockTempDataSerializer { get; set; }
         public Mock<IAggieEnterpriseService> MockAggieEnterpriseService { get; set; }
 
+        public Mock<IDocumentSigningService> MockDocumentSigningService { get; set; }
+
         //Setup Data
         public List<Order> OrderData { get; set; }
         public List<TestItemModel> TestItemModelData { get; set; }
@@ -60,7 +62,7 @@ namespace Test.TestsController
             Token = "Fake"
         };
 
-        
+
 
         //Controller
         public OrderController Controller { get; set; }
@@ -83,6 +85,7 @@ namespace Test.TestsController
             MockClaimsPrincipal = new Mock<ClaimsPrincipal>();
             MockTempDataSerializer = new Mock<TempDataSerializer>();
             MockAggieEnterpriseService = new Mock<IAggieEnterpriseService>();
+            MockDocumentSigningService = new Mock<IDocumentSigningService>();
             var mockDataProvider = new Mock<SessionStateTempDataProvider>(MockTempDataSerializer.Object);
 
 
@@ -148,7 +151,8 @@ namespace Test.TestsController
                 MockFinancialService.Object,
                 MockAppSettings.Object,
                 MockAeSettings.Object,
-                MockAggieEnterpriseService.Object)
+                MockAggieEnterpriseService.Object,
+                MockDocumentSigningService.Object)
             {
                 ControllerContext = new ControllerContext
                 {

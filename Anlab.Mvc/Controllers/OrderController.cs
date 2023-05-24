@@ -500,7 +500,15 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index");
             }
 
-            return await ConfirmOrder(id);
+            var envelopeId = Request.Query["envelopeId"];
+
+            if (string.IsNullOrWhiteSpace(envelopeId))
+            {
+                ErrorMessage = "Unable to get signature - envelope information missing";
+                return RedirectToAction("Index");
+            }
+
+            return await ConfirmOrder(id, envelopeId);
         }
 
         // Page not visible by user which will be used to generate the signature document content
@@ -595,9 +603,9 @@ namespace AnlabMvc.Controllers
             return result;
         }
 
-        private async Task<IActionResult> ConfirmOrder(int id)
+        private async Task<IActionResult> ConfirmOrder(int id, string envelopeId = null)
         {
-                        User adminUser = null;
+            User adminUser = null;
             var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
@@ -688,6 +696,11 @@ namespace AnlabMvc.Controllers
 
             _orderService.UpdateAdditionalInfo(order);
             order.Status = OrderStatusCodes.Confirmed;
+
+            if (!string.IsNullOrWhiteSpace(envelopeId))
+            {
+                order.SignedEnvelopeId = envelopeId;
+            }
 
             order.History.Add(new History
             {
