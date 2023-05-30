@@ -5,16 +5,16 @@
     Layout = null;
     ViewData["Title"] = "Order Confirmed";
 }
-<div style="font-size:18px;font-family:sans-serif; padding:16px;">
-<div style="padding:8px 16px; border:2px solid #347694; border-radius:4px; background-color:#C5D8E0">
+<div style="padding:4px;font-family:sans-serif">
+<div style="padding:8px 16px; border:2px solid #347694; border-radius:4px;">
     <p>
         <strong>Please remember:</strong>
     </p>
     <p>All samples must be numbered sequentially starting at #1.</p>
     <p>If you would like your sample descriptions included in the report, you may send an Excel file with that information to the lab email: anlab@ucdavis.edu Please reference the online order number in the email subject.</p>
 </div>
-<div style="display:flex;">
-    <div style="margin-right:10%; width:55%;">
+
+    <div>
         <p>
             Thank you for placing a work request order with the UC Davis Analytical Laboratory.
             Below is a summary of the tests you requested and an estimate of your charges.
@@ -35,7 +35,7 @@
         @if (Model.Order.ClientId != null)
         {
             <h4 style="text-transform: uppercase;font-weight:400;margin-bottom:0;">Client Info</h4>
-            <table style="border-spacing:10px;margin-left:-10px;">
+            <table style="border-spacing:10px;">
                 <tbody>
                 <tr>
                     <td>
@@ -78,12 +78,12 @@
                 }
                 </tbody>
             </table>
-            <hr/>
+            
         }
         else
         {
             <h4 style="text-transform: uppercase;font-weight:400;margin-bottom:0;">New Client Info</h4>
-            <table style="border-spacing:10px;margin-left:-10px;">
+            <table style="border-spacing:10px;">
                 <tbody>
                 <tr>
                     <td>
@@ -129,11 +129,11 @@
                 </tr>
                 </tbody>
             </table>
-            <hr/>
+          
         }
 
         <h4 style="text-transform: uppercase;font-weight:400;margin-bottom:0;">Submitter Info</h4>
-        <table style="border-spacing:10px;margin-left:-10px;">
+        <table style="border-spacing:10px;">
 
             <tbody>
             <tr>
@@ -156,7 +156,7 @@
             </tr>
             </tbody>
         </table>
-        <hr/>
+        
 
         <p><strong>Payment Method:</strong>
         @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
@@ -209,37 +209,32 @@
 
                     
     </div>
-    <div style="width:45%;">
-        <h2 style="color:#347694;">@Model.OrderDetails.SampleType</h2>
+    
         <div style="padding:16px; border: 2px solid #347694;">
-            <h3 style="color:#347694;margin-top:0px;">Lab Use Only</h3>
-            <p>Work Request #: <span style="display:inline-block; border-bottom:1px solid black; color:#fff; width:65%;">a</span></p>
-            <p>Received On #: <span style="display:inline-block; border-bottom:1px solid black; color:#fff; width:45%;">a</span>By:<span style="display:inline-block; border-bottom:1px solid black; color:#fff; width:16%;">a</span></p>
-            <p>Logged In On #: <span style="display:inline-block; border-bottom:1px solid black; color:#fff; width:45%;">a</span>By:<span style="display:inline-block; border-bottom:1px solid black; color:#fff; width:15%;">a</span></p>
-            <p>Cond:<span style="padding: 0 8px;">Wet</span><span style="padding: 0 8px;">Air-Dried</span><span style="padding: 0 8px;">Dry</span><span style="padding: 0 8px;">Ground</span><span style="padding: 0 8px;">Extract</span></p>
-            <p>Prep Req'd:<span style="padding: 0 8px;">Transfer</span><span style="padding: 0 8px;">Dry</span><span style="padding: 0 8px;">Grind</span><span style="padding: 0 8px;">Freeze Dry</span></p>
-            <p>Log-in Code:<span style="padding: 0 6px;">T</span><span style="padding: 0 6px;">W</span><span style="padding: 0 6px;">A</span><span style="padding: 0 6px;">D</span><span style="padding: 0 6px;">G</span><span style="padding: 0 6px;">R</span><span style="padding: 0 6px;">H</span><span style="padding: 0 6px;">I</span><span style="padding: 0 6px;">E</span><span style="padding: 0 6px;">F</span><span style="padding: 0 6px;">U</span></p>
-            <p>Temp:
-            <span style="padding: 0 6px;">Hot</span>
-            <span style="padding: 0 6px;">Warm</span>
-            <span style="padding: 0 6px;">Room&nbsp;Temp</span>
-            <span style="padding: 0 6px;">Cool</span>
-            <span style="padding: 0 6px;">Cold</span>
-            <span style="padding: 0 6px;">Slushy</span><span style="padding: 0 6px;">Frozen</span></p>
+            <h3 style="color:#347694;margin-top:0px;">Lab Use Only | @Model.OrderDetails.SampleType</h3>
+            <p style="border-bottom:1px solid black; width:auto;">Work Request #:</p>
+            <p style="border-bottom:1px solid black; width:auto;">Received On:<span style="color:#fff;">PlaceholderPlaceholderPlaceholderPlace</span> By:</p>
+            <p style="border-bottom:1px solid black; width:auto;">Logged In On #:<span style="color:#fff;">PlaceholderPlaceholderPlaceholderPlace</span> By:</p>
+           
+        
+            <p>Cond:&nbsp;&nbsp;&nbsp;Wet&nbsp;&nbsp;&nbsp;Air-Dried &nbsp;&nbsp;&nbsp;Dry&nbsp;&nbsp;&nbsp;Ground&nbsp;&nbsp;&nbsp;Extract</p>
+            <p>Prep Req'd:&nbsp;&nbsp;&nbsp;Transfer&nbsp;&nbsp;&nbsp;Dry&nbsp;&nbsp;&nbsp;Grind&nbsp;&nbsp;&nbsp;Freeze Dry</p>
+            <p>Log-in Code:&nbsp;&nbsp;&nbsp;T&nbsp;&nbsp;&nbsp;W&nbsp;&nbsp;&nbsp;A&nbsp;&nbsp;&nbsp;D&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;R&nbsp;&nbsp;&nbsp;H&nbsp;&nbsp;&nbsp;I&nbsp;&nbsp;&nbsp;E&nbsp;&nbsp;&nbsp;F&nbsp;&nbsp;&nbsp;U</p>
+            <p>Temp:&nbsp;&nbsp;&nbsp;Hot&nbsp;&nbsp;&nbsp;Warm&nbsp;&nbsp;&nbsp;Room&nbsp;Temp&nbsp;&nbsp;&nbsp;Cool&nbsp;&nbsp;&nbsp;Cold&nbsp;&nbsp;&nbsp;Slushy&nbsp;&nbsp;&nbsp;Frozen</p>
             <p>Desc. File Needed:<input type="checkbox"/> <small>Yes</small>
 <input type="checkbox"/> <small>No</small></p>
 <p>Missing File Needed:<input type="checkbox"/> <small>Yes</small>
 <input type="checkbox"/> <small>No</small></p>
-        </div>
+        
     </div>
-</div>
 
+<br>
 @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.AdditionalInfo))
 {
     <strong>Comments, special test requests and missing samples:</strong>
     <div style="padding:12px; border: 1px solid #c7c8cc; border-radius:4px;">@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</div>
 }
-<hr/>
+<br>
 <p><i>The following estimate of charges is based on routine testing. Should non-routine testing be required you will be contacted to discuss any additional costs.</i>
     
 </p>
@@ -330,8 +325,6 @@
 
 <span>Print Name</span>
 <span class="pull-right">Date</span>
-
-<br><br>
 
 <address>
     <strong>Submit Samples to:</strong><br>
