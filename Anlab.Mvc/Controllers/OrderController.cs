@@ -477,15 +477,36 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> PendingSignature(int id)
         {
-            var signatureUrl = await _documentSigningService.SendForEmbeddedSigning(id);
+            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
-            if (string.IsNullOrWhiteSpace(signatureUrl))
+            if (order == null)
             {
-                ErrorMessage = "Unable to get signature url";
-                return RedirectToAction("Index");
+                return NotFound();
             }
 
-            return Redirect(signatureUrl);
+            // only the creator can send for signature
+            if (order.CreatorId == CurrentUserId)
+            {
+                var signatureUrl = await _documentSigningService.SendForEmbeddedSigning(id);
+
+                if (string.IsNullOrWhiteSpace(signatureUrl))
+                {
+                    ErrorMessage = "Unable to get signature url";
+                    return RedirectToAction("Index");
+                }
+
+                return Redirect(signatureUrl);
+            }
+
+            // if they are an admin, they can confirm without signature
+            if (User.IsInRole(RoleCodes.Admin))
+            {
+                return await ConfirmOrder(id);
+            }
+
+            // if they are not the creator or an admin, they can't do anything
+            ErrorMessage = "You don't have access to this order.";
+            return Forbid();
         }
 
         // Page that docusign redirects to after signing
