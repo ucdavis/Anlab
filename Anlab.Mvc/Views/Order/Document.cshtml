@@ -5,8 +5,8 @@
     Layout = null;
     ViewData["Title"] = "Order Confirmed";
 }
-
-<div style="padding:8px 16px; border:1px solid #347694; margin: 8px;">
+<div style="font-size:18px;font-family:sans-serif; padding:16px;">
+<div style="padding:8px 16px; border:2px solid #347694; border-radius:4px; background-color:#C5D8E0">
     <p>
         <strong>Please remember:</strong>
     </p>
@@ -14,14 +14,14 @@
     <p>If you would like your sample descriptions included in the report, you may send an Excel file with that information to the lab email: anlab@ucdavis.edu Please reference the online order number in the email subject.</p>
 </div>
 <div style="display:flex;">
-    <div style="margin-right:40px;">
-
+    <div style="margin-right:10%; width:55%;">
         <p>
             Thank you for placing a work request order with the UC Davis Analytical Laboratory.
             Below is a summary of the tests you requested and an estimate of your charges.
             <br>
-            <strong>
+            <strong><span style="text-decoration:underline">
                 Please print this page and include a copy with the samples.
+                </span>
             </strong>
         </p>
         <p>
@@ -29,13 +29,13 @@
         </p>
         <p>You will be billed when the work has been completed.</p>
 
-        <strong>Online Order Number:</strong>
+        <p style="font-weight:600;color:#347694;">Online Order Number:</strong>
         <span>@Model.Order.Id</span>
 
         @if (Model.Order.ClientId != null)
         {
-            <h4>Client Info</h4>
-            <table>
+            <h4 style="text-transform: uppercase;font-weight:400;margin-bottom:0;">Client Info</h4>
+            <table style="border-spacing:10px;margin-left:-10px;">
                 <tbody>
                 <tr>
                     <td>
@@ -78,11 +78,12 @@
                 }
                 </tbody>
             </table>
+            <hr/>
         }
         else
         {
-            <h4>New Client Info</h4>
-            <table>
+            <h4 style="text-transform: uppercase;font-weight:400;margin-bottom:0;">New Client Info</h4>
+            <table style="border-spacing:10px;margin-left:-10px;">
                 <tbody>
                 <tr>
                     <td>
@@ -128,10 +129,11 @@
                 </tr>
                 </tbody>
             </table>
+            <hr/>
         }
 
-        <h4>Submitter Info</h4>
-        <table>
+        <h4 style="text-transform: uppercase;font-weight:400;margin-bottom:0;">Submitter Info</h4>
+        <table style="border-spacing:10px;margin-left:-10px;">
 
             <tbody>
             <tr>
@@ -154,8 +156,9 @@
             </tr>
             </tbody>
         </table>
+        <hr/>
 
-        <strong>Payment Method:</strong>
+        <p><strong>Payment Method:</strong>
         @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
         {
             <span>UC Account: @Model.OrderDetails.Payment.Account</span>
@@ -183,42 +186,66 @@
                 <span> (@Model.OrderDetails.OtherPaymentInfo.PaymentType)</span>
             }
         }
+            </p>
+            <p>
+                    <strong>Project Title / Location:</strong>
+                    <span>@Model.Order.Project</span>
+            </p><p>
+                    @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.Commodity))
+                    {
+                        <strong>Commodity:</strong>
+                        <span>@Model.OrderDetails.Commodity</span>
+                    }
+            </p>
+            <p>
+            <strong>Date Sampled:</strong>
+                    <span>@Model.OrderDetails.DateSampled.ToLongDateString()</span>
+            </p>
+                    <p>  <strong>Sample Disposition:</strong>
+                    <span>@Model.OrderDetails.SampleDisposition</span></p>
 
-        <strong>Project Title / Location:</strong>
-        <span>@Model.Order.Project</span>
+                <p><strong>Number of Samples Submitted:</strong>
+                    <span>@Model.OrderDetails.Quantity</span></p>
 
-        @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.Commodity))
-        {
-            <strong>Commodity:</strong>
-            <span>@Model.OrderDetails.Commodity</span>
-        }
-
-        <strong>Date Sampled:</strong>
-        <span>@Model.OrderDetails.DateSampled.ToLongDateString()</span>
-
-        <strong>Sample Disposition:</strong>
-        <span>@Model.OrderDetails.SampleDisposition</span>
-
-        <strong>Number of Samples Submitted:</strong>
-        <span>@Model.OrderDetails.Quantity</span>
+                    
     </div>
-    <div style="width:50%">
-        <h1>@Model.OrderDetails.SampleType</h1>
-        <img style="width: 350px; height: 350px;" src="/images/lab-only-section.png" alt="lab use only section"/>
+    <div style="width:45%;">
+        <h2 style="color:#347694;">@Model.OrderDetails.SampleType</h2>
+        <div style="padding:16px; border: 2px solid #347694;">
+            <h3 style="color:#347694;margin-top:0px;">Lab Use Only</h3>
+            <p>Work Request #: <span style="display:inline-block; border-bottom:1px solid black; color:#fff; width:65%;">a</span></p>
+            <p>Received On #: <span style="display:inline-block; border-bottom:1px solid black; color:#fff; width:45%;">a</span>By:<span style="display:inline-block; border-bottom:1px solid black; color:#fff; width:16%;">a</span></p>
+            <p>Logged In On #: <span style="display:inline-block; border-bottom:1px solid black; color:#fff; width:45%;">a</span>By:<span style="display:inline-block; border-bottom:1px solid black; color:#fff; width:15%;">a</span></p>
+            <p>Cond:<span style="padding: 0 8px;">Wet</span><span style="padding: 0 8px;">Air-Dried</span><span style="padding: 0 8px;">Dry</span><span style="padding: 0 8px;">Ground</span><span style="padding: 0 8px;">Extract</span></p>
+            <p>Prep Req'd:<span style="padding: 0 8px;">Transfer</span><span style="padding: 0 8px;">Dry</span><span style="padding: 0 8px;">Grind</span><span style="padding: 0 8px;">Freeze Dry</span></p>
+            <p>Log-in Code:<span style="padding: 0 6px;">T</span><span style="padding: 0 6px;">W</span><span style="padding: 0 6px;">A</span><span style="padding: 0 6px;">D</span><span style="padding: 0 6px;">G</span><span style="padding: 0 6px;">R</span><span style="padding: 0 6px;">H</span><span style="padding: 0 6px;">I</span><span style="padding: 0 6px;">E</span><span style="padding: 0 6px;">F</span><span style="padding: 0 6px;">U</span></p>
+            <p>Temp:
+            <span style="padding: 0 6px;">Hot</span>
+            <span style="padding: 0 6px;">Warm</span>
+            <span style="padding: 0 6px;">Room&nbsp;Temp</span>
+            <span style="padding: 0 6px;">Cool</span>
+            <span style="padding: 0 6px;">Cold</span>
+            <span style="padding: 0 6px;">Slushy</span><span style="padding: 0 6px;">Frozen</span></p>
+            <p>Desc. File Needed:<input type="checkbox"/> <small>Yes</small>
+<input type="checkbox"/> <small>No</small></p>
+<p>Missing File Needed:<input type="checkbox"/> <small>Yes</small>
+<input type="checkbox"/> <small>No</small></p>
+        </div>
     </div>
 </div>
 
 @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.AdditionalInfo))
 {
     <strong>Comments, special test requests and missing samples:</strong>
-    <div style="white-space: pre-wrap">@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</div>
+    <div style="padding:12px; border: 1px solid #c7c8cc; border-radius:4px;">@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</div>
 }
-<p>
-    The following estimate of charges is based on routine testing. Should non-routine testing be required you will be contacted to discuss any additional costs.
+<hr/>
+<p><i>The following estimate of charges is based on routine testing. Should non-routine testing be required you will be contacted to discuss any additional costs.</i>
+    
 </p>
-<table>
+<table style="border-spacing:14px;">
     <thead>
-    <tr>
+    <tr style="text-align:left;">
         <th>Test(s)</th>
         <th>Code</th>
         <th>Ref</th>
@@ -251,6 +278,12 @@
     </tbody>
     <tfoot>
     <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
         <td>Processing Fee</td>
         <td>
             @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
@@ -264,7 +297,12 @@
         </td>
     </tr>
     <tr>
-
+        <th></th>
+        <th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
         <th>Total</th>
         <th>@(string.Format("{0:C}", Model.OrderDetails.GrandTotal))</th>
     </tr>
@@ -273,7 +311,7 @@
 <br/><br/>
 
 <span>Work Authorized By:</span>
-<div style="border-bottom: 2px solid black; margin-top:36px; width:336px;">
+<div style="border-bottom: 2px solid black; margin-top:36px; width:336px; color:#fff;">
     **signature_1**
 </div>
 <span>Client / Responsible Party Signature (Required)</span>
@@ -286,7 +324,7 @@
 <br>
 <br><br>
 
-<div style="border-bottom: 2px solid black; margin-top:36px; width:336px;">
+<div style="border-bottom: 2px solid black; margin-top:36px; width:336px;color:#fff;">
     **signature_2**
 </div>
 
@@ -311,5 +349,4 @@
     Email: <a href="mailto:anlab@ucdavis.edu">anlab@ucdavis.edu</a>
 </address>
 
-<a asp-action="Index" class="btn btn-default">Back to Orders</a>
-<a href="#" class="btn btn-default" type="button" onclick="window.print()">Print this page</a>
+</div>
