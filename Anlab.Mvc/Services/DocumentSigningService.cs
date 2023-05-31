@@ -170,7 +170,22 @@ public class DocumentSigningService : IDocumentSigningService
         // add html doc and add signer tag to it
         var env = new EnvelopeDefinition
         {
-            EmailSubject = "Please sign this document"
+            EmailSubject = "Please sign this document",
+            // the document should expire after 2 days with no reminder
+            Notification = new Notification
+            {
+                UseAccountDefaults = "false",
+                Reminders = new Reminders
+                {
+                    ReminderEnabled = "false",
+                },
+                Expirations = new Expirations
+                {
+                    ExpireEnabled = "true",
+                    ExpireAfter = "2",
+                    ExpireWarn = "0"
+                }
+            }
         };
 
         // read html from url /order/document/{id}
