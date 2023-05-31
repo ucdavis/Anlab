@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Anlab.Core.Data;
@@ -97,7 +98,8 @@ public class DocumentSigningService : IDocumentSigningService
 
         var user = GetAccountInfo(authToken);
 
-        var account = user.Accounts[0]; // TODO: what if there are multiple accounts?  need to select one somehow perhaps
+        // there should always be only one default account
+        var account = user.Accounts.First(a => a.IsDefault == "true");
 
         var acctId = account.AccountId;
         var basePath = account.BaseUri;
