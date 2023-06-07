@@ -81,6 +81,8 @@ namespace Anlab.Core.Data
 
         public virtual DbSet<ReviewerOrderView> ReviewerOrderViews { get; set; }
 
+        public virtual DbSet<HistoricalSalesView> HistoricalSalesViews { get; set; }
+
         public virtual DbSet<DisposalView> DisposalView { get; set; }
 
         public virtual DbSet<SystemAlert> SystemAlerts { get; set; }
@@ -95,6 +97,10 @@ namespace Anlab.Core.Data
 
             builder.Entity<ReviewerOrderView>()
                 .ToTable("ReviewerOrders");
+
+            //Probably don't need this here because the name is the same as the table name
+            builder.Entity<HistoricalSalesView>()
+                .ToTable("HistoricalSalesView");
 
 
             base.OnModelCreating(builder);

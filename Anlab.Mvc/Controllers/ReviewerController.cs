@@ -130,6 +130,35 @@ namespace AnlabMvc.Controllers
         }
 
 
+        public async Task<IActionResult> HistoricalSales(DateTime? start, DateTime? end)
+        {
+            var model = new HistoricalSalesModel();
+            if (start == null && end == null)
+            {
+                model.Start = new DateTime(DateTime.UtcNow.Year, 1, 1).Date;
+                model.End = DateTime.UtcNow.ToPacificTime().Date;
+            }
+            else
+            {
+                model.Start = start?.Date;
+                model.End = end?.Date;
+            }
+
+            var query = _context.HistoricalSalesViews.AsQueryable();
+            if(model.Start != null)
+            {
+                query = query.Where(a => a.DateFinalized >= model.Start.Value.Date.FromPacificTime());
+            }
+            if(model.End != null)
+            {
+                query = query.Where(a => a.DateFinalized <= model.End.Value.Date.AddDays(1).FromPacificTime());
+            }
+
+            var results = await query.ToListAsync();
+
+            return null;
+        }
+
 
         private async Task GetHistories(int id, OrderReviewModel model)
         {
