@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Anlab.Core.Extensions;
 using Anlab.Core.Domain;
 using AnlabMvc.Models.Reviewer;
+using Newtonsoft.Json;
 
 namespace AnlabMvc.Controllers
 {
@@ -156,7 +157,65 @@ namespace AnlabMvc.Controllers
 
             var results = await query.ToListAsync();
 
-            return null;
+            foreach (var item in results)
+            {
+                if(item.IsInternal)
+                {
+                    if(item.InternalProcessingFee > 0)
+                    {
+                        AddOrCreateTest(model.Rows, "ProcessingFee", "*** Processing Fee ***", item.IsInternal, 1, item.InternalProcessingFee);
+                    }
+                }
+                else
+                {
+                    if (item.ExternalProcessingFee > 0)
+                    {
+                        AddOrCreateTest(model.Rows, "ProcessingFee", "*** Processing Fee ***", item.IsInternal, 1, item.ExternalProcessingFee);
+                    }
+                }
+                //serialize item.SelectedTests into a list of TestDetails
+                var tests = JsonConvert.DeserializeObject<List<TestDetails>>(item.SelectedTests);
+                foreach (var test in tests)
+                {
+                    if(test.SetupCost > 0)
+                    {
+                        AddOrCreateTest(model.Rows, "SetupCost", "*** Setup Cost ***", item.IsInternal, 1, test.SetupCost);
+                    }
+                    AddOrCreateTest(model.Rows, test.Id, test.Analysis, item.IsInternal, item.Quantity, test.SubTotal);
+
+                }
+
+            }
+
+            return View(model);
+        }
+
+
+        private void AddOrCreateTest(List<HistoricalSalesRowModel> rows, string testCode, string analysis, bool isInternal, int quantity, decimal total)
+        {
+            if(!rows.Any(a => a.TestCode == testCode))
+            {
+                rows.Add(new HistoricalSalesRowModel
+                {
+                    TestCode = testCode,
+                    Analysis = analysis,
+                    InternalQuantity = 0,
+                    ExternalQuantity = 0,
+                    InternalTotal = 0,
+                    ExternalTotal = 0
+                });
+            }
+            var row = rows.Single(a => a.TestCode == testCode);
+            if (isInternal)
+            {
+                row.InternalQuantity += quantity;
+                row.InternalTotal += total;
+            }
+            else
+            {
+                row.ExternalQuantity += quantity;
+                row.ExternalTotal += total;
+            }
         }
 
 

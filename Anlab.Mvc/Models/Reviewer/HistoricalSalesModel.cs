@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System;
+using System.Collections.Generic;
 
 namespace AnlabMvc.Models.Reviewer
 {
@@ -11,6 +12,11 @@ namespace AnlabMvc.Models.Reviewer
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? End { get; set; }
 
+        public List<HistoricalSalesRowModel> Rows { get; set; } = new List<HistoricalSalesRowModel>();
+    }
+
+    public class HistoricalSalesRowModel
+    {
         public string TestCode { get; set; }
         public string Analysis { get; set; }
         public int InternalQuantity { get; set; }
