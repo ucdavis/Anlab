@@ -14,18 +14,25 @@
         <input type="hidden" name="id" value="@Model.Order.ShareIdentifier" />
         <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-files-o" aria-hidden="true"></i> Duplicate</button>
     </form>
-    <a href="#" class="btn btn-default" type="button" onclick="window.print()">Print this page</a>
+     @if (!string.IsNullOrWhiteSpace(Model.Order.SignedEnvelopeId))
+     {
+         @Html.ActionLink("View Confirmation PDF", "ViewSignedDocument", new { id = Model.Order.Id }, new { @class = "btn btn-default", target = "_blank" })
+     }
 </p>
 }
 
 <div>
-    <div class="alert alert-danger noprint">
-        <button type="button" class="close" data-dismiss="alert">×</button>
-        <div>
-            <h2>Please print this page and include a copy with the samples.</h2>
-            <div style="display: flex;"><a href="#" class="btn btn-default" type="button" onclick="window.print()">Print this page</a></div>
-        </div>
-    </div>
+     @if (!string.IsNullOrWhiteSpace(Model.Order.SignedEnvelopeId))
+     {
+         <div class="alert alert-danger noprint">
+             <button type="button" class="close" data-dismiss="alert">×</button>
+             <div>
+                 <h2>Please print your order confirmation and include a copy with the samples.</h2>
+                 @Html.ActionLink("View Confirmation PDF", "ViewSignedDocument", new { id = Model.Order.Id }, new { @class = "btn btn-default", target = "_blank" })
+             </div>
+         </div>
+     }
+
     <div class="alert alert-info">
         <p><strong>Please remember:</strong></p>
         <p>All samples must be numbered sequentially starting at #1.</p>
@@ -36,7 +43,7 @@
          <p>Thank you for placing a work request order with the UC Davis Analytical Laboratory.
             Below is a summary of the tests you requested and an estimate of your charges.
             <strong>
-            Please print this page and include a copy with the samples.
+            Please print your order confirmation and include a copy with the samples.
             </strong>
          </p>
          <p>
@@ -355,7 +362,7 @@
              <a asp-action="Index" class="btn btn-default">Back to Orders</a>
              @if (!string.IsNullOrWhiteSpace(Model.Order.SignedEnvelopeId))
              {
-                 @Html.ActionLink("View Signed PDF", "ViewSignedDocument", new { id = Model.Order.Id }, new { @class = "btn btn-default", target = "_blank" })
+                 @Html.ActionLink("View Confirmation PDF", "ViewSignedDocument", new { id = Model.Order.Id }, new { @class = "btn btn-default", target = "_blank" })
              }
             <a href="#" class="btn btn-default" type="button" onclick="window.print()">Print this page</a>
          </div>
