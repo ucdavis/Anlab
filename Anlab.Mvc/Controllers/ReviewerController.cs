@@ -200,8 +200,8 @@ namespace AnlabMvc.Controllers
                     Analysis = analysis,
                     InternalQuantity = 0,
                     ExternalQuantity = 0,
-                    InternalTotal = 0,
-                    ExternalTotal = 0
+                    InternalTotal = 0.00m,
+                    ExternalTotal = 0.00m
                 });
             }
             var row = rows.Single(a => a.TestCode == testCode);
