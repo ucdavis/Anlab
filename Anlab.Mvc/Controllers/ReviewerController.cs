@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Anlab.Core.Extensions;
 using Anlab.Core.Domain;
 using AnlabMvc.Models.Reviewer;
+using Newtonsoft.Json;
 
 namespace AnlabMvc.Controllers
 {
@@ -129,6 +130,92 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
+
+        public async Task<IActionResult> HistoricalSales(DateTime? start, DateTime? end)
+        {
+            var model = new HistoricalSalesModel();
+            if (start == null && end == null)
+            {
+                model.Start = new DateTime(DateTime.UtcNow.Year, 1, 1).Date;
+                model.End = DateTime.UtcNow.ToPacificTime().Date;
+            }
+            else
+            {
+                model.Start = start?.Date;
+                model.End = end?.Date;
+            }
+
+            var query = _context.HistoricalSalesViews.AsQueryable();
+            if (model.Start != null)
+            {
+                query = query.Where(a => a.DateFinalized >= model.Start.Value.Date.FromPacificTime());
+            }
+            if (model.End != null)
+            {
+                query = query.Where(a => a.DateFinalized <= model.End.Value.Date.AddDays(1).FromPacificTime());
+            }
+
+            var results = await query.AsNoTracking().ToListAsync(); //Grab all the results for the date range for processing
+
+            foreach (var item in results)
+            {
+                if (item.IsInternal)
+                {
+                    if (item.InternalProcessingFee > 0)
+                    {
+                        AddOrCreateTest(model.Rows, "ProcessingFee", "*** Processing Fee ***", item.IsInternal, 1, item.InternalProcessingFee);
+                    }
+                }
+                else
+                {
+                    if (item.ExternalProcessingFee > 0)
+                    {
+                        AddOrCreateTest(model.Rows, "ProcessingFee", "*** Processing Fee ***", item.IsInternal, 1, item.ExternalProcessingFee);
+                    }
+                }
+                //serialize item.SelectedTests into a list of TestDetails
+                var tests = JsonConvert.DeserializeObject<List<TestDetails>>(item.SelectedTests);
+                foreach (var test in tests)
+                {
+                    if (test.SetupCost > 0)
+                    {
+                        AddOrCreateTest(model.Rows, "SetupCost", "*** Setup Cost ***", item.IsInternal, 1, test.SetupCost);
+                    }
+                    AddOrCreateTest(model.Rows, test.Id, test.Analysis, item.IsInternal, item.Quantity, test.SubTotal);
+                }
+
+            }
+
+            return View(model);
+        }
+
+
+        private void AddOrCreateTest(List<HistoricalSalesRowModel> rows, string testCode, string analysis, bool isInternal, int quantity, decimal total)
+        {
+            if (!rows.Any(a => a.TestCode == testCode))
+            {
+                rows.Add(new HistoricalSalesRowModel
+                {
+                    TestCode = testCode,
+                    Analysis = analysis,
+                    InternalQuantity = 0,
+                    ExternalQuantity = 0,
+                    InternalTotal = 0.00m,
+                    ExternalTotal = 0.00m
+                });
+            }
+            var row = rows.Single(a => a.TestCode == testCode);
+            if (isInternal)
+            {
+                row.InternalQuantity += quantity;
+                row.InternalTotal += total;
+            }
+            else
+            {
+                row.ExternalQuantity += quantity;
+                row.ExternalTotal += total;
+            }
+        }
 
 
         private async Task GetHistories(int id, OrderReviewModel model)
