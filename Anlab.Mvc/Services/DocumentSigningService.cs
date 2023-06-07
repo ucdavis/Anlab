@@ -232,8 +232,16 @@ public class DocumentSigningService : IDocumentSigningService
             AnchorXOffset = "20",
         };
 
-        // add sign here tab to signer
-        signer.Tabs = new Tabs {SignHereTabs = new List<SignHere> {signHere}};
+        var dateSigned = new DateSigned
+        {
+            AnchorString = "**date_1**",
+            AnchorUnits = "pixels",
+            // AnchorYOffset = "10",
+            AnchorXOffset = "20",
+        };
+
+        // add sign here & date signed tabs for signer
+        signer.Tabs = new Tabs {SignHereTabs = new List<SignHere> {signHere}, DateSignedTabs = new List<DateSigned> {dateSigned }};
 
         // add signer to envelope
         env.Recipients = new Recipients {Signers = new List<Signer> {signer}};
