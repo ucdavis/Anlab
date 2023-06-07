@@ -11,7 +11,7 @@
 <br>
 Below is a summary of the tests you requested and an estimate of your charges. You will be billed when the work has been completed</p>
 <p><i>You must sign this document to verify your work request order</i></p>
-    
+
 <div style="padding:8px 16px; border:2px solid #347694; border-radius:4px;">
     <p>
         <strong>Please remember:</strong>
@@ -73,7 +73,7 @@ Below is a summary of the tests you requested and an estimate of your charges. Y
                 }
                 </tbody>
             </table>
-            
+
         }
         else
         {
@@ -124,7 +124,7 @@ Below is a summary of the tests you requested and an estimate of your charges. Y
                 </tr>
                 </tbody>
             </table>
-          
+
         }
 
         <h4 style="text-transform: uppercase;font-weight:400;margin-bottom:0;">Submitter Info</h4>
@@ -151,7 +151,7 @@ Below is a summary of the tests you requested and an estimate of your charges. Y
             </tr>
             </tbody>
         </table>
-        
+
 
         <p><strong>Payment Method:</strong>
         @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
@@ -202,18 +202,18 @@ Below is a summary of the tests you requested and an estimate of your charges. Y
                 <p><strong>Number of Samples Submitted:</strong>
                     <span>@Model.OrderDetails.Quantity</span></p>
 
-                   
+
     </div>
 
 
 @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.AdditionalInfo))
 {
     <strong>Comments, special test requests and missing samples:</strong>
-    <div style="padding:12px; border: 1px solid #c7c8cc; border-radius:4px;">@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</div>
+    <div style="padding:12px; border: 1px solid #c7c8cc; border-radius:4px;">@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo).Replace("&#xA;", "<br />"))</div>
 }
 <div style="page-break-before:always">&nbsp;</div>
 <p><i>The following estimate of charges is based on routine testing. Should non-routine testing be required you will be contacted to discuss any additional costs.</i>
-    
+
 </p>
 <table style="border-spacing:14px;">
     <thead>
@@ -336,8 +336,8 @@ Below is a summary of the tests you requested and an estimate of your charges. Y
             <p style="border-bottom:1px solid black; width:auto;">Work Request #:</p>
             <p style="border-bottom:1px solid black; width:auto;">Received On:<span style="color:#fff;">PlaceholderPlaceholderPlaceholderPlace</span> By:</p>
             <p style="border-bottom:1px solid black; width:auto;">Logged In On #:<span style="color:#fff;">PlaceholderPlaceholderPlaceholderPla</span> By:</p>
-           
-        
+
+
             <p>Cond:&nbsp;&nbsp;&nbsp;Wet&nbsp;&nbsp;&nbsp;Air-Dried &nbsp;&nbsp;&nbsp;Dry&nbsp;&nbsp;&nbsp;Ground&nbsp;&nbsp;&nbsp;Extract</p>
             <p>Prep Req'd:&nbsp;&nbsp;&nbsp;Transfer&nbsp;&nbsp;&nbsp;Dry&nbsp;&nbsp;&nbsp;Grind&nbsp;&nbsp;&nbsp;Freeze Dry</p>
             <p>Log-in Code:&nbsp;&nbsp;&nbsp;T&nbsp;&nbsp;&nbsp;W&nbsp;&nbsp;&nbsp;A&nbsp;&nbsp;&nbsp;D&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;R&nbsp;&nbsp;&nbsp;H&nbsp;&nbsp;&nbsp;I&nbsp;&nbsp;&nbsp;E&nbsp;&nbsp;&nbsp;F&nbsp;&nbsp;&nbsp;U</p>
@@ -346,6 +346,6 @@ Below is a summary of the tests you requested and an estimate of your charges. Y
 <span style="border:1px solid #000;height:12px;background-color:#FFF;color:#FFF">HH</span> <small>No</small></p>
 <p>Missing File Needed:<span style="border:1px solid #000;height:12px;background-color:#FFF;color:#FFF">HH</span> <small>Yes</small>
 <span style="border:1px solid #000;height:12px;background-color:#FFF;color:#FFF">HH</span> <small>No</small></p>
-        
+
     </div>
 </div>
