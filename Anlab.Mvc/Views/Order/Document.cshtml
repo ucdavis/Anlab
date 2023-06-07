@@ -29,22 +29,17 @@
     </p>
     <p>All samples must be numbered sequentially starting at #1.</p>
     <p>If you would like your sample descriptions included in the report, you may send an Excel file with that information to the lab email: anlab@ucdavis.edu Please reference the online order number in the email subject.</p>
+    <p>Please number each sample container consecutively beginning with number 1. Results are reported on the basis of those numbers so please document your numbering scheme. Sample containers are often not retained.</p>
 </div>
 
     <div>
         <p>
             Thank you for placing a work request order with the UC Davis Analytical Laboratory.
             Below is a summary of the tests you requested and an estimate of your charges.
-            <br>
-            <strong><span style="text-decoration:underline">
-                Please print this page and include a copy with the samples.
-                </span>
-            </strong>
-        </p>
-        <p>
-            Please number each sample container consecutively beginning with number 1. Results are reported on the basis of those numbers so please document your numbering scheme. Sample containers are often not retained.
         </p>
         <p>You will be billed when the work has been completed.</p>
+        <br>
+        <br>
         <br>
         <br>
         <br>
@@ -228,11 +223,10 @@
                 <p><strong>Number of Samples Submitted:</strong>
                     <span>@Model.OrderDetails.Quantity</span></p>
 
-                    
+                   
     </div>
 
 
-<br>
 @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.AdditionalInfo))
 {
     <strong>Comments, special test requests and missing samples:</strong>
@@ -308,12 +302,22 @@
     </tfoot>
 </table>
 <br/><br/>
-
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 <span>Work Authorized By:</span>
 <div style="border-bottom: 2px solid black; margin-top:36px; width:336px; color:#fff;">
     **signature_1**
 </div>
 <span>Client / Responsible Party Signature (Required)</span>
+<br>
+<div style="display:block; border-bottom: 2px solid black; margin-top:36px; width:200px; color:#fff">
+    jan 2032
+</div>
 <span>Date</span>
 
 <br><br><br>
@@ -328,7 +332,15 @@
 </div>
 
 <span>Print Name</span>
-<span class="pull-right">Date</span>
+<br>
+<div style="border-bottom: 2px solid black; margin-top:36px; width:200px; color:#fff;">
+    jan 2032
+</div>
+<span>Date</span>
+<br>
+<p><i>You must sign this document to verify your work request order</i></p>
+<br>
+<br>
 
 <address>
     <strong>Submit Samples to:</strong><br>

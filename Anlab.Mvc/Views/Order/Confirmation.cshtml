@@ -15,7 +15,7 @@
     <a asp-action="Edit" asp-route-id="@Model.Order.Id" class="btn btn-small">Edit Order</a>
 
     <form asp-controller="order" asp-action="PendingSignature" asp-route-id="@Model.Order.Id" method="post" class="form-horizontal" style="margin-left: 5px;margin-right: 5px">
-        <button type="submit" class="btn btn-small"> @(string.Format("{0:C}", Model.OrderDetails.Total)) Confirm Order</button>
+        <button type="submit" class="btn btn-small"> @(string.Format("{0:C}", Model.OrderDetails.Total)) Confirm and Sign Order</button>
     </form>
 
 </p>
