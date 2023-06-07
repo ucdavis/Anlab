@@ -155,7 +155,7 @@ namespace AnlabMvc.Controllers
                 query = query.Where(a => a.DateFinalized <= model.End.Value.Date.AddDays(1).FromPacificTime());
             }
 
-            var results = await query.ToListAsync();
+            var results = await query.ToListAsync(); //Grab all the results for the date range for processing
 
             foreach (var item in results)
             {
@@ -182,7 +182,6 @@ namespace AnlabMvc.Controllers
                         AddOrCreateTest(model.Rows, "SetupCost", "*** Setup Cost ***", item.IsInternal, 1, test.SetupCost);
                     }
                     AddOrCreateTest(model.Rows, test.Id, test.Analysis, item.IsInternal, item.Quantity, test.SubTotal);
-
                 }
 
             }
