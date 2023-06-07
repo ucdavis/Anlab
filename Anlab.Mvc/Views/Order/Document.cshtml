@@ -5,24 +5,13 @@
     Layout = null;
     ViewData["Title"] = "Order Confirmed";
 }
+
 <div style="padding:4px;font-family:sans-serif">
-    <div style="padding:16px; border: 2px solid #347694;">
-            <h3 style="color:#347694;margin-top:0px;">Lab Use Only | @Model.OrderDetails.SampleType</h3>
-            <p style="border-bottom:1px solid black; width:auto;">Work Request #:</p>
-            <p style="border-bottom:1px solid black; width:auto;">Received On:<span style="color:#fff;">PlaceholderPlaceholderPlaceholderPlace</span> By:</p>
-            <p style="border-bottom:1px solid black; width:auto;">Logged In On #:<span style="color:#fff;">PlaceholderPlaceholderPlaceholderPla</span> By:</p>
-           
-        
-            <p>Cond:&nbsp;&nbsp;&nbsp;Wet&nbsp;&nbsp;&nbsp;Air-Dried &nbsp;&nbsp;&nbsp;Dry&nbsp;&nbsp;&nbsp;Ground&nbsp;&nbsp;&nbsp;Extract</p>
-            <p>Prep Req'd:&nbsp;&nbsp;&nbsp;Transfer&nbsp;&nbsp;&nbsp;Dry&nbsp;&nbsp;&nbsp;Grind&nbsp;&nbsp;&nbsp;Freeze Dry</p>
-            <p>Log-in Code:&nbsp;&nbsp;&nbsp;T&nbsp;&nbsp;&nbsp;W&nbsp;&nbsp;&nbsp;A&nbsp;&nbsp;&nbsp;D&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;R&nbsp;&nbsp;&nbsp;H&nbsp;&nbsp;&nbsp;I&nbsp;&nbsp;&nbsp;E&nbsp;&nbsp;&nbsp;F&nbsp;&nbsp;&nbsp;U</p>
-            <p>Temp:&nbsp;&nbsp;&nbsp;Hot&nbsp;&nbsp;&nbsp;Warm&nbsp;&nbsp;&nbsp;Room&nbsp;Temp&nbsp;&nbsp;&nbsp;Cool&nbsp;&nbsp;&nbsp;Cold&nbsp;&nbsp;&nbsp;Slushy&nbsp;&nbsp;&nbsp;Frozen</p>
-            <p>Desc. File Needed:<span style="border:1px solid #000;height:12px;background-color:#FFF;color:#FFF">HH</span> <small>Yes</small>
-<span style="border:1px solid #000;height:12px;background-color:#FFF;color:#FFF">HH</span> <small>No</small></p>
-<p>Missing File Needed:<span style="border:1px solid #000;height:12px;background-color:#FFF;color:#FFF">HH</span> <small>Yes</small>
-<span style="border:1px solid #000;height:12px;background-color:#FFF;color:#FFF">HH</span> <small>No</small></p>
-        
-    </div>
+    <p><b>Thank you for placing a work request order with the UC Davis Analytical Laboratory.</b>
+<br>
+Below is a summary of the tests you requested and an estimate of your charges. You will be billed when the work has been completed</p>
+<p><i>You must sign this document to verify your work request order</i></p>
+    
 <div style="padding:8px 16px; border:2px solid #347694; border-radius:4px;">
     <p>
         <strong>Please remember:</strong>
@@ -33,17 +22,7 @@
 </div>
 
     <div>
-        <p>
-            Thank you for placing a work request order with the UC Davis Analytical Laboratory.
-            Below is a summary of the tests you requested and an estimate of your charges.
-        </p>
-        <p>You will be billed when the work has been completed.</p>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
+        <div style="page-break-before:always">&nbsp;</div>
 
         <p style="font-weight:600;color:#347694;">Online Order Number:</strong>
         <span>@Model.Order.Id</span>
@@ -302,13 +281,7 @@
     </tfoot>
 </table>
 <br/><br/>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+<div style="page-break-before:always">&nbsp;</div>
 <span>Work Authorized By:</span>
 <div style="border-bottom: 2px solid black; margin-top:36px; width:336px; color:#fff;">
     **signature_1**
@@ -338,7 +311,7 @@
 </div>
 <span>Date</span>
 <br>
-<p><i>You must sign this document to verify your work request order</i></p>
+
 <br>
 <br>
 
@@ -357,5 +330,22 @@
     Receiving Phone: 530-752-0266<br>
     Email: <a href="mailto:anlab@ucdavis.edu">anlab@ucdavis.edu</a>
 </address>
-
+<div style="page-break-before:always">&nbsp;</div>
+<div style="padding:16px; border: 2px solid #347694;">
+            <h3 style="color:#347694;margin-top:0px;">Lab Use Only | @Model.OrderDetails.SampleType</h3>
+            <p style="border-bottom:1px solid black; width:auto;">Work Request #:</p>
+            <p style="border-bottom:1px solid black; width:auto;">Received On:<span style="color:#fff;">PlaceholderPlaceholderPlaceholderPlace</span> By:</p>
+            <p style="border-bottom:1px solid black; width:auto;">Logged In On #:<span style="color:#fff;">PlaceholderPlaceholderPlaceholderPla</span> By:</p>
+           
+        
+            <p>Cond:&nbsp;&nbsp;&nbsp;Wet&nbsp;&nbsp;&nbsp;Air-Dried &nbsp;&nbsp;&nbsp;Dry&nbsp;&nbsp;&nbsp;Ground&nbsp;&nbsp;&nbsp;Extract</p>
+            <p>Prep Req'd:&nbsp;&nbsp;&nbsp;Transfer&nbsp;&nbsp;&nbsp;Dry&nbsp;&nbsp;&nbsp;Grind&nbsp;&nbsp;&nbsp;Freeze Dry</p>
+            <p>Log-in Code:&nbsp;&nbsp;&nbsp;T&nbsp;&nbsp;&nbsp;W&nbsp;&nbsp;&nbsp;A&nbsp;&nbsp;&nbsp;D&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;R&nbsp;&nbsp;&nbsp;H&nbsp;&nbsp;&nbsp;I&nbsp;&nbsp;&nbsp;E&nbsp;&nbsp;&nbsp;F&nbsp;&nbsp;&nbsp;U</p>
+            <p>Temp:&nbsp;&nbsp;&nbsp;Hot&nbsp;&nbsp;&nbsp;Warm&nbsp;&nbsp;&nbsp;Room&nbsp;Temp&nbsp;&nbsp;&nbsp;Cool&nbsp;&nbsp;&nbsp;Cold&nbsp;&nbsp;&nbsp;Slushy&nbsp;&nbsp;&nbsp;Frozen</p>
+            <p>Desc. File Needed:<span style="border:1px solid #000;height:12px;background-color:#FFF;color:#FFF">HH</span> <small>Yes</small>
+<span style="border:1px solid #000;height:12px;background-color:#FFF;color:#FFF">HH</span> <small>No</small></p>
+<p>Missing File Needed:<span style="border:1px solid #000;height:12px;background-color:#FFF;color:#FFF">HH</span> <small>Yes</small>
+<span style="border:1px solid #000;height:12px;background-color:#FFF;color:#FFF">HH</span> <small>No</small></p>
+        
+    </div>
 </div>
