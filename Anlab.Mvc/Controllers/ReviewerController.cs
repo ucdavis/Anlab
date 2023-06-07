@@ -155,7 +155,7 @@ namespace AnlabMvc.Controllers
                 query = query.Where(a => a.DateFinalized <= model.End.Value.Date.AddDays(1).FromPacificTime());
             }
 
-            var results = await query.ToListAsync(); //Grab all the results for the date range for processing
+            var results = await query.AsNoTracking().ToListAsync(); //Grab all the results for the date range for processing
 
             foreach (var item in results)
             {

@@ -96,11 +96,11 @@ namespace Anlab.Core.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<ReviewerOrderView>()
-                .ToTable("ReviewerOrders");
+                .ToView("ReviewerOrders");
 
             //Probably don't need this here because the name is the same as the table name
             builder.Entity<HistoricalSalesView>()
-                .ToTable("HistoricalSalesView");
+                .ToView("HistoricalSalesView");
 
 
             base.OnModelCreating(builder);
