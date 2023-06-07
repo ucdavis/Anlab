@@ -146,11 +146,11 @@ namespace AnlabMvc.Controllers
             }
 
             var query = _context.HistoricalSalesViews.AsQueryable();
-            if(model.Start != null)
+            if (model.Start != null)
             {
                 query = query.Where(a => a.DateFinalized >= model.Start.Value.Date.FromPacificTime());
             }
-            if(model.End != null)
+            if (model.End != null)
             {
                 query = query.Where(a => a.DateFinalized <= model.End.Value.Date.AddDays(1).FromPacificTime());
             }
@@ -159,9 +159,9 @@ namespace AnlabMvc.Controllers
 
             foreach (var item in results)
             {
-                if(item.IsInternal)
+                if (item.IsInternal)
                 {
-                    if(item.InternalProcessingFee > 0)
+                    if (item.InternalProcessingFee > 0)
                     {
                         AddOrCreateTest(model.Rows, "ProcessingFee", "*** Processing Fee ***", item.IsInternal, 1, item.InternalProcessingFee);
                     }
@@ -177,7 +177,7 @@ namespace AnlabMvc.Controllers
                 var tests = JsonConvert.DeserializeObject<List<TestDetails>>(item.SelectedTests);
                 foreach (var test in tests)
                 {
-                    if(test.SetupCost > 0)
+                    if (test.SetupCost > 0)
                     {
                         AddOrCreateTest(model.Rows, "SetupCost", "*** Setup Cost ***", item.IsInternal, 1, test.SetupCost);
                     }
@@ -192,7 +192,7 @@ namespace AnlabMvc.Controllers
 
         private void AddOrCreateTest(List<HistoricalSalesRowModel> rows, string testCode, string analysis, bool isInternal, int quantity, decimal total)
         {
-            if(!rows.Any(a => a.TestCode == testCode))
+            if (!rows.Any(a => a.TestCode == testCode))
             {
                 rows.Add(new HistoricalSalesRowModel
                 {
