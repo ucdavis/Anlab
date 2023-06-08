@@ -56,7 +56,7 @@ public class DocumentSigningService : IDocumentSigningService
 
         var user = GetAccountInfo(authToken);
 
-        var account = user.Accounts[0]; // TODO: what if there are multiple accounts?  need to select one somehow perhaps
+        var account = user.Accounts.OrderByDescending(a => a.IsDefault).First(); // TODO: what if there are multiple accounts?  need to select one somehow perhaps
 
         var acctId = account.AccountId;
         var basePath = account.BaseUri;
