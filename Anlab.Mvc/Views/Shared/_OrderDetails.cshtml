@@ -54,7 +54,12 @@
                 {
                     <li><a asp-controller="Lab" asp-action="OverrideOrder" asp-route-id="@Model.Order.Id" target="_blank">Override</a></li>
                     <li><a asp-controller="Admin" asp-action="MailQueue" asp-route-id="@Model.Order.Id" target="_blank">View Emails</a></li>
-
+                    @if (!string.IsNullOrWhiteSpace(Model.Order.SignedEnvelopeId))
+                    {
+                        <li>
+                            <a asp-controller="Order" asp-action="ViewSignedDocument" asp-route-id="@Model.Order.Id" target="_blank">View Confirmation PDF</a>
+                        </li>
+                    }
                     <li><a asp-action="EditUser" asp-controller="Admin" asp-route-id="@Model.Order.CreatorId" target="_blank">Edit Submitter</a></li>
                     <li><a asp-action="Confirmed" asp-controller="Order" asp-route-id="@Model.Order.Id" target="_blank">Client Print Page</a></li>
                 }

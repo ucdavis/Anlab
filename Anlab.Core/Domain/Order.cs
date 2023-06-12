@@ -18,7 +18,7 @@ namespace Anlab.Core.Domain
             History = new List<History>();
         }
         public int Id { get; set; }
-        
+
         [Required]
         [StringLength(450)]
         public string CreatorId { get; set; }
@@ -38,9 +38,9 @@ namespace Anlab.Core.Domain
 
         [StringLength(512)]
         public string ClientName { get; set; }
-        
+
         public string AdditionalEmails { get; set; }
-        
+
         public string JsonDetails { get; set; }
         public string SavedTestDetails { get; set; }
         /// <summary>
@@ -53,9 +53,13 @@ namespace Anlab.Core.Domain
 
         [StringLength(50)]
         public string Status { get; set; }
-        
+
         [StringLength(50)]
         public string RequestNum { get; set; }
+
+        // Used to hold docusign envelope id - null if not signed
+        [StringLength(50)]
+        public string SignedEnvelopeId { get; set; }
 
         public string ResultsFileIdentifier { get; set; }
         public Guid ShareIdentifier { get; set; }
@@ -65,7 +69,7 @@ namespace Anlab.Core.Domain
         public PaymentEvent ApprovedPayment { get; set; }
         [StringLength(20)] //It is 10 in sloth, but just in case...
         public string KfsTrackingNumber { get; set; }
-        public Guid? SlothTransactionId { get; set; } 
+        public Guid? SlothTransactionId { get; set; }
 
         public bool Paid { get; set; } = false;
 

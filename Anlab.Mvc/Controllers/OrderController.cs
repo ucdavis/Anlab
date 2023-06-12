@@ -32,12 +32,13 @@ namespace AnlabMvc.Controllers
         private readonly ILabworksService _labworksService;
         private readonly IFinancialService _financialService;
         private IAggieEnterpriseService _aggieEnterpriseService;
+        private readonly IDocumentSigningService _documentSigningService;
         private readonly AggieEnterpriseSettings _aeSettings;
         private readonly AppSettings _appSettings;
 
         private const string processingCode = "PROC";
 
-        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ILabworksService labworksService, IFinancialService financialService, IOptions<AppSettings> appSettings, IOptions<AggieEnterpriseSettings> aeSettings, IAggieEnterpriseService aggieEnterpriseService)
+        public OrderController(ApplicationDbContext context, IOrderService orderService, IOrderMessageService orderMessageService, ILabworksService labworksService, IFinancialService financialService, IOptions<AppSettings> appSettings, IOptions<AggieEnterpriseSettings> aeSettings, IAggieEnterpriseService aggieEnterpriseService, IDocumentSigningService documentSigningService)
         {
             _context = context;
             _orderService = orderService;
@@ -45,6 +46,7 @@ namespace AnlabMvc.Controllers
             _labworksService = labworksService;
             _financialService = financialService;
             _aggieEnterpriseService = aggieEnterpriseService;
+            _documentSigningService = documentSigningService;
             _aeSettings = aeSettings.Value;
             _appSettings = appSettings.Value;
         }
@@ -259,7 +261,7 @@ namespace AnlabMvc.Controllers
             order.Creator = user;
             order.ShareIdentifier = Guid.NewGuid();
 
-            if (adminCopy) 
+            if (adminCopy)
             {
                 if (!User.IsInRole(RoleCodes.Admin))
                 {
@@ -463,8 +465,194 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
+        // Used only for confirmation without signature
         [HttpPost]
+        [Authorize(Roles = RoleCodes.Admin)]
         public async Task<IActionResult> Confirmation(int id, bool confirm)
+        {
+            return await ConfirmOrder(id);
+        }
+
+        // Interacts with docusign to get the signature url
+        [HttpPost]
+        public async Task<IActionResult> PendingSignature(int id)
+        {
+            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            // only the creator can send for signature
+            if (order.CreatorId == CurrentUserId)
+            {
+                var signatureUrl = await _documentSigningService.SendForEmbeddedSigning(id);
+
+                if (string.IsNullOrWhiteSpace(signatureUrl))
+                {
+                    ErrorMessage = "Unable to get signature url";
+                    return RedirectToAction("Index");
+                }
+
+                return Redirect(signatureUrl);
+            }
+
+            // if they are an admin, they can confirm without signature
+            if (User.IsInRole(RoleCodes.Admin))
+            {
+                return await ConfirmOrder(id);
+            }
+
+            // if they are not the creator or an admin, they can't do anything
+            ErrorMessage = "You don't have access to this order.";
+            return Forbid();
+        }
+
+        // Page that docusign redirects to after signing
+        public async Task<IActionResult> SignatureCallback(int id)
+        {
+            // Check if the signature was successful by inspecting the "event" query string parameter
+            var eventStatus = Request.Query["event"];
+
+            if (eventStatus != "signing_complete")
+            {
+                ErrorMessage = "Unable to get signature";
+                return RedirectToAction("Index");
+            }
+
+            var envelopeId = Request.Query["envelopeId"];
+
+            if (string.IsNullOrWhiteSpace(envelopeId))
+            {
+                ErrorMessage = "Unable to get signature - envelope information missing";
+                return RedirectToAction("Index");
+            }
+
+            return await ConfirmOrder(id, envelopeId);
+        }
+
+        // Page not visible by user which will be used to generate the signature document content
+        public async Task<IActionResult> Document(int id)
+        {
+            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if (order.CreatorId != CurrentUserId)
+            {
+                if (!User.IsInRole(RoleCodes.Admin))
+                {
+                    ErrorMessage = "You don't have access to this order.";
+                    return NotFound();
+                }
+            }
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> Confirmed(int id)
+        {
+            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if (order.CreatorId != CurrentUserId)
+            {
+                if (!User.IsInRole(RoleCodes.Admin))
+                {
+                    ErrorMessage = "You don't have access to this order.";
+                    return NotFound();
+                }
+            }
+
+            var model = new OrderReviewModel();
+            model.Order = order;
+            model.OrderDetails = order.GetOrderDetails();
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> ViewSignedDocument(int id)
+        {
+            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            // make sure the order has a signed envelope
+            if (string.IsNullOrWhiteSpace(order.SignedEnvelopeId))
+            {
+                ErrorMessage = "No signed document found.";
+                return RedirectToAction("Index");
+            }
+
+            if (order.CreatorId != CurrentUserId)
+            {
+                if (!User.IsInRole(RoleCodes.Admin))
+                {
+                    ErrorMessage = "You don't have access to this order.";
+                    return NotFound();
+                }
+            }
+
+            return await _documentSigningService.DownloadEnvelope(order.SignedEnvelopeId);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var order = await _context.Orders.Include(a => a.History).SingleOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if (order.CreatorId != CurrentUserId)
+            {
+                ErrorMessage = "You don't have access to this order.";
+                return NotFound();
+            }
+
+            if (order.Status != OrderStatusCodes.Created)
+            {
+                ErrorMessage = "Can't delete confirmed orders.";
+                return RedirectToAction("Index");
+            }
+
+            _context.Remove(order);
+            await _context.SaveChangesAsync();
+
+            Message = "Order deleted";
+            return RedirectToAction("Index");
+
+        }
+
+        [HttpGet]
+        public async Task<ClientDetailsLookupModel> LookupClientId(string id)
+        {
+            var result = await _labworksService.GetClientDetails(id);
+            if (result == null)
+            {
+                return null;
+            }
+            return result;
+        }
+
+        private async Task<IActionResult> ConfirmOrder(int id, string envelopeId = null)
         {
             User adminUser = null;
             var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
@@ -558,6 +746,11 @@ namespace AnlabMvc.Controllers
             _orderService.UpdateAdditionalInfo(order);
             order.Status = OrderStatusCodes.Confirmed;
 
+            if (!string.IsNullOrWhiteSpace(envelopeId))
+            {
+                order.SignedEnvelopeId = envelopeId;
+            }
+
             order.History.Add(new History
             {
                 Action = "Confirmed",
@@ -572,76 +765,9 @@ namespace AnlabMvc.Controllers
 
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Confirmed", new { id = id });
-
+            return RedirectToAction("Confirmed", new {id = order.Id});
         }
 
-        public async Task<IActionResult> Confirmed(int id)
-        {
-            var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
-
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            if (order.CreatorId != CurrentUserId)
-            {
-                if (!User.IsInRole(RoleCodes.Admin))
-                {
-                    ErrorMessage = "You don't have access to this order.";
-                    return NotFound();
-                }
-            }
-
-            var model = new OrderReviewModel();
-            model.Order = order;
-            model.OrderDetails = order.GetOrderDetails();
-
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var order = await _context.Orders.Include(a => a.History).SingleOrDefaultAsync(o => o.Id == id);
-
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            if (order.CreatorId != CurrentUserId)
-            {
-                ErrorMessage = "You don't have access to this order.";
-                return NotFound();
-            }
-
-            if (order.Status != OrderStatusCodes.Created)
-            {
-                ErrorMessage = "Can't delete confirmed orders.";
-                return RedirectToAction("Index");
-            }
-
-            _context.Remove(order);
-            await _context.SaveChangesAsync();
-
-            Message = "Order deleted";
-            return RedirectToAction("Index");
-
-        }
-
-        [HttpGet]
-        public async Task<ClientDetailsLookupModel> LookupClientId(string id)
-        {
-            var result = await _labworksService.GetClientDetails(id);
-            if (result == null)
-            {
-                return null;
-            }
-            return result;
-        }
-  
     }
-   
+
 }
