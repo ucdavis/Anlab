@@ -484,6 +484,12 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
 
+            if (User.IsImpersonating())
+            {
+                ErrorMessage = "You can't sign orders while impersonating.";
+                return RedirectToAction("Index");
+            }
+
             // only the creator can send for signature
             if (order.CreatorId == CurrentUserId)
             {
