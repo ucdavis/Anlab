@@ -183,6 +183,10 @@ namespace Test.TestsDatabase
             expectedFields.Add(new NameAndType("ResultsFileIdentifier", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("SavedTestDetails", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("ShareIdentifier", "System.Guid", new List<string>()));
+            expectedFields.Add(new NameAndType("SignedEnvelopeId", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
+            }));
             expectedFields.Add(new NameAndType("SlothTransactionId", "System.Nullable`1[System.Guid]", new List<string>()));
             expectedFields.Add(new NameAndType("Status", "System.String", new List<string>
             {

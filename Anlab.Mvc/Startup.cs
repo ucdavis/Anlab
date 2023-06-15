@@ -50,6 +50,7 @@ namespace AnlabMvc
             services.Configure<CyberSourceSettings>(Configuration.GetSection("CyberSourceSettings"));
             services.Configure<FinancialSettings>(Configuration.GetSection("Financial"));
             services.Configure<EmailSettings>(Configuration.GetSection("Email"));
+            services.Configure<ESignatureOptions>(Configuration.GetSection("ESigning"));
 
             // Add framework services.
             if (_environment.IsDevelopment())
@@ -128,9 +129,10 @@ namespace AnlabMvc
             services.AddTransient<IFinancialService, FinancialService>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddTransient<IAggieEnterpriseService, AggieEnterpriseService>();
+            services.AddTransient<IDocumentSigningService, DocumentSigningService>();
 
             // Used by dynamic scripts/styles loader
-            services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory())); // lgtm [cs/local-not-disposed] 
+            services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory())); // lgtm [cs/local-not-disposed]
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

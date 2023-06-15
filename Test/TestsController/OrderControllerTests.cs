@@ -46,6 +46,8 @@ namespace Test.TestsController
         public Mock<TempDataSerializer> MockTempDataSerializer { get; set; }
         public Mock<IAggieEnterpriseService> MockAggieEnterpriseService { get; set; }
 
+        public Mock<IDocumentSigningService> MockDocumentSigningService { get; set; }
+
         //Setup Data
         public List<Order> OrderData { get; set; }
         public List<TestItemModel> TestItemModelData { get; set; }
@@ -60,7 +62,7 @@ namespace Test.TestsController
             Token = "Fake"
         };
 
-        
+
 
         //Controller
         public OrderController Controller { get; set; }
@@ -83,6 +85,7 @@ namespace Test.TestsController
             MockClaimsPrincipal = new Mock<ClaimsPrincipal>();
             MockTempDataSerializer = new Mock<TempDataSerializer>();
             MockAggieEnterpriseService = new Mock<IAggieEnterpriseService>();
+            MockDocumentSigningService = new Mock<IDocumentSigningService>();
             var mockDataProvider = new Mock<SessionStateTempDataProvider>(MockTempDataSerializer.Object);
 
 
@@ -148,7 +151,8 @@ namespace Test.TestsController
                 MockFinancialService.Object,
                 MockAppSettings.Object,
                 MockAeSettings.Object,
-                MockAggieEnterpriseService.Object)
+                MockAggieEnterpriseService.Object,
+                MockDocumentSigningService.Object)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -1085,7 +1089,7 @@ namespace Test.TestsController
         [Fact]
         public void TestControllerMethodCount()
         {
-            ControllerReflection.ControllerPublicMethods(14);
+            ControllerReflection.ControllerPublicMethods(18);
         }
 
         [Fact]
@@ -1117,9 +1121,11 @@ namespace Test.TestsController
             ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Details", 1 + countAdjustment, "Details-1", showListOfAttributes: false);
 
             //7 & 8
-            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Confirmation", 1 + countAdjustment, "CopyGet-1", showListOfAttributes: false);
-            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Confirmation", 2 + countAdjustment, "CopyPost-1", true, showListOfAttributes: false);
-            ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("Confirmation", 2 + countAdjustment, "CopyPost-2", true, showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Confirmation", 1 + countAdjustment, "ConfirmationGet-1", showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Confirmation", 3 + countAdjustment, "ConfirmationPost-1", true, showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("Confirmation", 3 + countAdjustment, "ConfirmationPost-2", true, showListOfAttributes: false);
+            var authAttribute = ControllerReflection.MethodExpectedAttribute<AuthorizeAttribute>("Confirmation", 3 + countAdjustment, "ConfirmationPost-3", true, showListOfAttributes: false);
+            authAttribute.ElementAt(0).Roles.ShouldBe(RoleCodes.Admin);
 
             //9
             ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Confirmed", 1 + countAdjustment, "Confirmed-1", showListOfAttributes: false);
@@ -1140,8 +1146,21 @@ namespace Test.TestsController
             ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("SaveLink", 2 + countAdjustment, "SaveLink-1", showListOfAttributes: false);
 
             //14
-            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("DeleteLink", 2 + countAdjustment, "DeleteLink-1", showListOfAttributes: true);
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("DeleteLink", 2 + countAdjustment, "DeleteLink-1", showListOfAttributes: false);
             ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("DeleteLink", 2 + countAdjustment, "DeleteLink-1", showListOfAttributes: false);
+
+            //15
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("PendingSignature", 2 + countAdjustment, "PendingSignature-1", showListOfAttributes: false);
+            ControllerReflection.MethodExpectedAttribute<HttpPostAttribute>("PendingSignature", 2 + countAdjustment, "PendingSignature-2", showListOfAttributes: false);
+
+            //16
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("SignatureCallback", 1 + countAdjustment, "SignatureCallback-1", showListOfAttributes: false);
+
+            //17
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Document", 1 + countAdjustment, "Document-1", showListOfAttributes: false);
+
+            //18
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("ViewSignedDocument", 1 + countAdjustment, "ViewSignedDocument-1", showListOfAttributes: false);
 
         }
 
