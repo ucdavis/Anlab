@@ -27,9 +27,9 @@ stages:
               version: 6.x
 
           - task: NodeTool@0
-            displayName: "Use Node 14 (LTS)"
+            displayName: "Use Node 18 (LTS)"
             inputs:
-              versionSpec: "14.x"
+              versionSpec: "18.x"
 
           - task: DotNetCoreCLI@2
             displayName: "Run Server Tests"
@@ -44,12 +44,12 @@ stages:
               customCommand: "run citest"
 
           - task: PublishTestResults@2
-            displayName: 'Publish Client Test Results'
+            displayName: "Publish Client Test Results"
             inputs:
-              searchFolder: './Anlab.Mvc/ClientApp'
-              testResultsFormat: 'VSTest'
-              testResultsFiles: '**/test-results.trx'
-              testRunTitle: 'Client Tests'
+              searchFolder: "./Anlab.Mvc/ClientApp"
+              testResultsFormat: "VSTest"
+              testResultsFiles: "**/test-results.trx"
+              testRunTitle: "Client Tests"
 
   - stage: Publish
     jobs:
@@ -62,9 +62,9 @@ stages:
               version: 6.x
 
           - task: NodeTool@0
-            displayName: "Use Node 14 (LTS)"
+            displayName: "Use Node 18 (LTS)"
             inputs:
-              versionSpec: "14.x"
+              versionSpec: "18.x"
 
           - task: DotNetCoreCLI@2
             displayName: "Publish Anlab.Mvc"
