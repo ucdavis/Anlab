@@ -15,12 +15,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using MvcReact;
 using Serilog;
 
 namespace AnlabMvc
@@ -102,6 +103,8 @@ namespace AnlabMvc
                 options.Filters.Add<SerilogControllerActionFilter>();
             });
 
+            // Init services for hybrid mvc/react app
+            services.AddMvcReact();
 
             // app services
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
@@ -142,7 +145,7 @@ namespace AnlabMvc
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<MvcReactOptions> mvcReactOptions)
         {
             _directorySearchService = app.ApplicationServices.GetService<IDirectorySearchService>();
 
@@ -162,22 +165,7 @@ namespace AnlabMvc
             app.UseStatusCodePagesWithReExecute("/Error/Index/{0}");
 
             app.UseStaticFiles();
-            app.UseSpaStaticFiles(new StaticFileOptions()
-            {
-                OnPrepareResponse = (context) =>
-                {
-                    // cache our static assest, i.e. CSS and JS, for a long time
-                    if (context.Context.Request.Path.Value.StartsWith("/static"))
-                    {
-                        var headers = context.Context.Response.GetTypedHeaders();
-                        headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
-                        {
-                            Public = true,
-                            MaxAge = TimeSpan.FromDays(365)
-                        };
-                    }
-                }
-            });
+            app.UseMvcReactStaticFiles();
 
             app.UseSerilogRequestLogging();
 
@@ -191,7 +179,8 @@ namespace AnlabMvc
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}",
+                    constraints: new { controller = mvcReactOptions.Value.ExcludeHmrPathsRegex });
 
                 endpoints.MapControllerRoute(
                     name: "pages",
@@ -199,15 +188,8 @@ namespace AnlabMvc
                     defaults: new { controller = "Pages", action = "ViewPage" });
             });
 
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
-            });
+            // During development, SPA will kick in for all remaining paths
+            app.UseMvcReact();
 
         }
     }
