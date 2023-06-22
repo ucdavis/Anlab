@@ -111,8 +111,8 @@ public class DocumentSigningService : IDocumentSigningService
         var envelopesApi = new EnvelopesApi(client);
 
         // "combined" is the type of document to download.  Other options include "archive" and "certificate"
-        var results = await envelopesApi.GetDocumentAsync(acctId, envelopeId, "combined");
-
+        //var results = await envelopesApi.GetDocumentAsync(acctId, envelopeId, "combined"); // Going to add this back with an option to call it after I push the hotfix 
+        var results = await envelopesApi.GetDocumentAsync(acctId, envelopeId, "combined", new EnvelopesApi.GetDocumentOptions { certificate = "false" });
         return new FileStreamResult(results, "application/pdf");
     }
 
