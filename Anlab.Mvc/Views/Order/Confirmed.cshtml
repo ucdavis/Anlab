@@ -16,7 +16,17 @@
     </form>
      @if (!string.IsNullOrWhiteSpace(Model.Order.SignedEnvelopeId))
      {
-         @Html.ActionLink("View Confirmation PDF", "ViewSignedDocument", new { id = Model.Order.Id }, new { @class = "btn btn-default", target = "_blank" })
+            <div class="dropdown">
+                <a href="#" class="dropdown-toggle btn" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">View Confirmation PDF <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a asp-controller="Order" asp-action="ViewSignedDocument" asp-route-id="@Model.Order.Id" target="_blank">View Confirmation PDF</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Order" asp-action="ViewSignedDocument" asp-route-id="@Model.Order.Id" asp-route-showAuth="true" target="_blank">View Confirmation PDF with Certificate</a>
+                    </li>
+                </ul>
+            </div>
      }
 </p>
 }
