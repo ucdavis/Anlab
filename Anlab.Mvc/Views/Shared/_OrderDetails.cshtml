@@ -60,7 +60,7 @@
                             <a asp-controller="Order" asp-action="ViewSignedDocument" asp-route-id="@Model.Order.Id" target="_blank">View Confirmation PDF</a>
                         </li>
                         <li>
-                            <a asp-controller="Order" asp-action="ViewSignedDocument" asp-route-id="@Model.Order.Id" asp-route-showAuth="true" target="_blank">View Confirmation PDF with Certificate</a>
+                            <a asp-controller="Order" asp-action="ViewSignedDocument" asp-route-id="@Model.Order.Id" asp-route-showCert="true" target="_blank">View Confirmation PDF with Certificate</a>
                         </li>
                     }
                     <li><a asp-action="EditUser" asp-controller="Admin" asp-route-id="@Model.Order.CreatorId" target="_blank">Edit Submitter</a></li>

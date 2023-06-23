@@ -21,7 +21,7 @@ namespace AnlabMvc.Services;
 public interface IDocumentSigningService
 {
     Task<string> SendForEmbeddedSigning(int orderId);
-    Task<FileStreamResult> DownloadEnvelope(string envelopeId, bool showAuth = false);
+    Task<FileStreamResult> DownloadEnvelope(string envelopeId, bool showCert = false);
     OAuth.UserInfo GetAccountInfo(OAuth.OAuthToken authToken);
     OAuth.OAuthToken AuthenticateWithJwt();
     string BuildConsentUrl();
@@ -91,7 +91,7 @@ public class DocumentSigningService : IDocumentSigningService
         return url;
     }
 
-    public async Task<FileStreamResult> DownloadEnvelope(string envelopeId, bool showAuth = false)
+    public async Task<FileStreamResult> DownloadEnvelope(string envelopeId, bool showCert = false)
     {
         // first, get auth token
         var authToken = AuthenticateWithJwt();
@@ -111,7 +111,7 @@ public class DocumentSigningService : IDocumentSigningService
         // "combined" is the type of document to download.  Other options include "archive" and "certificate"
         var envelopesApi = new EnvelopesApi(client);
         System.IO.Stream results;
-        if (showAuth)
+        if (showCert)
         {
              results = await envelopesApi.GetDocumentAsync(acctId, envelopeId, "combined");
         }
