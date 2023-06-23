@@ -589,7 +589,7 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> ViewSignedDocument(int id)
+        public async Task<IActionResult> ViewSignedDocument(int id, bool showCert = false )
         {
             var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
@@ -614,7 +614,7 @@ namespace AnlabMvc.Controllers
                 }
             }
 
-            return await _documentSigningService.DownloadEnvelope(order.SignedEnvelopeId);
+            return await _documentSigningService.DownloadEnvelope(order.SignedEnvelopeId, showCert);
         }
 
         [HttpPost]
