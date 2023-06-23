@@ -21,7 +21,7 @@ namespace AnlabMvc.Services;
 public interface IDocumentSigningService
 {
     Task<string> SendForEmbeddedSigning(int orderId);
-    Task<FileStreamResult> DownloadEnvelope(string envelopeId);
+    Task<FileStreamResult> DownloadEnvelope(string envelopeId, bool showCert = false);
     OAuth.UserInfo GetAccountInfo(OAuth.OAuthToken authToken);
     OAuth.OAuthToken AuthenticateWithJwt();
     string BuildConsentUrl();
@@ -91,7 +91,7 @@ public class DocumentSigningService : IDocumentSigningService
         return url;
     }
 
-    public async Task<FileStreamResult> DownloadEnvelope(string envelopeId)
+    public async Task<FileStreamResult> DownloadEnvelope(string envelopeId, bool showCert = false)
     {
         // first, get auth token
         var authToken = AuthenticateWithJwt();
@@ -108,10 +108,17 @@ public class DocumentSigningService : IDocumentSigningService
         var client = new DocuSignClient(basePath + "/restapi");
         client.Configuration.DefaultHeader.Add("Authorization", "Bearer " + authToken.access_token);
 
-        var envelopesApi = new EnvelopesApi(client);
-
         // "combined" is the type of document to download.  Other options include "archive" and "certificate"
-        var results = await envelopesApi.GetDocumentAsync(acctId, envelopeId, "combined");
+        var envelopesApi = new EnvelopesApi(client);
+        System.IO.Stream results;
+        if (showCert)
+        {
+             results = await envelopesApi.GetDocumentAsync(acctId, envelopeId, "combined");
+        }
+        else
+        {
+            results = await envelopesApi.GetDocumentAsync(acctId, envelopeId, "combined", new EnvelopesApi.GetDocumentOptions { certificate = "false" });
+        }
 
         return new FileStreamResult(results, "application/pdf");
     }
