@@ -542,6 +542,7 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> Document(int id)
         {
             var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
+            _orderService.UpdateAdditionalInfo(order); //Updates additional info for the order
 
             if (order == null)
             {
