@@ -484,6 +484,13 @@ namespace AnlabMvc.Controllers
                 return NotFound();
             }
 
+            if (await ValidateUcdAccount(order) == false) 
+            {
+                await _context.SaveChangesAsync();
+                ErrorMessage = "Unable to verify UC Account number. Please edit your order and re-enter the UC account number. Then try again.";
+                return RedirectToAction("Confirmation", new { id = order.Id });
+            }
+
             if (User.IsImpersonating())
             {
                 ErrorMessage = "You can't sign orders while impersonating.";
@@ -542,12 +549,13 @@ namespace AnlabMvc.Controllers
         public async Task<IActionResult> Document(int id)
         {
             var order = await _context.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
-            _orderService.UpdateAdditionalInfo(order); //Updates additional info for the order
-
             if (order == null)
             {
                 return NotFound();
             }
+
+            _orderService.UpdateAdditionalInfo(order); //Updates additional info for the order
+            await _orderService.UpdateTestsAndPrices(order);
 
             if (order.CreatorId != CurrentUserId)
             {
@@ -659,6 +667,12 @@ namespace AnlabMvc.Controllers
             return result;
         }
 
+        /// <summary>
+        /// This is the method called when the document is signed. Think it can also be called my admin without signing.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="envelopeId"></param>
+        /// <returns></returns>
         private async Task<IActionResult> ConfirmOrder(int id, string envelopeId = null)
         {
             User adminUser = null;
@@ -686,40 +700,15 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Index");
             }
 
-            if (order.PaymentType == PaymentTypeCodes.UcDavisAccount)
+            //Don't do this at all here?
+            if(await ValidateUcdAccount(order) == false)
             {
-                var orderDetails = order.GetOrderDetails();
-                try
-                {
-                    if (_aeSettings.UseCoA)
-                    {
-                        var validateAccount = await _aggieEnterpriseService.IsAccountValid(orderDetails.Payment.Account);
-                        if (validateAccount.IsValid)
-                        {
-                            orderDetails.Payment.AccountName = validateAccount.Description;
-                        }
-                        else
-                        {
-                            orderDetails.Payment.AccountName = string.Empty;
-                        }
-                    }
-                    else
-                    {
-                        orderDetails.Payment.AccountName = await _financialService.GetAccountName(orderDetails.Payment.Account);
-                    }
-                }
-                catch
-                {
-                    orderDetails.Payment.AccountName = string.Empty;
-                }
-                order.SaveDetails(orderDetails);
-                if (string.IsNullOrWhiteSpace(orderDetails.Payment.AccountName))
-                {
-                    await _context.SaveChangesAsync();
-                    ErrorMessage = "Unable to verify UC Account number. Please edit your order and re-enter the UC account number. Then try again.";
-                    return RedirectToAction("Confirmation", new {id = order.Id});
-                }
+                //They have signed it? It shouldn't fail here but maybe a network issue could cause this?
+                await _context.SaveChangesAsync();
+                ErrorMessage = "Unable to verify UC Account number. Please edit your order and re-enter the UC account number. Then try again.";
+                return RedirectToAction("Confirmation", new { id = order.Id });
             }
+
             if (order.PaymentType == PaymentTypeCodes.Other)
             {
                 var orderDetails = order.GetOrderDetails();
@@ -775,6 +764,43 @@ namespace AnlabMvc.Controllers
             return RedirectToAction("Confirmed", new {id = order.Id});
         }
 
+
+        private async Task<bool> ValidateUcdAccount(Order order)
+        {
+            if (order.PaymentType == PaymentTypeCodes.UcDavisAccount)
+            {
+                var orderDetails = order.GetOrderDetails();
+                try
+                {
+                    if (_aeSettings.UseCoA)
+                    {
+                        var validateAccount = await _aggieEnterpriseService.IsAccountValid(orderDetails.Payment.Account);
+                        if (validateAccount.IsValid)
+                        {
+                            orderDetails.Payment.AccountName = validateAccount.Description;
+                        }
+                        else
+                        {
+                            orderDetails.Payment.AccountName = string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        orderDetails.Payment.AccountName = await _financialService.GetAccountName(orderDetails.Payment.Account);
+                    }
+                }
+                catch
+                {
+                    orderDetails.Payment.AccountName = string.Empty;
+                }
+                order.SaveDetails(orderDetails);
+                if (string.IsNullOrWhiteSpace(orderDetails.Payment.AccountName))
+                {
+                    return false;
+                }                
+            }
+            return true;
+        }
     }
 
 }
