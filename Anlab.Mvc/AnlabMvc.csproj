@@ -106,9 +106,6 @@
     <Content Update="wwwroot\media\pdf\ClientInstructionsCreateWorkOrder9-19-18.pdf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\media\pdf\qual-manual.pdf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Resources\QueryResource.resx">
