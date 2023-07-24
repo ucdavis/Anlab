@@ -6,7 +6,7 @@
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
     <UserSecretsId>f3c999a5-2304-44e0-a49e-f43333bf9ccf</UserSecretsId>
-    <Version>1.2.0.0</Version>
+    <Version>1.2.0.1</Version>
     <Description>Order and results management system for AnLab@UCDavis</Description>
     <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
   </PropertyGroup>
@@ -104,9 +104,6 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\media\pdf\ClientInstructionsCreateWorkOrder9-19-18.pdf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\media\pdf\qual-manual.pdf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
