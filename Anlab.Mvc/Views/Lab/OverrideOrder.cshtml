@@ -3,6 +3,7 @@
 @model AnlabMvc.Models.Order.OverrideOrderModel
 @{
     ViewData["Title"] = "Override Order";
+    var useCoA = ViewBag.UseCoA;
 }
 <div class="col">
     @await Html.PartialAsync("_OrderDetails", @Model.OrderReviewModel)
@@ -51,14 +52,34 @@
             </div>
             @if (!string.IsNullOrWhiteSpace(Model.Account))
             {
-                <div class="form-group">
-                    <label asp-for="Account" class="col-md-2 control-label">UC Account</label>
-                    <div class="col-md-10">
-                        <input asp-for="Account" class="form-control"/>
-                        <span asp-validation-for="Account" class="text-danger"></span>
+                @if (Model.OrderReviewModel.OrderDetails.Payment.IsUcdAccount)
+                {
+                    <div class="form-group">
+                        <label asp-for="Account" class="col-md-2 control-label">UC Davis Account</label>
+                        <div class="col-md-10">
+                            <div class="d-flex">
+                                <input asp-for="Account" class="form-control" />
+                                @if (useCoA)
+                                {
+                                    <button id="ccoa-picker" class="btn btn-primary btn-coa" type="button">UCD COA Picker</button>
+                                }
+                            </div>
+                            <span asp-validation-for="Account" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
+                }
+                else
+                {
+                    <div class="form-group">
+                        <label asp-for="Account" class="col-md-2 control-label">UC Other Account</label>
+                        <div class="col-md-10">
+                            <input asp-for="Account" class="form-control normal-width" />
+                            <span asp-validation-for="Account" class="text-danger"></span>
+                        </div>
+                    </div>
+                }
             }
+
 
             <div class="form-group">
                 <label class="col-md-2 control-label">@(string.IsNullOrWhiteSpace(Model.OrderReviewModel.Order.ResultsFileIdentifier) ? "Upload Results" : "Replace Results")</label>
@@ -136,4 +157,25 @@
     </script>
 
     @{ await Html.RenderPartialAsync("_ShowdownScriptsPartial"); }
+
+    @{
+        <script src="https://finjector.ucdavis.edu/finjector.js?v=1" type="text/javascript" asp-add-nonce="true"></script>
+    }
+
+    <script type="text/javascript" asp-add-nonce="true">
+
+        $("#ccoa-picker").on("click",
+
+            async function () {
+                const chart = await window.Finjector.findChartSegmentString();
+                if (chart && chart.status === "success") {
+                    $("#Account").val(chart.data);
+                }
+                else {
+                    alert("Something went wrong with the CCOA picker")
+                }
+                return false;
+            });
+
+    </script>
 }

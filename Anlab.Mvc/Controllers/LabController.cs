@@ -598,6 +598,7 @@ namespace AnlabMvc.Controllers
         [HttpGet]
         public async Task<ActionResult> OverrideOrder(int id)
         {
+            ViewBag.UseCoA = _aeSettings.UseCoA;
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
@@ -633,6 +634,7 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         public async Task<ActionResult> OverrideOrder(int id, OverrideOrderModel model)
         {
+            ViewBag.UseCoA = _aeSettings.UseCoA;
             var historyNote = string.Empty;
 
             var orderToUpdate = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
@@ -683,7 +685,8 @@ namespace AnlabMvc.Controllers
                                 }
                                 else
                                 {
-                                    orderDetails.Payment.AccountName = string.Empty;
+                                    //orderDetails.Payment.AccountName = string.Empty;
+                                    ModelState.AddModelError("Account", validateAccount.Message);
                                 }
                             }
                             else
