@@ -672,7 +672,8 @@ namespace AnlabMvc.Controllers
                         ModelState.AddModelError("Account", "Account is required");                        
                     }
 
-                    if (orderToUpdate.PaymentType == PaymentTypeCodes.UcDavisAccount)
+                    //I didn't check the IsUcdAccount before, but it looks like it is possible that someone does an IOC for an other account and then changes it to a UCD account.
+                    if (orderToUpdate.PaymentType == PaymentTypeCodes.UcDavisAccount || orderDetails.Payment.IsUcdAccount)
                     {
                         try
                         {
