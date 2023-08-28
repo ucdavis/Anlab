@@ -627,7 +627,8 @@ namespace AnlabMvc.Controllers
 
             await GetHistories(id, model.OrderReviewModel);
 
-            if (_aeSettings.UseCoA)
+
+            if (_aeSettings.UseCoA && order.PaymentType == PaymentTypeCodes.UcDavisAccount)
             {
                 try
                 {
