@@ -71,7 +71,7 @@
                 else
                 {
                     <div class="form-group">
-                        <label asp-for="Account" class="col-md-2 control-label">UC Other Account</label>
+                        <label asp-for="Account" class="col-md-2 control-label">UC Other Account (@Model.OrderReviewModel.OrderDetails.OtherPaymentInfo.CompanyName)</label>
                         <div class="col-md-10">
                             <input asp-for="Account" class="form-control normal-width" />
                             <span asp-validation-for="Account" class="text-danger"></span>
