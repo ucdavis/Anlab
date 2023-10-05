@@ -40,6 +40,7 @@ export class PaymentUcSelection extends React.Component<
           <label>Select UC</label>
           <select
             className="form-control"
+            role="combobox"
             value={this.props.ucName}
             onChange={(e) => this._handleSelectionChange(e.target.value)}
           >

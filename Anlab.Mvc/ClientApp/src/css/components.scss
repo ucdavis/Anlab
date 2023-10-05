@@ -36,6 +36,9 @@ input#Account{
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   width:540px;
+  &.normal-width{
+    width: 100%;
+  }
 }
 .coa-input-row {
   justify-content: flex-start;

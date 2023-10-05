@@ -598,6 +598,7 @@ namespace AnlabMvc.Controllers
         [HttpGet]
         public async Task<ActionResult> OverrideOrder(int id)
         {
+            ViewBag.UseCoA = _aeSettings.UseCoA;
             var order = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
@@ -626,6 +627,26 @@ namespace AnlabMvc.Controllers
 
             await GetHistories(id, model.OrderReviewModel);
 
+
+            if (_aeSettings.UseCoA && order.PaymentType == PaymentTypeCodes.UcDavisAccount)
+            {
+                try
+                {
+                    if (_aeSettings.UseCoA)
+                    {
+                        var validateAccount = await _aggieEnterpriseService.IsAccountValid(model.Account);
+                        if (!validateAccount.IsValid)
+                        {
+                            ErrorMessage = validateAccount.Message;
+                        }
+                    }
+                }
+                catch
+                {
+                    ErrorMessage = "FYI There was a problem validating the UCD COA.";
+                }
+            }
+
             return View(model);
         }
 
@@ -633,6 +654,7 @@ namespace AnlabMvc.Controllers
         [HttpPost]
         public async Task<ActionResult> OverrideOrder(int id, OverrideOrderModel model)
         {
+            ViewBag.UseCoA = _aeSettings.UseCoA;
             var historyNote = string.Empty;
 
             var orderToUpdate = await _dbContext.Orders.Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id);
@@ -670,7 +692,8 @@ namespace AnlabMvc.Controllers
                         ModelState.AddModelError("Account", "Account is required");                        
                     }
 
-                    if (orderToUpdate.PaymentType == PaymentTypeCodes.UcDavisAccount)
+                    //I didn't check the IsUcdAccount before, but it looks like it is possible that someone does an IOC for an other account and then changes it to a UCD account.
+                    if (orderToUpdate.PaymentType == PaymentTypeCodes.UcDavisAccount || orderDetails.Payment.IsUcdAccount)
                     {
                         try
                         {
@@ -684,6 +707,7 @@ namespace AnlabMvc.Controllers
                                 else
                                 {
                                     orderDetails.Payment.AccountName = string.Empty;
+                                    ModelState.AddModelError("Account", validateAccount.Message);
                                 }
                             }
                             else

@@ -213,14 +213,21 @@ export class PaymentSelection extends React.Component<
           I require an agreement{" "}
         </Checkbox>
         {this.props.otherPaymentInfo.agreementRequired && (
-          <div className="alert alert-warning" role="alert">
-            You have selected that you require an agreement. We can proceed with
-            a general agreement, which would take a few days, or with a formal
-            agreement, which may take six weeks or more to finalize. In either
-            case, we cannot start work on this order until the agreement is
-            signed. If you choose to continue, you may proceed with placing your
-            order and you will be contacted by our lab. You may unclick the box
-            to stop the agreement process.{" "}
+          <div>
+            <div className="alert alert-warning" role="alert">
+              You have selected that you require an agreement. We can proceed
+              with a general agreement, which would take a few days, or with a
+              formal agreement, which may take six weeks or more to finalize. In
+              either case, we cannot start work on this order until the
+              agreement is signed. If you choose to continue, you may proceed
+              with placing your order and you will be contacted by our lab. You
+              may unclick the box to stop the agreement process.{" "}
+            </div>
+            <div className="alert alert-danger" role="alert">
+              "PLEASE NOTE: Due to the University updating its Financial System,
+              PO Agreements will not be processed from 11/01/23 through
+              01/03/24."
+            </div>
           </div>
         )}
       </div>
