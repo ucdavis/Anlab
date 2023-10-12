@@ -47,12 +47,14 @@ namespace AnlabMvc.Controllers
                 var result = await _financialService.GetAccountName(account);
                 rtValue.DisplayName = result;
                 rtValue.IsValid = true;
+                rtValue.FinancialSegmentString = account; //Hacking fix for KFS because someone :) wants the account updated for COAs and don't have if else in the react page
             }
             catch (Exception e)
             {
                 Log.Error(e, "Unable to validate/find KFS account");
                 rtValue.IsValid = false;
                 rtValue.Messages.Add("Unable to validate/find KFS account");
+                rtValue.FinancialSegmentString = account;
             }
             return rtValue;
         }       
