@@ -56,6 +56,9 @@ namespace Anlab.Core.Services
 
             if (segmentStringType == FinancialChartStringType.Gl)
             {
+                financialSegmentString = ReplaceNaturalAccount(financialSegmentString, AeSettings.NaturalAccount);
+                rtValue.FinancialSegmentString = financialSegmentString;
+
                 var result = await _aggieClient.GlValidateChartstring.ExecuteAsync(financialSegmentString, validateCVRs);
 
                 var data = result.ReadData();
@@ -101,6 +104,8 @@ namespace Anlab.Core.Services
 
             if (segmentStringType == FinancialChartStringType.Ppm)
             {
+                financialSegmentString = ReplaceNaturalAccount(financialSegmentString, AeSettings.NaturalAccount);
+                rtValue.FinancialSegmentString = financialSegmentString;
                 var result = await _aggieClient.PpmSegmentStringValidate.ExecuteAsync(financialSegmentString);
 
                 var data = result.ReadData();
@@ -190,6 +195,25 @@ namespace Anlab.Core.Services
             {
                 return null;
             }
+        }
+
+        public string ReplaceNaturalAccount(string financialSegmentString, string naturalAccount)
+        {
+            var segmentStringType = FinancialChartValidation.GetFinancialChartStringType(financialSegmentString);
+            if (segmentStringType == FinancialChartStringType.Gl)
+            {
+                var segments = FinancialChartValidation.GetGlSegments(financialSegmentString);
+                segments.Account = naturalAccount;
+                return segments.ToSegmentString();
+            }
+            if (segmentStringType == FinancialChartStringType.Ppm)
+            {
+                var segments = FinancialChartValidation.GetPpmSegments(financialSegmentString);
+                segments.ExpenditureType = naturalAccount;
+                return segments.ToSegmentString();
+            }
+            Log.Error($"Invalid financial segment string: {financialSegmentString}");
+            return financialSegmentString;
         }
 
         private async Task GetPpmAccountManager(AccountValidationModel rtValue)
