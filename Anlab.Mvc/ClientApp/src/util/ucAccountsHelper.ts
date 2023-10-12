@@ -11,7 +11,7 @@ export function getOptions(useCoa: boolean) {
             name: "UCSF",
         },
         UCD: {           
-            detail: useCoa ? "Use the Coa Picker to build a PPM or GL account" : "Loc(1) - Acct(7) / Subacct(5)",
+            detail: useCoa ? "Use the Coa Picker to build a PPM or GL account. Note, the Expendature Type/Natural Account may be overwritten." : "Loc(1) - Acct(7) / Subacct(5)",
             example: useCoa ? "SP00000001-000001-0000000-770003" :"3-ABCDE12/12345",
             name: "UCD",
         },
