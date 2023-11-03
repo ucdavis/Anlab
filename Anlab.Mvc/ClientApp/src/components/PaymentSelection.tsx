@@ -291,11 +291,13 @@ export class PaymentSelection extends React.Component<
           this.props.onPaymentSelected({
             ...this.props.payment,
             accountName: null,
+            account: response.financialSegmentString,
           });
         } else {
           this.props.onPaymentSelected({
             ...this.props.payment,
             accountName: response.displayName,
+            account: response.financialSegmentString,
           });
         }
       })
