@@ -14,11 +14,12 @@ export class SampleSoilQuestions extends React.Component<
   render() {
     if (this.props.sampleType !== "Soil") {
       return null;
-    }
-    return (
-      <div className="alert alert-warning" role="alert">
-        We do not accept foreign soils.
-      </div>
-    );
+      }
+      return null; //Keep this here in case we need to add soil questions back in.
+    //return (
+    //  <div className="alert alert-warning" role="alert">
+    //    We do not accept foreign soils.
+    //  </div>
+    //);
   }
 }
