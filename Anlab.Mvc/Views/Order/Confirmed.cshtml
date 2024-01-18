@@ -182,6 +182,24 @@
               <strong>Payment Method:</strong>
               @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
               {
+                @if (Model.Order.PaymentType == "UcDavisAccount")
+                {
+                    var link = $"https://finjector.ucdavis.edu/Details/{@Model.OrderDetails.Payment.Account}";
+                    <span>UCD Account: <a href="@link" target="_blank"> @Model.OrderDetails.Payment.Account</a></span>
+                    @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.Payment.AccountName))
+                    {
+                        <span> (@Model.OrderDetails.Payment.AccountName)</span>
+                    }
+                    else
+                    {
+                        if (Model.OrderDetails.OtherPaymentInfo != null && !string.IsNullOrWhiteSpace(Model.OrderDetails.OtherPaymentInfo.PaymentType))
+                        {
+                            <span> (@Model.OrderDetails.OtherPaymentInfo.PaymentType)</span>
+                        }
+                    }
+                }
+                else
+                {
                   <span>UC Account: @Model.OrderDetails.Payment.Account</span>
                   @if(!string.IsNullOrWhiteSpace(Model.OrderDetails.Payment.AccountName))
                    {
@@ -194,7 +212,8 @@
                            <span> (@Model.OrderDetails.OtherPaymentInfo.PaymentType)</span>
                        }
                    }
-              }
+                }
+               }
               else if (string.Equals(Model.OrderDetails.Payment.ClientType, "creditcard", StringComparison.OrdinalIgnoreCase))
               {
                   <span>Credit Card</span>
