@@ -174,7 +174,8 @@
     }
     @if (Model.Order.PaymentType == PaymentTypeCodes.UcDavisAccount)
     {
-        <span>UC Davis Account: @Model.OrderDetails.Payment.Account</span>
+        var link = $"https://finjector.ucdavis.edu/Details/{@Model.OrderDetails.Payment.Account}";
+        <span>UC Davis Account: <a href="@link" target="_blank" >@Model.OrderDetails.Payment.Account</a> </span>
         @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.Payment.AccountName))
         {
             <span> (@Model.OrderDetails.Payment.AccountName)</span>
