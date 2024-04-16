@@ -603,6 +603,30 @@ export default class OrderForm extends React.Component<
       valid = false;
     }
 
+    // check special soil requirements
+    if (
+      this.state.sampleType === "Soil" &&
+      this.state.sampleTypeQuestions.soilImported
+    ) {
+      const soilImportedTest = this.props.testItems.filter(
+        (x) => x.id === "SP-FOR"
+      )[0];
+      if (!this.state.selectedCodes[soilImportedTest.id]) {
+        valid = false;
+      }
+    }
+    if (
+      this.state.sampleType === "Soil" &&
+      !this.state.sampleTypeQuestions.soilImported
+    ) {
+      const soilImportedTest = this.props.testItems.filter(
+        (x) => x.id === "SP-FOR"
+      )[0];
+      if (this.state.selectedCodes[soilImportedTest.id]) {
+        valid = false;
+      }
+    }
+
     // check uc account requirements
     if (
       this.state.payment.clientType === "uc" &&
