@@ -47,12 +47,20 @@ export class SampleSoilQuestions extends React.Component<
         {this.props.questions.soilImported && (
           <div className="alert alert-warning" role="alert">
             <p>
-              Please remember to select{" "}
+              You must select{" "}
               <strong>
                 Quarantined Soil Processing Fee - Required for foreign &
                 regulated domestic soils
               </strong>{" "}
               in the tests below.
+            </p>
+          </div>
+        )}
+        {!this.props.questions.soilImported && (
+          <div className="alert alert-info" role="alert">
+            <p>
+              Do not select the Quarantined Soil Processing Fee unless your soil
+              is imported.
             </p>
           </div>
         )}
