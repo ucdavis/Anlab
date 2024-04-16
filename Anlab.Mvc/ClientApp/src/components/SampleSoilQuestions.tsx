@@ -22,7 +22,8 @@ export class SampleSoilQuestions extends React.Component<
     return (
       <div className="input-group">
         <label className="form_header margin-bottom-zero">
-          Is your soil sample imported?
+          Are these samples Quarantined Soil either foreign or regulated
+          domestic soils?
         </label>
         <p>
           <label>
@@ -60,7 +61,7 @@ export class SampleSoilQuestions extends React.Component<
           <div className="alert alert-info" role="alert">
             <p>
               Do not select the Quarantined Soil Processing Fee unless your soil
-              is imported.
+              is either foreign or regulated domestic soils.
             </p>
           </div>
         )}
