@@ -603,7 +603,7 @@ export default class OrderForm extends React.Component<
       valid = false;
     }
 
-    // check special soil requirements
+    // check special soil requirements -- if soil is imported, user must select the SP-FOR test
     if (
       this.state.sampleType === "Soil" &&
       this.state.sampleTypeQuestions.soilImported
@@ -615,6 +615,7 @@ export default class OrderForm extends React.Component<
         valid = false;
       }
     }
+    // check special soil requirements -- if soil is not imported, user must not select the SP-FOR test
     if (
       this.state.sampleType === "Soil" &&
       !this.state.sampleTypeQuestions.soilImported

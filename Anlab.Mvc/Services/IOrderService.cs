@@ -401,10 +401,11 @@ namespace AnlabMvc.Services
                 sb.AppendFormat("{0}: {1}{2}", "Plant reporting basis", orderDetails.SampleTypeQuestions.PlantReportingBasis, Environment.NewLine);
             }
 
-            //To do this now, we have to look at the selected tests...
+            
             if (orderDetails.SampleType == TestCategories.Soil)
             {
                 sb.AppendFormat("{0}: {1}{2}", "Soil is imported", (orderDetails.SelectedTests.Any(a => a.Id == "SP-FOR") || orderDetails.SampleTypeQuestions.SoilImported).ToYesNoString(), Environment.NewLine);
+                //To do this now, we have to look at the selected tests...
                 //sb.AppendFormat("{0}: {1}{2}", "Soil is imported", orderDetails.SelectedTests.Any(a => a.Id == "SP-FOR" || a.Analysis.Equals("Imported Soil", StringComparison.InvariantCultureIgnoreCase)).ToYesNoString(), Environment.NewLine);
             }
 
