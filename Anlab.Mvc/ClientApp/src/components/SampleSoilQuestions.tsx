@@ -66,32 +66,6 @@ export class SampleSoilQuestions extends React.Component<
         )}
       </div>
     );
-    // return (
-    //   <div className="input-group">
-    //     <label className="form_header margin-bottom-zero">
-    //       Is your soil sample imported?
-    //     </label>
-    //     <p>
-    //       <label>
-    //         <input type="radio" checked={this.props.questions.soilImported} />{" "}
-    //         Yes
-    //       </label>
-    //     </p>
-    //     <p>
-    //       <label>
-    //         <input type="radio" checked={!this.props.questions.soilImported} />{" "}
-    //         No
-    //       </label>
-    //     </p>
-
-    //     {this.props.questions.soilImported && (
-    //       <p>
-    //         Please remember to select Quarantined Soil Processing Fee - Required
-    //         for foreign & regulated domestic soils in the tests below.
-    //       </p>
-    //     )}
-    //   </div>
-    // );
 
     //Keep this here in case we need to add soil questions back in.
     //return (
