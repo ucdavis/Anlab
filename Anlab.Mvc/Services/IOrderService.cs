@@ -404,7 +404,7 @@ namespace AnlabMvc.Services
             
             if (orderDetails.SampleType == TestCategories.Soil)
             {
-                sb.AppendFormat("{0}: {1}{2}", "Soil is imported", (orderDetails.SelectedTests.Any(a => a.Id == "SP-FOR") || orderDetails.SampleTypeQuestions.SoilImported).ToYesNoString(), Environment.NewLine);
+                sb.AppendFormat("{0}: {1}{2}", "Soil is imported or quarantined", (orderDetails.SelectedTests.Any(a => a.Id == "SP-FOR") || orderDetails.SampleTypeQuestions.SoilImported).ToYesNoString(), Environment.NewLine);
                 //To do this now, we have to look at the selected tests...
                 //sb.AppendFormat("{0}: {1}{2}", "Soil is imported", orderDetails.SelectedTests.Any(a => a.Id == "SP-FOR" || a.Analysis.Equals("Imported Soil", StringComparison.InvariantCultureIgnoreCase)).ToYesNoString(), Environment.NewLine);
             }
