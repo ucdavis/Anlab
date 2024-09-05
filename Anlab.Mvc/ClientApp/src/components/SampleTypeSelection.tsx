@@ -32,7 +32,7 @@ export class SampleTypeSelection extends React.Component<ISampleTypeProps, {}> {
             onClick={() => this._handleChange("Plant")}
           >
             <PlantSvg />
-            <h3>Plant Material Feed</h3>
+            <h3>Plant / Feed</h3>
           </div>
           <div
             className={
