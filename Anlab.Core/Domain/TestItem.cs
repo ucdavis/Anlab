@@ -12,12 +12,12 @@ namespace Anlab.Core.Domain
         [Key]
         [StringLength(128)]
         [Display(Name = "Code")]
-        [RegularExpression(@"([A-Z0-9a-z\-#_%])+", ErrorMessage = "Codes can only contain alphanumerics, #, _, %, and dashes.")]
+        [RegularExpression(@"([A-Z0-9a-z\-#_%()])+", ErrorMessage = "Codes can only contain alphanumerics, #, _, %, (, ), and dashes.")]
         public string Id { get; set; }
 
         [Required]
         [StringLength(512)]
-        public string Analysis { get; set; }       
+        public string Analysis { get; set; }
 
 
         [Required]
@@ -25,7 +25,8 @@ namespace Anlab.Core.Domain
         public string Category { get; set; }
 
         [NotMapped]
-        public string[] Categories {
+        public string[] Categories
+        {
             get => Category != null ? Category.Split('|') : new string[0];
             set => Category = string.Join("|", value);
         }
@@ -52,7 +53,7 @@ namespace Anlab.Core.Domain
                 return encoder.Encode(Notes);
             }
         }
-        
+
         public int RequestOrder { get; set; }
         public int LabOrder { get; set; }
     }

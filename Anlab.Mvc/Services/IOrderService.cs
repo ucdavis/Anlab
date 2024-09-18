@@ -42,7 +42,7 @@ namespace AnlabMvc.Services
         public OrderService(ApplicationDbContext context, ILabworksService labworksService, IOptions<AppSettings> appSettings)
         {
             _context = context;
-            _labworksService = labworksService;            
+            _labworksService = labworksService;
             _appSettings = appSettings.Value;
         }
 
@@ -75,26 +75,26 @@ namespace AnlabMvc.Services
         private List<TestItemModel> GetJoined(IList<TestItemPrices> prices, List<TestItem> items)
         {
             return (from i in items
-                join p in prices on i.Id equals p.Id
-                orderby i.RequestOrder
-                select new TestItemModel
-                {
-                    Analysis = i.Analysis,
-                    Category = i.Category,
-                    ExternalCost = Math.Ceiling(p.Cost * _appSettings.NonUcRate),
-                    Group = i.Group,
-                    Id = i.Id,
-                    InternalCost = Math.Ceiling(p.Cost),
-                    ExternalSetupCost = Math.Ceiling(p.SetupPrice * _appSettings.NonUcRate) * p.Multiplier,
-                    InternalSetupCost = Math.Ceiling(p.SetupPrice) * p.Multiplier,
-                    Notes = i.NotesEncoded,
-                    Public = i.Public,
-                    Reporting = i.Reporting,
-                    AdditionalInfoPrompt = i.AdditionalInfoPrompt,
-                    Sop = p.Sop,
-                    RequestOrder = i.RequestOrder,
-                    LabOrder = i.LabOrder,
-                }).ToList();
+                    join p in prices on i.Id equals p.Id
+                    orderby i.RequestOrder
+                    select new TestItemModel
+                    {
+                        Analysis = i.Analysis,
+                        Category = i.Category,
+                        ExternalCost = Math.Ceiling(p.Cost * _appSettings.NonUcRate),
+                        Group = i.Group,
+                        Id = i.Id,
+                        InternalCost = Math.Ceiling(p.Cost),
+                        ExternalSetupCost = Math.Ceiling(p.SetupPrice * _appSettings.NonUcRate) * p.Multiplier,
+                        InternalSetupCost = Math.Ceiling(p.SetupPrice) * p.Multiplier,
+                        Notes = i.NotesEncoded,
+                        Public = i.Public,
+                        Reporting = i.Reporting,
+                        AdditionalInfoPrompt = i.AdditionalInfoPrompt,
+                        Sop = p.Sop,
+                        RequestOrder = i.RequestOrder,
+                        LabOrder = i.LabOrder,
+                    }).ToList();
         }
 
         /// <summary>
@@ -262,7 +262,7 @@ namespace AnlabMvc.Services
                 }
             }
 
-            
+
             var groupTestIds = testIds.Where(a => a.IsGroupTest()).ToArray();
 
             if (groupTestIds.Any())
@@ -360,8 +360,8 @@ namespace AnlabMvc.Services
             orderToUpdate.AdditionalEmails = AdditionalEmailsHelper.AddClientInfoEmails(orderToUpdate, orderDetails.ClientInfo);
 
             if (orderDetails.Payment.IsInternalClient)
-            {              
-                if(orderDetails.Payment.IsUcdAccount)
+            {
+                if (orderDetails.Payment.IsUcdAccount)
                 {
                     orderToUpdate.PaymentType = PaymentTypeCodes.UcDavisAccount;
                 }
@@ -401,10 +401,12 @@ namespace AnlabMvc.Services
                 sb.AppendFormat("{0}: {1}{2}", "Plant reporting basis", orderDetails.SampleTypeQuestions.PlantReportingBasis, Environment.NewLine);
             }
 
-            //To do this now, we have to look at the selected tests...
+            
             if (orderDetails.SampleType == TestCategories.Soil)
             {
-                sb.AppendFormat("{0}: {1}{2}", "Soil is imported", orderDetails.SelectedTests.Any(a => a.Id == "SP-FOR" || a.Analysis.Equals("Imported Soil", StringComparison.InvariantCultureIgnoreCase)).ToYesNoString(), Environment.NewLine);
+                sb.AppendFormat("{0}: {1}{2}", "Soil is imported or quarantined", (orderDetails.SelectedTests.Any(a => a.Id == "SP-FOR") || orderDetails.SampleTypeQuestions.SoilImported).ToYesNoString(), Environment.NewLine);
+                //To do this now, we have to look at the selected tests...
+                //sb.AppendFormat("{0}: {1}{2}", "Soil is imported", orderDetails.SelectedTests.Any(a => a.Id == "SP-FOR" || a.Analysis.Equals("Imported Soil", StringComparison.InvariantCultureIgnoreCase)).ToYesNoString(), Environment.NewLine);
             }
 
             if (orderDetails.SampleType == TestCategories.Water)

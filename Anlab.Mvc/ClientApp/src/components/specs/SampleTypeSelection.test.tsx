@@ -41,7 +41,7 @@ describe("<SampleTypeSelection/>", () => {
       );
 
       const user = userEvent.setup();
-      await user.click(screen.getByText("Plant Material"));
+      await user.click(screen.getByText("Plant / Feed"));
 
       expect(onSampleSelected).toHaveBeenCalled();
       expect(onSampleSelected).toHaveBeenCalledWith("Plant");
