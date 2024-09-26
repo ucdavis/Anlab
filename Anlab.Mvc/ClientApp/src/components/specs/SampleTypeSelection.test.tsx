@@ -60,7 +60,7 @@ describe("<SampleTypeSelection/>", () => {
       );
 
       const user = userEvent.setup();
-      await user.click(screen.getByText("Water"));
+      await user.click(screen.getByText("Water / Misc. Liquid"));
 
       expect(onSampleSelected).toHaveBeenCalled();
       expect(onSampleSelected).toHaveBeenCalledWith("Water");
