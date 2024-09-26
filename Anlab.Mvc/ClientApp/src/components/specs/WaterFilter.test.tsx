@@ -14,7 +14,7 @@ describe("<Grind />", () => {
   });
   it("should render a Checkbox when sampleType is water", () => {
     render(
-      <WaterFilter sampleType="Water / Misc. Liquid" handleChange={null} filterWater={false} />
+      <WaterFilter sampleType="Water" handleChange={null} filterWater={false} />
     );
 
     expect(screen.queryByRole("checkbox")).toBeInTheDocument();
