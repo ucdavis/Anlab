@@ -41,7 +41,7 @@ export class SampleTypeSelection extends React.Component<ISampleTypeProps, {}> {
             onClick={() => this._handleChange("Water")}
           >
             <WaterSvg />
-            <h3>Water</h3>
+            <h3>Water / Misc. Liquid</h3>
           </div>
         </div>
       </div>
