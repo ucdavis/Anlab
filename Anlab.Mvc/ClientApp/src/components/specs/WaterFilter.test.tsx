@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -14,7 +14,7 @@ describe("<Grind />", () => {
   });
   it("should render a Checkbox when sampleType is water", () => {
     render(
-      <WaterFilter sampleType="Water" handleChange={null} filterWater={false} />
+      <WaterFilter sampleType="Water / Misc. Liquid" handleChange={null} filterWater={false} />
     );
 
     expect(screen.queryByRole("checkbox")).toBeInTheDocument();
