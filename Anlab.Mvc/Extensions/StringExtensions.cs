@@ -86,5 +86,30 @@ namespace AnlabMvc.Extensions
             }
 
         }
+
+        public static string TranslateSampleType(this string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return value;
+            }
+
+            if (string.Equals(value, "soil", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Soil";
+            }
+
+            if (string.Equals(value, "water", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Water / Misc. Liquid";
+            }
+
+            if(string.Equals(value, "plant", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Plant / Feed";
+            }
+
+            return value;
+        }
     }
 }
