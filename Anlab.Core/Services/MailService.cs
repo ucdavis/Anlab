@@ -84,7 +84,7 @@ namespace Anlab.Core.Services
                 message.Bcc.Add("jsylvestre@ucdavis.edu");
                 message.Bcc.Add("jasoncsylvestre@gmail.com");
                 var body =
-                    $"<p>Order Id {orderId}: https://anlab.ucdavis.edu/Lab/Details/{orderId} failed email.</p><p>Failure Reason: {failureReason}</p>";
+                    $"<p>Order Id {orderId}: https://anlaborders.ucdavis.edu/Lab/Details/{orderId} failed email.</p><p>Failure Reason: {failureReason}</p>";
 
                 message.Subject = $"T.O.P.S. Email Failure. Order Id {orderId}";
                 message.IsBodyHtml = false;
