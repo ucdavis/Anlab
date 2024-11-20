@@ -25,7 +25,8 @@ namespace AnlabMvc.Controllers
         }
         public IActionResult SamplingAndPreparation()
         {
-            return View();
+            return RedirectToAction("Index", "Order");
+            //return View();
         }
 
         public IActionResult TestException()
