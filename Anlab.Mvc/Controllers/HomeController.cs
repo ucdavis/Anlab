@@ -16,7 +16,7 @@ namespace AnlabMvc.Controllers
         {
             _dbContext = dbContext;
         }
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return RedirectToAction("Index", "Order");
 
