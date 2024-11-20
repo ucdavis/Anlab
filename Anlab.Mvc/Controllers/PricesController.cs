@@ -15,11 +15,13 @@ namespace AnlabMvc.Controllers
             _orderService = orderService;
         }
         
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var joined = await _orderService.PopulateTestItemModel(false);
-            TestItemModel[] publicTests = joined.Where(a => a.Public).ToArray(); //Don't really need this as the service with false only returns public.
-            return View(publicTests);
+            return RedirectToAction("Index", "Home");
+
+            //var joined = await _orderService.PopulateTestItemModel(false);
+            //TestItemModel[] publicTests = joined.Where(a => a.Public).ToArray(); //Don't really need this as the service with false only returns public.
+            //return View(publicTests);
         }
     }
 }
