@@ -15,7 +15,7 @@ namespace AnlabMvc.Controllers
             _orderService = orderService;
         }
         
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return RedirectToAction("Index", "Home");
 
