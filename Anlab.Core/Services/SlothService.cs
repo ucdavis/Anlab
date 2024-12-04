@@ -104,7 +104,7 @@ namespace Anlab.Core.Services
                 var debitAccount = orderDetails.Payment.Account;
 
                 model.MerchantTrackingNumber = order.Id.ToString();
-                model.MerchantTrackingUrl = $"https://anlab.ucdavis.edu/Reviewer/Details/{order.Id}";
+                model.MerchantTrackingUrl = $"https://anlaborders.ucdavis.edu/Reviewer/Details/{order.Id}";
                 model.Description = $"{order.RequestNum} - {order.Project}".SpecialTruncation(0,40);
                 model.AddMetadata("Project", order.Project);
                 model.AddMetadata("RequestNum", order.RequestNum);
@@ -137,7 +137,7 @@ namespace Anlab.Core.Services
 
 
                 model.MerchantTrackingNumber = order.Id.ToString();
-                model.MerchantTrackingUrl = $"https://anlab.ucdavis.edu/Reviewer/Details/{order.Id}";
+                model.MerchantTrackingUrl = $"https://anlaborders.ucdavis.edu/Reviewer/Details/{order.Id}";
                 model.Transfers.Add(new TransferViewModel
                 {
                     Account = debitAccount.Account.SafeToUpper(),

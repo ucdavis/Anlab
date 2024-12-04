@@ -16,14 +16,17 @@ namespace AnlabMvc.Controllers
         {
             _dbContext = dbContext;
         }
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var alerts = await _dbContext.SystemAlerts.Where(a => a.IsActive).OrderByDescending(a => a.Updated).Select(a => new AlertModel{ Content = a.Content, Danger = a.Danger}).ToListAsync();
-            return View(alerts);
+            return RedirectToAction("Index", "Order");
+
+            //var alerts = await _dbContext.SystemAlerts.Where(a => a.IsActive).OrderByDescending(a => a.Updated).Select(a => new AlertModel{ Content = a.Content, Danger = a.Danger}).ToListAsync();
+            //return View(alerts);
         }
         public IActionResult SamplingAndPreparation()
         {
-            return View();
+            return RedirectToAction("Index", "Order");
+            //return View();
         }
 
         public IActionResult TestException()
