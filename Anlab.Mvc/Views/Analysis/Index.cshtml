@@ -145,9 +145,9 @@
             </div>
             <div class="panel-collapse collapse" id="feed">
                 <div class="panel-body">
-                    <p>Sample Amount: Send 50 g of dried and ground sample. The maximum unground sample size is one (1) large grocery bag.</p>
+                    @* <p>Sample Amount: Send 50 g of dried and ground sample. The maximum unground sample size is one (1) large grocery bag.</p>
                     <p>Feed Preparation: Oven-dry samples at 55-60°C for 24 hours. <strong>For Phenols</strong>: Dry samples at 50 - 52°C for 24 hours using a forced air oven. Avoid drying higher than 55°C as it could affect phenolic quantification.</p>
-                    <p>Grind to pass through a 40 mesh screen. HOWEVER, for methods 635, 640, and 650, the grind must be larger and pass through an 18 mesh screen The maximum unground sample size is one (1) large #56 grocery bag.</p>
+                    <p>Grind to pass through a 40 mesh screen. HOWEVER, for methods 635, 640, and 650, the grind must be larger and pass through an 18 mesh screen The maximum unground sample size is one (1) large #56 grocery bag.</p> *@
                     <h3>Method Summaries</h3>
                     <ul>
                         @foreach (var method in Model.Where(x => x.Id >= 600 && x.Id < 700))
