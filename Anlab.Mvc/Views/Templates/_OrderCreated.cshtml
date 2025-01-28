@@ -6,7 +6,7 @@
     var protocol = Context.Request.Scheme;
     var host = Context.Request.Host;
     var path = $"{protocol}://{host}";
-    var image = $"{path}/{Url.Content("~/Images/anlab170.png")}";
+    var image = $"{path}/{Url.Content("~/Images/anlabEmailLogo.jpg")}";
     var createdBy = Model.Creator.Name;
     var paymentDetail = string.Empty;
     if (Model.PaymentType == PaymentTypeCodes.Other || Model.PaymentType == PaymentTypeCodes.UcOtherAccount)
