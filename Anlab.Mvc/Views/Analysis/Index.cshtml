@@ -1,11 +1,11 @@
 @model List<AnalysisMethod>
 
 @{
-    ViewBag.Title = "Methods of Analysis";
+    ViewBag.Title = "Testing Services";
 }
 <div class="col">
     <div class="panel-group" id="accordion">
-        <div class="panel panel-default">
+@*         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title"><a href="#dry" data-toggle="collapse" data-parent="#accordion">Drying and Grinding</a></h4>
             </div>
@@ -36,57 +36,21 @@
                     </ul>
                 </div>
             </div>
-        </div>
+        </div> *@
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4 class="panel-title"><a href="#feed" data-toggle="collapse" data-parent="#accordion">Feed Methods</a></h4>
+                <h4 class="panel-title"><a href="#water" data-toggle="collapse" data-parent="#accordion">Water and Waste Water</a></h4>
             </div>
-            <div class="panel-collapse collapse" id="feed">
+            <div class="panel-collapse collapse" id="water">
                 <div class="panel-body">
-                    <p>Sample Amount: Send 50 g of dried and ground sample. The maximum unground sample size is one (1) large grocery bag.</p>
-                    <p>Feed Preparation: Oven-dry samples at 55-60°C for 24 hours. <strong>For Phenols</strong>: Dry samples at 50 - 52°C for 24 hours using a forced air oven. Avoid drying higher than 55°C as it could affect phenolic quantification.</p>
-                    <p>Grind to pass through a 40 mesh screen. HOWEVER, for methods 635, 640, and 650, the grind must be larger and pass through an 18 mesh screen The maximum unground sample size is one (1) large #56 grocery bag.</p>
+@*                     <p><strong>Sample Amount:</strong> 250 mL per sample (5 mL per element for extracts) is required.</p>
+                    <p>
+                        <strong>Water Preparation:</strong> Samples submitted for alkalinity, ammonium, nitrate, soluble phosphorus, solids, sulfate and turbidity analysis should be kept under refrigeration. More detailed sample preservation guidelines
+                        are available on the Lab's web site <a href="https://anlab.ucdavis.edu/lab-information/sampling-and-preparation" title="Sampling and preparation">Sampling and preparation</a>.
+                    </p> *@
                     <h3>Method Summaries</h3>
                     <ul>
-                        @foreach (var method in Model.Where(x => x.Id >= 600 && x.Id < 700))
-                        {
-                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
-                        }
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title"><a href="#manure" data-toggle="collapse" data-parent="#accordion">Manure and Compost Methods</a></h4>
-            </div>
-            <div class="panel-collapse collapse" id="manure">
-                <div class="panel-body">
-                    <p>Sample Amount: Submit one cup manure or compost.</p>
-                    <p>Manure and Compost Preparation: Samples should be frozen, dried, or freeze-dried if not delivered to the lab immediately upon collection.</p>
-                    <p>Containers: Submit fresh samples in plastic containers.</p>
-                    <ul>
-                        @foreach (var method in Model.Where(x => x.Id >= 700 && x.Id < 800))
-                        {
-                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
-                        }
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title"><a href="#plant" data-toggle="collapse" data-parent="#accordion">Plant Methods</a></h4>
-            </div>
-            <div class="panel-collapse collapse" id="plant">
-                <div class="panel-body">
-                    <h3>Sample Amount</h3>
-                    <p>Sample Amount: Submit 20 g of dried and ground sample. For extracts/solutions, five (5) mL per element is required.</p>
-                    <p>Plant Preparation: Oven-dry samples at 55-60°C. Grind to pass through a 40 mesh screen.</p>
-                    <p>Containers: Submit samples in coin envelopes.</p>
-                    <h3>Method Summaries</h3>
-                    <ul>
-                        @foreach (var method in Model.Where(x => x.Category == "Plant"))
+                        @foreach (var method in Model.Where(x => x.Id >= 800 && x.Id < 900))
                         {
                             <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
                         }
@@ -100,11 +64,15 @@
             </div>
             <div class="panel-collapse collapse" id="soil">
                 <div class="panel-body">
-                    <p><strong>Sample Amount: </strong>Submit 300-500 g of dried and ground sample. Five (5) mL per element is required for samples submitted in extract form. N &amp; C requires five (5) grams of finely powdered soil (to pass through a 60
-                        mesh sieve).</p>
-                    <p><strong>Soil Preparation: </strong>Air or oven-dry soil at 35-55°C (the Lab oven dries at 55°C). Grind to pass through a 2 mm sieve. 
-                        Analysis for N, C, TKN, CaCO<sub>3</sub>, and "total" metal analysis require 
-                        that the sample be ground to a powder fine enough to pass through a 60 mesh sieve (<0.25 mm).</p>
+@*                     <p>
+                        <strong>Sample Amount: </strong>Submit 300-500 g of dried and ground sample. Five (5) mL per element is required for samples submitted in extract form. N &amp; C requires five (5) grams of finely powdered soil (to pass through a 60
+                        mesh sieve).
+                    </p>
+                    <p>
+                        <strong>Soil Preparation: </strong>Air or oven-dry soil at 35-55°C (the Lab oven dries at 55°C). Grind to pass through a 2 mm sieve.
+                        Analysis for N, C, TKN, CaCO<sub>3</sub>, and "total" metal analysis require
+                        that the sample be ground to a powder fine enough to pass through a 60 mesh sieve (<0.25 mm).
+                    </p> *@
                     <p><strong>Containers: </strong>Submit samples in pint-size plastic containers or in bags (plastic or paper).</p>
                     <h3>Notes:</h3>
                     <p>Sodium Adsorption Ratio and Exchangeable Sodium Percent are calculations derived from analysis of Ca, Mg and Na.</p>
@@ -135,17 +103,54 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4 class="panel-title"><a href="#water" data-toggle="collapse" data-parent="#accordion">Water and Waste Water</a></h4>
+                <h4 class="panel-title"><a href="#manure" data-toggle="collapse" data-parent="#accordion">Manure and Compost Methods</a></h4>
             </div>
-            <div class="panel-collapse collapse" id="water">
+            <div class="panel-collapse collapse" id="manure">
                 <div class="panel-body">
-                    <p><strong>Sample Amount:</strong> 250 mL per sample (5 mL per element for extracts) is required.</p>
-                    <p><strong>Water Preparation:</strong> Samples submitted for alkalinity, ammonium, nitrate, soluble phosphorus, solids, sulfate and turbidity analysis should be kept under refrigeration. More detailed sample preservation guidelines
-                        are available on the Lab's web site <a href="https://anlab.ucdavis.edu/lab-information/sampling-and-preparation" title="Sampling and preparation">Sampling and preparation</a>.
-                    </p>
+@*                     <p>Sample Amount: Submit one cup manure or compost.</p>
+                    <p>Manure and Compost Preparation: Samples should be frozen, dried, or freeze-dried if not delivered to the lab immediately upon collection.</p> *@
+                    <p><strong>Containers: </strong>Submit fresh samples in plastic containers.</p>
+                    <ul>
+                        @foreach (var method in Model.Where(x => x.Id >= 700 && x.Id < 800))
+                        {
+                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title"><a href="#plant" data-toggle="collapse" data-parent="#accordion">Plant Methods</a></h4>
+            </div>
+            <div class="panel-collapse collapse" id="plant">
+                <div class="panel-body">
+@*                     <h3>Sample Amount</h3>
+                    <p>Sample Amount: Submit 20 g of dried and ground sample. For extracts/solutions, five (5) mL per element is required.</p>
+                    <p>Plant Preparation: Oven-dry samples at 55-60°C. Grind to pass through a 40 mesh screen.</p>
+                    <p>Containers: Submit samples in coin envelopes.</p> *@
                     <h3>Method Summaries</h3>
                     <ul>
-                        @foreach (var method in Model.Where(x => x.Id >= 800 && x.Id < 900))
+                        @foreach (var method in Model.Where(x => x.Category == "Plant"))
+                        {
+                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title"><a href="#feed" data-toggle="collapse" data-parent="#accordion">Feed Methods</a></h4>
+            </div>
+            <div class="panel-collapse collapse" id="feed">
+                <div class="panel-body">
+                    @* <p>Sample Amount: Send 50 g of dried and ground sample. The maximum unground sample size is one (1) large grocery bag.</p>
+                    <p>Feed Preparation: Oven-dry samples at 55-60°C for 24 hours. <strong>For Phenols</strong>: Dry samples at 50 - 52°C for 24 hours using a forced air oven. Avoid drying higher than 55°C as it could affect phenolic quantification.</p>
+                    <p>Grind to pass through a 40 mesh screen. HOWEVER, for methods 635, 640, and 650, the grind must be larger and pass through an 18 mesh screen The maximum unground sample size is one (1) large #56 grocery bag.</p> *@
+                    <h3>Method Summaries</h3>
+                    <ul>
+                        @foreach (var method in Model.Where(x => x.Id >= 600 && x.Id < 700))
                         {
                             <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
                         }
