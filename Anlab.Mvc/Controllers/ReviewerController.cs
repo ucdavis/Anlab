@@ -72,6 +72,41 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> Adjustments(AdjustmentsModel model)
+        {
+            if (model.fStart == null && model.fEnd == null && model.cStart == null && model.cEnd == null)
+            {
+                Message = "Please select a filter.";
+                model.Orders = new List<AdjustmentsView>();
+                return View(model);
+            }
+
+            var orders = _context.AdjustmentsView.Where(a => a.DateFinalized != null).AsQueryable();
+            if (model.fStart != null)
+            {
+                orders = orders.Where(a => a.DateFinalized >= model.fStart.Value.Date.FromPacificTime());
+            }
+
+            if (model.fEnd != null)
+            {
+                orders = orders.Where(a => a.DateFinalized <= model.fEnd.Value.Date.AddDays(1).FromPacificTime());
+            }
+
+            if (model.cStart != null)
+            {
+                orders = orders.Where(a => a.DateFinalized >= model.cStart.Value.Date.FromPacificTime());
+            }
+
+            if (model.cEnd != null)
+            {
+                orders = orders.Where(a => a.DateFinalized <= model.cEnd.Value.Date.AddDays(1).FromPacificTime());
+            }
+
+            model.Orders = await orders.ToListAsync();
+
+            return View(model);
+        }
+
         public async Task<IActionResult> Details(int id)
         {
             var order = await _context.Orders.IgnoreQueryFilters().Include(i => i.Creator).SingleOrDefaultAsync(o => o.Id == id && o.Status != OrderStatusCodes.Created);

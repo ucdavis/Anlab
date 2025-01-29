@@ -85,6 +85,8 @@ namespace Anlab.Core.Data
 
         public virtual DbSet<DisposalView> DisposalView { get; set; }
 
+        public virtual DbSet<AdjustmentsView> AdjustmentsView { get; set; }
+
         public virtual DbSet<SystemAlert> SystemAlerts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -101,6 +103,9 @@ namespace Anlab.Core.Data
             //Probably don't need this here because the name is the same as the table name
             builder.Entity<HistoricalSalesView>()
                 .ToView("HistoricalSalesView");
+
+            builder.Entity<AdjustmentsView>()
+                .ToView("AdjustmentsView");
 
 
             base.OnModelCreating(builder);
