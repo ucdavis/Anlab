@@ -82,6 +82,7 @@
     <Build Include="dbo\Views\DisposalView.sql" />
     <Build Include="dbo\Tables\SystemAlerts.sql" />
     <Build Include="dbo\Views\HistoricalSalesView.sql" />
+    <Build Include="dbo\Views\AdjustmentsView.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Compare\SqlExpressToProject.scmp" />

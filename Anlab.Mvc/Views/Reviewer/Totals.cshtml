@@ -99,6 +99,11 @@
 
     <script type="text/javascript">
         $(function () {
+            $.fn.dataTable.ext.type.order['currency-pre'] = function (data) {
+                // Remove currency symbols, commas, and handle parentheses for negative values
+                return parseFloat(data.replace(/[\$,]/g, '').replace(/\((.*)\)/, '-$1'));
+            };
+
             $(".datepicker").datepicker();
             $("#table").DataTable({
                 "dom": 'Bfrtip',
@@ -113,7 +118,8 @@
                 "sorting": [[6, "desc"]],
                 "columnDefs": [
                     {
-                        "type": "date", "targets": [4, 5]
+                        "type": "date", "targets": [4, 5],
+                        "type": "currency", "targets": 7,
                     }
                 ],
                 "footerCallback": function (row, data, start, end, display) {
