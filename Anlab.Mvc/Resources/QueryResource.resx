@@ -196,4 +196,14 @@ FROM            [SAMPLE] INNER JOIN
 WHERE        [ACODE] != '()' and SUBSTRING(ACODE, 1, 1) != '-'  and [SAMPLE].[LOGBATCH] = @RequestNum</value>
     <comment>List of codes </comment>
   </data>
+  <data name="FinishedInLabworks" xml:space="preserve">
+    <value>    SELECT TOP (10) 
+      r.[RESULT]
+FROM [LABWORKS].[dbo].[SAMPLE] s
+INNER JOIN [LABWORKS].[dbo].[RESULT] r
+    ON s.[SAMPNO] = r.[SAMPNO]
+WHERE s.LOGBATCH = @requestNum
+  AND r.ACODE = '()'</value>
+    <comment>If this returns a value (initital) it means it is finished in labworks</comment>
+  </data>
 </root>
