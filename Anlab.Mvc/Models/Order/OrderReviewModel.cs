@@ -18,6 +18,10 @@ namespace AnlabMvc.Models.Order
         public bool HideLabDetails { get; set; } = true;
 
         public IList<History> History { get; set; }
+
+        public string? LabworksFinished { get; set; } //Has the initials of the person who finihed this in Labworks. May be null or empty if not finished.
+        public bool WasFinalEmailSent { get; set; } = false; //Was the final email sent to the client?
+        public bool WasFinalEmailSkipped { get; set; } = false; //Was the final email skipped?
     }
 
 

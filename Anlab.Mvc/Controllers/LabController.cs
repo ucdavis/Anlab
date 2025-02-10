@@ -117,6 +117,11 @@ namespace AnlabMvc.Controllers
 
             await GetHistories(id, model);
 
+            //Will be null if not finished
+            model.LabworksFinished = await _labworksService.IsFinishedInLabworks(order.RequestNum);
+            await CheckFinalEmailSent(id, model);
+
+
             return View(model);
         }
 
@@ -133,6 +138,15 @@ namespace AnlabMvc.Controllers
                     ActorName = s.ActorName,
                     Notes = s.Notes
                 }).OrderBy(o => o.ActionDateTime).ToListAsync(); //Basically filtering out jsonDetails
+        }
+
+        private async Task CheckFinalEmailSent(int id, OrderReviewModel model)
+        {
+            //Get subjects of emails send for this order
+            var emails = await _dbContext.MailMessages.Where(a => a.Order.Id == id).Select(s => s.Subject).ToListAsync();
+
+            model.WasFinalEmailSent = emails.Any(a => a.StartsWith("Work Request Finalized"));
+            model.WasFinalEmailSkipped = emails.Any(a => a.StartsWith("Work Request Finalized") && a.EndsWith("Bypass Client"));
         }
 
         [HttpPost]
@@ -504,6 +518,10 @@ namespace AnlabMvc.Controllers
             model.HideLabDetails = false;
 
             await GetHistories(id, model);
+
+            //Will be null if not finished
+            model.LabworksFinished = await _labworksService.IsFinishedInLabworks(order.RequestNum);
+            await CheckFinalEmailSent(id, model);
 
             return View(model);
         }
