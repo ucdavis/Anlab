@@ -17,6 +17,7 @@ export const Order = () => {
     defaultAcPhone: window.App.defaults.defaultAcPhone,
     defaultAcEmail: window.App.defaults.defaultAcEmail,
     defaultCompanyName: window.App.defaults.defaultCompanyName,
+    defaultPlacingOrder: window.App.defaults.defaultPlacingOrder,
 
     testItems: window.App.orderData.testItems,
     internalProcessingFee: window.App.orderData.internalProcessingFee,

@@ -144,7 +144,7 @@ namespace AnlabMvc.Controllers
             return RedirectToAction("Favorites");
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(bool? browsePrices)
         {
             var joined = await _orderService.PopulateTestItemModel();
             var proc = await _labworksService.GetPrice(processingCode);
@@ -181,6 +181,8 @@ namespace AnlabMvc.Controllers
 
                 }
             }
+
+            model.Defaults.DefaultPlacingOrder = browsePrices.HasValue ? !browsePrices.Value : true; 
 
             return View(model);
         }
