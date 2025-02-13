@@ -45,6 +45,7 @@ export interface IOrderFormProps {
   internalProcessingFee: number;
   externalProcessingFee: number;
   orderId?: number;
+  defaultPlacingOrder: boolean;
 }
 
 interface IOrderFormState {
@@ -134,8 +135,8 @@ export default class OrderForm extends React.Component<
         acPhone: this.props.defaultAcPhone || "",
         poNum: "",
         agreementRequired: false,
-      },
-      placingOrder: true,
+        },
+      placingOrder: this.props.defaultPlacingOrder,
       project: "",
       quantity: null,
       sampleDisposition: "",
