@@ -13,6 +13,7 @@ using Anlab.Core.Extensions;
 using Anlab.Core.Domain;
 using AnlabMvc.Models.Reviewer;
 using Newtonsoft.Json;
+using AnlabMvc.Services;
 
 namespace AnlabMvc.Controllers
 {
@@ -20,10 +21,12 @@ namespace AnlabMvc.Controllers
     public class ReviewerController : ApplicationController
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILabworksService _labworksService;
 
-        public ReviewerController(ApplicationDbContext context)
+        public ReviewerController(ApplicationDbContext context, ILabworksService labworksService)
         {
             _context = context;
+            _labworksService = labworksService;
         }
 
         public async Task<IActionResult> Index()
@@ -122,6 +125,10 @@ namespace AnlabMvc.Controllers
             model.HideLabDetails = false;
 
             await GetHistories(id, model);
+
+            //Will be null if not finished
+            model.LabworksFinished = await _labworksService.IsFinishedInLabworks(order.RequestNum);
+            await CheckFinalEmailSent(id, model);
 
             return View(model);
         }
@@ -266,6 +273,15 @@ namespace AnlabMvc.Controllers
                     ActorName = s.ActorName,
                     Notes = s.Notes
                 }).OrderBy(o => o.ActionDateTime).ToListAsync(); //Basically filtering out jsonDetails
+        }
+
+        private async Task CheckFinalEmailSent(int id, OrderReviewModel model)
+        {
+            //Get subjects of emails send for this order
+            var emails = await _context.MailMessages.Where(a => a.Order.Id == id).Select(s => s.Subject).ToListAsync();
+
+            model.WasFinalEmailSent = emails.Any(a => a.StartsWith("Work Request Finalized"));
+            model.WasFinalEmailSkipped = emails.Any(a => a.StartsWith("Work Request Finalized") && a.EndsWith("Bypass Client"));
         }
     }
 }

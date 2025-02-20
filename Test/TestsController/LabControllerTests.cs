@@ -125,6 +125,7 @@ namespace Test.TestsController
             MockDbContext.Setup(m => m.Orders).Returns(OrderData.AsQueryable().MockAsyncDbSet().Object);
             MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);
             MockDbContext.Setup(a => a.History).Returns(new List<History>().AsQueryable().MockAsyncDbSet().Object);
+            MockDbContext.Setup(a => a.MailMessages).Returns(new List<MailMessage>().AsQueryable().MockAsyncDbSet().Object);
             MockHttpContext.Setup(m => m.User).Returns(MockClaimsPrincipal.Object);
 
             Controller = new LabController(MockDbContext.Object, MockOrderService.Object, MockLabworksService.Object,

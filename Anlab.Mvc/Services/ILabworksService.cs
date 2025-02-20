@@ -31,6 +31,8 @@ namespace AnlabMvc.Services
 
         Task<string> TestDbConnection();
 
+        Task<string> IsFinishedInLabworks(string RequestNum);
+
     }
 
     public class LabworksService : ILabworksService
@@ -43,7 +45,7 @@ namespace AnlabMvc.Services
             _context = context;
             _connectionSettings = connectionSettings.Value;
         }
-
+        
         /// <summary>
         /// Get the Labworks prices for all test items in our db
         /// </summary>
@@ -256,6 +258,18 @@ namespace AnlabMvc.Services
                 return codes.ElementAt(0);
             }
         }
+
+        public async Task<string> IsFinishedInLabworks(string RequestNum)
+        {
+            using (var db = new DbManager(_connectionSettings.AnlabConnection))
+            {
+                IEnumerable<string> initials = await db.Connection.QueryAsync<string>(QueryResource.FinishedInLabworks, new { RequestNum });
+
+                //return the first non null or empty string
+                return initials.Where(a => !string.IsNullOrWhiteSpace(a)).FirstOrDefault();
+
+            }
+        }
     }
     
     
@@ -392,6 +406,11 @@ namespace AnlabMvc.Services
         public Task<string> TestDbConnection()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<string> IsFinishedInLabworks(string RequestNum)
+        {
+            return "JCS";
         }
     }
 }
