@@ -33,6 +33,8 @@ namespace AnlabMvc.Services
 
         Task<string> IsFinishedInLabworks(string RequestNum);
 
+        Task<IList<LabworksFinishedModel>> GetLabworksFinishedList(string[] RequestNums);
+
     }
 
     public class LabworksService : ILabworksService
@@ -270,6 +272,31 @@ namespace AnlabMvc.Services
 
             }
         }
+
+        /// <summary>
+        /// Exampkle call that returns 2
+        /// var xxx = await _labworksService.GetLabworksFinishedList(new string[] { "25S012", "25S108", "25F389" });
+        /// </summary>
+        /// <param name="RequestNums"></param>
+        /// <returns></returns>
+        public async Task<IList<LabworksFinishedModel>> GetLabworksFinishedList(string[] RequestNums)
+        {
+            var RequestList = RequestNums.Distinct().ToArray();
+            var results = new List<LabworksFinishedModel>();
+            const int batchSize = 1000; // Adjust batch size as needed. It is probably good up to 2100, but I haven't tested that.
+
+            using (var db = new DbManager(_connectionSettings.AnlabConnection))
+            {
+                for (int i = 0; i < RequestList.Length; i += batchSize)
+                {
+                    var batch = RequestList.Skip(i).Take(batchSize).ToArray();
+                    var batchResults = await db.Connection.QueryAsync<LabworksFinishedModel>(QueryResource.FinishedInLabworksList, new { RequestList = batch });
+                    results.AddRange(batchResults);
+                }
+            }
+
+            return results;
+        }
     }
     
     
@@ -411,6 +438,11 @@ namespace AnlabMvc.Services
         public async Task<string> IsFinishedInLabworks(string RequestNum)
         {
             return "JCS";
+        }
+
+        public Task<IList<LabworksFinishedModel>> GetLabworksFinishedList(string[] RequestNums)
+        {
+            throw new NotImplementedException();
         }
     }
 }

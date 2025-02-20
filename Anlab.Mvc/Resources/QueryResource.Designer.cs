@@ -191,5 +191,20 @@ namespace AnlabMvc.Resources {
                 return ResourceManager.GetString("FinishedInLabworks", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT distinct
+        ///  s.[LOGBATCH] as RequestNum,
+        ///  r.[RESULT] as Initials
+        ///FROM [LABWORKS].[dbo].[SAMPLE] s
+        ///LEFT JOIN [LABWORKS].[dbo].[RESULT] r
+        ///    ON s.[SAMPNO] = r.[SAMPNO]
+        ///WHERE r.ACODE = &apos;()&apos; and s.LOGBATCH IN @RequestList.
+        /// </summary>
+        internal static string FinishedInLabworksList {
+            get {
+                return ResourceManager.GetString("FinishedInLabworksList", resourceCulture);
+            }
+        }
     }
 }

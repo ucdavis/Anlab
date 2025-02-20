@@ -206,4 +206,14 @@ WHERE s.LOGBATCH = @requestNum
   AND r.ACODE = '()'</value>
     <comment>If this returns a value (initital) it means it is finished in labworks</comment>
   </data>
+  <data name="FinishedInLabworksList" xml:space="preserve">
+    <value>SELECT distinct
+  s.[LOGBATCH] as RequestNum,
+  r.[RESULT] as Initials
+FROM [LABWORKS].[dbo].[SAMPLE] s
+LEFT JOIN [LABWORKS].[dbo].[RESULT] r
+    ON s.[SAMPNO] = r.[SAMPNO]
+WHERE r.ACODE = '()' and s.LOGBATCH IN @RequestList</value>
+    <comment>Passed a list of work requests, it returns a list of all those that have been finished</comment>
+  </data>
 </root>
