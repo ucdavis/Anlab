@@ -1,6 +1,6 @@
 @using Anlab.Core.Models
 @using AnlabMvc.Models.Order;
-@model IList<Order>
+@model LabOrderListModel
 @{
     ViewData["Title"] = "Orders";
 }
@@ -50,13 +50,17 @@
         <th>Created</th>
         <th>Updated</th>
         <th>Paid</th>
+        <th>Done</th>
+        <th>Skiped</th>
         <th>Actions</th>
     </tr>
     </thead>
     <tbody>
 
-    @foreach (var order in Model)
+    @foreach (var order in Model.Orders)
     {
+        var finished = order.Status == OrderStatusCodes.Finalized || order.Status == OrderStatusCodes.Complete || Model.LabworksFinished.Any(a => a.RequestNum == order.RequestNum);
+        var lastEmailSkipped = false; //TODO: Implement
         <tr>
             <td>
                 @if (order.Status == OrderStatusCodes.Confirmed)
@@ -89,6 +93,18 @@
                     <i class="fa fa-check" aria-hidden="true"></i>
 
                 }
+            </td>
+            <td>
+                @if (finished)
+                {
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                }
+            </td>
+            <td>
+                @if (lastEmailSkipped)
+                {
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                }                
             </td>
             <td>
                 @if (order.Status == OrderStatusCodes.Confirmed)

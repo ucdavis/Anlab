@@ -285,6 +285,11 @@ namespace AnlabMvc.Services
             var results = new List<LabworksFinishedModel>();
             const int batchSize = 1000; // Adjust batch size as needed. It is probably good up to 2100, but I haven't tested that.
 
+            if(RequestList == null || RequestList.Length == 0)
+            {
+                return results;
+            }
+
             using (var db = new DbManager(_connectionSettings.AnlabConnection))
             {
                 for (int i = 0; i < RequestList.Length; i += batchSize)
@@ -440,9 +445,15 @@ namespace AnlabMvc.Services
             return "JCS";
         }
 
-        public Task<IList<LabworksFinishedModel>> GetLabworksFinishedList(string[] RequestNums)
+        public async Task<IList<LabworksFinishedModel>> GetLabworksFinishedList(string[] RequestNums)
         {
-            throw new NotImplementedException();
+            var temp = new List<LabworksFinishedModel>();
+            if (RequestNums != null && RequestNums.Length > 3)
+            {
+                temp.Add(new LabworksFinishedModel { RequestNum = RequestNums[0], Initials = "JCS" });
+                temp.Add(new LabworksFinishedModel { RequestNum = RequestNums[1], Initials = "JCS" });
+            }
+            return temp;
         }
     }
 }
