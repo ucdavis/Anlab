@@ -671,6 +671,10 @@ namespace AnlabMvc.Controllers
                 }
             }
 
+            //Will be null if not finished
+            model.OrderReviewModel.LabworksFinished = await _labworksService.IsFinishedInLabworks(order.RequestNum);
+            await CheckFinalEmailSent(id, model.OrderReviewModel);
+
             return View(model);
         }
 
