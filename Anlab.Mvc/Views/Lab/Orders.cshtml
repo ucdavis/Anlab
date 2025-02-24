@@ -50,7 +50,8 @@
         <th>Created</th>
         <th>Updated</th>
         <th>Paid</th>
-        <th>Finished</th>
+        <th>Done</th>
+        <th>Skiped</th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -58,7 +59,8 @@
 
     @foreach (var order in Model.Orders)
     {
-        var finished = Model.LabworksFinished.Any(a => a.RequestNum == order.RequestNum);
+        var finished = order.Status == OrderStatusCodes.Finalized || order.Status == OrderStatusCodes.Complete || Model.LabworksFinished.Any(a => a.RequestNum == order.RequestNum);
+        var lastEmailSkipped = false; //TODO: Implement
         <tr>
             <td>
                 @if (order.Status == OrderStatusCodes.Confirmed)
@@ -93,10 +95,16 @@
                 }
             </td>
             <td>
-                @if (finished && order.Status == OrderStatusCodes.Received)
+                @if (finished)
                 {
                     <i class="fa fa-check" aria-hidden="true"></i>
                 }
+            </td>
+            <td>
+                @if (lastEmailSkipped)
+                {
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                }                
             </td>
             <td>
                 @if (order.Status == OrderStatusCodes.Confirmed)
