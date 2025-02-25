@@ -80,6 +80,8 @@ namespace Anlab.Core.Domain
 
         public DateTime? DateFinalized { get; set; }
 
+        public bool SkippedFinalEmail { get; set; } = false;
+
         public IList<History> History { get; set; }
 
         public OrderDetails GetOrderDetails()
