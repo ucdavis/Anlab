@@ -598,6 +598,11 @@ namespace AnlabMvc.Controllers
             //Only send email if there wasn't a problem with sloth.
             await _orderMessageService.EnqueueFinalizedMessage(order, model.BypassEmail);
 
+            if(model.BypassEmail)
+            {
+                order.SkippedFinalEmail = true;
+            }
+
             var extraMailMessage = model.BypassEmail ? "Without Email" : "";
             var user = _dbContext.Users.Single(a => a.Id == CurrentUserId);
             order.History.Add(new History
