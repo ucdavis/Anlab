@@ -85,8 +85,9 @@ namespace AnlabMvc.Controllers
                     Status = c.Status,
                     ShareIdentifier = c.ShareIdentifier,
                     Paid = c.Paid,
-                    ClientName = c.ClientName
-                })
+                    ClientName = c.ClientName,
+                    SkippedFinalEmail = c.SkippedFinalEmail
+            })
             .OrderByDescending(a => a.Updated)
             .Take(_maxShownOrders)
             .ToListAsync();
