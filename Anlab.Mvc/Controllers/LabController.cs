@@ -64,7 +64,7 @@ namespace AnlabMvc.Controllers
         }
 
         [HttpGet]
-        public IActionResult Orders(bool showComplete)
+        public async Task<IActionResult> Orders(bool showComplete)
         {
             var ordersQueryable = _dbContext.Orders
                     .Where(a => a.Status != OrderStatusCodes.Created);
@@ -74,7 +74,7 @@ namespace AnlabMvc.Controllers
 
             }
 
-            var orders = ordersQueryable.Select(c => new Order
+            var orders = await ordersQueryable.Select(c => new Order
                 {
                     Id = c.Id,
                     ClientId = c.ClientId,
@@ -85,11 +85,12 @@ namespace AnlabMvc.Controllers
                     Status = c.Status,
                     ShareIdentifier = c.ShareIdentifier,
                     Paid = c.Paid,
-                    ClientName = c.ClientName
-                })
+                    ClientName = c.ClientName,
+                    SkippedFinalEmail = c.SkippedFinalEmail
+            })
             .OrderByDescending(a => a.Updated)
             .Take(_maxShownOrders)
-            .ToList();
+            .ToListAsync();
 
             if (orders.Count >= _maxShownOrders)
             {
@@ -98,7 +99,13 @@ namespace AnlabMvc.Controllers
 
             ViewBag.ShowComplete = showComplete;
 
-            return View(orders);
+            var workRequestNumbers = orders.Where(a => a.Status == OrderStatusCodes.Received).Select(a => a.RequestNum).Distinct().ToArray();
+
+            var model = new LabOrderListModel();
+            model.Orders = orders;
+            model.LabworksFinished = await _labworksService.GetLabworksFinishedList(workRequestNumbers);
+
+            return View(model);
         }
 
         public async Task<IActionResult> Details(int id)
@@ -117,6 +124,11 @@ namespace AnlabMvc.Controllers
 
             await GetHistories(id, model);
 
+            //Will be null if not finished
+            model.LabworksFinished = await _labworksService.IsFinishedInLabworks(order.RequestNum);
+            await CheckFinalEmailSent(id, model);
+
+
             return View(model);
         }
 
@@ -133,6 +145,15 @@ namespace AnlabMvc.Controllers
                     ActorName = s.ActorName,
                     Notes = s.Notes
                 }).OrderBy(o => o.ActionDateTime).ToListAsync(); //Basically filtering out jsonDetails
+        }
+
+        private async Task CheckFinalEmailSent(int id, OrderReviewModel model)
+        {
+            //Get subjects of emails send for this order
+            var emails = await _dbContext.MailMessages.Where(a => a.Order.Id == id).Select(s => s.Subject).ToListAsync();
+
+            model.WasFinalEmailSent = emails.Any(a => a.StartsWith("Work Request Finalized"));
+            model.WasFinalEmailSkipped = emails.Any(a => a.StartsWith("Work Request Finalized") && a.EndsWith("Bypass Client"));
         }
 
         [HttpPost]
@@ -505,6 +526,10 @@ namespace AnlabMvc.Controllers
 
             await GetHistories(id, model);
 
+            //Will be null if not finished
+            model.LabworksFinished = await _labworksService.IsFinishedInLabworks(order.RequestNum);
+            await CheckFinalEmailSent(id, model);
+
             return View(model);
         }
         [HttpPost]
@@ -573,6 +598,11 @@ namespace AnlabMvc.Controllers
             }
             //Only send email if there wasn't a problem with sloth.
             await _orderMessageService.EnqueueFinalizedMessage(order, model.BypassEmail);
+
+            if(model.BypassEmail)
+            {
+                order.SkippedFinalEmail = true;
+            }
 
             var extraMailMessage = model.BypassEmail ? "Without Email" : "";
             var user = _dbContext.Users.Single(a => a.Id == CurrentUserId);
@@ -646,6 +676,10 @@ namespace AnlabMvc.Controllers
                     ErrorMessage = "FYI There was a problem validating the UCD COA.";
                 }
             }
+
+            //Will be null if not finished
+            model.OrderReviewModel.LabworksFinished = await _labworksService.IsFinishedInLabworks(order.RequestNum);
+            await CheckFinalEmailSent(id, model.OrderReviewModel);
 
             return View(model);
         }

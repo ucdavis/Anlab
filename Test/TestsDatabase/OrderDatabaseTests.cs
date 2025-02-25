@@ -187,6 +187,7 @@ namespace Test.TestsDatabase
             {
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
             }));
+            expectedFields.Add(new NameAndType("SkippedFinalEmail", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("SlothTransactionId", "System.Nullable`1[System.Guid]", new List<string>()));
             expectedFields.Add(new NameAndType("Status", "System.String", new List<string>
             {

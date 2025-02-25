@@ -185,14 +185,14 @@ namespace Test.TestsController
         [Fact]
         public async Task CreateCallsOrderService()
         {
-            var controllerResult = await Controller.Create();
+            var controllerResult = await Controller.Create(false);
             MockOrderService.Verify(a => a.PopulateTestItemModel(It.IsAny<bool>()), Times.Once);
         }
 
         [Fact]
         public async Task CreateCallsLabworksServiceGetPrice()
         {
-            var controllerResult = await Controller.Create();
+            var controllerResult = await Controller.Create(false);
             MockLabworksService.Verify(a => a.GetPrice("PROC"), Times.Once);
         }
 
@@ -200,7 +200,7 @@ namespace Test.TestsController
         public async Task CreateDoesNotCallLabworksGetClientDetails()
         {
             UserData[0].ClientId = null;
-            var controllerResult = await Controller.Create();
+            var controllerResult = await Controller.Create(false);
             MockLabworksService.Verify(a => a.GetClientDetails(It.IsAny<string>()), Times.Never);
         }
 
@@ -208,7 +208,7 @@ namespace Test.TestsController
         public async Task CreateDoesCallLabworksGetClientDetails()
         {
             UserData[0].ClientId = "12345";
-            var controllerResult = await Controller.Create();
+            var controllerResult = await Controller.Create(false);
             MockLabworksService.Verify(a => a.GetClientDetails("12345"), Times.Once);
             MockLabworksService.Verify(a => a.GetClientDetails(It.IsAny<string>()), Times.Once);
         }
@@ -217,7 +217,7 @@ namespace Test.TestsController
         public async Task CreateReturnsViewWithExpectedData1()
         {
             UserData[0].ClientId = "12345";
-            var controllerResult = await Controller.Create();
+            var controllerResult = await Controller.Create(false);
 
             var result = Assert.IsType<ViewResult>(controllerResult);
             var model = Assert.IsType<OrderEditModel>(result.Model);
@@ -245,7 +245,7 @@ namespace Test.TestsController
             UserData[0].ClientId = "12345";
             UserData[0].Account = null; //Default account will be from labworks
 
-            var controllerResult = await Controller.Create();
+            var controllerResult = await Controller.Create(false);
 
             var result = Assert.IsType<ViewResult>(controllerResult);
             var model = Assert.IsType<OrderEditModel>(result.Model);

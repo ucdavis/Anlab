@@ -13,6 +13,8 @@ using Anlab.Core.Extensions;
 using Anlab.Core.Domain;
 using AnlabMvc.Models.Reviewer;
 using Newtonsoft.Json;
+using AnlabMvc.Services;
+using System.Linq.Expressions;
 
 namespace AnlabMvc.Controllers
 {
@@ -20,10 +22,12 @@ namespace AnlabMvc.Controllers
     public class ReviewerController : ApplicationController
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILabworksService _labworksService;
 
-        public ReviewerController(ApplicationDbContext context)
+        public ReviewerController(ApplicationDbContext context, ILabworksService labworksService)
         {
             _context = context;
+            _labworksService = labworksService;
         }
 
         public async Task<IActionResult> Index()
@@ -122,6 +126,10 @@ namespace AnlabMvc.Controllers
             model.HideLabDetails = false;
 
             await GetHistories(id, model);
+
+            //Will be null if not finished
+            model.LabworksFinished = await _labworksService.IsFinishedInLabworks(order.RequestNum);
+            await CheckFinalEmailSent(id, model);
 
             return View(model);
         }
@@ -224,6 +232,30 @@ namespace AnlabMvc.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> OrdersWithSkippedFinalEmail()
+        {
+            var model = await _context.Orders.Where(a => a.SkippedFinalEmail).OrderBy(a => a.DateFinalized).Select(OrderProjection()).ToListAsync();
+            return View(model);
+        }
+
+        //create a projection from orders to ReviewerOrderView
+        private  Expression<Func<Order, ReviewerOrderView>> OrderProjection()
+        {
+            return o => new ReviewerOrderView
+            {
+                Id = o.Id,
+                RequestNum = o.RequestNum,
+                ClientId = o.ClientId,
+                PaymentType = o.PaymentType,
+                Created = o.Created,
+                Updated = o.Updated,
+                Status = o.Status,
+                Paid = o.Paid,
+                DateFinalized = o.DateFinalized,
+                GrandTotal = 0.0m //Ignored
+            };
+        }
+
 
         private void AddOrCreateTest(List<HistoricalSalesRowModel> rows, string testCode, string analysis, bool isInternal, int quantity, decimal total)
         {
@@ -266,6 +298,15 @@ namespace AnlabMvc.Controllers
                     ActorName = s.ActorName,
                     Notes = s.Notes
                 }).OrderBy(o => o.ActionDateTime).ToListAsync(); //Basically filtering out jsonDetails
+        }
+
+        private async Task CheckFinalEmailSent(int id, OrderReviewModel model)
+        {
+            //Get subjects of emails send for this order
+            var emails = await _context.MailMessages.Where(a => a.Order.Id == id).Select(s => s.Subject).ToListAsync();
+
+            model.WasFinalEmailSent = emails.Any(a => a.StartsWith("Work Request Finalized"));
+            model.WasFinalEmailSkipped = emails.Any(a => a.StartsWith("Work Request Finalized") && a.EndsWith("Bypass Client"));
         }
     }
 }

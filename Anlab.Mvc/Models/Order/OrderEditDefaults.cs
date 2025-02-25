@@ -28,5 +28,7 @@ namespace AnlabMvc.Models.Order
         public string DefaultAcPhone { get; set; }
 
         public string DefaultAcEmail { get; set; }
+
+        public bool DefaultPlacingOrder { get; set; } = true;
     }
 }

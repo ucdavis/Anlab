@@ -97,6 +97,8 @@ namespace Test.TestsController
             MockAppSettings = new Mock<IOptions<AppSettings>>();
             MockAppSettings.SetupGet(x => x.Value).Returns(AppSettings);
 
+            
+
             //Default Data
             OrderData = new List<Order>();
             for (int i = 0; i < 5; i++)
@@ -125,6 +127,7 @@ namespace Test.TestsController
             MockDbContext.Setup(m => m.Orders).Returns(OrderData.AsQueryable().MockAsyncDbSet().Object);
             MockDbContext.Setup(a => a.Users).Returns(UserData.AsQueryable().MockAsyncDbSet().Object);
             MockDbContext.Setup(a => a.History).Returns(new List<History>().AsQueryable().MockAsyncDbSet().Object);
+            MockDbContext.Setup(a => a.MailMessages).Returns(new List<MailMessage>().AsQueryable().MockAsyncDbSet().Object);
             MockHttpContext.Setup(m => m.User).Returns(MockClaimsPrincipal.Object);
 
             Controller = new LabController(MockDbContext.Object, MockOrderService.Object, MockLabworksService.Object,
@@ -150,8 +153,9 @@ namespace Test.TestsController
         [InlineData(OrderStatusCodes.Finalized, true)]
         [InlineData(OrderStatusCodes.Complete, true)]
         [InlineData(OrderStatusCodes.Complete, false)]
-        public void TestOrderReturnsExpectedResults1(string value, bool showComplete)
+        public async void TestOrderReturnsExpectedResults1(string value, bool showComplete)
         {
+
             // Arrange
             foreach (var order in OrderData)
             {
@@ -165,34 +169,34 @@ namespace Test.TestsController
             OrderData[2].Paid = true;
 
             // Act
-            var controllerResult = Controller.Orders(showComplete);
+            var controllerResult =  await Controller.Orders(showComplete);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(controllerResult);
-            var modelResult = Assert.IsType<List<Order>>(viewResult.Model);
+            var modelResult = Assert.IsType<LabOrderListModel>(viewResult.Model);
             if (value == OrderStatusCodes.Complete && showComplete == false)
             {
-                modelResult.Count.ShouldBe(0);
+                modelResult.Orders.Count.ShouldBe(0);
             }
             else
             {
-                modelResult.Count.ShouldBe(2);
-                modelResult[0].Id.ShouldBe(3); //Sorted by updated date
-                modelResult[1].Id.ShouldBe(2); //Sorted by updated date
+                modelResult.Orders.Count.ShouldBe(2);
+                modelResult.Orders[0].Id.ShouldBe(3); //Sorted by updated date
+                modelResult.Orders[1].Id.ShouldBe(2); //Sorted by updated date
 
-                modelResult[1].ClientId.ShouldBe("ClientId2");
-                modelResult[1].Creator.ShouldNotBeNull();
-                modelResult[1].Creator.Email.ShouldBe("test2@testy.com");
-                modelResult[1].Created.ShouldNotBe(default);
-                modelResult[1].Updated.ShouldNotBe(default);
-                modelResult[1].RequestNum.ShouldBe("Blah");
-                modelResult[1].Status.ShouldBe(value);
-                modelResult[1].ShareIdentifier.ShouldBe(SpecificGuid.GetGuid(2));
-                modelResult[1].Paid.ShouldBeFalse();
+                modelResult.Orders[1].ClientId.ShouldBe("ClientId2");
+                modelResult.Orders[1].Creator.ShouldNotBeNull();
+                modelResult.Orders[1].Creator.Email.ShouldBe("test2@testy.com");
+                modelResult.Orders[1].Created.ShouldNotBe(default);
+                modelResult.Orders[1].Updated.ShouldNotBe(default);
+                modelResult.Orders[1].RequestNum.ShouldBe("Blah");
+                modelResult.Orders [1].Status.ShouldBe(value);
+                modelResult.Orders[1].ShareIdentifier.ShouldBe(SpecificGuid.GetGuid(2));
+                modelResult.Orders[1].Paid.ShouldBeFalse();
 
-                modelResult[0].Paid.ShouldBeTrue();
+                modelResult.Orders[0].Paid.ShouldBeTrue();
 
-                modelResult[1].ClientName.ShouldBe("Hup");
+                modelResult.Orders[1].ClientName.ShouldBe("Hup");
             }
 
             Controller.ViewBag.ShowComplete = showComplete;
@@ -202,7 +206,7 @@ namespace Test.TestsController
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void TestOrdersReturnsMax1000Orders(bool value)
+        public async void TestOrdersReturnsMax1000Orders(bool value)
         {
             // Arrange
             for (int i = 0; i < 1200; i++)
@@ -214,12 +218,12 @@ namespace Test.TestsController
 
 
             // Act
-            var controllerResult = Controller.Orders(value);
+            var controllerResult = await Controller.Orders(value);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(controllerResult);
-            var modelResult = Assert.IsType<List<Order>>(viewResult.Model);
-            modelResult.Count.ShouldBe(1000);
+            var modelResult = Assert.IsType<LabOrderListModel>(viewResult.Model);
+            modelResult.Orders.Count.ShouldBe(1000);
         }
         #endregion Orders
 
@@ -2098,7 +2102,8 @@ namespace Test.TestsController
             var countAdjustment = 0;
 #endif
             //1
-            ControllerReflection.MethodExpectedAttribute<HttpGetAttribute>("Orders", 1, "Orders-1", showListOfAttributes:false);
+            ControllerReflection.MethodExpectedAttribute<HttpGetAttribute>("Orders", 2 + countAdjustment, "Orders-1", showListOfAttributes:true);
+            ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Orders", 2 + countAdjustment, "Orders-2", showListOfAttributes: true);
 
             //2
             ControllerReflection.MethodExpectedAttribute<AsyncStateMachineAttribute>("Details", 1 + countAdjustment, "Details-1", showListOfAttributes: false);
