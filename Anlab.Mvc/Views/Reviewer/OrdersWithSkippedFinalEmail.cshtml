@@ -1,0 +1,131 @@
+@using Anlab.Core.Models
+@using AnlabMvc.Models.Order;
+@model IList<ReviewerOrderView>
+@{
+    ViewData["Title"] = "Orders with skipped final email";
+}
+
+
+<div class="col">
+    <table border="0" cellspacing="5" cellpadding="5" align="left">
+        <tbody>
+            <tr>
+                <td><label>Minimum Date:</label></td>
+                <td><label>Maximum Date:</label></td>
+            </tr>
+            <tr>
+                <td><input name="min" id="min" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
+                <td><input name="max" id="max" type="text" data-date-orientation="bottom" data-date-clear-btn="true" data-date-today-highlight="true"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table id="table" class="table">
+        <thead>
+            <tr>
+                <th>Work Req #</th>
+                <th>Id</th>
+                <th>ClientId</th>
+                <th>Payment Type</th>
+                <th>Created</th>
+                <th>Last Updated</th>
+                <th>Paid</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var order in Model)
+            {
+                var url = $"/Reviewer/Details/{order.Id}";
+            <tr data-href="@url">
+                <td>@order.RequestNum</td>
+                <td>@order.Id</td>
+                <td>@order.ClientId</td>
+                <td>@order.PaymentType</td>
+                <td>@order.Created.ToPacificTime().ToString("g")</td>
+                <td>@order.Updated.ToPacificTime().ToString("g")</td>
+                <td style="text-align: center">
+                @if (order.Paid)
+                {
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                }
+                </td>
+                <td>@order.Status</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+
+
+</div>
+
+@section AdditionalStyles
+    {
+    @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" />
+
+    <style>
+        #max, #min {
+            margin: 0 5px 5px 0;
+            height: 30px;
+        }
+    </style>
+    <style>
+        #table tbody tr {
+            cursor: pointer;
+        }
+    </style>
+}
+
+@section Scripts
+    {
+    @{ await Html.RenderPartialAsync("_DataTableScriptsPartial"); }
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            var table = $("#table").DataTable({
+                "sorting": [[5, "desc"]],
+                "columnDefs": [
+                    {
+                        "type": "date", "targets": [4,5]
+                    }
+                ],
+                "stateSave": true,
+                "stateDuration": 60 * 10,
+            });
+
+
+            $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+            $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+
+            //Event listener to the two range filtering inputs to redraw on input
+            $('#min, #max').change(function () {
+                table.draw();
+            });
+        });
+
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+                var min = $('#min').datepicker("getDate");
+                var max = $('#max').datepicker("getDate");
+                var startDate = new Date(data[5]);
+                startDate.setHours(0, 0, 0, 0);
+
+                if (min == null && max == null) { return true; }
+                if (min == null && startDate <= max) { return true; }
+                if (max == null && startDate >= min) { return true; }
+                if (startDate <= max && startDate >= min) { return true; }
+
+                return false;
+            }
+        );
+
+        $("#table tbody").on("click", "tr", function() {
+            window.open($(this).data("href"), "_blank");
+        });
+
+    </script>
+}
