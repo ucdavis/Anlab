@@ -14,6 +14,7 @@ using Anlab.Core.Domain;
 using AnlabMvc.Models.Reviewer;
 using Newtonsoft.Json;
 using AnlabMvc.Services;
+using System.Linq.Expressions;
 
 namespace AnlabMvc.Controllers
 {
@@ -229,6 +230,30 @@ namespace AnlabMvc.Controllers
             }
 
             return View(model);
+        }
+
+        public async Task<IActionResult> OrdersWithSkippedFinalEmail()
+        {
+            var model = await _context.Orders.Where(a => a.SkippedFinalEmail).OrderBy(a => a.DateFinalized).Select(OrderProjection()).ToListAsync();
+            return View(model);
+        }
+
+        //create a projection from orders to ReviewerOrderView
+        private  Expression<Func<Order, ReviewerOrderView>> OrderProjection()
+        {
+            return o => new ReviewerOrderView
+            {
+                Id = o.Id,
+                RequestNum = o.RequestNum,
+                ClientId = o.ClientId,
+                PaymentType = o.PaymentType,
+                Created = o.Created,
+                Updated = o.Updated,
+                Status = o.Status,
+                Paid = o.Paid,
+                DateFinalized = o.DateFinalized,
+                GrandTotal = 0.0m //Ignored
+            };
         }
 
 
