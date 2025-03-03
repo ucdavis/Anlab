@@ -44,8 +44,8 @@
                     <td>@order.Id</td>
                     <td>@order.ClientId</td>
                     <td>@order.PaymentType</td>
-                    <td>@order.Created.ToPacificTime().ToString("g")</td>
-                    <td>@order.DateFinalized.Value.ToPacificTime().ToString("g")</td>
+                    <td data-sort="@(order.Created.ToPacificTime().Ticks)">@order.Created.ToPacificTime().ToString("g")</td>
+                    <td data-sort="@(order.DateFinalized.Value.ToPacificTime().Ticks)">@order.DateFinalized.Value.ToPacificTime().ToString("g")</td>
                     <td>@order.Status</td>
                     <td>@order.GrandTotal.ToString("C")</td>
                 </tr>
