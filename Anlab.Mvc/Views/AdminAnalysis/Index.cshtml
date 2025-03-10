@@ -28,7 +28,7 @@
                         <option value="All">All</option>
                         @foreach (var category in AnalysisCategories.All)
                         {
-                            <option value="@category">@category</option>
+                            <option value="@category.Humanize(LetterCasing.Title)">@category.Humanize(LetterCasing.Title)</option>
                         }
                     </select>
                 </th>
