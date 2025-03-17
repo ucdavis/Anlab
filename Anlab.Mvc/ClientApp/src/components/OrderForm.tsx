@@ -135,7 +135,7 @@ export default class OrderForm extends React.Component<
         acPhone: this.props.defaultAcPhone || "",
         poNum: "",
         agreementRequired: false,
-        },
+      },
       placingOrder: this.props.defaultPlacingOrder,
       project: "",
       quantity: null,
@@ -602,6 +602,32 @@ export default class OrderForm extends React.Component<
       !this.state.sampleTypeQuestions.plantReportingBasis
     ) {
       valid = false;
+    }
+
+    // Check Plant Dry Matter requirements
+    if (this.state.sampleType === "Plant") {
+      const dryMatterTestsSelected = this.props.testItems.filter(
+        (x) => x.dryMatter === true
+      );
+      const isDryMatterSelected = dryMatterTestsSelected.some(
+        (x) => this.state.selectedCodes[x.id]
+      );
+      // if dry matter is selected, user can't selected the first choice
+      if (
+        isDryMatterSelected &&
+        this.state.sampleTypeQuestions.plantReportingBasis ===
+          SamplePlantQuestionsOptions.average
+      ) {
+        valid = false;
+      }
+      // if dry matter is not selected, user must select the first or second choice
+      if (
+        !isDryMatterSelected &&
+        this.state.sampleTypeQuestions.plantReportingBasis ===
+          SamplePlantQuestionsOptions.individual
+      ) {
+        valid = false;
+      }
     }
 
     // check special soil requirements -- if soil is imported, user must select the SP-FOR test
