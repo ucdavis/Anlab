@@ -183,7 +183,9 @@ export default class OrderForm extends React.Component<
         dryMatterTests: this.props.testItems.filter(
           (x) => x.dryMatter === true
         ),
-        isDryMatterTestSelected: false,
+        isDryMatterTestSelected: orderInfo.SelectedTests.some(
+          (a) => a.dryMatter
+        ),
       };
       initialState.sampleDisposition = orderInfo.SampleDisposition;
       initialState.project = orderInfo.Project;
@@ -235,6 +237,10 @@ export default class OrderForm extends React.Component<
       );
     }
 
+    //Can't do it exactly like this above because the selectedTests are not populated yet
+    initialState.sampleTypeQuestions.isDryMatterTestSelected = initialState.selectedTests.some(
+      (a) => a.dryMatter
+    );
     this.state = { ...initialState };
   }
 
