@@ -90,6 +90,7 @@ namespace AnlabMvc.Services
                         Notes = i.NotesEncoded,
                         Public = i.Public,
                         Reporting = i.Reporting,
+                        DryMatter = i.DryMatter,
                         AdditionalInfoPrompt = i.AdditionalInfoPrompt,
                         Sop = p.Sop,
                         RequestOrder = i.RequestOrder,

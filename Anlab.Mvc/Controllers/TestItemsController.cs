@@ -86,7 +86,7 @@ namespace AnlabMvc.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken] //Not really needed. Class inherits the Auto version, but it doesn't hurt
-        public async Task<IActionResult> Create([Bind("Id,Analysis,Categories,Group,Public,Notes,AdditonalInfoPrompt,LabOrder,RequestOrder,Reporting")] TestItem testItem)
+        public async Task<IActionResult> Create([Bind("Id,Analysis,Categories,Group,Public,Notes,AdditonalInfoPrompt,LabOrder,RequestOrder,Reporting,DryMatter")] TestItem testItem)
         {
             ModelState.Clear();
             TryValidateModel(testItem);
@@ -128,7 +128,7 @@ namespace AnlabMvc.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id, Categories, Analysis,Group,Public,Notes,AdditionalInfoPrompt,LabOrder,RequestOrder,Reporting")] TestItem testItem)
+        public async Task<IActionResult> Edit(string id, [Bind("Id, Categories, Analysis,Group,Public,Notes,AdditionalInfoPrompt,LabOrder,RequestOrder,Reporting,DryMatter")] TestItem testItem)
         {
             if (id != testItem.Id)
             {

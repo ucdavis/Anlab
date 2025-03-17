@@ -16,6 +16,7 @@ describe("<Summary />", () => {
       internalCost: 2.02,
       internalSetupCost: 5,
       notes: "",
+      dryMatter: false,
       sop: "123",
     },
     {
@@ -28,6 +29,7 @@ describe("<Summary />", () => {
       internalCost: 1.01,
       internalSetupCost: 6,
       notes: "",
+      dryMatter: false,
       sop: "123",
     },
   ];

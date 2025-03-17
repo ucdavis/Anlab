@@ -9,6 +9,7 @@ CREATE TABLE [dbo].[TestItems] (
     [Public]               BIT            NOT NULL,
     [RequestOrder]         INT            NOT NULL,
     [Reporting] BIT NOT NULL DEFAULT 0, 
+    [DryMatter] BIT NOT NULL DEFAULT 0, 
     CONSTRAINT [PK_TestItems] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
