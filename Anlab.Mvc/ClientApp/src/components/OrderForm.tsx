@@ -727,18 +727,19 @@ export default class OrderForm extends React.Component<
   };
 
   private _onSampleQuestionChanged = (question: string, answer: any) => {
-    if (question === "plantReportingBasis") {
-      const dryMatterTest = this.props.testItems.filter(
-        (x) => x.id === "DM"
-      )[0];
-      if (answer === SamplePlantQuestionsOptions.individual) {
-        // if user selects individual basis, add dry matter test
-        this._changeTest(dryMatterTest, true);
-      } else if (this.state.selectedTests.indexOf(dryMatterTest) !== -1) {
-        // if user selects a different option and dry matter is selected, remove it
-        this._changeTest(dryMatterTest, false);
-      }
-    }
+    //We don't want to select or unselect tests anymore, instead we just want to do validation
+    //if (question === "plantReportingBasis") {
+    //  const dryMatterTest = this.props.testItems.filter(
+    //    (x) => x.id === "DM"
+    //  )[0];
+    //  if (answer === SamplePlantQuestionsOptions.individual) {
+    //    // if user selects individual basis, add dry matter test
+    //    this._changeTest(dryMatterTest, true);
+    //  } else if (this.state.selectedTests.indexOf(dryMatterTest) !== -1) {
+    //    // if user selects a different option and dry matter is selected, remove it
+    //    this._changeTest(dryMatterTest, false);
+    //  }
+    //}
     this._changeSampleQuestion(question, answer);
   };
 
