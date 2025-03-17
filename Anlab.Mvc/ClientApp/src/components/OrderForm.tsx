@@ -919,7 +919,20 @@ export default class OrderForm extends React.Component<
       this.state.sampleType === "Plant"
       //TODO: Add checks for Plant Dry Matter
     ) {
-      //this._focusInput(this.plantReportingRef);
+      if (
+        this.state.sampleTypeQuestions.plantReportingBasis ===
+          SamplePlantQuestionsOptions.average &&
+        this.state.selectedTests.some((a) => a.dryMatter)
+      ) {
+        this._focusInput(this.plantReportingRef);
+      }
+      if (
+        this.state.sampleTypeQuestions.plantReportingBasis ===
+          SamplePlantQuestionsOptions.individual &&
+        !this.state.selectedTests.some((a) => a.dryMatter)
+      ) {
+        this._focusInput(this.plantReportingRef);
+      }
     }
   };
 

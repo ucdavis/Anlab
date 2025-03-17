@@ -111,16 +111,23 @@ export class SamplePlantQuestions extends React.Component<
             You must select how you would like your samples reported.
           </span>
         )}
-        Dry Matter Tests are:
-        {this.props.dryMatterTests.length > 0 && (
-          <ul className="red-text">
-            {this.props.dryMatterTests.map((test, index) => (
-              <li key={index}>{test.analysis}</li>
-            ))}
-          </ul>
+        {((this.props.questions.plantReportingBasis ===
+          SamplePlantQuestionsOptions.average &&
+          this.props.isDryMatterTestSelected) ||
+          (this.props.questions.plantReportingBasis ===
+            SamplePlantQuestionsOptions.individual &&
+            !this.props.isDryMatterTestSelected)) && (
+          <div>
+            Dry Matter Tests are:
+            {this.props.dryMatterTests.length > 0 && (
+              <ul className="red-text">
+                {this.props.dryMatterTests.map((test, index) => (
+                  <li key={index}>{test.analysis}</li>
+                ))}
+              </ul>
+            )}
+          </div>
         )}
-        {/* is Dry Matter Test Selected:{" "}
-        {this.props.isDryMatterTestSelected ? "Yes" : "No"} */}
       </div>
     );
   }
