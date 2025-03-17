@@ -286,9 +286,10 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("AdditionalInfoPrompt", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Analysis", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Categories", "System.String[]", new List<string>()));
-            expectedFields.Add(new NameAndType("Category", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("Category", "System.String", new List<string>()));            
             expectedFields.Add(new NameAndType("Code", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Description", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("DryMatter", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("ExternalCost", "System.Decimal", new List<string>()));
             expectedFields.Add(new NameAndType("ExternalSetupCost", "System.Decimal", new List<string>()));
             expectedFields.Add(new NameAndType("Group", "System.String", new List<string>()));

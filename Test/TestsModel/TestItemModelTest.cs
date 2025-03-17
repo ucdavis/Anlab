@@ -29,6 +29,7 @@ namespace Test.TestsModel
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)64)]"
             }));
+            expectedFields.Add(new NameAndType("DryMatter", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Group", "System.String", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
