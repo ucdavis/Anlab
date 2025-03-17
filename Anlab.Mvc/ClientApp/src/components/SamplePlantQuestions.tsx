@@ -48,14 +48,15 @@ export class SamplePlantQuestions extends React.Component<
             {SamplePlantQuestionsOptions.average}
           </label>
           {this.props.questions.plantReportingBasis ===
-            SamplePlantQuestionsOptions.average && (
-            <span className="red-text help-block">
-              <span className="red-text">
-                You have selected a Dry Matter test below and may not select
-                this option with those tests.
+            SamplePlantQuestionsOptions.average &&
+            this.props.isDryMatterTestSelected && (
+              <span className="red-text help-block">
+                <span className="red-text">
+                  You have selected a Dry Matter test below and may not select
+                  this option with those tests.
+                </span>
               </span>
-            </span>
-          )}
+            )}
         </p>
         <p>
           <label>
@@ -87,21 +88,30 @@ export class SamplePlantQuestions extends React.Component<
             {SamplePlantQuestionsOptions.individual}
           </label>
           {this.props.questions.plantReportingBasis ===
-            SamplePlantQuestionsOptions.individual && (
-            <div>
-              <h2 className="help-block inline-block">
-                Please select the dry matter test below
-              </h2>
-              <span className="red-text inline-block">(Charges Apply)</span>
-            </div>
-          )}
+            SamplePlantQuestionsOptions.individual &&
+            this.props.isDryMatterTestSelected && (
+              <div>
+                <h2 className="help-block inline-block">
+                  Dry matter test selected.
+                </h2>
+                <span className="red-text inline-block">(Charges Apply)</span>
+              </div>
+            )}
+          {this.props.questions.plantReportingBasis ===
+            SamplePlantQuestionsOptions.individual &&
+            !this.props.isDryMatterTestSelected && (
+              <span className="red-text help-block">
+                You must select a Dry Matter test below to select this option.
+                (Charges Apply)
+              </span>
+            )}
         </p>
         {!this.props.questions.plantReportingBasis && (
           <span className="red-text help-block">
             You must select how you would like your samples reported.
           </span>
         )}
-        Dry Matter Tests:
+        Dry Matter Tests are:
         {this.props.dryMatterTests.length > 0 && (
           <ul className="red-text">
             {this.props.dryMatterTests.map((test, index) => (
