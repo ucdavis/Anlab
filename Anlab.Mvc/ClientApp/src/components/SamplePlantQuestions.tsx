@@ -1,10 +1,13 @@
 import * as React from "react";
 import { ISampleTypeQuestions } from "./SampleTypeQuestions";
+import { ITestItem } from "./TestList";
 
 interface IPlantQuestionProps {
   handleChange: Function;
   sampleType: string;
   questions: ISampleTypeQuestions;
+  dryMatterTests: ITestItem[];
+  isDryMatterTestSelected: boolean;
   plantReportingRef: (element: HTMLInputElement) => void;
 }
 
@@ -44,6 +47,15 @@ export class SamplePlantQuestions extends React.Component<
             />
             {SamplePlantQuestionsOptions.average}
           </label>
+          {this.props.questions.plantReportingBasis ===
+            SamplePlantQuestionsOptions.average && (
+            <span className="red-text help-block">
+              <span className="red-text">
+                You have selected a Dry Matter test below and may not select
+                this option with those tests.
+              </span>
+            </span>
+          )}
         </p>
         <p>
           <label>
@@ -89,6 +101,16 @@ export class SamplePlantQuestions extends React.Component<
             You must select how you would like your samples reported.
           </span>
         )}
+        Dry Matter Tests:
+        {this.props.dryMatterTests.length > 0 && (
+          <ul className="red-text">
+            {this.props.dryMatterTests.map((test, index) => (
+              <li key={index}>{test.analysis}</li>
+            ))}
+          </ul>
+        )}
+        {/* is Dry Matter Test Selected:{" "}
+        {this.props.isDryMatterTestSelected ? "Yes" : "No"} */}
       </div>
     );
   }

@@ -148,6 +148,10 @@ export default class OrderForm extends React.Component<
         waterPreservativeAdded: false,
         waterPreservativeInfo: "",
         waterReportedInMgL: false,
+        dryMatterTests: this.props.testItems.filter(
+          (x) => x.dryMatter === true
+        ),
+        isDryMatterTestSelected: false,
       },
       selectedCodes: {},
       selectedTests: [],
@@ -176,6 +180,10 @@ export default class OrderForm extends React.Component<
         waterPreservativeInfo:
           orderInfo.SampleTypeQuestions.WaterPreservativeInfo,
         waterReportedInMgL: orderInfo.SampleTypeQuestions.WaterReportedInMgL,
+        dryMatterTests: this.props.testItems.filter(
+          (x) => x.dryMatter === true
+        ),
+        isDryMatterTestSelected: false,
       };
       initialState.sampleDisposition = orderInfo.SampleDisposition;
       initialState.project = orderInfo.Project;
@@ -460,6 +468,12 @@ export default class OrderForm extends React.Component<
                   sampleType={sampleType}
                   questions={sampleTypeQuestions}
                   handleChange={this._onSampleQuestionChanged}
+                  dryMatterTests={this.props.testItems.filter(
+                    (test) => test.dryMatter === true
+                  )}
+                  isDryMatterTestSelected={this.state.selectedTests.some(
+                    (a) => a.dryMatter
+                  )}
                 />
               )}
             </div>
@@ -719,24 +733,25 @@ export default class OrderForm extends React.Component<
   };
 
   private _onTestSelectionChanged = (test: ITestItem, selected: boolean) => {
-    if (test.id === "DM") {
-      if (
-        selected && // if user selects DM, change to individual reporting
-        this.state.sampleTypeQuestions.plantReportingBasis !==
-          SamplePlantQuestionsOptions.individual
-      ) {
-        this._changeSampleQuestion(
-          "plantReportingBasis",
-          SamplePlantQuestionsOptions.individual
-        );
-      } else if (
-        !selected && // if a user deselects DM, deselect reporting
-        this.state.sampleTypeQuestions.plantReportingBasis ===
-          SamplePlantQuestionsOptions.individual
-      ) {
-        this._changeSampleQuestion("plantReportingBasis", null);
-      }
-    }
+    // if (test.id === "DM") {
+    //   if (
+    //     selected && // if user selects DM, change to individual reporting
+    //     this.state.sampleTypeQuestions.plantReportingBasis !==
+    //       SamplePlantQuestionsOptions.individual
+    //   ) {
+    //     this._changeSampleQuestion(
+    //       "plantReportingBasis",
+    //       SamplePlantQuestionsOptions.individual
+    //     );
+    //   } else if (
+    //     !selected && // if a user deselects DM, deselect reporting
+    //     this.state.sampleTypeQuestions.plantReportingBasis ===
+    //       SamplePlantQuestionsOptions.individual
+    //   ) {
+    //     this._changeSampleQuestion("plantReportingBasis", null);
+    //   }
+    // }
+
     this._changeTest(test, selected);
   };
 
@@ -750,6 +765,15 @@ export default class OrderForm extends React.Component<
     );
 
     this.setState({ selectedCodes, selectedTests }, this._validate);
+
+    const isDryMatterTestSelected = selectedTests.some((a) => a.dryMatter);
+
+    this.setState((prevState) => ({
+      sampleTypeQuestions: {
+        ...prevState.sampleTypeQuestions,
+        isDryMatterTestSelected,
+      },
+    }));
   };
 
   private _onSampleQuestionChanged = (question: string, answer: any) => {
@@ -844,7 +868,7 @@ export default class OrderForm extends React.Component<
       this.setState({ additionalEmails: shallowCopy });
     }
   };
-
+  //TODO: Add Error Handling for Plant Dry Matter
   private _handleErrors = () => {
     if (this.state.isValid || this.state.isSubmitting) {
       return;
@@ -891,6 +915,11 @@ export default class OrderForm extends React.Component<
       !this.state.sampleTypeQuestions.plantReportingBasis
     ) {
       this._focusInput(this.plantReportingRef);
+    } else if (
+      this.state.sampleType === "Plant"
+      //TODO: Add checks for Plant Dry Matter
+    ) {
+      //this._focusInput(this.plantReportingRef);
     }
   };
 
