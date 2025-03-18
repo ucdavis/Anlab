@@ -847,7 +847,7 @@ export default class OrderForm extends React.Component<
       this.setState({ additionalEmails: shallowCopy });
     }
   };
-  //TODO: Add Error Handling for Plant Dry Matter
+
   private _handleErrors = () => {
     if (this.state.isValid || this.state.isSubmitting) {
       return;
@@ -896,7 +896,7 @@ export default class OrderForm extends React.Component<
       this._focusInput(this.plantReportingRef);
     } else if (
       this.state.sampleType === "Plant"
-      //TODO: Add checks for Plant Dry Matter
+      //Checks for Plant Dry Matter
     ) {
       if (
         this.state.sampleTypeQuestions.plantReportingBasis ===
