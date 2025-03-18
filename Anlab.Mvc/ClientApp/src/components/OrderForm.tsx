@@ -626,10 +626,10 @@ export default class OrderForm extends React.Component<
 
     // Check Plant Dry Matter requirements
     if (this.state.sampleType === "Plant") {
-      const dryMatterTestsSelected = this.props.testItems.filter(
+      const dryMatterTests = this.props.testItems.filter(
         (x) => x.dryMatter === true
       );
-      const isDryMatterSelected = dryMatterTestsSelected.some(
+      const isDryMatterSelected = dryMatterTests.some(
         (x) => this.state.selectedCodes[x.id]
       );
       // if dry matter is selected, user can't selected the first choice
