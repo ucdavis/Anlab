@@ -739,24 +739,8 @@ export default class OrderForm extends React.Component<
   };
 
   private _onTestSelectionChanged = (test: ITestItem, selected: boolean) => {
-    // if (test.id === "DM") {
-    //   if (
-    //     selected && // if user selects DM, change to individual reporting
-    //     this.state.sampleTypeQuestions.plantReportingBasis !==
-    //       SamplePlantQuestionsOptions.individual
-    //   ) {
-    //     this._changeSampleQuestion(
-    //       "plantReportingBasis",
-    //       SamplePlantQuestionsOptions.individual
-    //     );
-    //   } else if (
-    //     !selected && // if a user deselects DM, deselect reporting
-    //     this.state.sampleTypeQuestions.plantReportingBasis ===
-    //       SamplePlantQuestionsOptions.individual
-    //   ) {
-    //     this._changeSampleQuestion("plantReportingBasis", null);
-    //   }
-    // }
+    // This used to contain code to select or unselect tests based off of the sample type. We don't want to do that anymore.
+    // But I'm going to keep it here in case we end up doing that again. And to reduce the number of code changes.
 
     this._changeTest(test, selected);
   };
