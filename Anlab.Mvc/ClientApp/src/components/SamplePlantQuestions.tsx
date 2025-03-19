@@ -52,8 +52,7 @@ export class SamplePlantQuestions extends React.Component<
             this.props.isDryMatterTestSelected && (
               <span className="red-text help-block">
                 <span className="red-text">
-                  You have selected a Dry Matter test below and may not select
-                  this option with those tests.
+                  You have selected Dry Matter. This reporting basis is not available. Please choose reporting basis of "As Received" or "100% Dry Weight Basis, on individual dry matter." test below and may not select
                 </span>
               </span>
             )}
@@ -101,7 +100,7 @@ export class SamplePlantQuestions extends React.Component<
             SamplePlantQuestionsOptions.individual &&
             !this.props.isDryMatterTestSelected && (
               <span className="red-text help-block">
-                You must select a Dry Matter test below to select this option.
+                You must select Dry Matter test or a group that contains Dry Matter from below to select this option.
                 (Charges Apply)
               </span>
             )}
