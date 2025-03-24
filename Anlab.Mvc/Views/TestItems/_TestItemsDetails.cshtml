@@ -68,6 +68,21 @@
         </dd>
     }
     <dt>
+    @Html.DisplayNameFor(model => model.DryMatter)
+    </dt>
+    @if (Model.DryMatter)
+    {
+        <dd>
+            Yes
+        </dd>
+    }
+    else
+    {
+        <dd>
+            No
+        </dd>
+    }
+    <dt>
         @Html.DisplayNameFor(model => model.Notes)
     </dt>
     <dd>

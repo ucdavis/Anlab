@@ -135,7 +135,7 @@ export default class OrderForm extends React.Component<
         acPhone: this.props.defaultAcPhone || "",
         poNum: "",
         agreementRequired: false,
-        },
+      },
       placingOrder: this.props.defaultPlacingOrder,
       project: "",
       quantity: null,
@@ -148,6 +148,10 @@ export default class OrderForm extends React.Component<
         waterPreservativeAdded: false,
         waterPreservativeInfo: "",
         waterReportedInMgL: false,
+        dryMatterTests: this.props.testItems.filter(
+          (x) => x.dryMatter === true
+        ),
+        isDryMatterTestSelected: false,
       },
       selectedCodes: {},
       selectedTests: [],
@@ -176,6 +180,12 @@ export default class OrderForm extends React.Component<
         waterPreservativeInfo:
           orderInfo.SampleTypeQuestions.WaterPreservativeInfo,
         waterReportedInMgL: orderInfo.SampleTypeQuestions.WaterReportedInMgL,
+        dryMatterTests: this.props.testItems.filter(
+          (x) => x.dryMatter === true
+        ),
+        isDryMatterTestSelected: orderInfo.SelectedTests.some(
+          (a) => a.dryMatter
+        ),
       };
       initialState.sampleDisposition = orderInfo.SampleDisposition;
       initialState.project = orderInfo.Project;
@@ -227,6 +237,10 @@ export default class OrderForm extends React.Component<
       );
     }
 
+    //Can't do it exactly like this above because the selectedTests are not populated yet
+    initialState.sampleTypeQuestions.isDryMatterTestSelected = initialState.selectedTests.some(
+      (a) => a.dryMatter
+    );
     this.state = { ...initialState };
   }
 
@@ -460,6 +474,12 @@ export default class OrderForm extends React.Component<
                   sampleType={sampleType}
                   questions={sampleTypeQuestions}
                   handleChange={this._onSampleQuestionChanged}
+                  dryMatterTests={this.props.testItems.filter(
+                    (test) => test.dryMatter === true
+                  )}
+                  isDryMatterTestSelected={this.state.selectedTests.some(
+                    (a) => a.dryMatter
+                  )}
                 />
               )}
             </div>
@@ -604,6 +624,32 @@ export default class OrderForm extends React.Component<
       valid = false;
     }
 
+    // Check Plant Dry Matter requirements
+    if (this.state.sampleType === "Plant") {
+      const dryMatterTests = this.props.testItems.filter(
+        (x) => x.dryMatter === true
+      );
+      const isDryMatterSelected = dryMatterTests.some(
+        (x) => this.state.selectedCodes[x.id]
+      );
+      // if dry matter is selected, user can't selected the first choice
+      if (
+        isDryMatterSelected &&
+        this.state.sampleTypeQuestions.plantReportingBasis ===
+          SamplePlantQuestionsOptions.average
+      ) {
+        valid = false;
+      }
+      // if dry matter is not selected, user must select the first or second choice
+      if (
+        !isDryMatterSelected &&
+        this.state.sampleTypeQuestions.plantReportingBasis ===
+          SamplePlantQuestionsOptions.individual
+      ) {
+        valid = false;
+      }
+    }
+
     // check special soil requirements -- if soil is imported, user must select the SP-FOR test
     if (
       this.state.sampleType === "Soil" &&
@@ -693,24 +739,9 @@ export default class OrderForm extends React.Component<
   };
 
   private _onTestSelectionChanged = (test: ITestItem, selected: boolean) => {
-    if (test.id === "DM") {
-      if (
-        selected && // if user selects DM, change to individual reporting
-        this.state.sampleTypeQuestions.plantReportingBasis !==
-          SamplePlantQuestionsOptions.individual
-      ) {
-        this._changeSampleQuestion(
-          "plantReportingBasis",
-          SamplePlantQuestionsOptions.individual
-        );
-      } else if (
-        !selected && // if a user deselects DM, deselect reporting
-        this.state.sampleTypeQuestions.plantReportingBasis ===
-          SamplePlantQuestionsOptions.individual
-      ) {
-        this._changeSampleQuestion("plantReportingBasis", null);
-      }
-    }
+    // This used to contain code to select or unselect tests based off of the sample type. We don't want to do that anymore.
+    // But I'm going to keep it here in case we end up doing that again. And to reduce the number of code changes.
+
     this._changeTest(test, selected);
   };
 
@@ -724,21 +755,20 @@ export default class OrderForm extends React.Component<
     );
 
     this.setState({ selectedCodes, selectedTests }, this._validate);
+
+    const isDryMatterTestSelected = selectedTests.some((a) => a.dryMatter);
+
+    this.setState((prevState) => ({
+      sampleTypeQuestions: {
+        ...prevState.sampleTypeQuestions,
+        isDryMatterTestSelected,
+      },
+    }));
   };
 
   private _onSampleQuestionChanged = (question: string, answer: any) => {
-    if (question === "plantReportingBasis") {
-      const dryMatterTest = this.props.testItems.filter(
-        (x) => x.id === "DM"
-      )[0];
-      if (answer === SamplePlantQuestionsOptions.individual) {
-        // if user selects individual basis, add dry matter test
-        this._changeTest(dryMatterTest, true);
-      } else if (this.state.selectedTests.indexOf(dryMatterTest) !== -1) {
-        // if user selects a different option and dry matter is selected, remove it
-        this._changeTest(dryMatterTest, false);
-      }
-    }
+    //We don't want to select or unselect tests anymore, instead we just want to do validation
+
     this._changeSampleQuestion(question, answer);
   };
 
@@ -864,6 +894,24 @@ export default class OrderForm extends React.Component<
       !this.state.sampleTypeQuestions.plantReportingBasis
     ) {
       this._focusInput(this.plantReportingRef);
+    } else if (
+      this.state.sampleType === "Plant"
+      //Checks for Plant Dry Matter
+    ) {
+      if (
+        this.state.sampleTypeQuestions.plantReportingBasis ===
+          SamplePlantQuestionsOptions.average &&
+        this.state.selectedTests.some((a) => a.dryMatter)
+      ) {
+        this._focusInput(this.plantReportingRef);
+      }
+      if (
+        this.state.sampleTypeQuestions.plantReportingBasis ===
+          SamplePlantQuestionsOptions.individual &&
+        !this.state.selectedTests.some((a) => a.dryMatter)
+      ) {
+        this._focusInput(this.plantReportingRef);
+      }
     }
   };
 

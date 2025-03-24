@@ -38,6 +38,8 @@ namespace Anlab.Core.Domain
         public bool Public { get; set; }
         public bool Reporting { get; set; } = false;
 
+        public bool DryMatter { get; set; } = false;
+
         public string AdditionalInfoPrompt { get; set; }
 
         public string Notes { get; set; }
