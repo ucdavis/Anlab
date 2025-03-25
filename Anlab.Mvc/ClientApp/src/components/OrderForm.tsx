@@ -570,14 +570,14 @@ export default class OrderForm extends React.Component<
     }
     if (
       this.state.payment.clientType === "uc" &&
-      this._checkUcChart(this.state.payment.account.charAt(0)) &&
+      this._checkUcChart(this.state.payment.account?.charAt(0)) &&
       this.state.payment.accountName == null
     ) {
       valid = false;
     }
     if (
       this.state.payment.clientType === "uc" &&
-      !this._checkUcChart(this.state.payment.account.charAt(0)) &&
+      !this._checkUcChart(this.state.payment.account?.charAt(0)) &&
       !this._checkOtherPaymentInfo()
     ) {
       valid = false;
