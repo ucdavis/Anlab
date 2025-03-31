@@ -71,8 +71,10 @@
         $('#GrandTotal').on('keyup', function () {
             var prevTotal = $('#prevTotal').val();
             var grandTotal = $(this).val();
-            if (grandTotal)
+            if (grandTotal){
                 var adjustAmt = parseFloat(grandTotal) - parseFloat(prevTotal);
+                adjustAmt = adjustAmt.toFixed(2);
+            }
             else
                 var adjustAmt = 0;
             $('#adjustmentAmount').val(adjustAmt);
