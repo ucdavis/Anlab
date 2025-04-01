@@ -548,13 +548,22 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Orders");
             }
 
-            if (order.ResultsFileIdentifier == null && ( model.UploadFile == null || model.UploadFile.Length <= 0))
+            if (order.ResultsFileIdentifier == null)
             {
-                ErrorMessage = "You need to upload the results at this time.";
-                return RedirectToAction("Finalize", new{id});
+                if (model.UploadFile == null || model.UploadFile.Length <= 0)
+                {
+                    ErrorMessage = "You need to upload the results at this time.";
+                    return RedirectToAction("Finalize", new { id });
+                }
+                if (!model.UploadFile.FileName.Contains(order.RequestNum))
+                {
+                    ErrorMessage = "The file name must contain the Work Request.";
+                    return RedirectToAction("Finalize", new { id });
+                }
+
             }
 
-            
+
 
             order.Status = OrderStatusCodes.Finalized;
             order.DateFinalized = DateTime.UtcNow;
