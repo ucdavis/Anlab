@@ -19,6 +19,7 @@ export interface ITestItem {
   categories: string[];
   notes: string;
   additionalInfoPrompt?: string;
+  dryMatter?: boolean;
   sop: string;
 }
 

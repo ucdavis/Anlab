@@ -548,11 +548,22 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Orders");
             }
 
-            if (order.ResultsFileIdentifier == null && ( model.UploadFile == null || model.UploadFile.Length <= 0))
+            if (order.ResultsFileIdentifier == null)
             {
-                ErrorMessage = "You need to upload the results at this time.";
-                return RedirectToAction("Finalize", new{id});
+                if (model.UploadFile == null || model.UploadFile.Length <= 0)
+                {
+                    ErrorMessage = "You need to upload the results at this time.";
+                    return RedirectToAction("Finalize", new { id });
+                }
+                if (!model.UploadFile.FileName.Contains(order.RequestNum, StringComparison.OrdinalIgnoreCase))
+                {
+                    ErrorMessage = "The file name must contain the Work Request.";
+                    return RedirectToAction("Finalize", new { id });
+                }
+
             }
+
+
 
             order.Status = OrderStatusCodes.Finalized;
             order.DateFinalized = DateTime.UtcNow;
@@ -571,14 +582,23 @@ namespace AnlabMvc.Controllers
                 return RedirectToAction("Orders");
             }
 
-            //File Upload
+
+
+            order = await UpdateOrderFromLabworksResult(order, result, model);
+
+            var details = order.GetOrderDetails();
+            if(details.GrandTotal <= 0)
+            {
+                ErrorMessage = "The total amount must be greater than zero.";
+                return RedirectToAction("Finalize", new { id });
+            }
+
+            //File Upload (This used to be above the UpdateOrderFromLabworksResult call, but I moved it here in case the validation above triggered.
             if (model.UploadFile != null)
             {
                 order.ResultsFileIdentifier = await _fileStorageService.UploadFile(model.UploadFile);
             }
 
-            order = await UpdateOrderFromLabworksResult(order, result, model);
-            
             var extraMessage = string.Empty;
             if (order.PaymentType == PaymentTypeCodes.UcDavisAccount)
             {
