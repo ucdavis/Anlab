@@ -555,7 +555,7 @@ namespace AnlabMvc.Controllers
                     ErrorMessage = "You need to upload the results at this time.";
                     return RedirectToAction("Finalize", new { id });
                 }
-                if (!model.UploadFile.FileName.Contains(order.RequestNum))
+                if (!model.UploadFile.FileName.Contains(order.RequestNum, StringComparison.OrdinalIgnoreCase))
                 {
                     ErrorMessage = "The file name must contain the Work Request.";
                     return RedirectToAction("Finalize", new { id });
