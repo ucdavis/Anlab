@@ -13,7 +13,7 @@ interface IPlantQuestionProps {
 
 export const SamplePlantQuestionsOptions = {
   average:
-    "Report results on 100% dry weight basis, based on an average of 10% of the samples.",
+    "Report results on AVERAGE 100% dry weight basis, based on an average of 10% of the samples.",
   asReceived: "Report results on As Received basis.",
   individual:
     "Report results on 100% dry weight basis, based on individual dry matter results (Charges Apply).",
