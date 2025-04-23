@@ -247,8 +247,19 @@ public class DocumentSigningService : IDocumentSigningService
             AnchorXOffset = "20",
         };
 
+        // Create a Text tab for the signer's name
+        var signerNameTab = new Text
+        {
+            AnchorString = "**signer_name**", // The placeholder text in your document
+            AnchorUnits = "pixels",
+            AnchorXOffset = "20", // Adjust as needed
+            AnchorYOffset = "-5", // Adjust as needed
+            TabLabel = "SignerName",
+            Value = order.Creator.Name // Pre-fill the signer's name
+        };
+
         // add sign here & date signed tabs for signer
-        signer.Tabs = new Tabs {SignHereTabs = new List<SignHere> {signHere}, DateSignedTabs = new List<DateSigned> {dateSigned }};
+        signer.Tabs = new Tabs { TextTabs = new List<Text> { signerNameTab }, SignHereTabs = new List<SignHere> {signHere}, DateSignedTabs = new List<DateSigned> {dateSigned }};
 
         // add signer to envelope
         env.Recipients = new Recipients {Signers = new List<Signer> {signer}};
