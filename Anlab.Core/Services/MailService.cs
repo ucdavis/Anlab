@@ -40,7 +40,7 @@ namespace Anlab.Core.Services
         {
             Log.Information($"Email Host: {_emailSettings.Host}");
 
-            var message = new System.Net.Mail.MailMessage { From = new MailAddress("anlab-notify@ucdavis.edu", "Anlab") }; //Display name looks like it is being ignored. At least for me.
+            var message = new System.Net.Mail.MailMessage { From = new MailAddress("anlab@notify.ucdavis.edu", "Anlab") }; //Display name looks like it is being ignored. At least for me.
             message.ReplyToList.Add(new MailAddress("anlab@ucdavis.edu", "Anlab"));
 
             var sendToEmails = mailMessage.SendTo.Split(';');
@@ -79,7 +79,7 @@ namespace Anlab.Core.Services
         {
             try
             {
-                var message = new System.Net.Mail.MailMessage {From = new MailAddress("anlab@ucdavis.edu", "Anlab")};
+                var message = new System.Net.Mail.MailMessage {From = new MailAddress("anlab@notify.ucdavis.edu", "Anlab")};
                 message.To.Add(_emailSettings.AnlabAddress);
                 message.Bcc.Add("jsylvestre@ucdavis.edu");
                 message.Bcc.Add("jasoncsylvestre@gmail.com");
