@@ -1309,6 +1309,7 @@ namespace Test.TestsController
         {
             // Arrange
             OrderData[1].Status = OrderStatusCodes.Received;
+            OrderData[1].RequestNum = "Fake123";
             var returnResult = new OverwriteOrderResult();
             returnResult.ErrorMessage = "Fake Error";
 
@@ -1317,6 +1318,7 @@ namespace Test.TestsController
 
             var model = new LabFinalizeModel();
             MockFormFile.Setup(a => a.Length).Returns(100);
+            MockFormFile.Setup(a => a.FileName).Returns($"Fake-{OrderData[1].RequestNum}-FileName.pdf");
             model.UploadFile = MockFormFile.Object;
 
             // Act
@@ -1339,6 +1341,7 @@ namespace Test.TestsController
         {
             // Arrange
             OrderData[1].Status = OrderStatusCodes.Received;
+            OrderData[1].RequestNum = "Fake123";
             var returnResult = new OverwriteOrderResult();
             returnResult.MissingCodes = new List<string>();
             returnResult.MissingCodes.Add("Fake1");
@@ -1348,6 +1351,7 @@ namespace Test.TestsController
 
             var model = new LabFinalizeModel();
             MockFormFile.Setup(a => a.Length).Returns(100);
+            MockFormFile.Setup(a => a.FileName).Returns($"Fake-{OrderData[1].RequestNum}-FileName.pdf");
             model.UploadFile = MockFormFile.Object;
 
             // Act
@@ -1372,6 +1376,7 @@ namespace Test.TestsController
             // Arrange
             OrderData[1].Status = OrderStatusCodes.Received;
             OrderData[1].PaymentType = PaymentTypeCodes.Other;
+            OrderData[1].RequestNum = "Fake123";
             var overWriteResult = new OverwriteOrderResult();
             overWriteResult.ClientId = "NotFaked";
             overWriteResult.Quantity = 3;
@@ -1388,6 +1393,7 @@ namespace Test.TestsController
             var model = new LabFinalizeModel();
             model.BypassEmail = value;
             MockFormFile.Setup(a => a.Length).Returns(100);
+            MockFormFile.Setup(a => a.FileName).Returns($"Fake-{OrderData[1].RequestNum}-FileName.pdf");
             model.UploadFile = MockFormFile.Object;
             model.AdjustmentAmount = 10.5m;
             model.LabComments = "These be some comments";
@@ -1428,6 +1434,7 @@ namespace Test.TestsController
             // Arrange
             OrderData[1].Status = OrderStatusCodes.Received;
             OrderData[1].PaymentType = PaymentTypeCodes.UcDavisAccount;
+            OrderData[1].RequestNum = "Fake123";
             var overWriteResult = new OverwriteOrderResult();
             overWriteResult.ClientId = "NotFaked";
             overWriteResult.Quantity = 3;
@@ -1444,6 +1451,7 @@ namespace Test.TestsController
             var model = new LabFinalizeModel();
             model.BypassEmail = value;
             MockFormFile.Setup(a => a.Length).Returns(100);
+            MockFormFile.Setup(a => a.FileName).Returns($"Fake-{OrderData[1].RequestNum}-FileName.pdf");
             model.UploadFile = MockFormFile.Object;
             model.AdjustmentAmount = 10.5m;
             model.LabComments = "These be some comments";
@@ -1488,6 +1496,7 @@ namespace Test.TestsController
             // Arrange
             OrderData[1].Status = OrderStatusCodes.Received;
             OrderData[1].PaymentType = PaymentTypeCodes.UcDavisAccount;
+            OrderData[1].RequestNum = "Fake123";
             var overWriteResult = new OverwriteOrderResult();
             overWriteResult.ClientId = "NotFaked";
             overWriteResult.Quantity = 3;
@@ -1504,6 +1513,7 @@ namespace Test.TestsController
             var model = new LabFinalizeModel();
             model.BypassEmail = value;
             MockFormFile.Setup(a => a.Length).Returns(100);
+            MockFormFile.Setup(a => a.FileName).Returns($"Fake-{OrderData[1].RequestNum}-FileName.pdf");
             model.UploadFile = MockFormFile.Object;
             model.AdjustmentAmount = 10.5m;
             model.LabComments = "These be some comments";
