@@ -92,14 +92,16 @@ export class PaymentUcSelection extends React.Component<
       return;
     }
     return (
-      <div className="mt-2 mb-2">
-        <Input
-          label={`Example ${option.name} Account`}
-          value={option.example}
-          disabled={true}
-          feedback={option.detail}
-        />
-      </div>
+        <div className="flexrow other-uc-input-row">
+            <div className="col-6">
+                <Input
+                    label={`Example ${option.name} Account`}
+                    value={option.example}
+                    disabled={true}
+                    feedback={option.detail}
+                />
+            </div>
+        </div>
     );
   };
   private _lookupcoa = async () => {

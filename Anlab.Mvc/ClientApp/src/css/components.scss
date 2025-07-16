@@ -48,6 +48,15 @@ input#Account{
     border-bottom-right-radius: 0;
   }
 }
+.other-uc-input-row {
+    justify-content: flex-start;
+
+    input {
+        max-width: 500px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+}
 .mt-2 {
   margin-top:16px;
 }

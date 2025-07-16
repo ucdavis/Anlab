@@ -55,8 +55,8 @@ export function getOptions(useCoa: boolean) {
     },
     UCM: {
       detail:
-        "Loc(1) - Acct(6) - CostCenter(2) - Fund(5) - Proj(1-6) - Sub(2) - Obj(4) - Src(1-6)",
-      example: "0-123456-A2-12345-123456-12-1234-A23456",
+        "Location(1) - Entity(4) - Fund(5) - Financial Unit(7) - Account(6) - Function(2) - Program(3) - Project(10) - Physical Location(3) - Sub-Activity(6) - InterEntity(4) - Future 1(6) - Future 2(6)",
+      example: "0-1234-12345-A123456-123456-12-ABC-ABCDEFGHIJ-123-ABCDEF-1234",
       name: "UCM",
     },
     MOP: {
