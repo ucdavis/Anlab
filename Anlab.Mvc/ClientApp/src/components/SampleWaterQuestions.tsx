@@ -109,7 +109,7 @@ export class SampleWaterQuestions extends React.Component<
             Yes
           </label>
         </p>
-        <p>
+        <div>
           <label>
             <input
               type="radio"
@@ -119,7 +119,7 @@ export class SampleWaterQuestions extends React.Component<
             No
           </label>
           {this.props.questions.waterPreservativeAdded && (
-            <p>
+            <div>
               <Input
                 placeholder="Preservative Information"
                 inputRef={this.props.waterPreservativeRef}
@@ -131,9 +131,9 @@ export class SampleWaterQuestions extends React.Component<
                 onBlur={this._onBlurPreservativeText}
                 label="Provide more information about your preservative"
               />
-            </p>
+            </div>
           )}
-        </p>
+        </div>
       </div>
     );
   }
