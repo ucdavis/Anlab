@@ -3,45 +3,49 @@
   .control-label {
     text-align: left !important;
   }
-  input,select {
+  input,
+  select {
     max-width: 670px;
   }
-} 
+}
 .d-flex {
-.form-control {
-  width:inherit;
+  .form-control {
+    width: inherit;
+  }
 }
-}
-  
+
 .sampling-buttons {
-    text-align: center;
-    align-self: flex-end;
-    border: 1px solid $primary-font;
-    padding: 24px 0px;
-    height: 100%;
-    &:hover {
-      background-color:$bg-color;
-    }
-    h3 {
-      margin-bottom:0px;
-    }
-    img {
-        margin-bottom: 8px;
-    }
+  text-align: center;
+  align-self: flex-end;
+  border: 1px solid $primary-font;
+  padding: 24px 0px;
+  height: 100%;
+  &:hover {
+    background-color: $bg-color;
+  }
+  h3 {
+    margin-bottom: 0px;
+  }
+  img {
+    margin-bottom: 8px;
+  }
 }
 .using-affix {
-  bottom:inherit !important;
-  top:50px;
+  bottom: inherit !important;
+  top: 50px;
 }
 .affix {
-  bottom:4px;
+  bottom: 4px;
   transition: all 0.15s ease;
-  z-index:99;
+  z-index: 99;
 }
 .stickyfoot {
-    position:sticky;
-    left: 0;
-    width: 100%;
+  position: sticky;
+  left: 0;
+  width: 100%;
+  .container {
+    padding: 0;
+  }
 }
 + .summary-container {
   @include boundary;
@@ -49,37 +53,37 @@
   border-top-right-radius: 2px;
 
   .well {
-      background-color: #fff;
-      border-radius: 0px;
-      border-bottom-left-radius: 2px;
-      border-bottom-right-radius: 2px;
+    background-color: #fff;
+    border-radius: 0px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
   }
 }
 .ordersum {
-  background-color:$primary-color;
-  display:flex;
+  background-color: $primary-color;
+  display: flex;
   justify-content: space-between;
-  padding:10px 32px;
+  padding: 10px 32px;
   align-items: center;
   & div {
-    display:flex;
+    display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
     align-items: center;
     text-align: center;
   }
   h3 {
-    color:#fff;
-    margin-bottom:0px;
-    display:inline;
-    margin-right:13px;
+    color: #fff;
+    margin-bottom: 0px;
+    display: inline;
+    margin-right: 13px;
   }
   a {
-    color:rgba(255,255,255,.95);
-    font-size:1.4rem;
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-size: 1.4rem;
     text-transform: uppercase;
-    margin-bottom:0px;
-    display:inline;
+    margin-bottom: 0px;
+    display: inline;
     cursor: pointer;
   }
 }

@@ -72,7 +72,7 @@ export class SampleWaterQuestions extends React.Component<
       return null;
     }
     return (
-      <div className="input-group flex-col">
+      <div className="input-group d-flex flex-col">
         <label className="form_header margin-bottom-zero">
           Are these samples filtered?
         </label>
