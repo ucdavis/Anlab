@@ -17,7 +17,7 @@
      @if (!string.IsNullOrWhiteSpace(Model.Order.SignedEnvelopeId))
      {
             <div class="dropdown">
-                <a href="#" class="dropdown-toggle btn" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">View Confirmation PDF <span class="caret"></span></a>
+                <a href="#" class="dropdown-toggle btn" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">View Confirmation PDF</a>
                 <ul class="dropdown-menu">
                     <li>
                         <a asp-controller="Order" asp-action="ViewSignedDocument" asp-route-id="@Model.Order.Id" target="_blank">View Confirmation PDF</a>
