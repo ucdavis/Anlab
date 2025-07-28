@@ -12,8 +12,8 @@
     </div>
     <div class="form-group">
         <label asp-for="Category" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <select asp-for="Categories" class="form-control" multiple="multiple">
+        <div class="col-md-3">
+            <select asp-for="Categories" class="form-control " multiple="multiple">
                 @foreach (var category in TestCategories.All)
                 {
                     <option value="@category">@category</option>
