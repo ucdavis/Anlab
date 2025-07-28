@@ -1,33 +1,38 @@
 .profile_nav {
   list-style: none;
   li {
-    display:inline;
+    display: inline;
   }
 }
 ul.navbar-nav {
   li {
-    font-weight:600;
+    font-weight: 600;
     a {
-      color:#fff;
+      color: #fff;
       font-family: $sans-bold;
     }
   }
 }
-
-.navbar-toggle .icon-bar {
-  background-color:rgba(255,255,255,.88);
-}
-.navbar-toggle {
-  float:none;
+.nav-link:hover,
+.nav-link:focus {
+  color: rgba(255, 255, 255, 0.88) !important;
+  font-family: $sans-bold;
 }
 
-.nav > li > a:hover, .nav > li > a:focus {
-  background-color:rgba(255,255,255,.12);
+.navbar-toggler {
+  background-color: rgba(255, 255, 255, 0.88);
 }
-.nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
-  border:none;
-  background-color: rgba(255,255,255,.12);
+
+.nav > li > a:hover,
+.nav > li > a:focus {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+.nav .open > a,
+.nav .open > a:hover,
+.nav .open > a:focus {
+  border: none;
+  background-color: rgba(255, 255, 255, 0.12);
 }
 .dropdown-menu > li > a {
-  color:$primary-font !important;
+  color: $primary-font !important;
 }
