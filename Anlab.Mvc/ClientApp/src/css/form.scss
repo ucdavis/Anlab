@@ -130,6 +130,8 @@ input {
     font-family: $sans-bold;
     margin-bottom: 0px;
   }
+  display: flex;
+  flex-direction: column;
 }
 input[type="radio"].videokilledtheradiostar {
   margin-right: 6px;
