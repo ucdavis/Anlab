@@ -20,7 +20,7 @@ export class SampleSoilQuestions extends React.Component<
       return null;
     }
     return (
-      <div className="input-group">
+      <div className="input-group flex flex-col">
         <label className="form_header margin-bottom-zero">
           Are these samples Quarantined Soil either foreign or regulated
           domestic soils?
