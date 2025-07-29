@@ -53,8 +53,8 @@ export default class Summary extends React.PureComponent<ISummaryProps, {}> {
             </h3>
             <a
               role="button"
-              data-toggle="collapse"
-              data-target="#testSummary"
+              data-bs-toggle="collapse"
+              data-bs-target="#testSummary"
               aria-expanded="false"
               aria-controls="testSummary"
             >

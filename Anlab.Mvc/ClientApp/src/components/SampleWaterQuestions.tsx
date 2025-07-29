@@ -72,7 +72,7 @@ export class SampleWaterQuestions extends React.Component<
       return null;
     }
     return (
-      <div className="input-group">
+      <div className="input-group d-flex flex-col">
         <label className="form_header margin-bottom-zero">
           Are these samples filtered?
         </label>
@@ -119,7 +119,7 @@ export class SampleWaterQuestions extends React.Component<
             No
           </label>
           {this.props.questions.waterPreservativeAdded && (
-            <div>
+            <div className="order-form-flex-col">
               <Input
                 placeholder="Preservative Information"
                 inputRef={this.props.waterPreservativeRef}

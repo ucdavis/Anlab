@@ -1,17 +1,21 @@
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.7.2/showdown.min.js"></script>
-    <script type="text/javascript">
-        $(function () {
-            $('body').tooltip({
-                selector: '.analysisTooltip'
+<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.7.2/showdown.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        // Bootstrap 5 tooltip initialization
+        $('.analysisTooltip').each(function() {
+            new bootstrap.Tooltip(this, {
+                html: true
             });
         });
-    </script>
-    <script type="text/javascript">
-        function renderTitle(title) {
-            var converter = new showdown.Converter();
-            var newContent = converter.makeHtml(title);
-            $('.analysisTooltip').attr('data-original-title', newContent);
-        }
-    </script>
+    });
+</script>
+<script type="text/javascript">
+    function renderTitle(title) {
+        var converter = new showdown.Converter();
+        var newContent = converter.makeHtml(title);
+        $('.analysisTooltip').attr('data-bs-original-title', newContent);
+        // Also update the title attribute for backward compatibility
+        $('.analysisTooltip').attr('title', newContent);
+    }
+</script>
 

@@ -10,41 +10,41 @@
 }
 
 <div class="space_between border-bottom">
-    <div class="row no-margin">
-        <div class="form-group no-margin detail-bumper">
-            <h4>Id</h4>
-            <p>@Model.Order.Id</p>
-        </div>
-        <div class="form-group no-margin detail-bumper">
-            <h4>Created By</h4>
-            <p>@Model.Order.Creator.Name</p>
-        </div>
-        <div class="form-group no-margin detail-bumper">
-            <h4>Project</h4>
-            <p title="@Model.Order.Project" class="showTooltip">@Model.Order.Project.MaxLength(45)</p>
-        </div>
-        <div class="form-group no-margin detail-bumper">
-            <h4>Quantity</h4>
-            <p>@Model.OrderDetails.Quantity</p>
-        </div>
-        <div class="form-group no-margin detail-bumper">
-            <h4>Status</h4>
-            <p>@Model.Order.Status</p>
-        </div>
+    <div class="row col-9">
+    <div class="form-group no-margin col">
+        <h4>Id</h4>
+        <p>@Model.Order.Id</p>
+    </div>
+    <div class="form-group no-margin col">
+        <h4>Created By</h4>
+        <p>@Model.Order.Creator.Name</p>
+    </div>
+    <div class="form-group no-margin col">
+        <h4>Project</h4>
+        <p title="@Model.Order.Project" class="showTooltip">@Model.Order.Project.MaxLength(45)</p>
+    </div>
+    <div class="form-group no-margin col">
+        <h4>Quantity</h4>
+        <p>@Model.OrderDetails.Quantity</p>
+    </div>
+    <div class="form-group no-margin col">
+        <h4>Status</h4>
+        <p>@Model.Order.Status</p>
     </div>
     @if (!string.IsNullOrWhiteSpace(Model.Order.RequestNum))
     {
-        <div class="row no-margin">
-            <div class="form-group no-margin">
-                <h4>WR Num</h4>
-                <p>@Model.Order.RequestNum</p>
-            </div>
+        <div class="form-group no-margin col">
+            <h4>WR Num</h4>
+            <p>@Model.Order.RequestNum</p>
         </div>
     }
+</div>
+
+  
     @if (User != null && User.IsInRole(RoleCodes.Admin))
     {
         <div class="dropdown">
-            <a href="#" class="dropdown-toggle btn" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin Actions <span class="caret"></span></a>
+            <a href="#" class="dropdown-toggle btn" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin Actions</a>
             <ul class="dropdown-menu">
                 @if (Model.Order.IsDeleted)
                 {
