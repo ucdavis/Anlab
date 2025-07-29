@@ -4,50 +4,15 @@
     ViewBag.Title = "Testing Services";
 }
 <div class="col">
-    <div class="panel-group" id="accordion">
-@*         <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title"><a href="#dry" data-toggle="collapse" data-parent="#accordion">Drying and Grinding</a></h4>
-            </div>
-            <div class="panel-collapse collapse" id="dry">
-                <div class="panel-body">
-                    <h3>Drying</h3>
-                    <p>Most samples that are received fresh or are suspected moist will be put into paper bags with adequate room for air movement within the bag and dried at 55-60°C for approximately 12 hours or until the material snaps or breaks easily.</p>
-                    <h3>Exceptions:</h3>
-                    <ul>
-                        <ul>
-                            <li>Range samples take 24 hours or more to dry. Power plant ash samples take 3 days to dry. Solid pieces of wood take 24 hours to dry. Rice soils takes 2 days to dry. Any material larger than gallon size will take 1 or more
-                                days to dry. Fruits and vegetables go through the freeze drying process, pureed if needed, and weighed before and after the freeze drying process. All samples are turned every 24 hours except freeze drying material.</li>
-                        </ul>
-                    </ul>
-                    <h3>Grinding</h3>
-                    <p>Most plant samples are ground to pass through a 40 mesh screen on the Wiley Mini-Mill or a 1 mm screen on a model 4 Wiley Mill. Soil is crushed in a Bico-Braun soil pulverizer to pass through a 2 mm sieve.</p>
-                    <h3>Exceptions:</h3>
-                    <ul>
-                        <ul>
-                            <li>20 mesh screen used on grape blades due to tricomb separation from leaf. 20 mesh screen used on sugar beet petioles due to high sugar content. 20 mesh screen used on walnut leaf due to fibers in veins. 10 mesh screen used
-                                on corn stalks due to high sugar content. Freeze dried samples are easily crushed manually. Soil for carbon analysis is ground to a powder fine enough to pass a 50 mesh sieve. Timing: Most samples that are smaller than
-                                the size of a fist are processed through the Wiley Mini-Mill. On the average, 1 minute per sample if less than 15 grams or 3-4 minutes for samples of 100-150 grams. Samples larger than two fists are sent through the
-                                model 4 Wiley Mill. Average time is 4-5 minutes per sample. Samples between the size of one and two fists are ground through either grinder depending upon the type of material. All residual material held in either grinder
-                                is put with the ground material and thoroughly incorporated. Soil grinding time is from 1-4 minutes per sample. Fine soils vs. large hard soils that need to be pounded smaller first. Clean soils without debris vs. with
-                                debris that needs to be sieved out. Material size runs from 100 grams to 2 kg. Any material smaller than 100 grams is ground by mortar and pestle. All other samples that are not dried and ground are refrigerated until
-                                analysis.</li>
-                        </ul>
-                    </ul>
-                </div>
-            </div>
-        </div> *@
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title"><a href="#water" data-toggle="collapse" data-parent="#accordion">Water and Waste Water</a></h4>
-            </div>
-            <div class="panel-collapse collapse" id="water">
-                <div class="panel-body">
-@*                     <p><strong>Sample Amount:</strong> 250 mL per sample (5 mL per element for extracts) is required.</p>
-                    <p>
-                        <strong>Water Preparation:</strong> Samples submitted for alkalinity, ammonium, nitrate, soluble phosphorus, solids, sulfate and turbidity analysis should be kept under refrigeration. More detailed sample preservation guidelines
-                        are available on the Lab's web site <a href="https://anlab.ucdavis.edu/lab-information/sampling-and-preparation" title="Sampling and preparation">Sampling and preparation</a>.
-                    </p> *@
+    <div class="accordion" id="accordionAnalysis">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#water" aria-expanded="false" aria-controls="water">
+                    Water and Waste Water
+                </button>
+            </h2>
+            <div id="water" class="accordion-collapse collapse" data-bs-parent="#accordionAnalysis">
+                <div class="accordion-body">
                     <h3>Method Summaries</h3>
                     <ul>
                         @foreach (var method in Model.Where(x => x.Id >= 800 && x.Id < 900))
@@ -58,21 +23,14 @@
                 </div>
             </div>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title"><a href="#soil" data-toggle="collapse" data-parent="#accordion">Soil Methods</a></h4>
-            </div>
-            <div class="panel-collapse collapse" id="soil">
-                <div class="panel-body">
-@*                     <p>
-                        <strong>Sample Amount: </strong>Submit 300-500 g of dried and ground sample. Five (5) mL per element is required for samples submitted in extract form. N &amp; C requires five (5) grams of finely powdered soil (to pass through a 60
-                        mesh sieve).
-                    </p>
-                    <p>
-                        <strong>Soil Preparation: </strong>Air or oven-dry soil at 35-55°C (the Lab oven dries at 55°C). Grind to pass through a 2 mm sieve.
-                        Analysis for N, C, TKN, CaCO<sub>3</sub>, and "total" metal analysis require
-                        that the sample be ground to a powder fine enough to pass through a 60 mesh sieve (<0.25 mm).
-                    </p> *@
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#soil" aria-expanded="false" aria-controls="soil">
+                    Soil Methods
+                </button>
+            </h2>
+            <div id="soil" class="accordion-collapse collapse" data-bs-parent="#accordionAnalysis">
+                <div class="accordion-body">
                     <p><strong>Containers: </strong>Submit samples in pint-size plastic containers or in bags (plastic or paper).</p>
                     <h3>Notes:</h3>
                     <p>Sodium Adsorption Ratio and Exchangeable Sodium Percent are calculations derived from analysis of Ca, Mg and Na.</p>
@@ -101,14 +59,14 @@
                 </div>
             </div>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title"><a href="#manure" data-toggle="collapse" data-parent="#accordion">Manure and Compost Methods</a></h4>
-            </div>
-            <div class="panel-collapse collapse" id="manure">
-                <div class="panel-body">
-@*                     <p>Sample Amount: Submit one cup manure or compost.</p>
-                    <p>Manure and Compost Preparation: Samples should be frozen, dried, or freeze-dried if not delivered to the lab immediately upon collection.</p> *@
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#manure" aria-expanded="false" aria-controls="manure">
+                    Manure and Compost Methods
+                </button>
+            </h2>
+            <div id="manure" class="accordion-collapse collapse" data-bs-parent="#accordionAnalysis">
+                <div class="accordion-body">
                     <p><strong>Containers: </strong>Submit fresh samples in plastic containers.</p>
                     <ul>
                         @foreach (var method in Model.Where(x => x.Id >= 700 && x.Id < 800))
@@ -119,16 +77,14 @@
                 </div>
             </div>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title"><a href="#plant" data-toggle="collapse" data-parent="#accordion">Plant Methods</a></h4>
-            </div>
-            <div class="panel-collapse collapse" id="plant">
-                <div class="panel-body">
-@*                     <h3>Sample Amount</h3>
-                    <p>Sample Amount: Submit 20 g of dried and ground sample. For extracts/solutions, five (5) mL per element is required.</p>
-                    <p>Plant Preparation: Oven-dry samples at 55-60°C. Grind to pass through a 40 mesh screen.</p>
-                    <p>Containers: Submit samples in coin envelopes.</p> *@
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#plant" aria-expanded="false" aria-controls="plant">
+                    Plant Methods
+                </button>
+            </h2>
+            <div id="plant" class="accordion-collapse collapse" data-bs-parent="#accordionAnalysis">
+                <div class="accordion-body">
                     <h3>Method Summaries</h3>
                     <ul>
                         @foreach (var method in Model.Where(x => x.Category == "Plant"))
@@ -139,15 +95,14 @@
                 </div>
             </div>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title"><a href="#feed" data-toggle="collapse" data-parent="#accordion">Feed Methods</a></h4>
-            </div>
-            <div class="panel-collapse collapse" id="feed">
-                <div class="panel-body">
-                    @* <p>Sample Amount: Send 50 g of dried and ground sample. The maximum unground sample size is one (1) large grocery bag.</p>
-                    <p>Feed Preparation: Oven-dry samples at 55-60°C for 24 hours. <strong>For Phenols</strong>: Dry samples at 50 - 52°C for 24 hours using a forced air oven. Avoid drying higher than 55°C as it could affect phenolic quantification.</p>
-                    <p>Grind to pass through a 40 mesh screen. HOWEVER, for methods 635, 640, and 650, the grind must be larger and pass through an 18 mesh screen The maximum unground sample size is one (1) large #56 grocery bag.</p> *@
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#feed" aria-expanded="false" aria-controls="feed">
+                    Feed Methods
+                </button>
+            </h2>
+            <div id="feed" class="accordion-collapse collapse" data-bs-parent="#accordionAnalysis">
+                <div class="accordion-body">
                     <h3>Method Summaries</h3>
                     <ul>
                         @foreach (var method in Model.Where(x => x.Id >= 600 && x.Id < 700))

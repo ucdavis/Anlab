@@ -160,9 +160,10 @@ export class TestList extends React.PureComponent<
       <i
         className="analysisTooltip fa fa-info-circle"
         aria-hidden="true"
-        data-toggle="tooltip"
-        data-html="true"
-        title={tooltipContent}
+        data-bs-toggle="tooltip"
+        data-bs-html="true"
+        data-bs-title={tooltipContent}
+        title={tooltipContent} // Fallback for compatibility
       />
     );
   }

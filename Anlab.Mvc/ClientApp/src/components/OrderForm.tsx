@@ -524,8 +524,12 @@ export default class OrderForm extends React.Component<
             </div>
           </Collapse>
 
-          <div className="stickyfoot" data-spy="affix" data-offset-bottom="0">
-            <div className="summary-container shadowed">
+          <div
+            className="stickyfoot position-fixed bottom-0 w-100"
+            data-bs-spy="affix"
+            data-bs-offset-bottom="0"
+          >
+            <div className="container shadowed">
               <Summary
                 isCreate={this.props.orderId === null}
                 canSubmit={this.state.isValid}
