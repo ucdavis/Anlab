@@ -117,6 +117,12 @@ input {
 .theme__input___lFVgC {
   transition: all 0.15s ease;
 }
+.order-form-flex-col {
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+}
 .form-group {
   h4 {
     text-transform: uppercase;
