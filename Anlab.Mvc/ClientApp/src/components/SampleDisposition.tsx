@@ -36,7 +36,6 @@ export class SampleDisposition extends React.Component<
             {SampleDispositionOptions.dispose}
           </label>
         </p>
-        <br />
         <p>
           <label>
             <input
@@ -51,7 +50,6 @@ export class SampleDisposition extends React.Component<
             {SampleDispositionOptions.pickUp}
           </label>
         </p>
-        <br />
         <p>
           <label>
             <input
