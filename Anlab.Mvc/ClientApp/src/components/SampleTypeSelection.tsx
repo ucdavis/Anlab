@@ -46,12 +46,14 @@ export class SampleTypeSelection extends React.Component<ISampleTypeProps, {}> {
           </div>
           <div
             className={
-              this.props.sampleType === "Other" ? activeDiv : inactiveDiv
+              this.props.sampleType === "Miscellaneous"
+                ? activeDiv
+                : inactiveDiv
             }
-            onClick={() => this._handleChange("Other")}
+            onClick={() => this._handleChange("Miscellaneous")}
           >
             <MiscSvg />
-            <h3>Other</h3>
+            <h3>Miscellaneous</h3>
           </div>
         </div>
       </div>
