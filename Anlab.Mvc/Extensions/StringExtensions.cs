@@ -109,6 +109,11 @@ namespace AnlabMvc.Extensions
                 return "Plant / Feed";
             }
 
+            if (string.Equals(value, "other", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Other";
+            }
+
             return value;
         }
     }
