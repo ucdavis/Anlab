@@ -28,7 +28,7 @@ export class SamplePlantQuestions extends React.Component<
       return null;
     }
     return (
-      <div className="input-group">
+      <div className="input-group flex flex-col">
         <label className="form_header margin-bottom-zero">
           How would you like your samples reported?
         </label>
@@ -52,7 +52,9 @@ export class SamplePlantQuestions extends React.Component<
             this.props.isDryMatterTestSelected && (
               <span className="red-text help-block">
                 <span className="red-text">
-                  You have selected Dry Matter. This reporting basis is not available. Please choose reporting basis of "As Received" or "100% Dry Weight Basis, on individual dry matter."
+                  You have selected Dry Matter. This reporting basis is not
+                  available. Please choose reporting basis of "As Received" or
+                  "100% Dry Weight Basis, on individual dry matter."
                 </span>
               </span>
             )}
@@ -100,8 +102,8 @@ export class SamplePlantQuestions extends React.Component<
             SamplePlantQuestionsOptions.individual &&
             !this.props.isDryMatterTestSelected && (
               <span className="red-text help-block">
-                You must select Dry Matter test or a group that contains Dry Matter from below to select this option.
-                (Charges Apply)
+                You must select Dry Matter test or a group that contains Dry
+                Matter from below to select this option. (Charges Apply)
               </span>
             )}
         </p>
