@@ -113,5 +113,23 @@
                 </div>
             </div>
         </div>
+        @* <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#other" aria-expanded="false" aria-controls="feed">
+                    Other/Misc Methods
+                </button>
+            </h2>
+            <div id="other" class="accordion-collapse collapse" data-bs-parent="#accordionAnalysis">
+                <div class="accordion-body">
+                    <h3>Method Summaries</h3>
+                    <ul>
+                        @foreach (var method in Model.Where(x => x.Category == "Other"))
+                        {
+                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div> *@
     </div>
 </div>
