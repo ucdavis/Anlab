@@ -894,19 +894,22 @@ export default class OrderForm extends React.Component<
     } else if (this.state.quantity <= 0 || this.state.quantity > 100) {
       this._focusInput(this.quantityRef);
     } else if (
-      this.state.sampleType === "Water" &&
+      (this.state.sampleType === "Water" ||
+        this.state.sampleType === "Miscellaneous") &&
       this.state.sampleTypeQuestions.waterPreservativeAdded &&
       (!this.state.sampleTypeQuestions.waterPreservativeInfo ||
         !this.state.sampleTypeQuestions.waterPreservativeInfo.trim())
     ) {
       this._focusInput(this.waterPreservativeRef);
     } else if (
-      this.state.sampleType === "Plant" &&
+      (this.state.sampleType === "Plant" ||
+        this.state.sampleType === "Miscellaneous") &&
       !this.state.sampleTypeQuestions.plantReportingBasis
     ) {
       this._focusInput(this.plantReportingRef);
     } else if (
-      this.state.sampleType === "Plant"
+      this.state.sampleType === "Plant" ||
+      this.state.sampleType === "Miscellaneous"
       //Checks for Plant Dry Matter
     ) {
       if (
