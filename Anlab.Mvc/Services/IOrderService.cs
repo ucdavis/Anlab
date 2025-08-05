@@ -419,7 +419,7 @@ namespace AnlabMvc.Services
 
             if(orderDetails.SampleType == TestCategories.Miscellaneous)
             {
-                //This should be the same as the other sample types. In the future we might want to tread these a little differently. Maybe only show if it is yes?
+                //This should be the same as the other sample types. In the future we might want to tread these a little differently. Maybe only show if it is yes?.
                 sb.AppendFormat("{0}: {1}{2}", "Plant reporting basis", orderDetails.SampleTypeQuestions.PlantReportingBasis, Environment.NewLine);
                 sb.AppendFormat("{0}: {1}{2}", "Soil is imported or quarantined", (orderDetails.SelectedTests.Any(a => a.Id == "SP-FOR") || orderDetails.SampleTypeQuestions.SoilImported).ToYesNoString(), Environment.NewLine);
                 sb.AppendFormat("{0}: {1}{2}", "Water filtered", orderDetails.SampleTypeQuestions.WaterFiltered.ToYesNoString(), Environment.NewLine);
