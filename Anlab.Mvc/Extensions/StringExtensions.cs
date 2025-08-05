@@ -101,7 +101,7 @@ namespace AnlabMvc.Extensions
 
             if (string.Equals(value, "water", StringComparison.OrdinalIgnoreCase))
             {
-                return "Water / Misc. Liquid";
+                return "Water";
             }
 
             if(string.Equals(value, "plant", StringComparison.OrdinalIgnoreCase))
