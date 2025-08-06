@@ -24,7 +24,10 @@ export class SamplePlantQuestions extends React.Component<
   {}
 > {
   public render() {
-    if (this.props.sampleType !== "Plant") {
+    if (
+      this.props.sampleType !== "Plant" &&
+      this.props.sampleType !== "Miscellaneous"
+    ) {
       return null;
     }
     return (

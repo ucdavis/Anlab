@@ -68,7 +68,10 @@ export class SampleWaterQuestions extends React.Component<
   };
 
   public render() {
-    if (this.props.sampleType !== "Water") {
+    if (
+      this.props.sampleType !== "Water" &&
+      this.props.sampleType !== "Miscellaneous"
+    ) {
       return null;
     }
     return (
