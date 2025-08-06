@@ -150,11 +150,11 @@
                  "createdRow": function (row, data, index) {
                      if (data[3] == "Created")
                      {
-                         $(row).addClass('warning');
+                         $(row).addClass('table-warning');
                      }
                      if (data[3] == "Finalized" && !data[4])
                      {
-                         $(row).addClass('danger');
+                         $(row).addClass('table-danger');
                      }
                  }
              });
