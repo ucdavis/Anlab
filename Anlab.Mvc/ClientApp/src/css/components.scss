@@ -417,3 +417,6 @@ fieldset:disabled .btn {
   border-color: var(--bs-btn-disabled-border-color);
   opacity: var(--bs-btn-disabled-opacity);
 }
+textarea.form-control {
+  min-height: 70px;
+}
