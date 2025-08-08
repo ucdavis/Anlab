@@ -96,16 +96,16 @@
     {
         if (!Model.OrderReviewModel.Order.Paid)
         {
-            <div class="alert alert-danger noprint">
-                <button type="button" class="close" data-dismiss="alert">×</button>
+            <div class="alert alert-danger alert-dismissible noprint">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 <a asp-action="ConfirmPayment" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier">Click here to confirm payment,</a> or use the Confirm Payment button in the upper right before you can download your results.
             </div>
         }
     }
     @if (Model.OrderReviewModel.Order.Paid)
     {
-        <div class="alert alert-warning noprint">
-            <button type="button" class="close" data-dismiss="alert">×</button>
+        <div class="alert alert-warning alert-dismissible noprint">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             <a asp-action="Download" asp-route-id="@Model.OrderReviewModel.Order.ShareIdentifier">Click here to Download your results,</a> or use the Download button in the upper right.
             <p>Results for orders completed after April 11, 2023 are in a zip file containing the official pdf and an Excel file for your convenience.</p>
         </div>
