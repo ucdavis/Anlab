@@ -34,8 +34,8 @@
 <div>
      @if (!string.IsNullOrWhiteSpace(Model.Order.SignedEnvelopeId))
      {
-         <div class="alert alert-danger noprint">
-             <button type="button" class="close" data-dismiss="alert">×</button>
+        <div class="alert alert-danger alert-dismissible noprint">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
              <div>
                  <h2>Please print your order confirmation and include a copy with the samples.</h2>
                  @Html.ActionLink("View Confirmation PDF", "ViewSignedDocument", new { id = Model.Order.Id }, new { @class = "btn btn-default", target = "_blank" })
