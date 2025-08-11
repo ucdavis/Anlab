@@ -113,5 +113,21 @@
                 </div>
             </div>
         </div>
+        @* <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title"><a href="#other" data-toggle="collapse" data-parent="#accordion">Other/Misc Methods</a></h4>
+            </div>
+            <div class="panel-collapse collapse" id="other">
+                <div class="panel-body">
+                    <h3>Method Summaries</h3>
+                    <ul>
+                        @foreach (var method in Model.Where(x => x.Category == "Other"))
+                        {
+                            <li><a class="internal-link" target="_self" asp-controller="Analysis" asp-action="Details" asp-route-category="@method.Category" asp-route-id="@method.Id">@method.Id - @method.Title</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div> *@
     </div>
 </div>
