@@ -613,7 +613,8 @@ export default class OrderForm extends React.Component<
 
     // check special water requirements
     if (
-      this.state.sampleType === "Water" &&
+      (this.state.sampleType === "Water" ||
+        this.state.sampleType === "Miscellaneous") &&
       this.state.sampleTypeQuestions.waterPreservativeAdded &&
       (!this.state.sampleTypeQuestions.waterPreservativeInfo ||
         !this.state.sampleTypeQuestions.waterPreservativeInfo.trim())
@@ -622,14 +623,18 @@ export default class OrderForm extends React.Component<
     }
 
     if (
-      this.state.sampleType === "Plant" &&
+      (this.state.sampleType === "Plant" ||
+        this.state.sampleType === "Miscellaneous") &&
       !this.state.sampleTypeQuestions.plantReportingBasis
     ) {
       valid = false;
     }
 
     // Check Plant Dry Matter requirements
-    if (this.state.sampleType === "Plant") {
+    if (
+      this.state.sampleType === "Plant" ||
+      this.state.sampleType === "Miscellaneous"
+    ) {
       const dryMatterTests = this.props.testItems.filter(
         (x) => x.dryMatter === true
       );
@@ -656,7 +661,8 @@ export default class OrderForm extends React.Component<
 
     // check special soil requirements -- if soil is imported, user must select the SP-FOR test
     if (
-      this.state.sampleType === "Soil" &&
+      (this.state.sampleType === "Soil" ||
+        this.state.sampleType === "Miscellaneous") &&
       this.state.sampleTypeQuestions.soilImported
     ) {
       const soilImportedTest = this.props.testItems.filter(
@@ -668,7 +674,8 @@ export default class OrderForm extends React.Component<
     }
     // check special soil requirements -- if soil is not imported, user must not select the SP-FOR test
     if (
-      this.state.sampleType === "Soil" &&
+      (this.state.sampleType === "Soil" ||
+        this.state.sampleType === "Miscellaneous") &&
       !this.state.sampleTypeQuestions.soilImported
     ) {
       const soilImportedTest = this.props.testItems.filter(
@@ -887,19 +894,22 @@ export default class OrderForm extends React.Component<
     } else if (this.state.quantity <= 0 || this.state.quantity > 100) {
       this._focusInput(this.quantityRef);
     } else if (
-      this.state.sampleType === "Water" &&
+      (this.state.sampleType === "Water" ||
+        this.state.sampleType === "Miscellaneous") &&
       this.state.sampleTypeQuestions.waterPreservativeAdded &&
       (!this.state.sampleTypeQuestions.waterPreservativeInfo ||
         !this.state.sampleTypeQuestions.waterPreservativeInfo.trim())
     ) {
       this._focusInput(this.waterPreservativeRef);
     } else if (
-      this.state.sampleType === "Plant" &&
+      (this.state.sampleType === "Plant" ||
+        this.state.sampleType === "Miscellaneous") &&
       !this.state.sampleTypeQuestions.plantReportingBasis
     ) {
       this._focusInput(this.plantReportingRef);
     } else if (
-      this.state.sampleType === "Plant"
+      this.state.sampleType === "Plant" ||
+      this.state.sampleType === "Miscellaneous"
       //Checks for Plant Dry Matter
     ) {
       if (

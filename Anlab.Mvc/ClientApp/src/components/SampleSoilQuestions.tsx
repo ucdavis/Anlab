@@ -16,7 +16,10 @@ export class SampleSoilQuestions extends React.Component<
   };
 
   render() {
-    if (this.props.sampleType !== "Soil") {
+    if (
+      this.props.sampleType !== "Soil" &&
+      this.props.sampleType !== "Miscellaneous"
+    ) {
       return null;
     }
     return (

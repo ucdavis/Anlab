@@ -2,6 +2,7 @@ import * as React from "react";
 import { ReactComponent as PlantSvg } from "../media/plant.svg";
 import { ReactComponent as SoilSvg } from "../media/soil.svg";
 import { ReactComponent as WaterSvg } from "../media/water.svg";
+import { ReactComponent as MiscSvg } from "../media/misc.svg";
 
 interface ISampleTypeProps {
   sampleType: string;
@@ -41,7 +42,18 @@ export class SampleTypeSelection extends React.Component<ISampleTypeProps, {}> {
             onClick={() => this._handleChange("Water")}
           >
             <WaterSvg />
-            <h3>Water / Misc. Liquid</h3>
+            <h3>Water</h3>
+          </div>
+          <div
+            className={
+              this.props.sampleType === "Miscellaneous"
+                ? activeDiv
+                : inactiveDiv
+            }
+            onClick={() => this._handleChange("Miscellaneous")}
+          >
+            <MiscSvg />
+            <h3>Miscellaneous</h3>
           </div>
         </div>
       </div>
