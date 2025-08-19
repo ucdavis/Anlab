@@ -31,6 +31,12 @@ export class SampleTypeQuestions extends React.Component<
   render() {
     return (
       <div>
+        {this.props.sampleType === "Miscellaneous" && (
+          <div className="alert alert-warning" role="alert">
+            For Miscellaneous samples, if the following questions do not apply,
+            leave them as No.
+          </div>
+        )}
         <SampleSoilQuestions
           sampleType={this.props.sampleType}
           questions={this.props.questions}
