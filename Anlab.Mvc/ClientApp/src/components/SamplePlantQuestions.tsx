@@ -111,9 +111,14 @@ export class SamplePlantQuestions extends React.Component<
             )}
         </p>
         {!this.props.questions.plantReportingBasis && (
-          <span className="red-text help-block">
-            You must select how you would like your samples reported.
-          </span>
+          <>
+            <span className="red-text help-block">
+              You must select how you would like your samples reported.
+            </span>
+            <span className="red-text help-block">
+              Choose 'As Received' if the moisture factor is not applicable.
+            </span>
+          </>
         )}
         {((this.props.questions.plantReportingBasis ===
           SamplePlantQuestionsOptions.average &&
