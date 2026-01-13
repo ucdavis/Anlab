@@ -6,6 +6,7 @@ import { ITestItem } from "./TestList";
 
 export interface ISampleTypeQuestions {
   soilImported: boolean;
+  soilAgreement: string;
   plantReportingBasis: string;
   waterFiltered: boolean;
   waterPreservativeAdded: boolean;

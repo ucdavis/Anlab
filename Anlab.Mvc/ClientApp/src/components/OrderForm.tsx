@@ -144,6 +144,7 @@ export default class OrderForm extends React.Component<
       sampleTypeQuestions: {
         plantReportingBasis: "",
         soilImported: false,
+        soilAgreement: "",
         waterFiltered: false,
         waterPreservativeAdded: false,
         waterPreservativeInfo: "",
@@ -174,6 +175,7 @@ export default class OrderForm extends React.Component<
       initialState.sampleTypeQuestions = {
         plantReportingBasis: orderInfo.SampleTypeQuestions.PlantReportingBasis,
         soilImported: orderInfo.SampleTypeQuestions.SoilImported,
+        soilAgreement: orderInfo.SampleTypeQuestions.SoilAgreement || "",
         waterFiltered: orderInfo.SampleTypeQuestions.WaterFiltered,
         waterPreservativeAdded:
           orderInfo.SampleTypeQuestions.WaterPreservativeAdded,
@@ -682,6 +684,20 @@ export default class OrderForm extends React.Component<
         (x) => x.id === "SP-FOR"
       )[0];
       if (this.state.selectedCodes[soilImportedTest.id]) {
+        valid = false;
+      }
+    }
+
+    // check special soil requirements -- if soil is imported, user must agree to pay fees
+    if (
+      (this.state.sampleType === "Soil" ||
+        this.state.sampleType === "Miscellaneous") &&
+      this.state.sampleTypeQuestions.soilImported
+    ) {
+      if (
+        !this.state.sampleTypeQuestions.soilAgreement ||
+        this.state.sampleTypeQuestions.soilAgreement.toLowerCase() !== "yes"
+      ) {
         valid = false;
       }
     }

@@ -7,6 +7,7 @@ namespace Anlab.Core.Models
     public class SampleTypeQuestions
     {
         public bool SoilImported { get; set; }
+        public string SoilAgreement { get; set; }
         public string PlantReportingBasis { get; set; }
         public bool WaterFiltered { get; set; }
         public bool WaterPreservativeAdded { get; set; }
