@@ -78,8 +78,8 @@ export class SampleSoilQuestions extends React.Component<
                 className="form_header margin-bottom-zero"
                 htmlFor="soilAgreement"
               >
-                I agree to pay any shipping, handling, or customs fees the lab
-                incurs (type yes).
+                I agree to pay any shipping, handling, or customs fees the lab may
+                incur (type yes).
               </label>
               <input
                 type="text"

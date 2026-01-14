@@ -412,7 +412,7 @@ namespace AnlabMvc.Services
 
             if((orderDetails.SampleType == TestCategories.Soil || orderDetails.SampleType == TestCategories.Miscellaneous) && orderDetails.SampleTypeQuestions.SoilImported)
             {
-                sb.AppendFormat("{0}: {1}{2}", "Agree to pay any shipping, handling, or customs fees the lab incurs", orderDetails.SampleTypeQuestions.SoilAgreement, Environment.NewLine);
+                sb.AppendFormat("{0}: {1}{2}", "Agree to pay any shipping, handling, or customs fees the lab may incur", orderDetails.SampleTypeQuestions.SoilAgreement, Environment.NewLine);
             }
 
             if (orderDetails.SampleType == TestCategories.Water)
