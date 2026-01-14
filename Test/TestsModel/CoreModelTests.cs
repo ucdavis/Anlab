@@ -240,6 +240,7 @@ namespace Test.TestsModel
             #region Arrange
             var expectedFields = new List<NameAndType>();
             expectedFields.Add(new NameAndType("PlantReportingBasis", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("SoilAgreement", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("SoilImported", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("WaterFiltered", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("WaterPreservativeAdded", "System.Boolean", new List<string>()));

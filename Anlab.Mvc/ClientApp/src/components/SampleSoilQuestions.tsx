@@ -15,6 +15,19 @@ export class SampleSoilQuestions extends React.Component<
     this.props.handleChange("soilImported", !this.props.questions.soilImported);
   };
 
+  private _changeSoilAgreement = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.props.handleChange("soilAgreement", e.target.value);
+  };
+
+  private _trimSoilAgreement = () => {
+    if (this.props.questions.soilAgreement) {
+      const trimmed = this.props.questions.soilAgreement.trim();
+      if (trimmed !== this.props.questions.soilAgreement) {
+        this.props.handleChange("soilAgreement", trimmed);
+      }
+    }
+  };
+
   render() {
     if (
       this.props.sampleType !== "Soil" &&
@@ -49,15 +62,44 @@ export class SampleSoilQuestions extends React.Component<
           </label>
         </p>
         {this.props.questions.soilImported && (
-          <div className="alert alert-warning" role="alert">
-            <p>
-              You must select{" "}
-              <strong>
-                Quarantined Soil Processing Fee - Required for foreign &
-                regulated domestic soils
-              </strong>{" "}
-              in the tests below.
-            </p>
+          <div>
+            <div className="alert alert-warning" role="alert">
+              <p>
+                You must select{" "}
+                <strong>
+                  Quarantined Soil Processing Fee - Required for foreign &
+                  regulated domestic soils
+                </strong>{" "}
+                in the tests below.
+              </p>
+            </div>
+            <div className="form-group">
+              <label
+                className="form_header margin-bottom-zero"
+                htmlFor="soilAgreement"
+              >
+                I agree to pay any shipping, handling, or customs fees the lab may
+                incur (type yes).
+              </label>
+              <input
+                type="text"
+                id="soilAgreement"
+                className={`form-control ${
+                  this.props.questions.soilAgreement?.toLowerCase() !== "yes"
+                    ? "is-invalid"
+                    : "is-valid"
+                }`}
+                value={this.props.questions.soilAgreement || ""}
+                onChange={this._changeSoilAgreement}
+                onBlur={this._trimSoilAgreement}
+                placeholder="Type 'yes' to agree"
+              />
+              {this.props.questions.soilAgreement?.toLowerCase() !== "yes" && (
+                <div className="invalid-feedback" style={{ display: "block" }}>
+                  You must type "yes" to agree to the terms.
+                </div>
+              )}
+            </div>
           </div>
         )}
         {!this.props.questions.soilImported && (

@@ -410,6 +410,11 @@ namespace AnlabMvc.Services
                 //sb.AppendFormat("{0}: {1}{2}", "Soil is imported", orderDetails.SelectedTests.Any(a => a.Id == "SP-FOR" || a.Analysis.Equals("Imported Soil", StringComparison.InvariantCultureIgnoreCase)).ToYesNoString(), Environment.NewLine);
             }
 
+            if((orderDetails.SampleType == TestCategories.Soil || orderDetails.SampleType == TestCategories.Miscellaneous) && orderDetails.SampleTypeQuestions.SoilImported)
+            {
+                sb.AppendFormat("{0}: {1}{2}", "Agree to pay any shipping, handling, or customs fees the lab may incur", orderDetails.SampleTypeQuestions.SoilAgreement, Environment.NewLine);
+            }
+
             if (orderDetails.SampleType == TestCategories.Water)
             {
                 sb.AppendFormat("{0}: {1}{2}", "Water filtered", orderDetails.SampleTypeQuestions.WaterFiltered.ToYesNoString(), Environment.NewLine);
