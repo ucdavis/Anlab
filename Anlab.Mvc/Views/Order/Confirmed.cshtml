@@ -8,14 +8,14 @@
 
 @section ActionButtons
 {
-<p>
-    <a asp-action="Index" class="btn btn-default">Back to Orders</a>
-    <form asp-action="Copy" asp-controller="Order" method="post" autocomplete="off" style="margin-right: 3px; margin-left: 3px">
-        <input type="hidden" name="id" value="@Model.Order.ShareIdentifier" />
-        <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-files-o" aria-hidden="true"></i> Duplicate</button>
-    </form>
-     @if (!string.IsNullOrWhiteSpace(Model.Order.SignedEnvelopeId))
-     {
+    <p>
+        <a asp-action="Index" class="btn btn-default">Back to Orders</a>
+        <form asp-action="Copy" asp-controller="Order" method="post" autocomplete="off" style="margin-right: 3px; margin-left: 3px">
+            <input type="hidden" name="id" value="@Model.Order.ShareIdentifier" />
+            <button type="submit" class="btn btn-primary" aria-hidden="true"><i class="fa fa-files-o" aria-hidden="true"></i> Duplicate</button>
+        </form>
+        @if (!string.IsNullOrWhiteSpace(Model.Order.SignedEnvelopeId))
+        {
             <div class="dropdown">
                 <a href="#" class="dropdown-toggle btn" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">View Confirmation PDF</a>
                 <ul class="dropdown-menu">
@@ -27,21 +27,21 @@
                     </li>
                 </ul>
             </div>
-     }
-</p>
+        }
+    </p>
 }
 
 <div>
-     @if (!string.IsNullOrWhiteSpace(Model.Order.SignedEnvelopeId))
-     {
+    @if (!string.IsNullOrWhiteSpace(Model.Order.SignedEnvelopeId))
+    {
         <div class="alert alert-danger alert-dismissible noprint">
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-             <div>
-                 <h2>Please print your order confirmation and include a copy with the samples.</h2>
-                 @Html.ActionLink("View Confirmation PDF", "ViewSignedDocument", new { id = Model.Order.Id }, new { @class = "btn btn-default", target = "_blank" })
-             </div>
-         </div>
-     }
+            <div>
+                <h2>Please print your order confirmation and include a copy with the samples.</h2>
+                @Html.ActionLink("View Confirmation PDF", "ViewSignedDocument", new { id = Model.Order.Id }, new { @class = "btn btn-default", target = "_blank" })
+            </div>
+        </div>
+    }
 
     <div class="alert alert-info">
         <p><strong>Please remember:</strong></p>
@@ -49,291 +49,292 @@
         <p>If you would like your sample descriptions included in the report, you may send an Excel file with that information to the lab email: anlab@ucdavis.edu Please reference the online order number in the email subject.</p>
     </div>
     <div class="row">
-      <div class="col-6">
-         <p>Thank you for placing a work request order with the UC Davis Analytical Laboratory.
-            Below is a summary of the tests you requested and an estimate of your charges.
-            <strong>
-            Please print your order confirmation and include a copy with the samples.
-            </strong>
-         </p>
-         <p>
-             Please number each sample container consecutively beginning with number 1. Results are reported on the basis of those numbers so please document your numbering scheme. Sample containers are often not retained.
-         </p>
-         <p>You will be billed when the work has been completed. Payment must be made in order to download results.</p>
-         <div class="form-group">
-            <strong>Online Order Number:</strong>
-            <span>@Model.Order.Id</span>
-         </div>
-         @if (Model.Order.ClientId != null)
-         {
-             <div class="form-group">
-                 <h4>Client Info</h4>
-                 <table id="client-table" class="avoidBreak tight-table">
-                     <thead>
-                         <tr>
-                             <th style="width: 8em;"></th>
-                             <th></th>
-                         </tr>
-                     </thead>
-                     <tbody>
-                         <tr>
-                             <td><strong>ID:</strong></td>
-                             <td>@Model.Order.ClientId</td>
-                         </tr>
-                         <tr>
-                             <td><strong>Name:</strong></td>
-                             <td>@Model.OrderDetails.ClientInfo.Name</td>
-                         </tr>
-                         @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.Department))
-                         {
-                             <tr>
-                                 <td><strong>Department/Unit:</strong></td>
-                                 <td>@Model.OrderDetails.ClientInfo.Department</td>
-                             </tr>
-                         }
-                         @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.Email))
-                         {
-                             <tr>
-                                 <td><strong>Email:</strong></td>
-                                 <td>@Model.OrderDetails.ClientInfo.Email</td>
-                             </tr>
-                         }
-                         @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.PhoneNumber))
-                         {
-                             <tr>
-                                 <td><strong>Phone Number:</strong></td>
-                                 <td>@Model.OrderDetails.ClientInfo.PhoneNumber.FormatPhone()</td>
-                             </tr>
-                         }
-                     </tbody>
-                 </table>
-             </div>
-         }
-         else
-         {
-             <div class="form-group">
-                 <h4>New Client Info</h4>
-                 <table id="new-client-table" class="avoidBreak tight-table">
-                     <thead>
-                         <tr>
-                             <th style="width: 8em;"></th>
-                             <th></th>
-                         </tr>
-                     </thead>
-                     <tbody>
-                         <tr>
-                             <td><strong>Client Name:</strong></td>
-                             <td>@Model.OrderDetails.ClientInfo.Name</td>
-                         </tr>
-                         <tr>
-                             <td><strong>Employer:</strong></td>
-                             <td>@Model.OrderDetails.ClientInfo.Employer</td>
-                         </tr>
-                         <tr>
-                             <td><strong>Department/Unit:</strong></td>
-                             <td>@Model.OrderDetails.ClientInfo.Department</td>
-                         </tr>
-                         <tr>
-                             <td><strong>Email:</strong></td>
-                             <td>@Model.OrderDetails.ClientInfo.Email</td>
-                         </tr>
-                         <tr>
-                             <td><strong>Phone Number:</strong></td>
-                             <td>@Model.OrderDetails.ClientInfo.PhoneNumber.FormatPhone()</td>
-                         </tr>
-                         <tr>
-                             <td><strong>PI Name:</strong></td>
-                             <td>@Model.OrderDetails.ClientInfo.PiName</td>
-                         </tr>
-                         <tr>
-                             <td><strong>PI Email:</strong></td>
-                             <td>@Model.OrderDetails.ClientInfo.PiEmail</td>
-                         </tr>
-                     </tbody>
-                 </table>
-             </div>
-         }
-          <div class="form-group">
-             <h4>Submitter Info</h4>
-             <table id="submitter-table" class="avoidBreak tight-table">
-                 <thead>
-                     <tr>
-                         <th style="width: 8em;"></th>
-                         <th></th>
-                     </tr>
-                 </thead>
-                 <tbody>
-                     <tr>
-                         <td><strong>Name:</strong></td>
-                         <td>@Model.Order.Creator.Name</td>
-                     </tr>
-                     <tr>
-                         <td><strong>Email:</strong></td>
-                         <td>@Model.Order.Creator.Email</td>
-                     </tr>
-                     <tr>
-                         <td><strong>Phone:</strong></td>
-                         <td>@Model.Order.Creator.Phone.FormatPhone()</td>
-                     </tr>
-                 </tbody>
-             </table>
-          </div>
-          <div class="form-group">
-              <strong>Payment Method:</strong>
-              @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
-              {
-                @if (Model.Order.PaymentType == "UcDavisAccount")
+        <div class="col-6">
+            <p>
+                Thank you for placing a work request order with the UC Davis Analytical Laboratory.
+                Below is a summary of the tests you requested and an estimate of your charges.
+                <strong>
+                    Please print your order confirmation and include a copy with the samples.
+                </strong>
+            </p>
+            <p>
+                Please number each sample container consecutively beginning with number 1. Results are reported on the basis of those numbers so please document your numbering scheme. Sample containers are often not retained.
+            </p>
+            <p>You will be billed when the work has been completed. Payment must be made in order to download results.</p>
+            <div class="form-group">
+                <strong>Online Order Number:</strong>
+                <span>@Model.Order.Id</span>
+            </div>
+            @if (Model.Order.ClientId != null)
+            {
+                <div class="form-group">
+                    <h4>Client Info</h4>
+                    <table id="client-table" class="avoidBreak tight-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 8em;"></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>ID:</strong></td>
+                                <td>@Model.Order.ClientId</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Name:</strong></td>
+                                <td>@Model.OrderDetails.ClientInfo.Name</td>
+                            </tr>
+                            @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.Department))
+                            {
+                                <tr>
+                                    <td><strong>Department/Unit:</strong></td>
+                                    <td>@Model.OrderDetails.ClientInfo.Department</td>
+                                </tr>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.Email))
+                            {
+                                <tr>
+                                    <td><strong>Email:</strong></td>
+                                    <td>@Model.OrderDetails.ClientInfo.Email</td>
+                                </tr>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientInfo.PhoneNumber))
+                            {
+                                <tr>
+                                    <td><strong>Phone Number:</strong></td>
+                                    <td>@Model.OrderDetails.ClientInfo.PhoneNumber.FormatPhone()</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    <h4>New Client Info</h4>
+                    <table id="new-client-table" class="avoidBreak tight-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 8em;"></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Client Name:</strong></td>
+                                <td>@Model.OrderDetails.ClientInfo.Name</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Employer:</strong></td>
+                                <td>@Model.OrderDetails.ClientInfo.Employer</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Department/Unit:</strong></td>
+                                <td>@Model.OrderDetails.ClientInfo.Department</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Email:</strong></td>
+                                <td>@Model.OrderDetails.ClientInfo.Email</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phone Number:</strong></td>
+                                <td>@Model.OrderDetails.ClientInfo.PhoneNumber.FormatPhone()</td>
+                            </tr>
+                            <tr>
+                                <td><strong>PI Name:</strong></td>
+                                <td>@Model.OrderDetails.ClientInfo.PiName</td>
+                            </tr>
+                            <tr>
+                                <td><strong>PI Email:</strong></td>
+                                <td>@Model.OrderDetails.ClientInfo.PiEmail</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            }
+            <div class="form-group">
+                <h4>Submitter Info</h4>
+                <table id="submitter-table" class="avoidBreak tight-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 8em;"></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Name:</strong></td>
+                            <td>@Model.Order.Creator.Name</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Email:</strong></td>
+                            <td>@Model.Order.Creator.Email</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Phone:</strong></td>
+                            <td>@Model.Order.Creator.Phone.FormatPhone()</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="form-group">
+                <strong>Payment Method:</strong>
+                @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
                 {
-                    var link = $"https://finjector.ucdavis.edu/Details/{@Model.OrderDetails.Payment.Account}";
-                    <span>UCD Account: <a href="@link" target="_blank"> @Model.OrderDetails.Payment.Account</a></span>
-                    @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.Payment.AccountName))
+                    @if (Model.Order.PaymentType == "UcDavisAccount")
                     {
-                        <span> (@Model.OrderDetails.Payment.AccountName)</span>
+                        var link = $"https://finjector.ucdavis.edu/Details/{@Model.OrderDetails.Payment.Account}";
+                        <span>UCD Account: <a href="@link" target="_blank"> @Model.OrderDetails.Payment.Account</a></span>
+                        @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.Payment.AccountName))
+                        {
+                            <span> (@Model.OrderDetails.Payment.AccountName)</span>
+                        }
+                        else
+                        {
+                            if (Model.OrderDetails.OtherPaymentInfo != null && !string.IsNullOrWhiteSpace(Model.OrderDetails.OtherPaymentInfo.PaymentType))
+                            {
+                                <span> (@Model.OrderDetails.OtherPaymentInfo.PaymentType)</span>
+                            }
+                        }
                     }
                     else
                     {
-                        if (Model.OrderDetails.OtherPaymentInfo != null && !string.IsNullOrWhiteSpace(Model.OrderDetails.OtherPaymentInfo.PaymentType))
+                        <span>UC Account: @Model.OrderDetails.Payment.Account</span>
+                        @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.Payment.AccountName))
                         {
-                            <span> (@Model.OrderDetails.OtherPaymentInfo.PaymentType)</span>
+                            <span> (@Model.OrderDetails.Payment.AccountName)</span>
+                        }
+                        else
+                        {
+                            if (Model.OrderDetails.OtherPaymentInfo != null && !string.IsNullOrWhiteSpace(Model.OrderDetails.OtherPaymentInfo.PaymentType))
+                            {
+                                <span> (@Model.OrderDetails.OtherPaymentInfo.PaymentType)</span>
+                            }
                         }
                     }
                 }
+                else if (string.Equals(Model.OrderDetails.Payment.ClientType, "creditcard", StringComparison.OrdinalIgnoreCase))
+                {
+                    <span>Credit Card</span>
+                }
                 else
                 {
-                  <span>UC Account: @Model.OrderDetails.Payment.Account</span>
-                  @if(!string.IsNullOrWhiteSpace(Model.OrderDetails.Payment.AccountName))
-                   {
-                       <span> (@Model.OrderDetails.Payment.AccountName)</span>
-                   }
-                   else
-                   {
-                       if (Model.OrderDetails.OtherPaymentInfo != null && !string.IsNullOrWhiteSpace(Model.OrderDetails.OtherPaymentInfo.PaymentType))
-                       {
-                           <span> (@Model.OrderDetails.OtherPaymentInfo.PaymentType)</span>
-                       }
-                   }
+                    <span>Other</span>
+                    if (Model.OrderDetails.OtherPaymentInfo != null && !string.IsNullOrWhiteSpace(Model.OrderDetails.OtherPaymentInfo.PaymentType))
+                    {
+                        <span> (@Model.OrderDetails.OtherPaymentInfo.PaymentType)</span>
+                    }
                 }
-               }
-              else if (string.Equals(Model.OrderDetails.Payment.ClientType, "creditcard", StringComparison.OrdinalIgnoreCase))
-              {
-                  <span>Credit Card</span>
-              }
-              else
-              {
-                  <span>Other</span>
-                   if (Model.OrderDetails.OtherPaymentInfo != null && !string.IsNullOrWhiteSpace(Model.OrderDetails.OtherPaymentInfo.PaymentType))
-                   {
-                       <span> (@Model.OrderDetails.OtherPaymentInfo.PaymentType)</span>
-                   }
-              }
-          </div>
-         <div class="form-group">
-             <strong>Project Title / Location:</strong>
-             <span>@Model.Order.Project</span>
-         </div>
-         @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.Commodity))
-         {
-         <div class="form-group">
-            <strong>Commodity:</strong>
-            <span>@Model.OrderDetails.Commodity</span>
-         </div>
-         }
-          <div class="form-group">
-              <strong>Date Sampled:</strong>
-              <span>@Model.OrderDetails.DateSampled.ToLongDateString()</span>
-          </div>
-          <div class="form-group">
-              <strong>Sample Disposition:</strong>
-              <span>@Model.OrderDetails.SampleDisposition</span>
-          </div>
-         <div class="form-group">
-            <strong>Number of Samples Submitted:</strong>
-            <span>@Model.OrderDetails.Quantity</span>
-         </div>
-      </div>
-      <div class="col-6 onlyPrint">
-         <div class="pull-right">
-             <h1 style="text-align: center">@Model.OrderDetails.SampleType</h1>
-            <img style="width: 350px; height: 350px;"  src="/images/lab-only-section.png" alt="lab use only section" />
-         </div>
-      </div>
-   </div>
-   @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.AdditionalInfo))
-   {
-   <div class="form-group">
-      <strong>Comments, special test requests and missing samples:</strong>
-      <div class="well well-sm" style="white-space: pre-wrap">@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</div>
-   </div>
-   }
-   <p>
-      The following estimate of charges is based on routine testing.  Should non-routine testing be required you will be contacted to discuss any additional costs.
-   </p>
-   <table id="t" class="avoidBreak" >
-      <thead>
-         <tr>
-            <th>Test(s)</th>
-            <th>Code</th>
-            <th>Ref</th>
-            <th>Per Test</th>
-            <th>Quantity</th>
-            <th>Subtotal</th>
-            <th>Setup Cost</th>
-            <th>Test Total</th>
-         </tr>
-      </thead>
-      <tbody>
-         @foreach (var test in @Model.OrderDetails.SelectedTests)
-         {
-         var temp = Model.Order.GetTestDetails().Where(a => a.Id == test.Id).FirstOrDefault();
-         if (Model.HideLabDetails && !temp.Public)
-         {
-         continue;
-         }
-         <tr>
-            <td>@test.Analysis</td>
-            <td>@test.Id</td>
-            <td>@temp.Sop</td>
-            <td>@test.Cost.ToString("C")</td>
-            <td>x @Model.OrderDetails.Quantity</td>
-            <td>@test.SubTotal.ToString("C")</td>
-            <td>@test.SetupCost.ToString("C")</td>
-            <td>@test.Total.ToString("C")</td>
-         </tr>
-         }
-      </tbody>
-      <tfoot class="avoidBreak">
-         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>Processing Fee</td>
-            <td>
-               @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
-               {
-               <span>@(string.Format("{0:C}", Model.OrderDetails.InternalProcessingFee))</span>
-               }
-               else
-               {
-               <span>@(string.Format("{0:C}", Model.OrderDetails.ExternalProcessingFee))</span>
-               }
-            </td>
-         </tr>
-         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <th>Total</th>
-            <th>@(string.Format("{0:C}", Model.OrderDetails.GrandTotal))</th>
-         </tr>
-      </tfoot>
-   </table>
-   <br /><br />
+            </div>
+            <div class="form-group">
+                <strong>Project Title / Location:</strong>
+                <span>@Model.Order.Project</span>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.Commodity))
+            {
+                <div class="form-group">
+                    <strong>Commodity:</strong>
+                    <span>@Model.OrderDetails.Commodity</span>
+                </div>
+            }
+            <div class="form-group">
+                <strong>Date Sampled:</strong>
+                <span>@Model.OrderDetails.DateSampled.ToLongDateString()</span>
+            </div>
+            <div class="form-group">
+                <strong>Sample Disposition:</strong>
+                <span>@Model.OrderDetails.SampleDisposition</span>
+            </div>
+            <div class="form-group">
+                <strong>Number of Samples Submitted:</strong>
+                <span>@Model.OrderDetails.Quantity</span>
+            </div>
+        </div>
+        <div class="col-6 onlyPrint">
+            <div class="pull-right">
+                <h1 style="text-align: center">@Model.OrderDetails.SampleType</h1>
+                <img style="width: 350px; height: 350px;" src="/images/lab-only-section.png" alt="lab use only section" />
+            </div>
+        </div>
+    </div>
+    @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.AdditionalInfo))
+    {
+        <div class="form-group">
+            <strong>Comments, special test requests and missing samples:</strong>
+            <div class="well well-sm" style="white-space: pre-wrap">@Html.Raw(Html.Encode(Model.OrderDetails.AdditionalInfo))</div>
+        </div>
+    }
+    <p>
+        The following estimate of charges is based on routine testing.  Should non-routine testing be required you will be contacted to discuss any additional costs.
+    </p>
+    <table id="t" class="avoidBreak">
+        <thead>
+            <tr>
+                <th>Test(s)</th>
+                <th>Code</th>
+                <th>Ref</th>
+                <th>Per Test</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+                <th>Setup Cost</th>
+                <th>Test Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var test in @Model.OrderDetails.SelectedTests)
+            {
+                var temp = Model.Order.GetTestDetails().Where(a => a.Id == test.Id).FirstOrDefault();
+                if (Model.HideLabDetails && !temp.Public)
+                {
+                    continue;
+                }
+                <tr>
+                    <td>@test.Analysis</td>
+                    <td>@test.Id</td>
+                    <td>@temp.Sop</td>
+                    <td>@test.Cost.ToString("C")</td>
+                    <td>x @Model.OrderDetails.Quantity</td>
+                    <td>@test.SubTotal.ToString("C")</td>
+                    <td>@test.SetupCost.ToString("C")</td>
+                    <td>@test.Total.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot class="avoidBreak">
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>Processing Fee</td>
+                <td>
+                    @if (string.Equals(Model.OrderDetails.Payment.ClientType, "uc", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <span>@(string.Format("{0:C}", Model.OrderDetails.InternalProcessingFee))</span>
+                    }
+                    else
+                    {
+                        <span>@(string.Format("{0:C}", Model.OrderDetails.ExternalProcessingFee))</span>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <th>Total</th>
+                <th>@(string.Format("{0:C}", Model.OrderDetails.GrandTotal))</th>
+            </tr>
+        </tfoot>
+    </table>
+    <br /><br />
 
     <div>
         By signing below, I am authorizing work to be performed and confirming that I have proper authority to use the payment method indicated in this order.
@@ -343,74 +344,74 @@
     <br />
 
 
-   <div class="avoidBreak">
+    <div class="avoidBreak">
         <div class="row">
-      <div class="col-6">
-         <div class="signature1">&nbsp;</div>
-         <div class="signature2">
-            <span>Client / Responsible Party Signature (Required)</span>
-            <span class="pull-right">Date</span>
-         </div>
-      </div>
+            <div class="col-6">
+                <div class="signature1">&nbsp;</div>
+                <div class="signature2">
+                    <span>Client / Responsible Party Signature (Required)</span>
+                    <span class="pull-right">Date</span>
+                </div>
+            </div>
         </div>
 
         <div class="row">
-      <div class="col-6" style="padding-left: 4px;">
-         <div class="row">
-            <div>
-               <input type="checkbox" /> <small>Mailed/Shipped</small>
+            <div class="col-6" style="padding-left: 4px;">
+                <div class="row">
+                    <div>
+                        <input type="checkbox" /> <small>Mailed/Shipped</small>
+                    </div>
+                </div>
+                <div class="row">
+                    <div>
+                        <input type="checkbox" /> <small>Hand Delivered By:</small>
+                    </div>
+                </div>
             </div>
-         </div>
-         <div class="row">
-            <div>
-               <input type="checkbox" /> <small>Hand Delivered By:</small>
-            </div>
-         </div>
-      </div>
         </div>
         <div class="row">
-      <div class="col-6">
-         <span>&nbsp;</span>
-         <div class="signature1">&nbsp;</div>
-         <div class="signature2">
-            <span>Print Name</span>
-            <span class="pull-right">Date</span>
-         </div>
-      </div>
+            <div class="col-6">
+                <span>&nbsp;</span>
+                <div class="signature1">&nbsp;</div>
+                <div class="signature2">
+                    <span>Print Name</span>
+                    <span class="pull-right">Date</span>
+                </div>
+            </div>
         </div>
-   </div>
-   <br /><br />
-   <div class="row">
-      <div class="col-6">
-         <address>
-            <strong>Submit Samples to:</strong><br>
-            <strong>UC Davis Analytical Lab</strong><br>
-            Hoagland Annex<br>
-            University of California<br>
-            One Shields Avenue<br>
-            Davis, CA 95616-5270
-         </address>
-      </div>
-      <div class="col-6">
-         <address>
-            <strong>UC Davis Analytical Lab</strong><br>
-            Office Phone: 530-752-0147<br>
-            Receiving Phone: 530-752-0266<br>
-            Email: <a href="mailto:anlab@ucdavis.edu">anlab@ucdavis.edu</a>
-         </address>
-      </div>
-   </div>
-   <div class="row">
-      <div class="col-12">
-         <div class="noprint">
-             <a asp-action="Index" class="btn btn-default">Back to Orders</a>
-             @if (!string.IsNullOrWhiteSpace(Model.Order.SignedEnvelopeId))
-             {
-                 @Html.ActionLink("View Confirmation PDF", "ViewSignedDocument", new { id = Model.Order.Id }, new { @class = "btn btn-default", target = "_blank" })
-             }
-         </div>
-      </div>
-   </div>
+    </div>
+    <br /><br />
+    <div class="row">
+        <div class="col-6">
+            <address>
+                <strong>Submit Samples to:</strong><br>
+                <strong>UC Davis Analytical Lab</strong><br>
+                Hoagland Annex<br>
+                University of California<br>
+                One Shields Avenue<br>
+                Davis, CA 95616-5270
+            </address>
+        </div>
+        <div class="col-6">
+            <address>
+                <strong>UC Davis Analytical Lab</strong><br>
+                Office Phone: 530-752-0147<br>
+                Receiving Phone: 530-752-0266<br>
+                Email: <a href="mailto:anlab@ucdavis.edu">anlab@ucdavis.edu</a>
+            </address>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="noprint">
+                <a asp-action="Index" class="btn btn-default">Back to Orders</a>
+                @if (!string.IsNullOrWhiteSpace(Model.Order.SignedEnvelopeId))
+                {
+                    @Html.ActionLink("View Confirmation PDF", "ViewSignedDocument", new { id = Model.Order.Id }, new { @class = "btn btn-default", target = "_blank" })
+                }
+            </div>
+        </div>
+    </div>
 </div>
 
 @section AdditionalStyles
@@ -420,6 +421,7 @@
             width: 100%;
             height: 40px;
         }
+
         .signature2 {
             width: 100%;
             border-top: 1px solid black;
@@ -432,12 +434,15 @@
         table {
             width: 100%;
         }
+
         th {
             padding: 5px;
         }
+
         td {
             padding: 5px;
         }
+
         .onlyPrint {
             display: none !important;
         }
@@ -445,6 +450,7 @@
         .tight-table td {
             padding: 2px;
         }
+
         .tight-table th {
             padding: 1px;
             padding-top: 1px;
