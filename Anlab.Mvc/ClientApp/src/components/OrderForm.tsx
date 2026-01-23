@@ -80,6 +80,7 @@ export default class OrderForm extends React.Component<
 > {
   private quantityRef: any;
   private projectRef: any;
+  private commodityRef: any;
   private waterPreservativeRef: any;
   private plantReportingRef: any;
   private clientIdRef: any;
@@ -351,7 +352,8 @@ export default class OrderForm extends React.Component<
             in={
               placingOrder &&
               (!!this.state.payment.clientType.trim() ||
-                !!this.state.project.trim())
+                !!this.state.project.trim() ||
+                !!this.state.commodity.trim())
             }
           >
             <div>
@@ -369,6 +371,9 @@ export default class OrderForm extends React.Component<
                 <Commodity
                   commodity={commodity}
                   handleChange={this._handleChange}
+                  commodityRef={(inputRef) => {
+                    this.commodityRef = inputRef;
+                  }}
                 />
               </div>
             </div>
@@ -377,7 +382,7 @@ export default class OrderForm extends React.Component<
           <Collapse
             in={
               !placingOrder ||
-              !!this.state.project.trim() ||
+              (!!this.state.project.trim() && !!this.state.commodity.trim()) ||
               this.state.quantity > 0 ||
               !!this.state.sampleType.trim()
             }
@@ -603,6 +608,11 @@ export default class OrderForm extends React.Component<
 
     // check project name
     if (!this.state.project || !this.state.project.trim()) {
+      valid = false;
+    }
+
+    // check commodity
+    if (!this.state.commodity || !this.state.commodity.trim()) {
       valid = false;
     }
 
@@ -899,6 +909,8 @@ export default class OrderForm extends React.Component<
       this._focusInput(this.otherPaymentInfoRef);
     } else if (!this.state.project || !this.state.project.trim()) {
       this._focusInput(this.projectRef);
+    } else if (!this.state.commodity || !this.state.commodity.trim()) {
+      this._focusInput(this.commodityRef);
     } else if (!moment.isMoment(this.state.dateSampled)) {
       this._focusInput(this.sampleDateRef);
       this.sampleDateRef.click();
