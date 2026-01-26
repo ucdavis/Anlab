@@ -4,10 +4,11 @@ import Input from "./ui/input/input";
 interface ICommodityProps {
   commodity: string;
   handleChange: (key: string, value: string) => void;
+  commodityRef: (element: HTMLInputElement) => void;
 }
 
 interface ICommodityState {
-  internalValue: string;
+  error: string;
 }
 
 export class Commodity extends React.Component<
@@ -18,7 +19,7 @@ export class Commodity extends React.Component<
     super(props);
 
     this.state = {
-      internalValue: this.props.commodity,
+      error: null,
     };
   }
 
@@ -26,18 +27,27 @@ export class Commodity extends React.Component<
     return (
       <Input
         label="Type of Material / Commodity"
-        value={this.state.internalValue || ""}
+        value={this.props.commodity}
+        error={this.state.error}
+        required={true}
         onChange={this._onChange}
-        onBlur={this._onBlur}
+        inputRef={this.props.commodityRef}
       />
     );
   }
 
   private _onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ internalValue: e.target.value });
+    const value = e.target.value;
+    this._validate(value);
+    this.props.handleChange("commodity", value);
   };
 
-  private _onBlur = () => {
-    this.props.handleChange("commodity", this.state.internalValue);
+  private _validate = (v: string) => {
+    let error = null;
+    if (v.trim() === "") {
+      error = "The Material / Commodity is required";
+    }
+
+    this.setState({ error });
   };
 }
