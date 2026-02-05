@@ -402,7 +402,7 @@ namespace AnlabMvc.Services
                 sb.AppendFormat("{0}: {1}{2}", "Plant reporting basis", orderDetails.SampleTypeQuestions.PlantReportingBasis, Environment.NewLine);
             }
 
-            
+
             if (orderDetails.SampleType == TestCategories.Soil)
             {
                 sb.AppendFormat("{0}: {1}{2}", "Soil is imported or quarantined", (orderDetails.SelectedTests.Any(a => a.Id == "SP-FOR") || orderDetails.SampleTypeQuestions.SoilImported).ToYesNoString(), Environment.NewLine);
@@ -410,25 +410,25 @@ namespace AnlabMvc.Services
                 //sb.AppendFormat("{0}: {1}{2}", "Soil is imported", orderDetails.SelectedTests.Any(a => a.Id == "SP-FOR" || a.Analysis.Equals("Imported Soil", StringComparison.InvariantCultureIgnoreCase)).ToYesNoString(), Environment.NewLine);
             }
 
-            if((orderDetails.SampleType == TestCategories.Soil || orderDetails.SampleType == TestCategories.Miscellaneous) && orderDetails.SampleTypeQuestions.SoilImported)
+            if ((orderDetails.SampleType == TestCategories.Soil || orderDetails.SampleType == TestCategories.Miscellaneous) && orderDetails.SampleTypeQuestions.SoilImported)
             {
                 sb.AppendFormat("{0}: {1}{2}", "Agree to pay any shipping, handling, or customs fees the lab may incur", orderDetails.SampleTypeQuestions.SoilAgreement, Environment.NewLine);
             }
 
             if (orderDetails.SampleType == TestCategories.Water)
             {
-                sb.AppendFormat("{0}: {1}{2}", "Water filtered", orderDetails.SampleTypeQuestions.WaterFiltered.ToYesNoString(), Environment.NewLine);
-                sb.AppendFormat("{0}: {1} {2}{3}", "Water preservative added", orderDetails.SampleTypeQuestions.WaterPreservativeAdded.ToYesNoString(), orderDetails.SampleTypeQuestions.WaterPreservativeInfo, Environment.NewLine);
+                sb.AppendFormat("{0}: {1} {2}{3}", "Water filtered", orderDetails.SampleTypeQuestions.WaterFiltered.ToYesNoString(), orderDetails.SampleTypeQuestions.WaterFiltered ? orderDetails.SampleTypeQuestions.WaterFilterInfo : string.Empty, Environment.NewLine);
+                sb.AppendFormat("{0}: {1} {2}{3}", "Water preservative added", orderDetails.SampleTypeQuestions.WaterPreservativeAdded.ToYesNoString(), orderDetails.SampleTypeQuestions.WaterPreservativeAdded ? orderDetails.SampleTypeQuestions.WaterPreservativeInfo : string.Empty, Environment.NewLine);
                 //sb.AppendFormat("{0}: {1}{2}", "Water reported in mg/L", orderDetails.SampleTypeQuestions.WaterReportedInMgL.ToYesNoString(), Environment.NewLine); //For now they don't want this question.
             }
 
-            if(orderDetails.SampleType == TestCategories.Miscellaneous)
+            if (orderDetails.SampleType == TestCategories.Miscellaneous)
             {
                 //This should be the same as the other sample types. In the future we might want to tread these a little differently. Maybe only show if it is yes?.
                 sb.AppendFormat("{0}: {1}{2}", "Plant reporting basis", orderDetails.SampleTypeQuestions.PlantReportingBasis, Environment.NewLine);
                 sb.AppendFormat("{0}: {1}{2}", "Soil is imported or quarantined", (orderDetails.SelectedTests.Any(a => a.Id == "SP-FOR") || orderDetails.SampleTypeQuestions.SoilImported).ToYesNoString(), Environment.NewLine);
-                sb.AppendFormat("{0}: {1}{2}", "Water filtered", orderDetails.SampleTypeQuestions.WaterFiltered.ToYesNoString(), Environment.NewLine);
-                sb.AppendFormat("{0}: {1} {2}{3}", "Water preservative added", orderDetails.SampleTypeQuestions.WaterPreservativeAdded.ToYesNoString(), orderDetails.SampleTypeQuestions.WaterPreservativeInfo, Environment.NewLine);
+                sb.AppendFormat("{0}: {1} {2}{3}", "Water filtered", orderDetails.SampleTypeQuestions.WaterFiltered.ToYesNoString(), orderDetails.SampleTypeQuestions.WaterFiltered ? orderDetails.SampleTypeQuestions.WaterFilterInfo : string.Empty, Environment.NewLine);
+                sb.AppendFormat("{0}: {1} {2}{3}", "Water preservative added", orderDetails.SampleTypeQuestions.WaterPreservativeAdded.ToYesNoString(), orderDetails.SampleTypeQuestions.WaterPreservativeAdded ? orderDetails.SampleTypeQuestions.WaterPreservativeInfo : string.Empty, Environment.NewLine);
             }
 
             if (orderDetails.AdditionalInfoList != null)
