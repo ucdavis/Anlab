@@ -180,7 +180,7 @@ export default class OrderForm extends React.Component<
         soilImported: orderInfo.SampleTypeQuestions.SoilImported,
         soilAgreement: orderInfo.SampleTypeQuestions.SoilAgreement || "",
         waterFiltered: orderInfo.SampleTypeQuestions.WaterFiltered,
-        waterFilterInfo: orderInfo.SampleTypeQuestions.WaterFilterInfo,
+        waterFilterInfo: orderInfo.SampleTypeQuestions.WaterFilterInfo || "",
         waterPreservativeAdded:
           orderInfo.SampleTypeQuestions.WaterPreservativeAdded,
         waterPreservativeInfo:
