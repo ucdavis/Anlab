@@ -3,6 +3,7 @@ import { ISampleTypeQuestions } from "./SampleTypeQuestions";
 import Input from "./ui/input/input";
 
 interface IWaterQuestionsProps {
+  waterFilterRef: (element: HTMLInputElement) => void;
   waterPreservativeRef: (element: HTMLInputElement) => void;
   handleChange: (key: string, value: any) => void;
   sampleType: string;
@@ -10,8 +11,10 @@ interface IWaterQuestionsProps {
 }
 
 interface IWaterQuestionsState {
+  waterFilterInfo: string;
+  waterFilterError: string;
   waterPreservativeInfo: string;
-  error: string;
+  waterPreservativeError: string;
 }
 
 export class SampleWaterQuestions extends React.Component<
@@ -22,8 +25,10 @@ export class SampleWaterQuestions extends React.Component<
     super(props);
 
     this.state = {
+      waterFilterInfo: this.props.questions.waterFilterInfo,
+      waterFilterError: null,
       waterPreservativeInfo: this.props.questions.waterPreservativeInfo,
-      error: null,
+      waterPreservativeError: null,
     };
   }
 
@@ -41,30 +46,51 @@ export class SampleWaterQuestions extends React.Component<
     );
   };
 
+  private _onChangeFilterText = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    this.setState({ waterFilterInfo: value });
+    this._validateFilter(value);
+  };
+
+  private _onBlurFilterText = () => {
+    const waterFilterInfo = this.state.waterFilterInfo;
+    this._validateFilter(waterFilterInfo);
+    this.props.handleChange("waterFilterInfo", this.state.waterFilterInfo);
+  };
+
+  private _validateFilter = (v: string) => {
+    let waterFilterError = null;
+    if (!v || v.trim() === "") {
+      waterFilterError = "This information is required";
+    }
+
+    this.setState({ waterFilterError } as IWaterQuestionsState);
+  };
+
   private _onChangePreservativeText = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = e.target.value;
     this.setState({ waterPreservativeInfo: value });
-    this._validate(value);
+    this._validatePreservative(value);
   };
 
   private _onBlurPreservativeText = () => {
     const waterPreservativeInfo = this.state.waterPreservativeInfo;
-    this._validate(waterPreservativeInfo);
+    this._validatePreservative(waterPreservativeInfo);
     this.props.handleChange(
       "waterPreservativeInfo",
       this.state.waterPreservativeInfo
     );
   };
 
-  private _validate = (v: string) => {
-    let error = null;
+  private _validatePreservative = (v: string) => {
+    let waterPreservativeError = null;
     if (!v || v.trim() === "") {
-      error = "This information is required";
+      waterPreservativeError = "This information is required";
     }
 
-    this.setState({ error } as IWaterQuestionsState);
+    this.setState({ waterPreservativeError } as IWaterQuestionsState);
   };
 
   public render() {
@@ -89,7 +115,7 @@ export class SampleWaterQuestions extends React.Component<
             Yes
           </label>
         </p>
-        <p>
+        <div>
           <label>
             <input
               type="radio"
@@ -98,7 +124,22 @@ export class SampleWaterQuestions extends React.Component<
             />{" "}
             No
           </label>
-        </p>
+          {this.props.questions.waterFiltered && (
+            <div className="order-form-flex-col">
+              <Input
+                placeholder="Filter Information"
+                inputRef={this.props.waterFilterRef}
+                error={this.state.waterFilterError}
+                required={true}
+                maxLength={256}
+                value={this.state.waterFilterInfo}
+                onChange={this._onChangeFilterText}
+                onBlur={this._onBlurFilterText}
+                label="Provide filter information and procedure used"
+              />
+            </div>
+          )}
+        </div>
         <label className="form_header margin-bottom-zero">
           Was a preservative added to your sample?
         </label>
@@ -126,7 +167,7 @@ export class SampleWaterQuestions extends React.Component<
               <Input
                 placeholder="Preservative Information"
                 inputRef={this.props.waterPreservativeRef}
-                error={this.state.error}
+                error={this.state.waterPreservativeError}
                 required={true}
                 maxLength={256}
                 value={this.state.waterPreservativeInfo}

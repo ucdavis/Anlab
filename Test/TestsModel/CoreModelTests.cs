@@ -53,7 +53,7 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("PhoneNumber", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("PiEmail", "System.String", new List<string>()));
-            expectedFields.Add(new NameAndType("PiName", "System.String", new List<string>()));            
+            expectedFields.Add(new NameAndType("PiName", "System.String", new List<string>()));
             #endregion Arrange
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ClientInfo));
@@ -171,7 +171,7 @@ namespace Test.TestsModel
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(OrderDetails));
         }
-        
+
         [Fact]
         public void TestOtherPaymentInfoFieldsHaveExpectedAttributes()
         {
@@ -243,6 +243,7 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("SoilAgreement", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("SoilImported", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("WaterFiltered", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("WaterFilterInfo", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("WaterPreservativeAdded", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("WaterPreservativeInfo", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("WaterReportedInMgL", "System.Boolean", new List<string>()));
@@ -287,7 +288,7 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("AdditionalInfoPrompt", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Analysis", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Categories", "System.String[]", new List<string>()));
-            expectedFields.Add(new NameAndType("Category", "System.String", new List<string>()));            
+            expectedFields.Add(new NameAndType("Category", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Code", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Description", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("DryMatter", "System.Boolean", new List<string>()));
@@ -316,7 +317,7 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("MerchantTrackingNumber", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("MerchantTrackingUrl", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Metadata", "System.Collections.Generic.IList`1[Anlab.Jobs.MoneyMovement.TransactionViewModel+MetadataEntry]", new List<string>()));
-            expectedFields.Add(new NameAndType("Source", "System.String", new List<string>()));                       
+            expectedFields.Add(new NameAndType("Source", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("SourceType", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("TransactionDate", "System.DateTime", new List<string>()));
             expectedFields.Add(new NameAndType("Transfers", "System.Collections.Generic.IList`1[Anlab.Jobs.MoneyMovement.TransferViewModel]", new List<string>()));
@@ -336,7 +337,7 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("Direction", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("FinancialSegmentString", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("ObjectCode", "System.String", new List<string>()));
-            expectedFields.Add(new NameAndType("SubAccount", "System.String", new List<string>()));            
+            expectedFields.Add(new NameAndType("SubAccount", "System.String", new List<string>()));
             #endregion Arrange
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(TransferViewModel));

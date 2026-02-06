@@ -81,6 +81,7 @@ export default class OrderForm extends React.Component<
   private quantityRef: any;
   private projectRef: any;
   private commodityRef: any;
+  private waterFilterRef: any;
   private waterPreservativeRef: any;
   private plantReportingRef: any;
   private clientIdRef: any;
@@ -147,6 +148,7 @@ export default class OrderForm extends React.Component<
         soilImported: false,
         soilAgreement: "",
         waterFiltered: false,
+        waterFilterInfo: "",
         waterPreservativeAdded: false,
         waterPreservativeInfo: "",
         waterReportedInMgL: false,
@@ -178,6 +180,7 @@ export default class OrderForm extends React.Component<
         soilImported: orderInfo.SampleTypeQuestions.SoilImported,
         soilAgreement: orderInfo.SampleTypeQuestions.SoilAgreement || "",
         waterFiltered: orderInfo.SampleTypeQuestions.WaterFiltered,
+        waterFilterInfo: orderInfo.SampleTypeQuestions.WaterFilterInfo || "",
         waterPreservativeAdded:
           orderInfo.SampleTypeQuestions.WaterPreservativeAdded,
         waterPreservativeInfo:
@@ -472,6 +475,9 @@ export default class OrderForm extends React.Component<
               />
               {placingOrder && (
                 <SampleTypeQuestions
+                  waterFilterRef={(inputRef) => {
+                    this.waterFilterRef = inputRef;
+                  }}
                   waterPreservativeRef={(inputRef) => {
                     this.waterPreservativeRef = inputRef;
                   }}
@@ -622,6 +628,17 @@ export default class OrderForm extends React.Component<
     //check sample disposition is entered
     if (!this.state.sampleDisposition || !this.state.sampleDisposition.trim())
       valid = false;
+
+    // check special water requirements
+    if (
+      (this.state.sampleType === "Water" ||
+        this.state.sampleType === "Miscellaneous") &&
+      this.state.sampleTypeQuestions.waterFiltered &&
+      (!this.state.sampleTypeQuestions.waterFilterInfo ||
+        !this.state.sampleTypeQuestions.waterFilterInfo.trim())
+    ) {
+      valid = false;
+    }
 
     // check special water requirements
     if (
@@ -921,6 +938,14 @@ export default class OrderForm extends React.Component<
       this._focusInput(this.sampleDispositionRef);
     } else if (this.state.quantity <= 0 || this.state.quantity > 100) {
       this._focusInput(this.quantityRef);
+    } else if (
+      (this.state.sampleType === "Water" ||
+        this.state.sampleType === "Miscellaneous") &&
+      this.state.sampleTypeQuestions.waterFiltered &&
+      (!this.state.sampleTypeQuestions.waterFilterInfo ||
+        !this.state.sampleTypeQuestions.waterFilterInfo.trim())
+    ) {
+      this._focusInput(this.waterFilterRef);
     } else if (
       (this.state.sampleType === "Water" ||
         this.state.sampleType === "Miscellaneous") &&
