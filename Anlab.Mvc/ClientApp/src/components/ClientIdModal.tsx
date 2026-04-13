@@ -63,6 +63,11 @@ export class ClientIdModal extends React.Component<
             <Modal.Title>{title}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            <p className="help-block">
+              Please note: The ID will be generated and connected to your
+              samples upon receipt of your samples. It will not automatically
+              fill in the form here.
+            </p>
             <ClientIdModalInput
               property="name"
               value={this.props.clientInfo.name}
