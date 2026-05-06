@@ -15,7 +15,7 @@ import {
 import { IPayment, PaymentSelection } from "./PaymentSelection";
 import { IOtherPaymentInfo } from "./OtherPaymentQuestions";
 import { Project } from "./Project";
-import { Quantity } from "./Quantity";
+import { ORDER_QUANTITY_MAX, Quantity } from "./Quantity";
 import {
   ISampleTypeQuestions,
   SampleTypeQuestions,
@@ -442,8 +442,9 @@ export default class OrderForm extends React.Component<
                   How many samples will you be submitting?
                 </label>
                 <p className="help-block">
-                  Note: 100 sample limit per work order. If submitting more than
-                  100 sample please create additional work orders.
+                  Note: {ORDER_QUANTITY_MAX} sample limit per work order. If
+                  submitting more than {ORDER_QUANTITY_MAX} samples please
+                  create additional work orders.
                 </p>
                 <p className="help-block">
                   Each sample container must be numbered consecutively beginning
@@ -608,7 +609,10 @@ export default class OrderForm extends React.Component<
     }
 
     // check quantity
-    if (this.state.quantity <= 0 || this.state.quantity > 100) {
+    if (
+      this.state.quantity <= 0 ||
+      this.state.quantity > ORDER_QUANTITY_MAX
+    ) {
       valid = false;
     }
 
@@ -936,7 +940,10 @@ export default class OrderForm extends React.Component<
       !this.state.sampleDisposition.trim()
     ) {
       this._focusInput(this.sampleDispositionRef);
-    } else if (this.state.quantity <= 0 || this.state.quantity > 100) {
+    } else if (
+      this.state.quantity <= 0 ||
+      this.state.quantity > ORDER_QUANTITY_MAX
+    ) {
       this._focusInput(this.quantityRef);
     } else if (
       (this.state.sampleType === "Water" ||

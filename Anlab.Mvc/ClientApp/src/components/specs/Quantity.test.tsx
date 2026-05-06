@@ -1,7 +1,19 @@
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { Quantity } from "../Quantity";
+
+const QuantityHarness = () => {
+  const [quantity, setQuantity] = React.useState<number>();
+  return (
+    <Quantity
+      quantity={quantity}
+      onQuantityChanged={setQuantity}
+      quantityRef={() => {}}
+    />
+  );
+};
 
 describe("<Quantity />", () => {
   it("should render an IntegerInput", () => {
@@ -36,6 +48,28 @@ describe("<Quantity />", () => {
         <Quantity quantity={33} onQuantityChanged={null} quantityRef={null} />
       );
       expect(screen.getByRole("textbox")).toHaveAttribute("required");
+    });
+
+    it("should allow 200 samples", async () => {
+      render(<QuantityHarness />);
+
+      const user = userEvent.setup();
+      await user.type(screen.getByRole("textbox"), "200");
+
+      expect(
+        screen.queryByText("Must be a number less than or equal to 200.")
+      ).not.toBeInTheDocument();
+    });
+
+    it("should reject more than 200 samples", async () => {
+      render(<QuantityHarness />);
+
+      const user = userEvent.setup();
+      await user.type(screen.getByRole("textbox"), "201");
+
+      expect(
+        screen.getByText("Must be a number less than or equal to 200.")
+      ).toBeInTheDocument();
     });
   });
 });
