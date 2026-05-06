@@ -2,7 +2,7 @@ import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { Quantity } from "../Quantity";
+import { ORDER_QUANTITY_MAX, Quantity } from "../Quantity";
 
 const QuantityHarness = () => {
   const [quantity, setQuantity] = React.useState<number>();
@@ -24,6 +24,10 @@ describe("<Quantity />", () => {
   });
 
   describe("properties", () => {
+    it("should have a max quantity of 200", () => {
+      expect(ORDER_QUANTITY_MAX).toBe(200);
+    });
+
     it("should have a name", () => {
       render(
         <Quantity quantity={1} onQuantityChanged={null} quantityRef={null} />
@@ -54,10 +58,12 @@ describe("<Quantity />", () => {
       render(<QuantityHarness />);
 
       const user = userEvent.setup();
-      await user.type(screen.getByRole("textbox"), "200");
+      await user.type(screen.getByRole("textbox"), String(ORDER_QUANTITY_MAX));
 
       expect(
-        screen.queryByText("Must be a number less than or equal to 200.")
+        screen.queryByText(
+          `Must be a number less than or equal to ${ORDER_QUANTITY_MAX}.`
+        )
       ).not.toBeInTheDocument();
     });
 
@@ -65,10 +71,15 @@ describe("<Quantity />", () => {
       render(<QuantityHarness />);
 
       const user = userEvent.setup();
-      await user.type(screen.getByRole("textbox"), "201");
+      await user.type(
+        screen.getByRole("textbox"),
+        String(ORDER_QUANTITY_MAX + 1)
+      );
 
       expect(
-        screen.getByText("Must be a number less than or equal to 200.")
+        screen.getByText(
+          `Must be a number less than or equal to ${ORDER_QUANTITY_MAX}.`
+        )
       ).toBeInTheDocument();
     });
   });
