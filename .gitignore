@@ -249,3 +249,8 @@ Anlab.Mvc/anlab.db
 
 /Anlab.Mvc/Properties/serviceDependencies.json
 /Anlab.Mvc/Properties/serviceDependencies.local.json
+
+# Codex/local scratch artifacts
+.codex-*/
+*.tmp/
+
