@@ -34,6 +34,7 @@ namespace Anlab.Core.Domain
         [StringLength(64)]
         public string TestGroup { get; set; } = string.Empty;
 
+        [NotMapped]
         public string[] TestGroups
         {
             get => TestGroup != null ? TestGroup.Split('|') : new string[0];
