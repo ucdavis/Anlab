@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[TestItems] (
+CREATE TABLE [dbo].[TestItems] (
     [Id]                   NVARCHAR (128) NOT NULL,
     [AdditionalInfoPrompt] NVARCHAR (MAX) NULL,
     [Analysis]             NVARCHAR (512) NOT NULL,
@@ -10,6 +10,7 @@
     [RequestOrder]         INT            NOT NULL,
     [Reporting]            BIT            DEFAULT ((0)) NOT NULL,
     [DryMatter]            BIT            CONSTRAINT [DF_TestItems_DryMatter] DEFAULT ((0)) NOT NULL,
+    [TestGroup]            NVARCHAR(64)   DEFAULT('') NOT NULL,
     CONSTRAINT [PK_TestItems] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
