@@ -31,6 +31,15 @@ namespace Anlab.Core.Domain
             set => Category = string.Join("|", value);
         }
 
+        [StringLength(64)]
+        public string TestGroup { get; set; } = string.Empty;
+
+        public string[] TestGroups
+        {
+            get => TestGroup != null ? TestGroup.Split('|') : new string[0];
+            set => TestGroup = string.Join("|", value);
+        }
+
         [Required]
         [StringLength(512)]
         public string Group { get; set; }
@@ -68,5 +77,17 @@ namespace Anlab.Core.Domain
         public static string Miscellaneous = "Miscellaneous";
 
         public static readonly string[] All = { Soil, Plant, Water, Miscellaneous };
+    }
+
+    /// <summary>
+    /// Will be used to filter what tests a click can choose.
+    /// </summary>
+    public static class TestGroups
+    {
+        public static string AnLab = "AnLab";
+        public static string SIF = "SIF";
+        public static string ICPMS = "ICPMS";
+        public static string CDFA = "CDFA";
+        public static readonly string[] All = { AnLab, SIF, ICPMS, CDFA };
     }
 }

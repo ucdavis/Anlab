@@ -10,6 +10,7 @@ CREATE TABLE [dbo].[TestItems] (
     [RequestOrder]         INT            NOT NULL,
     [Reporting] BIT NOT NULL DEFAULT 0, 
     [DryMatter] BIT NOT NULL DEFAULT 0, 
+    [TestGroup] NVARCHAR(64) NOT NULL, 
     CONSTRAINT [PK_TestItems] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
