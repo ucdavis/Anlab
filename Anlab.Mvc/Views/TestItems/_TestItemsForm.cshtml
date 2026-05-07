@@ -2,6 +2,7 @@
 @model Anlab.Core.Domain.TestItem
 
 @Html.HiddenFor(a => a.Category)
+@Html.HiddenFor(a => a.TestGroup)
 <div class="col">
     <div class="form-group">
         <label asp-for="Analysis" class="col-md-2 control-label"></label>
@@ -20,6 +21,18 @@
                 }
             </select>
             <span asp-validation-for="Category" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="TestGroup" class="col-md-2 control-label"></label>
+        <div class="col-md-3">
+            <select asp-for="TestGroups" class="form-control " multiple="multiple">
+                @foreach (var testGroup in TestGroups.All)
+                {
+                    <option value="@testGroup">@testGroup</option>
+                }
+            </select>
+            <span asp-validation-for="TestGroup" class="text-danger"></span>
         </div>
     </div>
     <div class="form-group">
