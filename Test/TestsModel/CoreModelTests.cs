@@ -147,6 +147,10 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("AdjustmentAmount", "System.Decimal", new List<string>()));
             expectedFields.Add(new NameAndType("AdjustmentComments", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("ClientInfo", "Anlab.Core.Models.ClientInfo", new List<string>()));
+            expectedFields.Add(new NameAndType("ClientProvidedId", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)6)]"
+            }));
             expectedFields.Add(new NameAndType("Commodity", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("DateSampled", "System.DateTime", new List<string>()));
             expectedFields.Add(new NameAndType("ExternalProcessingFee", "System.Decimal", new List<string>()));
@@ -160,6 +164,10 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("OtherPaymentInfo", "Anlab.Core.Models.OtherPaymentInfo", new List<string>()));
             expectedFields.Add(new NameAndType("Payment", "Anlab.Core.Models.Payment", new List<string>()));
             expectedFields.Add(new NameAndType("Project", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("ProjectCode", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)20)]"
+            }));
             expectedFields.Add(new NameAndType("Quantity", "System.Int32", new List<string>()));
             expectedFields.Add(new NameAndType("RushMultiplier", "System.Nullable`1[System.Decimal]", new List<string>()));
             expectedFields.Add(new NameAndType("SampleDisposition", "System.String", new List<string>()));

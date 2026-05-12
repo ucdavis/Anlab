@@ -192,6 +192,18 @@
                         <strong>Commodity:</strong>
                         <span>@Model.OrderDetails.Commodity</span>
                     }
+            </p><p>
+                    @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ProjectCode))
+                    {
+                        <strong>AnLab Project Code:</strong>
+                        <span>@Model.OrderDetails.ProjectCode</span>
+                    }
+            </p><p>
+                    @if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientProvidedId))
+                    {
+                        <strong>Client Provided Id:</strong>
+                        <span>@Model.OrderDetails.ClientProvidedId</span>
+                    }
             </p>
             <p>
             <strong>Date Sampled:</strong>
