@@ -33,7 +33,7 @@ namespace AnlabMvc.Models.Order
         [StringLength(256)]
         public string Project { get; set; }
 
-        [StringLength(20)]
+        [StringLength(30)]
         public string ProjectCode { get; set; }
 
         public string Commodity { get; set; }

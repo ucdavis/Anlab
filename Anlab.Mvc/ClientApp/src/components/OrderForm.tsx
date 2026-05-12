@@ -398,7 +398,7 @@ export default class OrderForm extends React.Component<
                     <Input
                       label="AnLab Project Code (provided by Lab if applicable)"
                       value={projectCode}
-                      maxLength={20}
+                      maxLength={30}
                       onChange={(e) =>
                         this._handleChange("projectCode", e.target.value)
                       }

@@ -166,7 +166,7 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("Project", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("ProjectCode", "System.String", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)20)]"
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)30)]"
             }));
             expectedFields.Add(new NameAndType("Quantity", "System.Int32", new List<string>()));
             expectedFields.Add(new NameAndType("RushMultiplier", "System.Nullable`1[System.Decimal]", new List<string>()));

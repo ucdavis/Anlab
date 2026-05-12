@@ -22,7 +22,7 @@ namespace Anlab.Core.Models
         public string[] AdditionalEmails { get; set; }
 
         public string Project { get; set; }
-        [StringLength(20)]
+        [StringLength(30)]
         public string ProjectCode { get; set; }
         public string Commodity { get; set; }
         [StringLength(6)]
