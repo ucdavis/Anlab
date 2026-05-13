@@ -48,12 +48,16 @@ namespace Test.TestsServices
             var renderer = new StubMjmlEmailRenderer();
             var mailService = new StubMailService();
             var service = new MjmlEmailService(renderer, mailService);
+            var order = new Order();
+            var user = new User();
 
-            await service.EnqueueSampleCardEmailAsync("client@example.com");
+            await service.EnqueueSampleCardEmailAsync("client@example.com", order, user);
 
             renderer.TemplateName.ShouldBe(MjmlEmailService.SampleCardTemplateName);
             mailService.Message.ShouldNotBeNull();
             mailService.Message.Subject.ShouldBe("Anlab MJML email example");
+            mailService.Message.Order.ShouldBe(order);
+            mailService.Message.User.ShouldBe(user);
         }
 
         [Fact]

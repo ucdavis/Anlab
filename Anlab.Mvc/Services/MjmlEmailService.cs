@@ -21,7 +21,11 @@ namespace AnlabMvc.Services
             User user = null,
             CancellationToken cancellationToken = default);
 
-        Task EnqueueSampleCardEmailAsync(string sendTo, CancellationToken cancellationToken = default);
+        Task EnqueueSampleCardEmailAsync(
+            string sendTo,
+            Order order = null,
+            User user = null,
+            CancellationToken cancellationToken = default);
     }
 
     public class MjmlEmailService : IMjmlEmailService
@@ -75,7 +79,11 @@ namespace AnlabMvc.Services
             _mailService.EnqueueMessage(message);
         }
 
-        public Task EnqueueSampleCardEmailAsync(string sendTo, CancellationToken cancellationToken = default)
+        public Task EnqueueSampleCardEmailAsync(
+            string sendTo,
+            Order order = null,
+            User user = null,
+            CancellationToken cancellationToken = default)
         {
             var model = new SampleCardEmailModel
             {
@@ -106,7 +114,7 @@ namespace AnlabMvc.Services
                 }
             };
 
-            return EnqueueAsync(sendTo, "Anlab MJML email example", SampleCardTemplateName, model, cancellationToken: cancellationToken);
+            return EnqueueAsync(sendTo, "Anlab MJML email example", SampleCardTemplateName, model, order, user, cancellationToken);
         }
     }
 }

@@ -27,14 +27,16 @@ namespace AnlabMvc.Services
         private readonly IMailService _mailService;
         private readonly AppSettings _appSettings;
         private readonly EmailSettings _emailSettings;
+        private readonly IMjmlEmailService _mjmlEmailService;
 
 
-        public OrderMessageService(ViewRenderService viewRenderService, IMailService mailService, IOptions<AppSettings> appSettings, IOptions<EmailSettings> emailSettings)
+        public OrderMessageService(ViewRenderService viewRenderService, IMailService mailService, IOptions<AppSettings> appSettings, IOptions<EmailSettings> emailSettings, IMjmlEmailService mjmlEmailService)
         {
             _viewRenderService = viewRenderService;
             _mailService = mailService;
             _appSettings = appSettings.Value;
             _emailSettings = emailSettings.Value;
+            _mjmlEmailService = mjmlEmailService;
         }
         public async Task EnqueueCreatedMessage(Order order)
         {
@@ -50,6 +52,9 @@ namespace AnlabMvc.Services
             };
 
             _mailService.EnqueueMessage(message);
+
+            //Sample call to mjml
+            //await _mjmlEmailService.EnqueueSampleCardEmailAsync(GetSendTo(order), order, order.Creator);
         }
 
         private string GetSendTo(Order order)
