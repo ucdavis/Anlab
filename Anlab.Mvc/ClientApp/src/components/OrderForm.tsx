@@ -25,6 +25,7 @@ import Summary from "./Summary";
 import { ITestItem, TestList } from "./TestList";
 import { ViewMode } from "./ViewMode";
 import { SamplePlantQuestionsOptions } from "./SamplePlantQuestions";
+import Input from "./ui/input/input";
 
 declare var $: any;
 
@@ -52,8 +53,10 @@ interface IOrderFormState {
   placingOrder: boolean;
   additionalInfo: string;
   project: string;
+  projectCode: string;
   filteredTests: ITestItem[];
   commodity: string;
+  clientProvidedId: string;
   dateSampled: any;
   sampleDisposition: string;
   payment: IPayment;
@@ -140,6 +143,7 @@ export default class OrderForm extends React.Component<
       },
       placingOrder: this.props.defaultPlacingOrder,
       project: "",
+      projectCode: "",
       quantity: null,
       sampleDisposition: "",
       sampleType: "",
@@ -160,6 +164,7 @@ export default class OrderForm extends React.Component<
       selectedCodes: {},
       selectedTests: [],
       status: "",
+      clientProvidedId: "",
     };
 
     if (this.props.defaultAccount) {
@@ -195,7 +200,9 @@ export default class OrderForm extends React.Component<
       };
       initialState.sampleDisposition = orderInfo.SampleDisposition;
       initialState.project = orderInfo.Project;
+      initialState.projectCode = orderInfo.ProjectCode || "";
       initialState.commodity = orderInfo.Commodity;
+      initialState.clientProvidedId = orderInfo.ClientProvidedId || "";
       initialState.dateSampled = moment(orderInfo.DateSampled);
       initialState.isValid = true;
       initialState.payment.clientType = orderInfo.Payment.ClientType;
@@ -264,7 +271,9 @@ export default class OrderForm extends React.Component<
       quantity,
       additionalInfo,
       project,
+      projectCode,
       commodity,
+      clientProvidedId,
       dateSampled,
       sampleDisposition,
       additionalEmails,
@@ -364,20 +373,46 @@ export default class OrderForm extends React.Component<
                 <label className="form_header">
                   What is the project title associated with this order?
                 </label>
-                <Project
-                  project={project}
-                  handleChange={this._handleChange}
-                  projectRef={(inputRef) => {
-                    this.projectRef = inputRef;
-                  }}
-                />
-                <Commodity
-                  commodity={commodity}
-                  handleChange={this._handleChange}
-                  commodityRef={(inputRef) => {
-                    this.commodityRef = inputRef;
-                  }}
-                />
+                <p className="help-block">
+                  Project Title / Location can be used to help organize your
+                  submissions
+                </p>
+                <div className="flexrow">
+                  <div className="flexcol">
+                    <Project
+                      project={project}
+                      handleChange={this._handleChange}
+                      projectRef={(inputRef) => {
+                        this.projectRef = inputRef;
+                      }}
+                    />
+                    <Commodity
+                      commodity={commodity}
+                      handleChange={this._handleChange}
+                      commodityRef={(inputRef) => {
+                        this.commodityRef = inputRef;
+                      }}
+                    />
+                  </div>
+                  <div className="flexcol">
+                    <Input
+                      label="AnLab Project Code (provided by Lab if applicable)"
+                      value={projectCode}
+                      maxLength={30}
+                      onChange={(e) =>
+                        this._handleChange("projectCode", e.target.value)
+                      }
+                    />
+                    <Input
+                      label="Client Provided Id"
+                      value={clientProvidedId}
+                      maxLength={6}
+                      onChange={(e) =>
+                        this._handleChange("clientProvidedId", e.target.value)
+                      }
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </Collapse>
@@ -1101,10 +1136,12 @@ export default class OrderForm extends React.Component<
       clientInfo: {
         ...this.state.clientInfo,
       },
+      clientProvidedId: this.state.clientProvidedId,
       orderId: this.props.orderId,
       otherPaymentInfo: this.state.otherPaymentInfo,
       payment: this.state.payment,
       project: this.state.project,
+      projectCode: this.state.projectCode,
       quantity: this.state.quantity,
       sampleDisposition: this.state.sampleDisposition,
       sampleType: this.state.sampleType,
