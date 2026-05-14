@@ -124,6 +124,20 @@
     </div>
 
 }
+@if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ProjectCode))
+{
+    <div class="form-group">
+        <strong>AnLab Project Code</strong>
+        <span>@Model.OrderDetails.ProjectCode</span>
+    </div>
+}
+@if (!string.IsNullOrWhiteSpace(Model.OrderDetails.ClientProvidedId))
+{
+    <div class="form-group">
+        <strong>Client Provided Id</strong>
+        <span>@Model.OrderDetails.ClientProvidedId</span>
+    </div>
+}
 
 <div class="form-group">
     <strong>Date Sampled</strong>

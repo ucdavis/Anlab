@@ -25,20 +25,15 @@ export class Project extends React.Component<
 
   public render() {
     return (
-      <div>
-        <p className="help-block">
-          Project Title / Location can be used to help organize your submissions
-        </p>
-        <Input
-          label="Project Title / Location"
-          value={this.props.project}
-          error={this.state.error}
-          required={true}
-          maxLength={256}
-          onChange={this._onChange}
-          inputRef={this.props.projectRef}
-        />
-      </div>
+      <Input
+        label="Project Title / Location"
+        value={this.props.project}
+        error={this.state.error}
+        required={true}
+        maxLength={256}
+        onChange={this._onChange}
+        inputRef={this.props.projectRef}
+      />
     );
   }
 
