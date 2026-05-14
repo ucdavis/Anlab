@@ -32,7 +32,14 @@ namespace AnlabMvc.Models.Order
         [Required]
         [StringLength(256)]
         public string Project { get; set; }
+
+        [StringLength(30)]
+        public string ProjectCode { get; set; }
+
         public string Commodity { get; set; }
+
+        [StringLength(6)]
+        public string ClientProvidedId { get; set; }
 
         [Required]
         public DateTime DateSampled { get; set; }
