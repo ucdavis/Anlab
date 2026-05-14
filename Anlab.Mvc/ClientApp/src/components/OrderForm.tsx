@@ -25,6 +25,7 @@ import Summary from "./Summary";
 import { ITestItem, TestList } from "./TestList";
 import { ViewMode } from "./ViewMode";
 import { SamplePlantQuestionsOptions } from "./SamplePlantQuestions";
+import Input from "./ui/input/input";
 
 declare var $: any;
 
@@ -643,10 +644,7 @@ export default class OrderForm extends React.Component<
     }
 
     // check quantity
-    if (
-      this.state.quantity <= 0 ||
-      this.state.quantity > ORDER_QUANTITY_MAX
-    ) {
+    if (this.state.quantity <= 0 || this.state.quantity > ORDER_QUANTITY_MAX) {
       valid = false;
     }
 
