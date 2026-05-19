@@ -8,10 +8,7 @@ import { AdditionalInfo } from "./AdditionalInfo";
 import { ClientId, IClientInfo } from "./ClientId";
 import { Commodity } from "./Commodity";
 import { DateSampled } from "./DateSampled";
-import {
-  SampleDisposition,
-  SampleDispositionOptions,
-} from "./SampleDisposition";
+import { SampleDisposition } from "./SampleDisposition";
 import { IPayment, PaymentSelection } from "./PaymentSelection";
 import { IOtherPaymentInfo } from "./OtherPaymentQuestions";
 import { Project } from "./Project";
