@@ -133,6 +133,9 @@ namespace Test.TestsServices
                 html.ShouldContain("Render test");
                 html.ShouldContain("Card title");
                 html.ShouldContain("Status");
+                html.ShouldContain("https://anlaborders.ucdavis.edu/Images/anlabEmailLogo.jpg");
+                html.ShouldContain("mailto:anlab@ucdavis.edu");
+                html.ShouldContain("tel:5307520147");
                 html.ShouldNotContain("<mjml");
             }
         }
@@ -182,6 +185,8 @@ namespace Test.TestsServices
                 html.ShouldContain("https://anlab.ucdavis.edu/lab-information/using-the-lab");
                 html.ShouldContain("mailto:anlab@ucdavis.edu?subject=Online%20Order%20Number%2042");
                 html.ShouldContain("All samples must be numbered sequentially starting at #1.");
+                html.ShouldContain("UC Davis Analytical Lab");
+                html.ShouldContain("tel:5307520147");
                 html.ShouldNotContain("<mjml");
             }
         }
