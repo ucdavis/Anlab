@@ -8,10 +8,7 @@ import { AdditionalInfo } from "./AdditionalInfo";
 import { ClientId, IClientInfo } from "./ClientId";
 import { Commodity } from "./Commodity";
 import { DateSampled } from "./DateSampled";
-import {
-  SampleDisposition,
-  SampleDispositionOptions,
-} from "./SampleDisposition";
+import { SampleDisposition } from "./SampleDisposition";
 import { IPayment, PaymentSelection } from "./PaymentSelection";
 import { IOtherPaymentInfo } from "./OtherPaymentQuestions";
 import { Project } from "./Project";
@@ -404,7 +401,7 @@ export default class OrderForm extends React.Component<
                       }
                     />
                     <Input
-                      label="Client Provided Id"
+                      label="Client Provided ID (CDFA Only)"
                       value={clientProvidedId}
                       maxLength={6}
                       onChange={(e) =>
