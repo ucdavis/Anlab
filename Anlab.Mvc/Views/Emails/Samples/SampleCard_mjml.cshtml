@@ -1,7 +1,7 @@
-@model AnlabMvc.Models.Email.SampleCardEmailModel
+@model AnlabMvc.Models.Email.Samples.SampleCardEmailModel
 
 @{
-    Layout = "/Views/Shared/_MjmlEmailLayout.cshtml";
+    Layout = "/Views/Emails/Shared/_MjmlEmailLayout.cshtml";
 }
 
 <mj-section padding="36px 36px 18px 36px">
@@ -51,5 +51,5 @@
 
 @if (!string.IsNullOrWhiteSpace(Model.ButtonText) && !string.IsNullOrWhiteSpace(Model.ButtonUrl))
 {
-  @await Html.PartialAsync("/Views/Shared/_MjmlEmailButton.cshtml", new AnlabMvc.Models.Email.MjmlEmailButtonModel(Model.ButtonText, Model.ButtonUrl))
+  @await Html.PartialAsync("/Views/Emails/Shared/_MjmlEmailButton.cshtml", new AnlabMvc.Models.Email.MjmlEmailButtonModel(Model.ButtonText, Model.ButtonUrl))
 }

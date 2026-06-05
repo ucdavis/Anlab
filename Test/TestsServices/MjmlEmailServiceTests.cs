@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Anlab.Core.Domain;
 using Anlab.Core.Services;
 using AnlabMvc;
-using AnlabMvc.Models.Email;
+using AnlabMvc.Models.Email.Samples;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -32,10 +32,10 @@ namespace Test.TestsServices
             await service.EnqueueAsync(
                 "client@example.com",
                 "Rendered email",
-                "Emails/SampleCard_mjml",
+                MjmlEmailService.SampleCardTemplateName,
                 new { Header = "Hello" });
 
-            renderer.TemplateName.ShouldBe("Emails/SampleCard_mjml");
+            renderer.TemplateName.ShouldBe(MjmlEmailService.SampleCardTemplateName);
             mailService.Message.ShouldNotBeNull();
             mailService.Message.SendTo.ShouldBe("client@example.com");
             mailService.Message.Subject.ShouldBe("Rendered email");

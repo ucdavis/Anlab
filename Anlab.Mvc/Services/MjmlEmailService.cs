@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Anlab.Core.Domain;
 using Anlab.Core.Services;
-using AnlabMvc.Models.Email;
+using AnlabMvc.Models.Email.Samples;
 
 namespace AnlabMvc.Services
 {
@@ -30,7 +30,7 @@ namespace AnlabMvc.Services
 
     public class MjmlEmailService : IMjmlEmailService
     {
-        public const string SampleCardTemplateName = "Emails/SampleCard_mjml";
+        public const string SampleCardTemplateName = "Emails/Samples/SampleCard_mjml";
 
         private readonly IMjmlEmailRenderer _renderer;
         private readonly IMailService _mailService;
