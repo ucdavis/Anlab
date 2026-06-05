@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Anlab.Core.Domain;
 using Anlab.Core.Services;
+using AnlabMvc.Models.Email.Orders;
 using AnlabMvc.Models.Email.Samples;
 
 namespace AnlabMvc.Services
@@ -26,11 +27,18 @@ namespace AnlabMvc.Services
             Order order = null,
             User user = null,
             CancellationToken cancellationToken = default);
+
+        Task EnqueueOrderCreatedEmailAsync(
+            string sendTo,
+            Order order,
+            User user = null,
+            CancellationToken cancellationToken = default);
     }
 
     public class MjmlEmailService : IMjmlEmailService
     {
         public const string SampleCardTemplateName = "Emails/Samples/SampleCard_mjml";
+        public const string OrderCreatedTemplateName = "Emails/Orders/OrderCreated_mjml";
 
         private readonly IMjmlEmailRenderer _renderer;
         private readonly IMailService _mailService;
@@ -115,6 +123,24 @@ namespace AnlabMvc.Services
             };
 
             return EnqueueAsync(sendTo, "Anlab MJML email example", SampleCardTemplateName, model, order, user, cancellationToken);
+        }
+
+        public Task EnqueueOrderCreatedEmailAsync(
+            string sendTo,
+            Order order,
+            User user = null,
+            CancellationToken cancellationToken = default)
+        {
+            var model = new OrderCreatedEmailModel
+            {
+                LayoutWidth = "800px",
+                Order = order,
+                PreviewText = "Work Order Confirmation",
+                ButtonText = "Your Orders",
+                ButtonUrl = $"https://anlaborders.ucdavis.edu/Order/"
+            };
+
+            return EnqueueAsync(sendTo, "Work Order Confirmation", OrderCreatedTemplateName, model, order, user ?? order?.Creator, cancellationToken);
         }
     }
 }

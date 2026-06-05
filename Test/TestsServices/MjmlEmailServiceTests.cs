@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Anlab.Core.Domain;
 using Anlab.Core.Services;
 using AnlabMvc;
+using AnlabMvc.Models.Email.Orders;
 using AnlabMvc.Models.Email.Samples;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Hosting;
@@ -61,6 +62,27 @@ namespace Test.TestsServices
         }
 
         [Fact]
+        public async Task EnqueueOrderCreatedEmailAsync_UsesOrderCreatedTemplate()
+        {
+            var renderer = new StubMjmlEmailRenderer();
+            var mailService = new StubMailService();
+            var service = new MjmlEmailService(renderer, mailService);
+            var user = new User();
+            var order = new Order
+            {
+                Creator = user
+            };
+
+            await service.EnqueueOrderCreatedEmailAsync("client@example.com", order, user);
+
+            renderer.TemplateName.ShouldBe(MjmlEmailService.OrderCreatedTemplateName);
+            mailService.Message.ShouldNotBeNull();
+            mailService.Message.Subject.ShouldBe("Work Order Confirmation");
+            mailService.Message.Order.ShouldBe(order);
+            mailService.Message.User.ShouldBe(user);
+        }
+
+        [Fact]
         public async Task RenderAsync_RendersSampleCardTemplateToHtml()
         {
             var services = new ServiceCollection();
@@ -111,6 +133,55 @@ namespace Test.TestsServices
                 html.ShouldContain("Render test");
                 html.ShouldContain("Card title");
                 html.ShouldContain("Status");
+                html.ShouldNotContain("<mjml");
+            }
+        }
+
+        [Fact]
+        public async Task RenderAsync_RendersOrderCreatedTemplateToHtml()
+        {
+            var services = new ServiceCollection();
+            var webRoot = Path.Combine(AppContext.BaseDirectory, "wwwroot");
+            var diagnosticListener = new DiagnosticListener("MjmlEmailServiceTests");
+
+            services.AddLogging();
+            services.AddSingleton<DiagnosticSource>(diagnosticListener);
+            services.AddSingleton(diagnosticListener);
+            services.AddSingleton<IWebHostEnvironment>(new TestWebHostEnvironment
+            {
+                ApplicationName = typeof(Startup).Assembly.GetName().Name,
+                ContentRootPath = AppContext.BaseDirectory,
+                ContentRootFileProvider = new PhysicalFileProvider(AppContext.BaseDirectory),
+                EnvironmentName = Environments.Development,
+                WebRootPath = webRoot,
+                WebRootFileProvider = Directory.Exists(webRoot)
+                    ? new PhysicalFileProvider(webRoot)
+                    : new NullFileProvider()
+            });
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+            services.AddSingleton<MjmlRenderer>();
+            services.AddControllersWithViews()
+                .AddApplicationPart(typeof(Startup).Assembly);
+            services.AddTransient<IMjmlEmailRenderer, MjmlEmailRenderer>();
+
+            using (var serviceProvider = services.BuildServiceProvider())
+            {
+                var renderer = serviceProvider.GetRequiredService<IMjmlEmailRenderer>();
+
+                var html = await renderer.RenderAsync(MjmlEmailService.OrderCreatedTemplateName, new OrderCreatedEmailModel
+                {
+                    Order = new Order
+                    {
+                        Id = 42
+                    }
+                });
+
+                html.ShouldContain("Work Order Confirmation");
+                html.ShouldContain("Thank you for submitting your work request");
+                html.ShouldContain("https://anlab.ucdavis.edu/lab-information/using-the-lab");
+                html.ShouldContain("mailto:anlab@ucdavis.edu?subject=Online%20Order%20Number%2042");
+                html.ShouldContain("All samples must be numbered sequentially starting at #1.");
                 html.ShouldNotContain("<mjml");
             }
         }

@@ -1,0 +1,31 @@
+@model AnlabMvc.Models.Email.Orders.OrderCreatedEmailModel
+
+@{
+    Layout = "/Views/Emails/Shared/_MjmlEmailLayout.cshtml";
+    var labEmailSubject = System.Uri.EscapeDataString($"Online Order Number {Model.Order?.Id}");
+}
+
+<mj-section>
+  <mj-column>
+    <mj-text font-size="26px"
+             font-weight="700"
+             line-height="1.3"
+             padding-bottom="12px">
+      Work Order Confirmation
+    </mj-text>
+    <mj-text padding="0px 0px 14px 0px">
+      Thank you for submitting your work request to the Analytical Lab. Information regarding how to send in your samples can be found at <a href="https://anlab.ucdavis.edu/lab-information/using-the-lab">Using the lab</a>
+    </mj-text>
+    <mj-text padding="0px 0px 14px 0px">
+      All samples must be numbered sequentially starting at #1.
+    </mj-text>
+    <mj-text padding="0px">
+      If you would like your sample descriptions included in the report, you may send an Excel file with that information to the lab email: <a href="mailto:anlab@ucdavis.edu?subject=@labEmailSubject">anlab@ucdavis.edu</a> Please reference the online order number in the email subject.
+    </mj-text>
+  </mj-column>
+</mj-section>
+
+@if (!string.IsNullOrWhiteSpace(Model.ButtonText) && !string.IsNullOrWhiteSpace(Model.ButtonUrl))
+{
+    @await Html.PartialAsync("/Views/Emails/Shared/_MjmlEmailButton.cshtml", new AnlabMvc.Models.Email.MjmlEmailButtonModel(Model.ButtonText, Model.ButtonUrl))
+}
