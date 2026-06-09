@@ -3,25 +3,22 @@
 @model AnlabMvc.Models.Email.Orders.OrderCreatedEmailModel
 
 @{
-    var order = Model.Order?.GetOrderDetails() ?? new OrderDetails();
-    var createdBy = Model.Order?.Creator?.Name;
-    var paymentDetail = string.Empty;
+  var order = Model.Order?.GetOrderDetails() ?? new OrderDetails();
+  var createdBy = Model.Order?.Creator?.Name;
+  var paymentDetail = string.Empty;
 
-    if (Model.Order?.PaymentType == PaymentTypeCodes.Other || Model.Order?.PaymentType == PaymentTypeCodes.UcOtherAccount)
-    {
-        paymentDetail = order.OtherPaymentInfo != null
-            ? $" ({order.OtherPaymentInfo.PaymentType})"
-            : " (Unknown Payment Type)";
-    }
+  if (Model.Order?.PaymentType == PaymentTypeCodes.Other || Model.Order?.PaymentType == PaymentTypeCodes.UcOtherAccount)
+  {
+    paymentDetail = order.OtherPaymentInfo != null
+        ? $" ({order.OtherPaymentInfo.PaymentType})"
+        : " (Unknown Payment Type)";
+  }
 
-    var paymentMethod = $"{order.Payment?.ClientType.PaymentMethodDescription()}{paymentDetail}";
-    var dateSampled = order.DateSampled == default ? string.Empty : order.DateSampled.ToShortDateString();
+  var paymentMethod = $"{order.Payment?.ClientType.PaymentMethodDescription()}{paymentDetail}";
+  var dateSampled = order.DateSampled == default ? string.Empty : order.DateSampled.ToShortDateString();
 }
 
-<mj-section background-color="#f4f6f8"
-            border="1px solid #d9e1ea"
-            border-radius="8px"
-            padding="22px 28px"
+<mj-section background-color="#f4f6f8" border="1px solid #d9e1ea" border-radius="8px" padding="22px 28px"
             margin="0px 0px 24px 0px">
   <mj-column width="50%" padding="0px 12px 0px 0px">
     <mj-text padding="0px 0px 16px 0px">
@@ -44,6 +41,13 @@
       <strong>Client Name</strong><br />
       @(string.IsNullOrWhiteSpace(order.ClientInfo?.Name) ? "-" : order.ClientInfo.Name)
     </mj-text>
+    @if (!string.IsNullOrWhiteSpace(order.ProjectCode))
+    {
+      <mj-text padding="16px 0px 0px 0px">
+        <strong>AnLab Project Code</strong><br />
+        @order.ProjectCode
+      </mj-text>
+    }
   </mj-column>
   <mj-column width="50%" padding="0px">
     <mj-text padding="0px 0px 16px 0px">
@@ -66,5 +70,12 @@
       <strong>Date Sampled</strong><br />
       @(string.IsNullOrWhiteSpace(dateSampled) ? "-" : dateSampled)
     </mj-text>
+    @if (!string.IsNullOrWhiteSpace(order.ClientProvidedId))
+    {
+      <mj-text padding="16px 0px 0px 0px">
+        <strong>Client Provided Id</strong><br />
+        @order.ClientProvidedId
+      </mj-text>
+    }
   </mj-column>
 </mj-section>
