@@ -1,0 +1,70 @@
+@using Anlab.Core.Models
+@using AnlabMvc.Extensions
+@model AnlabMvc.Models.Email.Orders.OrderCreatedEmailModel
+
+@{
+    var order = Model.Order?.GetOrderDetails() ?? new OrderDetails();
+    var createdBy = Model.Order?.Creator?.Name;
+    var paymentDetail = string.Empty;
+
+    if (Model.Order?.PaymentType == PaymentTypeCodes.Other || Model.Order?.PaymentType == PaymentTypeCodes.UcOtherAccount)
+    {
+        paymentDetail = order.OtherPaymentInfo != null
+            ? $" ({order.OtherPaymentInfo.PaymentType})"
+            : " (Unknown Payment Type)";
+    }
+
+    var paymentMethod = $"{order.Payment?.ClientType.PaymentMethodDescription()}{paymentDetail}";
+    var dateSampled = order.DateSampled == default ? string.Empty : order.DateSampled.ToShortDateString();
+}
+
+<mj-section background-color="#f4f6f8"
+            border="1px solid #d9e1ea"
+            border-radius="8px"
+            padding="22px 28px"
+            margin="0px 0px 24px 0px">
+  <mj-column width="50%" padding="0px 12px 0px 0px">
+    <mj-text padding="0px 0px 16px 0px">
+      <strong>Online Order Number</strong><br />
+      @(Model.Order?.Id.ToString() ?? "-")
+    </mj-text>
+    <mj-text padding="0px 0px 16px 0px">
+      <strong>Project Title/Location</strong><br />
+      @(string.IsNullOrWhiteSpace(order.Project) ? "-" : order.Project)
+    </mj-text>
+    <mj-text padding="0px 0px 16px 0px">
+      <strong>Payment Method</strong><br />
+      @(string.IsNullOrWhiteSpace(paymentMethod) ? "-" : paymentMethod)
+    </mj-text>
+    <mj-text padding="0px 0px 16px 0px">
+      <strong>Client Id</strong><br />
+      @(string.IsNullOrWhiteSpace(order.ClientInfo?.ClientId) ? "-" : order.ClientInfo.ClientId)
+    </mj-text>
+    <mj-text padding="0px">
+      <strong>Client Name</strong><br />
+      @(string.IsNullOrWhiteSpace(order.ClientInfo?.Name) ? "-" : order.ClientInfo.Name)
+    </mj-text>
+  </mj-column>
+  <mj-column width="50%" padding="0px 0px 0px 12px">
+    <mj-text padding="0px 0px 16px 0px">
+      <strong>Created By</strong><br />
+      @(string.IsNullOrWhiteSpace(createdBy) ? "-" : createdBy)
+    </mj-text>
+    <mj-text padding="0px 0px 16px 0px">
+      <strong>Sample Type</strong><br />
+      @(string.IsNullOrWhiteSpace(order.SampleType) ? "-" : order.SampleType)
+    </mj-text>
+    <mj-text padding="0px 0px 16px 0px">
+      <strong>Commodity</strong><br />
+      @(string.IsNullOrWhiteSpace(order.Commodity) ? "-" : order.Commodity)
+    </mj-text>
+    <mj-text padding="0px 0px 16px 0px">
+      <strong># of Samples</strong><br />
+      @order.Quantity
+    </mj-text>
+    <mj-text padding="0px">
+      <strong>Date Sampled</strong><br />
+      @(string.IsNullOrWhiteSpace(dateSampled) ? "-" : dateSampled)
+    </mj-text>
+  </mj-column>
+</mj-section>
