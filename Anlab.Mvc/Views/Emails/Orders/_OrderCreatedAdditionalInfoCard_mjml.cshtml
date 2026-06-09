@@ -1,0 +1,29 @@
+@using Anlab.Core.Models
+@using System.Net
+@model AnlabMvc.Models.Email.Orders.OrderCreatedEmailModel
+
+@{
+  var order = Model.Order?.GetOrderDetails() ?? new OrderDetails();
+  var additionalInfo = order.AdditionalInfo;
+  var formattedAdditionalInfo = string.IsNullOrWhiteSpace(additionalInfo)
+      ? string.Empty
+      : WebUtility.HtmlEncode(additionalInfo)
+          .Replace("\r\n", "<br />")
+          .Replace("\n", "<br />")
+          .Replace("\r", "<br />");
+}
+
+@if (!string.IsNullOrWhiteSpace(additionalInfo))
+{
+  <mj-section background-color="#f4f6f8" border="1px solid #d9e1ea" border-radius="8px" padding="18px 24px"
+              margin="0px 0px 24px 0px">
+    <mj-column>
+      <mj-text font-weight="700" line-height="1.4" padding="0px 0px 8px 0px">
+        Additional Information
+      </mj-text>
+      <mj-text line-height="1.55" padding="0px">
+        @Html.Raw(formattedAdditionalInfo)
+      </mj-text>
+    </mj-column>
+  </mj-section>
+}
