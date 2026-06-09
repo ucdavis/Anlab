@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Anlab.Core.Domain;
+using Anlab.Core.Models;
 using Anlab.Core.Services;
 using AnlabMvc;
 using AnlabMvc.Models.Email.Orders;
@@ -172,10 +173,50 @@ namespace Test.TestsServices
             using (var serviceProvider = services.BuildServiceProvider())
             {
                 var renderer = serviceProvider.GetRequiredService<IMjmlEmailRenderer>();
+                var order = CreateValidEntities.Order(42, populateAllFields: true);
+                var orderDetails = order.GetOrderDetails();
+                orderDetails.Payment.ClientType = "uc";
+                orderDetails.InternalProcessingFee = 12.00m;
+                orderDetails.Total = 122.00m;
+                orderDetails.SelectedTests = new[]
+                {
+                    new TestDetails
+                    {
+                        Id = "PUBLIC",
+                        Analysis = "Visible Test",
+                        Cost = 40.00m,
+                        SetupCost = 2.00m,
+                        Total = 42.00m
+                    },
+                    new TestDetails
+                    {
+                        Id = "PRIVATE",
+                        Analysis = "Hidden Test",
+                        Cost = 80.00m,
+                        SetupCost = 0.00m,
+                        Total = 80.00m
+                    }
+                };
+                order.SaveDetails(orderDetails);
+                order.SaveTestDetails(new[]
+                {
+                    new TestItemModel
+                    {
+                        Id = "PUBLIC",
+                        Category = "Soil",
+                        Public = true
+                    },
+                    new TestItemModel
+                    {
+                        Id = "PRIVATE",
+                        Category = "Soil",
+                        Public = false
+                    }
+                });
 
                 var html = await renderer.RenderAsync(MjmlEmailService.OrderCreatedTemplateName, new OrderCreatedEmailModel
                 {
-                    Order = CreateValidEntities.Order(42, populateAllFields: true)
+                    Order = order
                 });
 
                 html.ShouldContain("Work Order Confirmation");
@@ -183,6 +224,12 @@ namespace Test.TestsServices
                 html.ShouldContain("https://anlab.ucdavis.edu/lab-information/using-the-lab");
                 html.ShouldContain("mailto:anlab@ucdavis.edu?subject=Online%20Order%20Number%2042");
                 html.ShouldContain("All samples must be numbered sequentially starting at #1.");
+                html.ShouldContain("Order Details");
+                html.ShouldContain("Test(s)");
+                html.ShouldContain("Visible Test");
+                html.ShouldNotContain("Hidden Test");
+                html.ShouldContain("Processing Fee");
+                html.ShouldContain("Grand Total");
                 html.ShouldContain("UC Davis Analytical Lab");
                 html.ShouldContain("tel:5307520147");
                 html.ShouldNotContain("<mjml");
