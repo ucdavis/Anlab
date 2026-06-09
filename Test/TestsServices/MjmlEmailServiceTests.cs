@@ -17,6 +17,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Mjml.Net;
 using Shouldly;
+using Test.Helpers;
 using Xunit;
 
 namespace Test.TestsServices
@@ -174,10 +175,7 @@ namespace Test.TestsServices
 
                 var html = await renderer.RenderAsync(MjmlEmailService.OrderCreatedTemplateName, new OrderCreatedEmailModel
                 {
-                    Order = new Order
-                    {
-                        Id = 42
-                    }
+                    Order = CreateValidEntities.Order(42, populateAllFields: true)
                 });
 
                 html.ShouldContain("Work Order Confirmation");

@@ -16,11 +16,15 @@
                 color="#5d6b82"
                 font-size="14px"
                 line-height="1.5" />
+      <mj-class name="email-card-section"
+                background-color="#ffffff" />
     </mj-attributes>
   </mj-head>
   <mj-body background-color="#eef3f8"
            width="@(string.IsNullOrWhiteSpace(Model.LayoutWidth) ? "600px" : Model.LayoutWidth)">
-    <mj-section padding="36px 0px 16px 0px">
+    <mj-section mj-class="email-card-section"
+                border-radius="14px 14px 0px 0px"
+                padding="36px 0px 16px 0px">
       <mj-column>
         <mj-text align="left"
                  font-size="26px"
@@ -32,8 +36,7 @@
       </mj-column>
     </mj-section>
 
-    <mj-section background-color="#ffffff"
-                border-radius="14px"
+    <mj-section mj-class="email-card-section"
                 padding="0px">
       <mj-column padding="0px">
         @RenderBody()
