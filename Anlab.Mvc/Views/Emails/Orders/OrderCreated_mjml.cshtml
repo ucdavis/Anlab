@@ -7,64 +7,59 @@
     var orderTotal = orderDetails == null ? "-" : orderDetails.Total.ToString("C");
 }
 
-<mj-section padding="0px 0px 18px 0px">
-  <mj-column>
-    <mj-text font-size="26px"
-             font-weight="700"
-             line-height="1.3"
-             padding="0px 0px 12px 0px">
-      Work Order Confirmation
-    </mj-text>
-    <mj-text padding="0px 0px 14px 0px">
-      Thank you for submitting your work request to the Analytical Lab. Information regarding how to send in your samples can be found at <a href="https://anlab.ucdavis.edu/lab-information/using-the-lab">Using the lab</a>
-    </mj-text>
-    <mj-text padding="0px 0px 14px 0px">
-      All samples must be numbered sequentially starting at #1.
-    </mj-text>
-    <mj-text padding="0px">
-      If you would like your sample descriptions included in the report, you may send an Excel file with that information to the lab email: <a href="mailto:anlab@ucdavis.edu?subject=@labEmailSubject">anlab@ucdavis.edu</a> Please reference the online order number in the email subject.
-    </mj-text>
-  </mj-column>
-</mj-section>
+<mj-text font-size="26px"
+         font-weight="700"
+         line-height="1.3"
+         padding="0px 0px 12px 0px">
+  Work Order Confirmation
+</mj-text>
+<mj-text padding="0px 0px 14px 0px">
+  Thank you for submitting your work request to the Analytical Lab. Information regarding how to send in your samples can be found at <a href="https://anlab.ucdavis.edu/lab-information/using-the-lab">Using the lab</a>
+</mj-text>
+<mj-text padding="0px 0px 14px 0px">
+  All samples must be numbered sequentially starting at #1.
+</mj-text>
+<mj-text padding="0px 0px 18px 0px">
+  If you would like your sample descriptions included in the report, you may send an Excel file with that information to the lab email: <a href="mailto:anlab@ucdavis.edu?subject=@labEmailSubject">anlab@ucdavis.edu</a> Please reference the online order number in the email subject.
+</mj-text>
 
 @await Html.PartialAsync("/Views/Emails/Orders/_OrderCreatedSummaryCard_mjml.cshtml", Model)
 
-<mj-section background-color="#def0fc"
-            border="1px solid #b7d7ee"
-            border-radius="8px"
-            padding="16px 24px"
-            margin="0px 0px 24px 0px">
-  <mj-column>
-    <mj-text padding="0px">
+<mj-table cellpadding="0"
+          cellspacing="0"
+          width="100%"
+          color="#172033"
+          font-size="16px"
+          line-height="1.65"
+          padding="0px 0px 24px 0px">
+  <tr>
+    <td style="background-color:#def0fc;border:1px solid #b7d7ee;border-radius:8px;padding:16px 24px;">
       Order Total: <strong>@orderTotal</strong>
-    </mj-text>
-  </mj-column>
-</mj-section>
+    </td>
+  </tr>
+</mj-table>
 
 @await Html.PartialAsync("/Views/Emails/Orders/_OrderCreatedDetailsTable_mjml.cshtml", Model)
 
 @await Html.PartialAsync("/Views/Emails/Orders/_OrderCreatedAdditionalInfoCard_mjml.cshtml", Model)
 
-@if (!string.IsNullOrWhiteSpace(Model.ButtonText) && !string.IsNullOrWhiteSpace(Model.ButtonUrl))
-{
-    @await Html.PartialAsync("/Views/Emails/Shared/_MjmlEmailButton.cshtml", new AnlabMvc.Models.Email.MjmlEmailButtonModel(Model.ButtonText, Model.ButtonUrl))
-}
 
 <mj-divider border-width="1px"
             border-style="solid"
             border-color="#d9e1ea"
             padding="16px 0px" />
 
-<mj-section padding="0px 0px 18px 0px">
-  <mj-column>
-    <mj-text font-size="26px"
-             font-weight="700"
-             line-height="1.3"
-             padding="0px 0px 12px 0px">
-      What's Next?
-    </mj-text>
-    <mj-text padding="0px 0px 14px 0px">
-      Once we receive your samples we will email you a confirmation.
-    </mj-text>
-  </mj-column>
-</mj-section>
+<mj-text font-size="26px"
+         font-weight="700"
+         line-height="1.3"
+         padding="0px 0px 12px 0px">
+  What's Next?
+</mj-text>
+<mj-text padding="0px 0px 18px 0px">
+  Once we receive your samples we will email you a confirmation.
+</mj-text>
+
+@if (!string.IsNullOrWhiteSpace(Model.ButtonText) && !string.IsNullOrWhiteSpace(Model.ButtonUrl))
+{
+    @await Html.PartialAsync("/Views/Emails/Shared/_MjmlEmailButton.cshtml", new AnlabMvc.Models.Email.MjmlEmailButtonModel(Model.ButtonText, Model.ButtonUrl))
+}

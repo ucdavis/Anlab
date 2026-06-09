@@ -15,15 +15,18 @@
 
 @if (!string.IsNullOrWhiteSpace(additionalInfo))
 {
-  <mj-section background-color="#f4f6f8" border="1px solid #d9e1ea" border-radius="8px" padding="18px 24px"
-              margin="0px 0px 24px 0px">
-    <mj-column>
-      <mj-text font-weight="700" line-height="1.4" padding="0px 0px 8px 0px">
-        Additional Information
-      </mj-text>
-      <mj-text line-height="1.55" padding="0px">
-        @Html.Raw(formattedAdditionalInfo)
-      </mj-text>
-    </mj-column>
-  </mj-section>
+  <mj-table cellpadding="0"
+            cellspacing="0"
+            width="100%"
+            color="#172033"
+            font-size="16px"
+            line-height="1.55"
+            padding="0px 0px 24px 0px">
+    <tr>
+      <td style="background-color:#f4f6f8;border:1px solid #d9e1ea;border-radius:8px;padding:18px 24px;">
+        <div style="font-weight:700;line-height:1.4;padding:0 0 8px 0;">Additional Information</div>
+        <div>@Html.Raw(formattedAdditionalInfo)</div>
+      </td>
+    </tr>
+  </mj-table>
 }
