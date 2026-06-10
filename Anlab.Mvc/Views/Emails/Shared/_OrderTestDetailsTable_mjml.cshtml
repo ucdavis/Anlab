@@ -36,7 +36,7 @@
   @foreach (var test in selectedTests)
   {
       var savedTest = savedTests.FirstOrDefault(a => a.Id == test.Id);
-      if (savedTest?.Public != true)
+      if (savedTest?.Public != true && savedTest?.Reporting != true)
       {
           continue;
       }

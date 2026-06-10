@@ -197,6 +197,14 @@ namespace Test.TestsServices
                         Cost = 80.00m,
                         SetupCost = 0.00m,
                         Total = 80.00m
+                    },
+                    new TestDetails
+                    {
+                        Id = "REPORTING",
+                        Analysis = "Reporting Test",
+                        Cost = 25.00m,
+                        SetupCost = 0.00m,
+                        Total = 25.00m
                     }
                 };
                 order.SaveDetails(orderDetails);
@@ -213,6 +221,13 @@ namespace Test.TestsServices
                         Id = "PRIVATE",
                         Category = "Soil",
                         Public = false
+                    },
+                    new TestItemModel
+                    {
+                        Id = "REPORTING",
+                        Category = "Soil",
+                        Public = false,
+                        Reporting = true
                     }
                 });
 
@@ -292,6 +307,14 @@ namespace Test.TestsServices
                         Cost = 80.00m,
                         SetupCost = 0.00m,
                         Total = 80.00m
+                    },
+                    new TestDetails
+                    {
+                        Id = "REPORTING",
+                        Analysis = "Reporting Test",
+                        Cost = 25.00m,
+                        SetupCost = 0.00m,
+                        Total = 25.00m
                     }
                 };
                 order.SaveDetails(orderDetails);
@@ -308,6 +331,13 @@ namespace Test.TestsServices
                         Id = "PRIVATE",
                         Category = "Soil",
                         Public = false
+                    },
+                    new TestItemModel
+                    {
+                        Id = "REPORTING",
+                        Category = "Soil",
+                        Public = false,
+                        Reporting = true
                     }
                 });
 
@@ -324,6 +354,7 @@ namespace Test.TestsServices
                 html.ShouldContain("A new work request has been placed that requires your attention.");
                 html.ShouldContain("Order Details");
                 html.ShouldContain("Visible Test");
+                html.ShouldContain("Reporting Test");
                 html.ShouldNotContain("Hidden Test");
                 html.ShouldContain("Review Details");
                 html.ShouldContain("https://localhost:5001/Reviewer/Details/2920");
