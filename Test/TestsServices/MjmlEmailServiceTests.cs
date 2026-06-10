@@ -269,7 +269,9 @@ namespace Test.TestsServices
             using (var serviceProvider = services.BuildServiceProvider())
             {
                 var renderer = serviceProvider.GetRequiredService<IMjmlEmailRenderer>();
-                var order = CreateValidEntities.Order(42, populateAllFields: true);
+                var order = CreateValidEntities.Order(2920, populateAllFields: true);
+                order.Status = OrderStatusCodes.Finalized;
+                order.RequestNum = "22F107";
                 var orderDetails = order.GetOrderDetails();
                 orderDetails.Payment.ClientType = "uc";
                 orderDetails.InternalProcessingFee = 12.00m;
@@ -313,17 +315,67 @@ namespace Test.TestsServices
                 {
                     Order = order,
                     ButtonText = "Review Details",
-                    ButtonUrl = "https://localhost:5001/Reviewer/Details/42"
+                    ButtonUrl = "https://localhost:5001/Reviewer/Details/2920"
                 });
 
-                html.ShouldContain("Anlab Agreement Request");
-                html.ShouldContain("Order Number 42");
-                html.ShouldContain("A new agreement for a work request has been placed that requires your attention.");
+                html.ShouldContain("Anlab Work Request Billing");
+                html.ShouldContain("Work Request 22F107");
+                html.ShouldContain("Order Number 2920");
+                html.ShouldContain("A new work request has been placed that requires your attention.");
                 html.ShouldContain("Order Details");
                 html.ShouldContain("Visible Test");
                 html.ShouldNotContain("Hidden Test");
                 html.ShouldContain("Review Details");
-                html.ShouldContain("https://localhost:5001/Reviewer/Details/42");
+                html.ShouldContain("https://localhost:5001/Reviewer/Details/2920");
+                html.ShouldNotContain("<mjml");
+            }
+        }
+
+        [Fact]
+        public async Task RenderAsync_RendersBillingInformationTemplateAgreementHeaderToHtml()
+        {
+            var services = new ServiceCollection();
+            var webRoot = Path.Combine(AppContext.BaseDirectory, "wwwroot");
+            var diagnosticListener = new DiagnosticListener("MjmlEmailServiceTests");
+
+            services.AddLogging();
+            services.AddSingleton<DiagnosticSource>(diagnosticListener);
+            services.AddSingleton(diagnosticListener);
+            services.AddSingleton<IWebHostEnvironment>(new TestWebHostEnvironment
+            {
+                ApplicationName = typeof(Startup).Assembly.GetName().Name,
+                ContentRootPath = AppContext.BaseDirectory,
+                ContentRootFileProvider = new PhysicalFileProvider(AppContext.BaseDirectory),
+                EnvironmentName = Environments.Development,
+                WebRootPath = webRoot,
+                WebRootFileProvider = Directory.Exists(webRoot)
+                    ? new PhysicalFileProvider(webRoot)
+                    : new NullFileProvider()
+            });
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+            services.AddSingleton<MjmlRenderer>();
+            services.AddControllersWithViews()
+                .AddApplicationPart(typeof(Startup).Assembly);
+            services.AddTransient<IMjmlEmailRenderer, MjmlEmailRenderer>();
+
+            using (var serviceProvider = services.BuildServiceProvider())
+            {
+                var renderer = serviceProvider.GetRequiredService<IMjmlEmailRenderer>();
+                var order = CreateValidEntities.Order(1458, populateAllFields: true);
+                order.Status = OrderStatusCodes.Created;
+
+                var html = await renderer.RenderAsync(MjmlEmailService.BillingInformationTemplateName, new BillingInformationEmailModel
+                {
+                    Order = order,
+                    ButtonText = "Review Details",
+                    ButtonUrl = "https://localhost:5001/Reviewer/Details/1458"
+                });
+
+                html.ShouldContain("Anlab Agreement Request");
+                html.ShouldContain("Order Number 1458");
+                html.ShouldContain("A new agreement for a work request has been placed that requires your attention.");
+                html.ShouldNotContain("Anlab Work Request Billing");
                 html.ShouldNotContain("<mjml");
             }
         }
