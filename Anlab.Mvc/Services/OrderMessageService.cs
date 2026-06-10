@@ -185,6 +185,9 @@ namespace AnlabMvc.Services
             };
 
             _mailService.EnqueueMessage(message);
+
+        //TODO: Replace with this
+            //await _mjmlEmailService.EnqueueBillingInformationEmailAsync(_appSettings.AccountsEmail, subject, order, order.Creator);
         }
 
         public async Task EnqueueBillingOverride(Order order)

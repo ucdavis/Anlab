@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Anlab.Core.Domain;
 using Anlab.Core.Services;
+using AnlabMvc.Models.Email.Billing;
 using AnlabMvc.Models.Email.Orders;
 using AnlabMvc.Models.Email.Samples;
 
@@ -33,12 +34,20 @@ namespace AnlabMvc.Services
             Order order,
             User user = null,
             CancellationToken cancellationToken = default);
+
+        Task EnqueueBillingInformationEmailAsync(
+            string sendTo,
+            string subject,
+            Order order,
+            User user = null,
+            CancellationToken cancellationToken = default);
     }
 
     public class MjmlEmailService : IMjmlEmailService
     {
         public const string SampleCardTemplateName = "Emails/Samples/SampleCard_mjml";
         public const string OrderCreatedTemplateName = "Emails/Orders/OrderCreated_mjml";
+        public const string BillingInformationTemplateName = "Emails/Billing/BillingInformation_mjml";
 
         private readonly IMjmlEmailRenderer _renderer;
         private readonly IMailService _mailService;
@@ -141,6 +150,22 @@ namespace AnlabMvc.Services
             };
 
             return EnqueueAsync(sendTo, "Work Order Confirmation", OrderCreatedTemplateName, model, order, user ?? order?.Creator, cancellationToken);
+        }
+
+        public Task EnqueueBillingInformationEmailAsync(
+            string sendTo,
+            string subject,
+            Order order,
+            User user = null,
+            CancellationToken cancellationToken = default)
+        {
+            var model = new BillingInformationEmailModel
+            {
+                Order = order,
+                PreviewText = "Anlab Agreement Request"
+            };
+
+            return EnqueueAsync(sendTo, subject, BillingInformationTemplateName, model, order, user ?? order?.Creator, cancellationToken);
         }
     }
 }
