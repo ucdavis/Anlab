@@ -223,11 +223,6 @@ export class PaymentSelection extends React.Component<
               with placing your order and you will be contacted by our lab. You
               may unclick the box to stop the agreement process.{" "}
             </div>
-            <div className="alert alert-danger" role="alert">
-              PLEASE NOTE: Due to the University updating its Financial System,
-              PO Agreements will not be processed from 11/01/23 through
-              01/03/24.
-            </div>
           </div>
         )}
       </div>
