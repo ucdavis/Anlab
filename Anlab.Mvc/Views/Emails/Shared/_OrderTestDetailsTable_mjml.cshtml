@@ -1,17 +1,19 @@
 @using System
 @using System.Linq
 @using Anlab.Core.Models
-@model Anlab.Core.Domain.Order
+@model AnlabMvc.Models.Email.OrderTestDetailsTableEmailModel
 
 @{
-    var order = Model?.GetOrderDetails() ?? new OrderDetails();
+    var orderEntity = Model?.Order;
+    var order = orderEntity?.GetOrderDetails() ?? new OrderDetails();
     var selectedTests = order.SelectedTests ?? Array.Empty<TestDetails>();
-    var savedTests = string.IsNullOrWhiteSpace(Model?.SavedTestDetails)
+    var savedTests = string.IsNullOrWhiteSpace(orderEntity?.SavedTestDetails)
         ? Array.Empty<TestItemModel>()
-        : Model.GetTestDetails() ?? Array.Empty<TestItemModel>();
+        : orderEntity.GetTestDetails() ?? Array.Empty<TestItemModel>();
     var processingFee = string.Equals(order.Payment?.ClientType, "uc", StringComparison.OrdinalIgnoreCase)
         ? order.InternalProcessingFee
         : order.ExternalProcessingFee;
+    var hiddenCosts = 0.0M;
 }
 
 <mj-text font-size="22px"
@@ -38,6 +40,11 @@
       var savedTest = savedTests.FirstOrDefault(a => a.Id == test.Id);
       if (savedTest?.Public != true && savedTest?.Reporting != true)
       {
+          if (Model?.ShowBillingTotals == true)
+          {
+              hiddenCosts += test.Total;
+          }
+
           continue;
       }
 
@@ -53,6 +60,22 @@
     <td colspan="2" align="left" style="padding:12px 10px 0 0;font-weight:700;">Processing Fee</td>
     <td align="right" style="padding:12px 0 0 0;white-space:nowrap;">@processingFee.ToString("C")</td>
   </tr>
+  @if (Model?.ShowBillingTotals == true && hiddenCosts > 0.0M)
+  {
+      <tr>
+        <td style="padding:8px 10px 0 0;"></td>
+        <td colspan="2" align="left" style="padding:8px 10px 0 0;font-weight:700;">Other Costs</td>
+        <td align="right" style="padding:8px 0 0 0;white-space:nowrap;">@hiddenCosts.ToString("C")</td>
+      </tr>
+  }
+  @if (Model?.ShowBillingTotals == true && order.AdjustmentAmount != 0)
+  {
+      <tr>
+        <td style="padding:8px 10px 0 0;"></td>
+        <td colspan="2" align="left" style="padding:8px 10px 0 0;font-weight:700;">Adjustment Amount</td>
+        <td align="right" style="padding:8px 0 0 0;white-space:nowrap;">@order.AdjustmentAmount.ToString("C")</td>
+      </tr>
+  }
   <tr>
     <td style="padding:8px 10px 0 0;"></td>
     <td colspan="2" align="left" style="padding:8px 10px 0 0;font-weight:700;">Grand Total</td>

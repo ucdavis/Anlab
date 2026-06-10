@@ -294,6 +294,7 @@ namespace Test.TestsServices
                 orderDetails.InternalProcessingFee = 12.00m;
                 orderDetails.OtherPaymentInfo.PaymentType = "IOC";
                 orderDetails.Quantity = 3;
+                orderDetails.AdjustmentAmount = 7.00m;
                 orderDetails.SelectedTests = new[]
                 {
                     new TestDetails
@@ -382,6 +383,10 @@ namespace Test.TestsServices
                 html.ShouldContain("Visible Test");
                 html.ShouldContain("Reporting Test");
                 html.ShouldNotContain("Hidden Test");
+                html.ShouldContain("Other Costs");
+                html.ShouldContain("$80.00");
+                html.ShouldContain("Adjustment Amount");
+                html.ShouldContain("$7.00");
                 html.ShouldContain("Review Details");
                 html.ShouldContain("https://localhost:5001/Reviewer/Details/2920");
                 html.ShouldNotContain("<mjml");

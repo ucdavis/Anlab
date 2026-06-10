@@ -21,4 +21,10 @@ namespace AnlabMvc.Models.Email
         public string Text { get; }
         public string Url { get; }
     }
+
+    public class OrderTestDetailsTableEmailModel
+    {
+        public Anlab.Core.Domain.Order Order { get; set; }
+        public bool ShowBillingTotals { get; set; }
+    }
 }

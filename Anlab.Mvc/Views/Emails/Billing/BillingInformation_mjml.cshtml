@@ -52,7 +52,11 @@
 
 @await Html.PartialAsync("/Views/Emails/Billing/_BillingDetailsCard_mjml.cshtml", Model)
 
-@await Html.PartialAsync("/Views/Emails/Shared/_OrderTestDetailsTable_mjml.cshtml", Model.Order)
+@await Html.PartialAsync("/Views/Emails/Shared/_OrderTestDetailsTable_mjml.cshtml", new AnlabMvc.Models.Email.OrderTestDetailsTableEmailModel
+{
+    Order = Model.Order,
+    ShowBillingTotals = true
+})
 
 @if (!string.IsNullOrWhiteSpace(Model.ButtonText) && !string.IsNullOrWhiteSpace(Model.ButtonUrl))
 {
