@@ -7,6 +7,7 @@ using Anlab.Core.Domain;
 using Anlab.Core.Models;
 using Anlab.Core.Services;
 using AnlabMvc;
+using AnlabMvc.Models.Email.Billing;
 using AnlabMvc.Models.Email.Orders;
 using AnlabMvc.Models.Email.Samples;
 using AnlabMvc.Services;
@@ -233,6 +234,96 @@ namespace Test.TestsServices
                 html.ShouldContain("Grand Total");
                 html.ShouldContain("UC Davis Analytical Lab");
                 html.ShouldContain("tel:5307520147");
+                html.ShouldNotContain("<mjml");
+            }
+        }
+
+        [Fact]
+        public async Task RenderAsync_RendersBillingInformationTemplateToHtml()
+        {
+            var services = new ServiceCollection();
+            var webRoot = Path.Combine(AppContext.BaseDirectory, "wwwroot");
+            var diagnosticListener = new DiagnosticListener("MjmlEmailServiceTests");
+
+            services.AddLogging();
+            services.AddSingleton<DiagnosticSource>(diagnosticListener);
+            services.AddSingleton(diagnosticListener);
+            services.AddSingleton<IWebHostEnvironment>(new TestWebHostEnvironment
+            {
+                ApplicationName = typeof(Startup).Assembly.GetName().Name,
+                ContentRootPath = AppContext.BaseDirectory,
+                ContentRootFileProvider = new PhysicalFileProvider(AppContext.BaseDirectory),
+                EnvironmentName = Environments.Development,
+                WebRootPath = webRoot,
+                WebRootFileProvider = Directory.Exists(webRoot)
+                    ? new PhysicalFileProvider(webRoot)
+                    : new NullFileProvider()
+            });
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+            services.AddSingleton<MjmlRenderer>();
+            services.AddControllersWithViews()
+                .AddApplicationPart(typeof(Startup).Assembly);
+            services.AddTransient<IMjmlEmailRenderer, MjmlEmailRenderer>();
+
+            using (var serviceProvider = services.BuildServiceProvider())
+            {
+                var renderer = serviceProvider.GetRequiredService<IMjmlEmailRenderer>();
+                var order = CreateValidEntities.Order(42, populateAllFields: true);
+                var orderDetails = order.GetOrderDetails();
+                orderDetails.Payment.ClientType = "uc";
+                orderDetails.InternalProcessingFee = 12.00m;
+                orderDetails.SelectedTests = new[]
+                {
+                    new TestDetails
+                    {
+                        Id = "PUBLIC",
+                        Analysis = "Visible Test",
+                        Cost = 40.00m,
+                        SetupCost = 2.00m,
+                        Total = 42.00m
+                    },
+                    new TestDetails
+                    {
+                        Id = "PRIVATE",
+                        Analysis = "Hidden Test",
+                        Cost = 80.00m,
+                        SetupCost = 0.00m,
+                        Total = 80.00m
+                    }
+                };
+                order.SaveDetails(orderDetails);
+                order.SaveTestDetails(new[]
+                {
+                    new TestItemModel
+                    {
+                        Id = "PUBLIC",
+                        Category = "Soil",
+                        Public = true
+                    },
+                    new TestItemModel
+                    {
+                        Id = "PRIVATE",
+                        Category = "Soil",
+                        Public = false
+                    }
+                });
+
+                var html = await renderer.RenderAsync(MjmlEmailService.BillingInformationTemplateName, new BillingInformationEmailModel
+                {
+                    Order = order,
+                    ButtonText = "Review Details",
+                    ButtonUrl = "https://localhost:5001/Reviewer/Details/42"
+                });
+
+                html.ShouldContain("Anlab Agreement Request");
+                html.ShouldContain("Order Number 42");
+                html.ShouldContain("A new agreement for a work request has been placed that requires your attention.");
+                html.ShouldContain("Order Details");
+                html.ShouldContain("Visible Test");
+                html.ShouldNotContain("Hidden Test");
+                html.ShouldContain("Review Details");
+                html.ShouldContain("https://localhost:5001/Reviewer/Details/42");
                 html.ShouldNotContain("<mjml");
             }
         }

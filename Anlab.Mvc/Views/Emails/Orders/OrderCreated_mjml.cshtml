@@ -39,7 +39,7 @@
   </tr>
 </mj-table>
 
-@await Html.PartialAsync("/Views/Emails/Orders/_OrderCreatedDetailsTable_mjml.cshtml", Model)
+@await Html.PartialAsync("/Views/Emails/Shared/_OrderTestDetailsTable_mjml.cshtml", Model.Order)
 
 @await Html.PartialAsync("/Views/Emails/Orders/_OrderCreatedAdditionalInfoCard_mjml.cshtml", Model)
 

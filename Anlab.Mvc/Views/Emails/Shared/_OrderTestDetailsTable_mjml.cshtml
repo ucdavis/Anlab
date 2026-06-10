@@ -1,14 +1,14 @@
 @using System
 @using System.Linq
 @using Anlab.Core.Models
-@model AnlabMvc.Models.Email.Orders.OrderCreatedEmailModel
+@model Anlab.Core.Domain.Order
 
 @{
-    var order = Model.Order?.GetOrderDetails() ?? new OrderDetails();
+    var order = Model?.GetOrderDetails() ?? new OrderDetails();
     var selectedTests = order.SelectedTests ?? Array.Empty<TestDetails>();
-    var savedTests = string.IsNullOrWhiteSpace(Model.Order?.SavedTestDetails)
+    var savedTests = string.IsNullOrWhiteSpace(Model?.SavedTestDetails)
         ? Array.Empty<TestItemModel>()
-        : Model.Order.GetTestDetails() ?? Array.Empty<TestItemModel>();
+        : Model.GetTestDetails() ?? Array.Empty<TestItemModel>();
     var processingFee = string.Equals(order.Payment?.ClientType, "uc", StringComparison.OrdinalIgnoreCase)
         ? order.InternalProcessingFee
         : order.ExternalProcessingFee;
