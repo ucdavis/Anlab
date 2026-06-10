@@ -48,6 +48,10 @@
   A new @billingText has been placed that requires your attention.
 </mj-text>
 
+@await Html.PartialAsync("/Views/Emails/Billing/_RequesterDetailsCard_mjml.cshtml", Model)
+
+@await Html.PartialAsync("/Views/Emails/Billing/_BillingDetailsCard_mjml.cshtml", Model)
+
 @await Html.PartialAsync("/Views/Emails/Shared/_OrderTestDetailsTable_mjml.cshtml", Model.Order)
 
 @if (!string.IsNullOrWhiteSpace(Model.ButtonText) && !string.IsNullOrWhiteSpace(Model.ButtonUrl))

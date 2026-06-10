@@ -1,0 +1,55 @@
+@using System
+@using Anlab.Core.Models
+@model AnlabMvc.Models.Email.Billing.BillingInformationEmailModel
+
+@{
+    var order = Model.Order?.GetOrderDetails() ?? new OrderDetails();
+    var payment = order.Payment;
+    var otherPaymentInfo = order.OtherPaymentInfo;
+    var clientType = payment?.ClientType;
+    var companyLabel = string.Equals(clientType, "uc", StringComparison.OrdinalIgnoreCase)
+        ? "Campus Name"
+        : "Company Name";
+}
+
+<mj-text font-size="22px"
+         font-weight="700"
+         line-height="1.3"
+         padding="0px 0px 12px 0px">
+  Billing Details
+</mj-text>
+<mj-table cellpadding="0"
+          cellspacing="0"
+          width="100%"
+          color="#172033"
+          font-size="16px"
+          line-height="1.65"
+          padding="0px 0px 24px 0px">
+  <tr>
+    <td style="background-color:#def0fc;border:1px solid #b7d7ee;border-radius:8px;padding:16px 24px;">
+      <table cellpadding="0" cellspacing="0" role="presentation" width="100%" style="border-collapse:collapse;">
+        <tr>
+          <td width="50%" valign="top" style="padding:0 12px 0 0;">
+            <div style="padding:0 0 16px 0;"><strong>Client Type</strong><br />@(string.IsNullOrWhiteSpace(clientType) ? "-" : clientType)</div>
+            <div style="padding:0 0 16px 0;"><strong>@companyLabel</strong><br />@(string.IsNullOrWhiteSpace(otherPaymentInfo?.CompanyName) ? "-" : otherPaymentInfo.CompanyName)</div>
+            <div style="padding:0 0 16px 0;"><strong>Account Contact Name</strong><br />@(string.IsNullOrWhiteSpace(otherPaymentInfo?.AcName) ? "-" : otherPaymentInfo.AcName)</div>
+            <div><strong>Account Contact Address</strong><br />@(string.IsNullOrWhiteSpace(otherPaymentInfo?.AcAddr) ? "-" : otherPaymentInfo.AcAddr)</div>
+          </td>
+          <td width="50%" valign="top" style="padding:0;">
+            <div style="padding:0 0 16px 0;"><strong>Payment Type</strong><br />@(string.IsNullOrWhiteSpace(otherPaymentInfo?.PaymentType) ? "-" : otherPaymentInfo.PaymentType)</div>
+            @if (!string.IsNullOrWhiteSpace(otherPaymentInfo?.PoNum))
+            {
+              <div style="padding:0 0 16px 0;"><strong>PO Number</strong><br />@otherPaymentInfo.PoNum</div>
+            }
+            <div style="padding:0 0 16px 0;"><strong>Account Contact Email</strong><br />@(string.IsNullOrWhiteSpace(otherPaymentInfo?.AcEmail) ? "-" : otherPaymentInfo.AcEmail)</div>
+            <div style="padding:0 0 16px 0;"><strong>Account Contact Phone Number</strong><br />@(string.IsNullOrWhiteSpace(otherPaymentInfo?.AcPhone) ? "-" : otherPaymentInfo.AcPhone)</div>
+            @if (string.Equals(otherPaymentInfo?.PaymentType, "IOC", StringComparison.OrdinalIgnoreCase))
+            {
+              <div><strong>UC Account #</strong><br />@(string.IsNullOrWhiteSpace(payment?.Account) ? "-" : payment.Account)</div>
+            }
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</mj-table>

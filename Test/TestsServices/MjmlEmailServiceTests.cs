@@ -287,9 +287,12 @@ namespace Test.TestsServices
                 var order = CreateValidEntities.Order(2920, populateAllFields: true);
                 order.Status = OrderStatusCodes.Finalized;
                 order.RequestNum = "22F107";
+                order.Creator = CreateValidEntities.User(2920);
                 var orderDetails = order.GetOrderDetails();
                 orderDetails.Payment.ClientType = "uc";
+                orderDetails.Payment.Account = "UC-Account-2920";
                 orderDetails.InternalProcessingFee = 12.00m;
+                orderDetails.OtherPaymentInfo.PaymentType = "IOC";
                 orderDetails.SelectedTests = new[]
                 {
                     new TestDetails
@@ -352,6 +355,28 @@ namespace Test.TestsServices
                 html.ShouldContain("Work Request 22F107");
                 html.ShouldContain("Order Number 2920");
                 html.ShouldContain("A new work request has been placed that requires your attention.");
+                html.ShouldContain("Requester Details");
+                html.ShouldContain("FirstName2920 LastName2920");
+                html.ShouldContain("test2920@testy.com");
+                html.ShouldContain("Billing Details");
+                html.ShouldContain("Client Type");
+                html.ShouldContain("uc");
+                html.ShouldContain("Campus Name");
+                html.ShouldContain("CompanyName2920");
+                html.ShouldContain("Account Contact Name");
+                html.ShouldContain("AcName2920");
+                html.ShouldContain("Account Contact Address");
+                html.ShouldContain("AcAddr2920");
+                html.ShouldContain("Payment Type");
+                html.ShouldContain("IOC");
+                html.ShouldContain("PO Number");
+                html.ShouldContain("PoNum2920");
+                html.ShouldContain("Account Contact Email");
+                html.ShouldContain("AcEmail2920@test.com");
+                html.ShouldContain("Account Contact Phone Number");
+                html.ShouldContain("AcPhone2920");
+                html.ShouldContain("UC Account #");
+                html.ShouldContain("UC-Account-2920");
                 html.ShouldContain("Order Details");
                 html.ShouldContain("Visible Test");
                 html.ShouldContain("Reporting Test");

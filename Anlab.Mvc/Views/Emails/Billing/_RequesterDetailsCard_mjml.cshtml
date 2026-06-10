@@ -1,0 +1,27 @@
+@model AnlabMvc.Models.Email.Billing.BillingInformationEmailModel
+
+@{
+    var requesterName = Model.Order?.Creator?.Name;
+    var requesterEmail = Model.Order?.Creator?.Email;
+}
+
+<mj-text font-size="22px"
+         font-weight="700"
+         line-height="1.3"
+         padding="0px 0px 12px 0px">
+  Requester Details
+</mj-text>
+<mj-table cellpadding="0"
+          cellspacing="0"
+          width="100%"
+          color="#172033"
+          font-size="16px"
+          line-height="1.65"
+          padding="0px 0px 24px 0px">
+  <tr>
+    <td style="background-color:#def0fc;border:1px solid #b7d7ee;border-radius:8px;padding:16px 24px;">
+      <div style="padding:0 0 16px 0;"><strong>Name</strong><br />@(string.IsNullOrWhiteSpace(requesterName) ? "-" : requesterName)</div>
+      <div><strong>Email</strong><br />@(string.IsNullOrWhiteSpace(requesterEmail) ? "-" : requesterEmail)</div>
+    </td>
+  </tr>
+</mj-table>
