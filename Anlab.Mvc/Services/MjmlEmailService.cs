@@ -165,6 +165,7 @@ namespace AnlabMvc.Services
         {
             var model = new BillingInformationEmailModel
             {
+                LayoutWidth = "800px",
                 Order = order,
                 PreviewText = "Anlab Agreement Request",
                 ButtonText = "Review Details",
