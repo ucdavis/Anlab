@@ -7,6 +7,8 @@ using Anlab.Core.Services;
 using AnlabMvc.Models.Email.Billing;
 using AnlabMvc.Models.Email.Orders;
 using AnlabMvc.Models.Email.Samples;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace AnlabMvc.Services
 {
@@ -51,11 +53,13 @@ namespace AnlabMvc.Services
 
         private readonly IMjmlEmailRenderer _renderer;
         private readonly IMailService _mailService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public MjmlEmailService(IMjmlEmailRenderer renderer, IMailService mailService)
+        public MjmlEmailService(IMjmlEmailRenderer renderer, IMailService mailService, IHttpContextAccessor httpContextAccessor)
         {
             _renderer = renderer;
             _mailService = mailService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public Task<string> RenderAsync<TModel>(string templateName, TModel model, CancellationToken cancellationToken = default)
@@ -162,10 +166,32 @@ namespace AnlabMvc.Services
             var model = new BillingInformationEmailModel
             {
                 Order = order,
-                PreviewText = "Anlab Agreement Request"
+                PreviewText = "Anlab Agreement Request",
+                ButtonText = "Review Details",
+                ButtonUrl = BuildReviewerDetailsUrl(order)
             };
 
             return EnqueueAsync(sendTo, subject, BillingInformationTemplateName, model, order, user ?? order?.Creator, cancellationToken);
+        }
+
+        private string BuildReviewerDetailsUrl(Order order)
+        {
+            if (order == null)
+            {
+                throw new ArgumentNullException(nameof(order));
+            }
+
+            var request = _httpContextAccessor.HttpContext?.Request;
+            if (request == null)
+            {
+                throw new InvalidOperationException("A current HTTP request is required to build the reviewer details email URL.");
+            }
+
+            return UriHelper.BuildAbsolute(
+                request.Scheme,
+                request.Host,
+                request.PathBase,
+                $"/Reviewer/Details/{order.Id}");
         }
     }
 }

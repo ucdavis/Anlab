@@ -11,6 +11,7 @@ using AnlabMvc.Models.Email.Orders;
 using AnlabMvc.Models.Email.Samples;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,7 +31,7 @@ namespace Test.TestsServices
         {
             var renderer = new StubMjmlEmailRenderer();
             var mailService = new StubMailService();
-            var service = new MjmlEmailService(renderer, mailService);
+            var service = new MjmlEmailService(renderer, mailService, new HttpContextAccessor());
 
             await service.EnqueueAsync(
                 "client@example.com",
@@ -50,7 +51,7 @@ namespace Test.TestsServices
         {
             var renderer = new StubMjmlEmailRenderer();
             var mailService = new StubMailService();
-            var service = new MjmlEmailService(renderer, mailService);
+            var service = new MjmlEmailService(renderer, mailService, new HttpContextAccessor());
             var order = new Order();
             var user = new User();
 
@@ -68,7 +69,7 @@ namespace Test.TestsServices
         {
             var renderer = new StubMjmlEmailRenderer();
             var mailService = new StubMailService();
-            var service = new MjmlEmailService(renderer, mailService);
+            var service = new MjmlEmailService(renderer, mailService, new HttpContextAccessor());
             var user = new User();
             var order = new Order
             {

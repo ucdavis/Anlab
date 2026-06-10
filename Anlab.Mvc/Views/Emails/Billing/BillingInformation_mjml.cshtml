@@ -19,3 +19,8 @@
 <mj-text padding="0px 0px 18px 0px">
   A new agreement for a work request has been placed that requires your attention.
 </mj-text>
+
+@if (!string.IsNullOrWhiteSpace(Model.ButtonText) && !string.IsNullOrWhiteSpace(Model.ButtonUrl))
+{
+    @await Html.PartialAsync("/Views/Emails/Shared/_MjmlEmailButton.cshtml", new AnlabMvc.Models.Email.MjmlEmailButtonModel(Model.ButtonText, Model.ButtonUrl))
+}
