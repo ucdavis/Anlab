@@ -29,7 +29,13 @@
         @Html.DisplayNameFor(model => model.Category)
     </dt>
     <dd>
-        @Html.DisplayFor(model => model.Category)
+        @(Model.Category?.Replace("|", " "))
+    </dd>
+    <dt>
+        @Html.DisplayNameFor(model => model.TestGroup)
+    </dt>
+    <dd>
+        @(Model.TestGroup?.Replace("|", " "))
     </dd>
     <dt>
         @Html.DisplayNameFor(model => model.Group)

@@ -16,7 +16,7 @@
     </a>
 </p>
 }
-<div class="col">
+<div class="col test-items-index">
 <table id="table" class="row-border order-column hover">
     <thead>
         <tr>
@@ -42,6 +42,15 @@
                 }
                 </select>
 
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TestGroup) <select name="testGroup" id="testGroup">
+                    <option value="All">All</option>
+                @foreach (var testGroup in TestGroups.All)
+                {
+                    <option value="@testGroup">@testGroup</option>
+                }
+                </select>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Group)
@@ -87,6 +96,9 @@
                 @item.Category.Humanize(LetterCasing.Title)
             </td>
             <td>
+                @(item.TestGroup?.Replace("|", " "))
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Group)
             </td>
             <td style="text-align: center">
@@ -128,6 +140,12 @@
 @section AdditionalStyles
 {
     @{ await Html.RenderPartialAsync("_DataTableStylePartial"); }
+    <style>
+        .boundary:has(.test-items-index) {
+            width: 95%;
+            max-width: 1800px;
+        }
+    </style>
 }
 @section Scripts
 {
@@ -140,12 +158,15 @@
                 "stateSave": true,
                 "stateDuration": 60 * 10,
                 "columnDefs": [
-                    { "orderable": false, "targets": [0,5] },
+                    { "orderable": false, "targets": [0,5,6] },
                     { "searchable":false, "targets": 0 }
                 ]
             });
 
             $('#category').change(function () {
+                table.draw();
+            });
+            $('#testGroup').change(function () {
                 table.draw();
             });
         });
@@ -155,8 +176,11 @@
 
                 var category = data[5];
                 var categoryFilter = $('#category').val();
+                var testGroup = data[6];
+                var testGroupFilter = $('#testGroup').val();
 
-                if (categoryFilter == "All" || category.indexOf(categoryFilter) !== -1) {
+                if ((categoryFilter == "All" || category.indexOf(categoryFilter) !== -1) &&
+                    (testGroupFilter == "All" || testGroup.indexOf(testGroupFilter) !== -1)) {
                     return true;
                 }
                 return false;

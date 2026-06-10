@@ -56,6 +56,14 @@ namespace Test.TestsDatabase
             expectedFields.Add(new NameAndType("Public", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Reporting", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("RequestOrder", "System.Int32", new List<string>()));
+            expectedFields.Add(new NameAndType("TestGroup", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)64)]"
+            }));
+            expectedFields.Add(new NameAndType("TestGroups", "System.String[]", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.Schema.NotMappedAttribute()]"
+            }));
             #endregion Arrange
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(TestItem));
