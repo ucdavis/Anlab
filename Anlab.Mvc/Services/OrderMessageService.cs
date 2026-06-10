@@ -40,21 +40,20 @@ namespace AnlabMvc.Services
         }
         public async Task EnqueueCreatedMessage(Order order)
         {
-            var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderCreated", order);
+            //var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderCreated", order);
 
-            var message = new MailMessage
-            {
-                Subject = "Work Order Confirmation",
-                Body = body,
-                SendTo = GetSendTo(order),
-                Order = order,
-                User = order.Creator,
-            };
+            //var message = new MailMessage
+            //{
+            //    Subject = "Work Order Confirmation",
+            //    Body = body,
+            //    SendTo = GetSendTo(order),
+            //    Order = order,
+            //    User = order.Creator,
+            //};
 
-            _mailService.EnqueueMessage(message);
+            //_mailService.EnqueueMessage(message);
 
-            //Sample call to mjml
-            //await _mjmlEmailService.EnqueueSampleCardEmailAsync(GetSendTo(order), order, order.Creator);
+            await _mjmlEmailService.EnqueueOrderCreatedEmailAsync(GetSendTo(order), order, order.Creator);
         }
 
         private string GetSendTo(Order order)
