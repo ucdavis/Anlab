@@ -170,24 +170,23 @@ namespace AnlabMvc.Services
 
         public async Task EnqueueBillingMessage(Order order, string subject = "Anlab Work Request Billing Info")
         {
-            var orderDetails = order.GetOrderDetails();
-            //TODO: change wording, change SendTo to billing email
-            var body = await _viewRenderService.RenderViewToStringAsync("Templates/_BillingInformation", order);
+            //var orderDetails = order.GetOrderDetails();
+            ////TODO: change wording, change SendTo to billing email
+            //var body = await _viewRenderService.RenderViewToStringAsync("Templates/_BillingInformation", order);
 
 
-            var message = new MailMessage
-            {
-                Subject = subject,
-                Body = body,
-                SendTo = _appSettings.AccountsEmail,
-                Order = order,
-                User = order.Creator,
-            };
+            //var message = new MailMessage
+            //{
+            //    Subject = subject,
+            //    Body = body,
+            //    SendTo = _appSettings.AccountsEmail,
+            //    Order = order,
+            //    User = order.Creator,
+            //};
 
-            _mailService.EnqueueMessage(message);
+            //_mailService.EnqueueMessage(message);
 
-        //TODO: Replace with this
-            //await _mjmlEmailService.EnqueueBillingInformationEmailAsync(_appSettings.AccountsEmail, subject, order, order.Creator);
+            await _mjmlEmailService.EnqueueBillingInformationEmailAsync(_appSettings.AccountsEmail, subject, order, order.Creator);
         }
 
         public async Task EnqueueBillingOverride(Order order)
