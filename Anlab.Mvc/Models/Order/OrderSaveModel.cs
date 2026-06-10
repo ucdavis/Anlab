@@ -10,7 +10,7 @@ namespace AnlabMvc.Models.Order
     {
 
         public int? OrderId { get; set; }
-        [Range(1, 100)]
+        [Range(1, 200)]
         public int Quantity { get; set; }
 
         [Required]

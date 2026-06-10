@@ -19,6 +19,7 @@ using Newtonsoft.Json.Linq;
 using Shouldly;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
@@ -300,6 +301,9 @@ namespace Test.TestsController
             OrderData[1].CreatorId = "Creator1";
             OrderData[1].Status = OrderStatusCodes.Created;
             OrderData[1].Creator = CreateValidEntities.User(7);
+            var orderDetails = CreateValidEntities.OrderDetails(2);
+            orderDetails.Quantity = 200;
+            OrderData[1].SaveDetails(orderDetails);
 
             // Act
             var controllerResult = await Controller.Edit(2);
@@ -312,6 +316,7 @@ namespace Test.TestsController
             var model = Assert.IsType<OrderEditModel>(result.Model);
             model.Order.ShouldNotBeNull();
             model.Order.Id.ShouldBe(2);
+            model.Order.GetOrderDetails().Quantity.ShouldBe(200);
             model.TestItems.Length.ShouldBe(10);
             model.InternalProcessingFee.ShouldBe(6m);
             model.ExternalProcessingFee.ShouldBe(12m);
@@ -341,6 +346,9 @@ namespace Test.TestsController
 
 
             var copiedOrder = CreateValidEntities.Order(7);
+            var orderDetails = CreateValidEntities.OrderDetails(7);
+            orderDetails.Quantity = 200;
+            copiedOrder.SaveDetails(orderDetails);
             copiedOrder.Creator = CreateValidEntities.User(5, true);
             OrderData[1].CreatorId = "xxx";
             OrderData[1].Creator = CreateValidEntities.User(5);
@@ -358,6 +366,7 @@ namespace Test.TestsController
             savedResult.Creator.Id.ShouldBe("Creator1");
             savedResult.ShareIdentifier.ShouldNotBe(SpecificGuid.GetGuid(2));
             savedResult.SavedTestDetails.ShouldBeNull();
+            savedResult.GetOrderDetails().Quantity.ShouldBe(200);
 
             var redirectResult = Assert.IsType<RedirectToActionResult>(controllerResult);
             redirectResult.ActionName.ShouldBe("Edit");
@@ -525,6 +534,72 @@ namespace Test.TestsController
             MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
             OrderData[1].SavedTestDetails.ShouldNotBeNull();
             OrderData[1].GetTestDetails().Count.ShouldBe(10);
+        }
+
+        [Fact]
+        public async Task TestSaveWhenEditAndQuantityIs200Succeeds()
+        {
+            // Arrange
+            OrderData[1].Status = OrderStatusCodes.Created;
+            OrderData[1].CreatorId = "Creator1";
+            var model = CreateValidOrderSaveModel(200);
+            model.OrderId = 2;
+            ValidateModelIntoModelState(model);
+
+            // Act
+            var controllerResult = await Controller.Save(model);
+
+            // Assert
+            var result = Assert.IsType<JsonResult>(controllerResult);
+            dynamic data = JObject.FromObject(result.Value);
+            ((bool)data.success).ShouldBe(true);
+            ((int)data.id).ShouldBe(2);
+
+            MockOrderService.Verify(a => a.PopulateOrder(model, OrderData[1]), Times.Once);
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+        }
+
+        [Fact]
+        public async Task TestSaveWhenQuantityIs201ReturnsValidationJson()
+        {
+            // Arrange
+            var model = CreateValidOrderSaveModel(201);
+            ValidateModelIntoModelState(model);
+
+            // Act
+            var controllerResult = await Controller.Save(model);
+
+            // Assert
+            var result = Assert.IsType<JsonResult>(controllerResult);
+            dynamic data = JObject.FromObject(result.Value);
+            ((bool)data.success).ShouldBe(false);
+            ((string)data.message).ShouldBe("There were problems with your order. Unable to save. Errors: The field Quantity must be between 1 and 200.");
+
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Never);
+        }
+
+        [Fact]
+        public async Task TestSaveWhenCreateAndQuantityIs200Succeeds()
+        {
+            // Arrange
+            var model = CreateValidOrderSaveModel(200);
+            Order savedResult = null;
+            MockDbContext.Setup(a => a.Add(It.IsAny<Order>())).Callback<Order>(r => savedResult = r);
+            ValidateModelIntoModelState(model);
+
+            // Act
+            var controllerResult = await Controller.Save(model);
+
+            // Assert
+            var result = Assert.IsType<JsonResult>(controllerResult);
+            dynamic data = JObject.FromObject(result.Value);
+            ((bool)data.success).ShouldBe(true);
+            ((int)data.id).ShouldBe(0);
+
+            MockOrderService.Verify(a => a.PopulateOrder(model, It.IsAny<Order>()), Times.Once);
+            MockDbContext.Verify(a => a.Add(It.IsAny<Order>()), Times.Once);
+            MockDbContext.Verify(a => a.SaveChangesAsync(new CancellationToken()), Times.Once);
+            savedResult.ShouldNotBeNull();
         }
 
         [Fact]
@@ -1060,6 +1135,36 @@ namespace Test.TestsController
 
             MockLabworksService.Verify(a => a.GetClientDetails("Test"), Times.Once);
 
+        }
+
+        private static OrderSaveModel CreateValidOrderSaveModel(int quantity)
+        {
+            return new OrderSaveModel
+            {
+                Quantity = quantity,
+                SampleType = "Soil",
+                SelectedTests = new[] { new TestDetails { Id = "PH-S" } },
+                Project = "Project",
+                DateSampled = DateTime.Today,
+                SampleDisposition = "Dispose of my samples 30 days from report date."
+            };
+        }
+
+        private void ValidateModelIntoModelState(OrderSaveModel model)
+        {
+            var results = new List<ValidationResult>();
+            Validator.TryValidateObject(
+                model,
+                new ValidationContext(model),
+                results,
+                validateAllProperties: true);
+
+            foreach (var result in results)
+            {
+                Controller.ModelState.AddModelError(
+                    result.MemberNames.FirstOrDefault() ?? string.Empty,
+                    result.ErrorMessage);
+            }
         }
     }
 
