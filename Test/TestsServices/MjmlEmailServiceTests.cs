@@ -293,6 +293,7 @@ namespace Test.TestsServices
                 orderDetails.Payment.Account = "UC-Account-2920";
                 orderDetails.InternalProcessingFee = 12.00m;
                 orderDetails.OtherPaymentInfo.PaymentType = "IOC";
+                orderDetails.Quantity = 3;
                 orderDetails.SelectedTests = new[]
                 {
                     new TestDetails
@@ -377,7 +378,7 @@ namespace Test.TestsServices
                 html.ShouldContain("AcPhone2920");
                 html.ShouldContain("UC Account #");
                 html.ShouldContain("UC-Account-2920");
-                html.ShouldContain("Order Details");
+                html.ShouldContain("Order Details (3 Samples)");
                 html.ShouldContain("Visible Test");
                 html.ShouldContain("Reporting Test");
                 html.ShouldNotContain("Hidden Test");
