@@ -7,6 +7,7 @@ using Anlab.Core.Services;
 using AnlabMvc.Models.Email.Billing;
 using AnlabMvc.Models.Email.Orders;
 using AnlabMvc.Models.Email.Samples;
+using AnlabMvc.Models.Email.WorkRequests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 
@@ -37,6 +38,12 @@ namespace AnlabMvc.Services
             User user = null,
             CancellationToken cancellationToken = default);
 
+        Task EnqueueWorkRequestReceivedByLabEmailAsync(
+            string sendTo,
+            Order order,
+            User user = null,
+            CancellationToken cancellationToken = default);
+
         Task EnqueueBillingInformationEmailAsync(
             string sendTo,
             string subject,
@@ -49,6 +56,7 @@ namespace AnlabMvc.Services
     {
         public const string SampleCardTemplateName = "Emails/Samples/SampleCard_mjml";
         public const string OrderCreatedTemplateName = "Emails/Orders/OrderCreated_mjml";
+        public const string WorkRequestReceivedByLabTemplateName = "Emails/WorkRequests/WorkRequestReceivedByLab_mjml";
         public const string BillingInformationTemplateName = "Emails/Billing/BillingInformation_mjml";
 
         private readonly IMjmlEmailRenderer _renderer;
@@ -154,6 +162,22 @@ namespace AnlabMvc.Services
             };
 
             return EnqueueAsync(sendTo, "Work Order Confirmation", OrderCreatedTemplateName, model, order, user ?? order?.Creator, cancellationToken);
+        }
+
+        public Task EnqueueWorkRequestReceivedByLabEmailAsync(
+            string sendTo,
+            Order order,
+            User user = null,
+            CancellationToken cancellationToken = default)
+        {
+            var model = new WorkRequestReceivedByLabEmailModel
+            {
+                LayoutWidth = "800px",
+                Order = order,
+                PreviewText = "Work Request Received By Lab"
+            };
+
+            return EnqueueAsync(sendTo, $"Work Request Confirmation - {order?.RequestNum}", WorkRequestReceivedByLabTemplateName, model, order, user ?? order?.Creator, cancellationToken);
         }
 
         public Task EnqueueBillingInformationEmailAsync(

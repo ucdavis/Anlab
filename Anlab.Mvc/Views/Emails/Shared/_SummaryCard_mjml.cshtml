@@ -1,13 +1,13 @@
 @using Anlab.Core.Models
 @using AnlabMvc.Extensions
-@model AnlabMvc.Models.Email.Orders.OrderCreatedEmailModel
+@model Anlab.Core.Domain.Order
 
 @{
-  var order = Model.Order?.GetOrderDetails() ?? new OrderDetails();
-  var createdBy = Model.Order?.Creator?.Name;
+  var order = Model?.GetOrderDetails() ?? new OrderDetails();
+  var createdBy = Model?.Creator?.Name;
   var paymentDetail = string.Empty;
 
-  if (Model.Order?.PaymentType == PaymentTypeCodes.Other || Model.Order?.PaymentType == PaymentTypeCodes.UcOtherAccount)
+  if (Model?.PaymentType == PaymentTypeCodes.Other || Model?.PaymentType == PaymentTypeCodes.UcOtherAccount)
   {
     paymentDetail = order.OtherPaymentInfo != null
         ? $" ({order.OtherPaymentInfo.PaymentType})"
@@ -30,7 +30,7 @@
       <table cellpadding="0" cellspacing="0" role="presentation" width="100%" style="border-collapse:collapse;">
         <tr>
           <td width="50%" valign="top" style="padding:0 12px 0 0;">
-            <div style="padding:0 0 16px 0;"><strong>Online Order Number</strong><br />@(Model.Order?.Id.ToString() ?? "-")</div>
+            <div style="padding:0 0 16px 0;"><strong>Online Order Number</strong><br />@(Model?.Id.ToString() ?? "-")</div>
             <div style="padding:0 0 16px 0;"><strong>Project Title/Location</strong><br />@(string.IsNullOrWhiteSpace(order.Project) ? "-" : order.Project)</div>
             <div style="padding:0 0 16px 0;"><strong>Payment Method</strong><br />@(string.IsNullOrWhiteSpace(paymentMethod) ? "-" : paymentMethod)</div>
             <div style="padding:0 0 16px 0;"><strong>Client Id</strong><br />@(string.IsNullOrWhiteSpace(order.ClientInfo?.ClientId) ? "-" : order.ClientInfo.ClientId)</div>

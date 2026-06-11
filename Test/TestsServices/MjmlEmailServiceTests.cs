@@ -10,6 +10,7 @@ using AnlabMvc;
 using AnlabMvc.Models.Email.Billing;
 using AnlabMvc.Models.Email.Orders;
 using AnlabMvc.Models.Email.Samples;
+using AnlabMvc.Models.Email.WorkRequests;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -82,6 +83,28 @@ namespace Test.TestsServices
             renderer.TemplateName.ShouldBe(MjmlEmailService.OrderCreatedTemplateName);
             mailService.Message.ShouldNotBeNull();
             mailService.Message.Subject.ShouldBe("Work Order Confirmation");
+            mailService.Message.Order.ShouldBe(order);
+            mailService.Message.User.ShouldBe(user);
+        }
+
+        [Fact]
+        public async Task EnqueueWorkRequestReceivedByLabEmailAsync_UsesWorkRequestReceivedByLabTemplate()
+        {
+            var renderer = new StubMjmlEmailRenderer();
+            var mailService = new StubMailService();
+            var service = new MjmlEmailService(renderer, mailService, new HttpContextAccessor());
+            var user = new User();
+            var order = new Order
+            {
+                Creator = user,
+                RequestNum = "22F107"
+            };
+
+            await service.EnqueueWorkRequestReceivedByLabEmailAsync("client@example.com", order, user);
+
+            renderer.TemplateName.ShouldBe(MjmlEmailService.WorkRequestReceivedByLabTemplateName);
+            mailService.Message.ShouldNotBeNull();
+            mailService.Message.Subject.ShouldBe("Work Request Confirmation - 22F107");
             mailService.Message.Order.ShouldBe(order);
             mailService.Message.User.ShouldBe(user);
         }
@@ -249,6 +272,135 @@ namespace Test.TestsServices
                 html.ShouldContain("Grand Total");
                 html.ShouldContain("UC Davis Analytical Lab");
                 html.ShouldContain("tel:5307520147");
+                html.ShouldNotContain("<mjml");
+            }
+        }
+
+        [Fact]
+        public async Task RenderAsync_RendersWorkRequestReceivedByLabTemplateToHtml()
+        {
+            var services = new ServiceCollection();
+            var webRoot = Path.Combine(AppContext.BaseDirectory, "wwwroot");
+            var diagnosticListener = new DiagnosticListener("MjmlEmailServiceTests");
+
+            services.AddLogging();
+            services.AddSingleton<DiagnosticSource>(diagnosticListener);
+            services.AddSingleton(diagnosticListener);
+            services.AddSingleton<IWebHostEnvironment>(new TestWebHostEnvironment
+            {
+                ApplicationName = typeof(Startup).Assembly.GetName().Name,
+                ContentRootPath = AppContext.BaseDirectory,
+                ContentRootFileProvider = new PhysicalFileProvider(AppContext.BaseDirectory),
+                EnvironmentName = Environments.Development,
+                WebRootPath = webRoot,
+                WebRootFileProvider = Directory.Exists(webRoot)
+                    ? new PhysicalFileProvider(webRoot)
+                    : new NullFileProvider()
+            });
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+            services.AddSingleton<MjmlRenderer>();
+            services.AddControllersWithViews()
+                .AddApplicationPart(typeof(Startup).Assembly);
+            services.AddTransient<IMjmlEmailRenderer, MjmlEmailRenderer>();
+
+            using (var serviceProvider = services.BuildServiceProvider())
+            {
+                var renderer = serviceProvider.GetRequiredService<IMjmlEmailRenderer>();
+                var order = CreateValidEntities.Order(2920, populateAllFields: true);
+                order.Status = OrderStatusCodes.Received;
+                order.RequestNum = "22F107";
+                order.Creator = CreateValidEntities.User(2920);
+                var orderDetails = order.GetOrderDetails();
+                orderDetails.Payment.ClientType = "uc";
+                orderDetails.InternalProcessingFee = 12.00m;
+                orderDetails.Quantity = 3;
+                orderDetails.AdditionalInfo = "Client-provided handling note.";
+                orderDetails.LabComments = "Lab received all samples.";
+                orderDetails.Total = 122.00m;
+                orderDetails.RushMultiplier = 1.5m;
+                orderDetails.AdjustmentAmount = 7.00m;
+                orderDetails.SelectedTests = new[]
+                {
+                    new TestDetails
+                    {
+                        Id = "PUBLIC",
+                        Analysis = "Visible Test",
+                        Cost = 40.00m,
+                        SetupCost = 2.00m,
+                        Total = 42.00m
+                    },
+                    new TestDetails
+                    {
+                        Id = "PRIVATE",
+                        Analysis = "Hidden Test",
+                        Cost = 80.00m,
+                        SetupCost = 0.00m,
+                        Total = 80.00m
+                    },
+                    new TestDetails
+                    {
+                        Id = "REPORTING",
+                        Analysis = "Reporting Test",
+                        Cost = 25.00m,
+                        SetupCost = 0.00m,
+                        Total = 25.00m
+                    }
+                };
+                order.SaveDetails(orderDetails);
+                order.SaveTestDetails(new[]
+                {
+                    new TestItemModel
+                    {
+                        Id = "PUBLIC",
+                        Category = "Soil",
+                        Public = true
+                    },
+                    new TestItemModel
+                    {
+                        Id = "PRIVATE",
+                        Category = "Soil",
+                        Public = false
+                    },
+                    new TestItemModel
+                    {
+                        Id = "REPORTING",
+                        Category = "Soil",
+                        Public = false,
+                        Reporting = true
+                    }
+                });
+
+                var html = await renderer.RenderAsync(MjmlEmailService.WorkRequestReceivedByLabTemplateName, new WorkRequestReceivedByLabEmailModel
+                {
+                    Order = order
+                });
+
+                html.ShouldContain("Work Request Received By Lab");
+                html.ShouldContain("Your samples have been received by the lab.");
+                html.ShouldContain("22F107");
+                html.ShouldContain("Lab Comments");
+                html.ShouldContain("Lab received all samples.");
+                html.ShouldContain("Online Order Number");
+                html.ShouldContain("Billing Details");
+                html.ShouldContain("Client Type");
+                html.ShouldContain("Campus Name");
+                html.ShouldContain("Account Contact Name");
+                html.ShouldContain("Order Total:");
+                html.ShouldContain("$129.00");
+                html.ShouldContain("Non-routine matrices may incur additional charges.");
+                html.ShouldContain("RUSH This order is a rush and has the cost increased by a factor of 1.5");
+                html.ShouldContain("Order Details (3 Samples)");
+                html.ShouldContain("Visible Test");
+                html.ShouldContain("Reporting Test");
+                html.ShouldNotContain("Hidden Test");
+                html.ShouldContain("Other Costs");
+                html.ShouldContain("$80.00");
+                html.ShouldContain("Adjustment Amount");
+                html.ShouldContain("$7.00");
+                html.ShouldContain("Additional Information");
+                html.ShouldContain("Client-provided handling note.");
+                html.ShouldContain("When testing is completed you will receive an email");
                 html.ShouldNotContain("<mjml");
             }
         }

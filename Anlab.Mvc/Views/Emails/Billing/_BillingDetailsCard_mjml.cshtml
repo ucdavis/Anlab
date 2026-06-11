@@ -1,9 +1,9 @@
 @using System
 @using Anlab.Core.Models
-@model AnlabMvc.Models.Email.Billing.BillingInformationEmailModel
+@model Anlab.Core.Domain.Order
 
 @{
-    var order = Model.Order?.GetOrderDetails() ?? new OrderDetails();
+    var order = Model?.GetOrderDetails() ?? new OrderDetails();
     var payment = order.Payment;
     var otherPaymentInfo = order.OtherPaymentInfo;
     var clientType = payment?.ClientType;
