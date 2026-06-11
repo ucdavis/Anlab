@@ -13,6 +13,29 @@ namespace Test.TestsServices
     public class OrderMessageServiceTests
     {
         [Fact]
+        public async Task EnqueueCreatedMessage_WhenMjmlFlagEnabledUsesMjmlEmail()
+        {
+            var mjmlEmailService = new Mock<IMjmlEmailService>();
+            mjmlEmailService
+                .Setup(a => a.EnqueueOrderCreatedEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<Order>(),
+                    It.IsAny<User>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            var orderMessageService = CreateService(mjmlEmailService.Object, useMjmlEmails: true);
+            var order = CreateOrder();
+
+            await orderMessageService.EnqueueCreatedMessage(order);
+
+            mjmlEmailService.Verify(a => a.EnqueueOrderCreatedEmailAsync(
+                "client@example.com;copy@example.com",
+                order,
+                order.Creator,
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
         public async Task EnqueueReceivedMessage_WhenBypassedSendsToAnlabAndPassesClientRecipientsForCard()
         {
             var mjmlEmailService = new Mock<IMjmlEmailService>();
@@ -25,7 +48,7 @@ namespace Test.TestsServices
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
-            var orderMessageService = CreateService(mjmlEmailService.Object);
+            var orderMessageService = CreateService(mjmlEmailService.Object, useMjmlEmails: true);
             var order = CreateOrder();
 
             await orderMessageService.EnqueueReceivedMessage(order, bypass: true);
@@ -52,7 +75,7 @@ namespace Test.TestsServices
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
-            var orderMessageService = CreateService(mjmlEmailService.Object);
+            var orderMessageService = CreateService(mjmlEmailService.Object, useMjmlEmails: true);
             var order = CreateOrder();
 
             await orderMessageService.EnqueueReceivedMessage(order);
@@ -66,12 +89,41 @@ namespace Test.TestsServices
                 It.IsAny<CancellationToken>()), Times.Once);
         }
 
-        private static OrderMessageService CreateService(IMjmlEmailService mjmlEmailService)
+        [Fact]
+        public async Task EnqueueBillingMessage_WhenMjmlFlagEnabledUsesMjmlEmail()
+        {
+            var mjmlEmailService = new Mock<IMjmlEmailService>();
+            mjmlEmailService
+                .Setup(a => a.EnqueueBillingInformationEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<Order>(),
+                    It.IsAny<User>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            var orderMessageService = CreateService(mjmlEmailService.Object, useMjmlEmails: true);
+            var order = CreateOrder();
+
+            await orderMessageService.EnqueueBillingMessage(order, "Billing subject");
+
+            mjmlEmailService.Verify(a => a.EnqueueBillingInformationEmailAsync(
+                "accounts@example.com",
+                "Billing subject",
+                order,
+                order.Creator,
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        private static OrderMessageService CreateService(IMjmlEmailService mjmlEmailService, bool useMjmlEmails)
         {
             return new OrderMessageService(
                 null,
                 null,
-                Options.Create(new AppSettings()),
+                Options.Create(new AppSettings
+                {
+                    UseMjmlEmails = useMjmlEmails,
+                    AccountsEmail = "accounts@example.com"
+                }),
                 Options.Create(new EmailSettings
                 {
                     AnlabAddress = "anlab@example.com"
