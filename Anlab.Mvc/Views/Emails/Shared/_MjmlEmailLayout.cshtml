@@ -43,6 +43,8 @@
                 padding-top="0px"
                 padding-bottom="0px">
       <mj-column padding="0px">
+        @await Html.PartialAsync("/Views/Emails/Shared/_BypassClientCard_mjml.cshtml", Model)
+
         @RenderBody()
       </mj-column>
     </mj-section>

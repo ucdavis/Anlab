@@ -8,6 +8,8 @@ namespace AnlabMvc.Models.Email
         public string ButtonUrl { get; set; }
         public string LayoutWidth { get; set; }
         public string FooterImageUrl { get; set; } = "https://anlaborders.ucdavis.edu/Images/anlabEmailLogo.jpg";
+        public bool BypassClientEmail { get; set; }
+        public string BypassRecipientList { get; set; }
     }
 
     public class MjmlEmailButtonModel

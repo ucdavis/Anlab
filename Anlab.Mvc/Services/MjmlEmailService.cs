@@ -42,6 +42,8 @@ namespace AnlabMvc.Services
             string sendTo,
             Order order,
             User user = null,
+            bool bypassClientEmail = false,
+            string bypassRecipientList = null,
             CancellationToken cancellationToken = default);
 
         Task EnqueueBillingInformationEmailAsync(
@@ -168,16 +170,26 @@ namespace AnlabMvc.Services
             string sendTo,
             Order order,
             User user = null,
+            bool bypassClientEmail = false,
+            string bypassRecipientList = null,
             CancellationToken cancellationToken = default)
         {
             var model = new WorkRequestReceivedByLabEmailModel
             {
                 LayoutWidth = "800px",
                 Order = order,
-                PreviewText = "Work Request Received By Lab"
+                PreviewText = "Work Request Received By Lab",
+                BypassClientEmail = bypassClientEmail,
+                BypassRecipientList = bypassRecipientList ?? sendTo
             };
 
-            return EnqueueAsync(sendTo, $"Work Request Confirmation - {order?.RequestNum}", WorkRequestReceivedByLabTemplateName, model, order, user ?? order?.Creator, cancellationToken);
+            var subject = $"Work Request Confirmation - {order?.RequestNum}";
+            if (bypassClientEmail)
+            {
+                subject = $"{subject} -- Bypass Client";               
+            }
+
+            return EnqueueAsync(sendTo, subject, WorkRequestReceivedByLabTemplateName, model, order, user ?? order?.Creator, cancellationToken);
         }
 
         public Task EnqueueBillingInformationEmailAsync(

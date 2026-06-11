@@ -69,29 +69,38 @@ namespace AnlabMvc.Services
 
         public async Task EnqueueReceivedMessage(Order order, bool bypass = false)
         {
-            var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderReceived", order);
+            //var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderReceived", order);
 
-            if (bypass)
-            {
-                body = $"Email not sent to clients. </br> {GetSendTo(order)} </br></br></br> {body}";
-            }
+            //if (bypass)
+            //{
+            //    body = $"Email not sent to clients. </br> {GetSendTo(order)} </br></br></br> {body}";
+            //}
 
-            var message = new MailMessage
-            {
-                Subject = $"Work Request Confirmation - {order.RequestNum}",
-                Body = body,
-                SendTo = GetSendTo(order),
-                Order = order,
-                User = order.Creator,
-            };
+            //var message = new MailMessage
+            //{
+            //    Subject = $"Work Request Confirmation - {order.RequestNum}",
+            //    Body = body,
+            //    SendTo = GetSendTo(order),
+            //    Order = order,
+            //    User = order.Creator,
+            //};
 
-            if (bypass)
-            {
-                message.Subject = $"{message.Subject} -- Bypass Client";
-                message.SendTo = _emailSettings.AnlabAddress;
-            }
+            //if (bypass)
+            //{
+            //    message.Subject = $"{message.Subject} -- Bypass Client";
+            //    message.SendTo = _emailSettings.AnlabAddress;
+            //}
 
-            _mailService.EnqueueMessage(message);
+            //_mailService.EnqueueMessage(message);
+            var clientRecipients = GetSendTo(order);
+            var sendTo = bypass ? _emailSettings.AnlabAddress : clientRecipients;
+
+            await _mjmlEmailService.EnqueueWorkRequestReceivedByLabEmailAsync(
+                sendTo,
+                order,
+                order.Creator,
+                bypass,
+                bypass ? clientRecipients : null);
         }
 
         /// <summary>

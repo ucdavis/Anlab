@@ -110,6 +110,35 @@ namespace Test.TestsServices
         }
 
         [Fact]
+        public async Task EnqueueWorkRequestReceivedByLabEmailAsync_SetsBypassClientEmailDetails()
+        {
+            var renderer = new StubMjmlEmailRenderer();
+            var mailService = new StubMailService();
+            var service = new MjmlEmailService(renderer, mailService, new HttpContextAccessor());
+            var user = new User();
+            var order = new Order
+            {
+                Creator = user,
+                RequestNum = "22F107"
+            };
+
+            await service.EnqueueWorkRequestReceivedByLabEmailAsync(
+                "anlab@example.com",
+                order,
+                user,
+                bypassClientEmail: true,
+                bypassRecipientList: "client@example.com;copy@example.com");
+
+            renderer.TemplateName.ShouldBe(MjmlEmailService.WorkRequestReceivedByLabTemplateName);
+            var model = renderer.Model.ShouldBeOfType<WorkRequestReceivedByLabEmailModel>();
+            model.BypassClientEmail.ShouldBeTrue();
+            model.BypassRecipientList.ShouldBe("client@example.com;copy@example.com");
+            mailService.Message.ShouldNotBeNull();
+            mailService.Message.Subject.ShouldBe("Work Request Confirmation - 22F107 -- Bypass Client");
+            mailService.Message.SendTo.ShouldBe("anlab@example.com");
+        }
+
+        [Fact]
         public async Task RenderAsync_RendersSampleCardTemplateToHtml()
         {
             var services = new ServiceCollection();
@@ -373,10 +402,15 @@ namespace Test.TestsServices
 
                 var html = await renderer.RenderAsync(MjmlEmailService.WorkRequestReceivedByLabTemplateName, new WorkRequestReceivedByLabEmailModel
                 {
-                    Order = order
+                    Order = order,
+                    BypassClientEmail = true,
+                    BypassRecipientList = "client@example.com;copy@example.com"
                 });
 
                 html.ShouldContain("Work Request Received By Lab");
+                html.ShouldContain("Email not sent to clients.");
+                html.ShouldContain("Intended recipient(s):");
+                html.ShouldContain("client@example.com;copy@example.com");
                 html.ShouldContain("Your samples have been received by the lab.");
                 html.ShouldContain("22F107");
                 html.ShouldContain("Lab Comments");
@@ -599,10 +633,12 @@ namespace Test.TestsServices
             public const string RenderedHtml = "<html><body>Rendered MJML</body></html>";
 
             public string TemplateName { get; private set; }
+            public object Model { get; private set; }
 
             public Task<string> RenderAsync<TModel>(string templateName, TModel model, CancellationToken cancellationToken = default)
             {
                 TemplateName = templateName;
+                Model = model;
                 return Task.FromResult(RenderedHtml);
             }
         }
