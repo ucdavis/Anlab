@@ -157,8 +157,8 @@ namespace AnlabMvc.Services
                 LayoutWidth = "800px",
                 Order = order,
                 PreviewText = "Work Order Confirmation",
-                ButtonText = "Your Orders",
-                ButtonUrl = $"https://anlaborders.ucdavis.edu/Order/"
+                //ButtonText = "Your Orders", //This might cause confusion since people can be emailed when they didn't create the order and will not have access to it.
+                //ButtonUrl = $"https://anlaborders.ucdavis.edu/Order/"
             };
 
             return EnqueueAsync(sendTo, "Work Order Confirmation", OrderCreatedTemplateName, model, order, user ?? order?.Creator, cancellationToken);
