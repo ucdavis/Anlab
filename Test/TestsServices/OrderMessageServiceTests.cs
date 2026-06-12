@@ -90,6 +90,33 @@ namespace Test.TestsServices
         }
 
         [Fact]
+        public async Task EnqueuePartialResultsMessage_WhenMjmlFlagEnabledSendsToAnlabAndPassesClientRecipientsForCard()
+        {
+            var mjmlEmailService = new Mock<IMjmlEmailService>();
+            mjmlEmailService
+                .Setup(a => a.EnqueueWorkRequestPartialResultsEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<Order>(),
+                    It.IsAny<User>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            var orderMessageService = CreateService(mjmlEmailService.Object, useMjmlEmails: true);
+            var order = CreateOrder();
+
+            await orderMessageService.EnqueuePartialResultsMessage(order);
+
+            mjmlEmailService.Verify(a => a.EnqueueWorkRequestPartialResultsEmailAsync(
+                "anlab@example.com",
+                order,
+                order.Creator,
+                true,
+                "client@example.com;copy@example.com",
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
         public async Task EnqueueFinalizedMessage_WhenBypassedSendsToAnlabAndPassesClientRecipientsForCard()
         {
             var mjmlEmailService = new Mock<IMjmlEmailService>();

@@ -120,15 +120,28 @@ namespace AnlabMvc.Services
         /// <returns></returns>
         public async Task EnqueuePartialResultsMessage(Order order)
         {
+            var clientRecipients = GetSendTo(order);
+
+            if (_appSettings.UseMjmlEmails)
+            {
+                await _mjmlEmailService.EnqueueWorkRequestPartialResultsEmailAsync(
+                    _emailSettings.AnlabAddress,
+                    order,
+                    order.Creator,
+                    true,
+                    clientRecipients);
+                return;
+            }
+
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderPartialResults", order);
 
-            body = $"Email not sent to clients. </br> {GetSendTo(order)} </br></br></br> {body}";
+            body = $"Email not sent to clients. </br> {clientRecipients} </br></br></br> {body}";
 
             var message = new MailMessage
             {
                 Subject = $"Work Request Partial Results - {order.RequestNum}  -- Bypass Client",
                 Body = body,
-                SendTo = GetSendTo(order),
+                SendTo = clientRecipients,
                 Order = order,
                 User = order.Creator,
             };

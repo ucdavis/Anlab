@@ -46,6 +46,14 @@ namespace AnlabMvc.Services
             string bypassRecipientList = null,
             CancellationToken cancellationToken = default);
 
+        Task EnqueueWorkRequestPartialResultsEmailAsync(
+            string sendTo,
+            Order order,
+            User user = null,
+            bool bypassClientEmail = false,
+            string bypassRecipientList = null,
+            CancellationToken cancellationToken = default);
+
         Task EnqueueWorkRequestFinalizedEmailAsync(
             string sendTo,
             Order order,
@@ -67,6 +75,7 @@ namespace AnlabMvc.Services
         public const string SampleCardTemplateName = "Emails/Samples/SampleCard_mjml";
         public const string OrderCreatedTemplateName = "Emails/Orders/OrderCreated_mjml";
         public const string WorkRequestReceivedByLabTemplateName = "Emails/WorkRequests/WorkRequestReceivedByLab_mjml";
+        public const string WorkRequestPartialResultsTemplateName = "Emails/WorkRequests/WorkRequestPartialResults_mjml";
         public const string WorkRequestFinalizedTemplateName = "Emails/WorkRequests/WorkRequestFinalized_mjml";
         public const string BillingInformationTemplateName = "Emails/Billing/BillingInformation_mjml";
 
@@ -199,6 +208,32 @@ namespace AnlabMvc.Services
             }
 
             return EnqueueAsync(sendTo, subject, WorkRequestReceivedByLabTemplateName, model, order, user ?? order?.Creator, cancellationToken);
+        }
+
+        public Task EnqueueWorkRequestPartialResultsEmailAsync(
+            string sendTo,
+            Order order,
+            User user = null,
+            bool bypassClientEmail = false,
+            string bypassRecipientList = null,
+            CancellationToken cancellationToken = default)
+        {
+            var model = new WorkRequestPartialResultsEmailModel
+            {
+                LayoutWidth = "800px",
+                Order = order,
+                PreviewText = "Work Request Partial Results",
+                BypassClientEmail = bypassClientEmail,
+                BypassRecipientList = bypassRecipientList ?? sendTo
+            };
+
+            var subject = $"Work Request Partial Results - {order?.RequestNum}";
+            if (bypassClientEmail)
+            {
+                subject = $"{subject} -- Bypass Client";
+            }
+
+            return EnqueueAsync(sendTo, subject, WorkRequestPartialResultsTemplateName, model, order, user ?? order?.Creator, cancellationToken);
         }
 
         public Task EnqueueBillingInformationEmailAsync(
