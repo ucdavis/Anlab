@@ -46,6 +46,14 @@ namespace AnlabMvc.Services
             string bypassRecipientList = null,
             CancellationToken cancellationToken = default);
 
+        Task EnqueueWorkRequestFinalizedEmailAsync(
+            string sendTo,
+            Order order,
+            User user = null,
+            bool bypassClientEmail = false,
+            string bypassRecipientList = null,
+            CancellationToken cancellationToken = default);
+
         Task EnqueueBillingInformationEmailAsync(
             string sendTo,
             string subject,
@@ -59,6 +67,7 @@ namespace AnlabMvc.Services
         public const string SampleCardTemplateName = "Emails/Samples/SampleCard_mjml";
         public const string OrderCreatedTemplateName = "Emails/Orders/OrderCreated_mjml";
         public const string WorkRequestReceivedByLabTemplateName = "Emails/WorkRequests/WorkRequestReceivedByLab_mjml";
+        public const string WorkRequestFinalizedTemplateName = "Emails/WorkRequests/WorkRequestFinalized_mjml";
         public const string BillingInformationTemplateName = "Emails/Billing/BillingInformation_mjml";
 
         private readonly IMjmlEmailRenderer _renderer;
@@ -211,6 +220,37 @@ namespace AnlabMvc.Services
             return EnqueueAsync(sendTo, subject, BillingInformationTemplateName, model, order, user ?? order?.Creator, cancellationToken);
         }
 
+        public Task EnqueueWorkRequestFinalizedEmailAsync(
+            string sendTo,
+            Order order,
+            User user = null,
+            bool bypassClientEmail = false,
+            string bypassRecipientList = null,
+            CancellationToken cancellationToken = default)
+        {
+            var orderDetails = order?.GetOrderDetails();
+            var isInternalClient = orderDetails?.Payment?.IsInternalClient == true;
+            var buttonText = isInternalClient ? "Get Your Results" : "Get Your Results and Pay";
+            var model = new WorkRequestFinalizedEmailModel
+            {
+                LayoutWidth = "800px",
+                Order = order,
+                PreviewText = "Work Request Finalized - Payment Pending",
+                ButtonText = buttonText,
+                ButtonUrl = BuildResultsLinkUrl(order),
+                BypassClientEmail = bypassClientEmail,
+                BypassRecipientList = bypassRecipientList ?? sendTo
+            };
+
+            var subject = $"Work Request Finalized - Payment Pending - {order?.RequestNum}";
+            if (bypassClientEmail)
+            {
+                subject = $"{subject} -- Bypass Client";
+            }
+
+            return EnqueueAsync(sendTo, subject, WorkRequestFinalizedTemplateName, model, order, user ?? order?.Creator, cancellationToken);
+        }
+
         private string BuildReviewerDetailsUrl(Order order)
         {
             if (order == null)
@@ -229,6 +269,26 @@ namespace AnlabMvc.Services
                 request.Host,
                 request.PathBase,
                 $"/Reviewer/Details/{order.Id}");
+        }
+
+        private string BuildResultsLinkUrl(Order order)
+        {
+            if (order == null)
+            {
+                throw new ArgumentNullException(nameof(order));
+            }
+
+            var request = _httpContextAccessor.HttpContext?.Request;
+            if (request == null)
+            {
+                throw new InvalidOperationException("A current HTTP request is required to build the results email URL.");
+            }
+
+            return UriHelper.BuildAbsolute(
+                request.Scheme,
+                request.Host,
+                request.PathBase,
+                $"/Results/Link/{order.ShareIdentifier}");
         }
     }
 }

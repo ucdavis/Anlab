@@ -140,21 +140,34 @@ namespace AnlabMvc.Services
 
         public async Task EnqueueFinalizedMessage(Order order, bool bypass = false)
         {
-            var orderDetails = order.GetOrderDetails();
-            var subject = $"Work Request Finalized - Payment Pending - {order.RequestNum}";
+            var clientRecipients = GetSendTo(order);
 
+            if (_appSettings.UseMjmlEmails)
+            {
+                var sendTo = bypass ? _emailSettings.AnlabAddress : clientRecipients;
+
+                await _mjmlEmailService.EnqueueWorkRequestFinalizedEmailAsync(
+                    sendTo,
+                    order,
+                    order.Creator,
+                    bypass,
+                    bypass ? clientRecipients : null);
+                return;
+            }
+
+            var subject = $"Work Request Finalized - Payment Pending - {order.RequestNum}";
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderFinalized", order);
 
             if (bypass)
             {
-                body = $"Email not sent to clients. </br> {GetSendTo(order)} </br></br></br> {body}";
+                body = $"Email not sent to clients. </br> {clientRecipients} </br></br></br> {body}";
             }
 
             var message = new MailMessage
             {
                 Subject = subject,
                 Body = body,
-                SendTo = GetSendTo(order),
+                SendTo = clientRecipients,
                 Order = order,
                 User = order.Creator,
             };

@@ -1,10 +1,12 @@
+@using System.Globalization
 @model AnlabMvc.Models.Email.Orders.OrderCreatedEmailModel
 
 @{
     Layout = "/Views/Emails/Shared/_MjmlEmailLayout.cshtml";
+    var currencyCulture = CultureInfo.GetCultureInfo("en-US");
     var labEmailSubject = System.Uri.EscapeDataString($"Online Order Number {Model.Order?.Id}");
     var orderDetails = Model.Order?.GetOrderDetails();
-    var orderTotal = orderDetails == null ? "-" : orderDetails.Total.ToString("C");
+    var orderTotal = orderDetails == null ? "-" : orderDetails.Total.ToString("C", currencyCulture);
 }
 
 <mj-text font-size="26px"

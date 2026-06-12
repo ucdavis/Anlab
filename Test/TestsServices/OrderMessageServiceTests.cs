@@ -90,6 +90,60 @@ namespace Test.TestsServices
         }
 
         [Fact]
+        public async Task EnqueueFinalizedMessage_WhenBypassedSendsToAnlabAndPassesClientRecipientsForCard()
+        {
+            var mjmlEmailService = new Mock<IMjmlEmailService>();
+            mjmlEmailService
+                .Setup(a => a.EnqueueWorkRequestFinalizedEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<Order>(),
+                    It.IsAny<User>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            var orderMessageService = CreateService(mjmlEmailService.Object, useMjmlEmails: true);
+            var order = CreateOrder();
+
+            await orderMessageService.EnqueueFinalizedMessage(order, bypass: true);
+
+            mjmlEmailService.Verify(a => a.EnqueueWorkRequestFinalizedEmailAsync(
+                "anlab@example.com",
+                order,
+                order.Creator,
+                true,
+                "client@example.com;copy@example.com",
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task EnqueueFinalizedMessage_WhenNotBypassedSendsToClientRecipients()
+        {
+            var mjmlEmailService = new Mock<IMjmlEmailService>();
+            mjmlEmailService
+                .Setup(a => a.EnqueueWorkRequestFinalizedEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<Order>(),
+                    It.IsAny<User>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            var orderMessageService = CreateService(mjmlEmailService.Object, useMjmlEmails: true);
+            var order = CreateOrder();
+
+            await orderMessageService.EnqueueFinalizedMessage(order);
+
+            mjmlEmailService.Verify(a => a.EnqueueWorkRequestFinalizedEmailAsync(
+                "client@example.com;copy@example.com",
+                order,
+                order.Creator,
+                false,
+                null,
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
         public async Task EnqueueBillingMessage_WhenMjmlFlagEnabledUsesMjmlEmail()
         {
             var mjmlEmailService = new Mock<IMjmlEmailService>();

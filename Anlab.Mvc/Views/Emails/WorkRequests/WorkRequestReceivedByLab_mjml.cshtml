@@ -1,8 +1,10 @@
+@using System.Globalization
 @using Anlab.Core.Models
 @model AnlabMvc.Models.Email.WorkRequests.WorkRequestReceivedByLabEmailModel
 
 @{
     Layout = "/Views/Emails/Shared/_MjmlEmailLayout.cshtml";
+    var currencyCulture = CultureInfo.GetCultureInfo("en-US");
     var orderDetails = Model.Order?.GetOrderDetails() ?? new OrderDetails();
     var labComments = orderDetails.LabComments;
 }
@@ -62,7 +64,7 @@
           padding="0px 0px 24px 0px">
   <tr>
     <td style="background-color:#def0fc;border:1px solid #b7d7ee;border-radius:8px;padding:16px 24px;">
-      <div>Order Total: <strong>@orderDetails.GrandTotal.ToString("C")</strong></div>
+      <div>Order Total: <strong>@orderDetails.GrandTotal.ToString("C", currencyCulture)</strong></div>
       <div style="color:#0000ff;font-weight:700;padding:8px 0 0 20px;">*Non-routine matrices may incur additional charges.</div>
       @if (orderDetails.RushMultiplier.HasValue && orderDetails.RushMultiplier.Value > 1)
       {

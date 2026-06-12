@@ -139,6 +139,46 @@ namespace Test.TestsServices
         }
 
         [Fact]
+        public async Task EnqueueWorkRequestFinalizedEmailAsync_UsesWorkRequestFinalizedTemplate()
+        {
+            var renderer = new StubMjmlEmailRenderer();
+            var mailService = new StubMailService();
+            var httpContextAccessor = new HttpContextAccessor
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            httpContextAccessor.HttpContext.Request.Scheme = "https";
+            httpContextAccessor.HttpContext.Request.Host = new HostString("localhost:5001");
+            var service = new MjmlEmailService(renderer, mailService, httpContextAccessor);
+            var user = new User();
+            var order = new Order
+            {
+                Creator = user,
+                RequestNum = "22F107",
+                ShareIdentifier = Guid.Parse("11111111-1111-1111-1111-111111111111")
+            };
+            var orderDetails = new OrderDetails
+            {
+                Payment = new Payment
+                {
+                    ClientType = "other"
+                }
+            };
+            order.SaveDetails(orderDetails);
+
+            await service.EnqueueWorkRequestFinalizedEmailAsync("client@example.com", order, user);
+
+            renderer.TemplateName.ShouldBe(MjmlEmailService.WorkRequestFinalizedTemplateName);
+            var model = renderer.Model.ShouldBeOfType<WorkRequestFinalizedEmailModel>();
+            model.ButtonText.ShouldBe("Get Your Results and Pay");
+            model.ButtonUrl.ShouldBe("https://localhost:5001/Results/Link/11111111-1111-1111-1111-111111111111");
+            mailService.Message.ShouldNotBeNull();
+            mailService.Message.Subject.ShouldBe("Work Request Finalized - Payment Pending - 22F107");
+            mailService.Message.Order.ShouldBe(order);
+            mailService.Message.User.ShouldBe(user);
+        }
+
+        [Fact]
         public async Task RenderAsync_RendersSampleCardTemplateToHtml()
         {
             var services = new ServiceCollection();
@@ -575,6 +615,70 @@ namespace Test.TestsServices
                 html.ShouldContain("$7.00");
                 html.ShouldContain("Review Details");
                 html.ShouldContain("https://localhost:5001/Reviewer/Details/2920");
+                html.ShouldNotContain("<mjml");
+            }
+        }
+
+        [Fact]
+        public async Task RenderAsync_RendersWorkRequestFinalizedTemplateToHtml()
+        {
+            var services = new ServiceCollection();
+            var webRoot = Path.Combine(AppContext.BaseDirectory, "wwwroot");
+            var diagnosticListener = new DiagnosticListener("MjmlEmailServiceTests");
+
+            services.AddLogging();
+            services.AddSingleton<DiagnosticSource>(diagnosticListener);
+            services.AddSingleton(diagnosticListener);
+            services.AddSingleton<IWebHostEnvironment>(new TestWebHostEnvironment
+            {
+                ApplicationName = typeof(Startup).Assembly.GetName().Name,
+                ContentRootPath = AppContext.BaseDirectory,
+                ContentRootFileProvider = new PhysicalFileProvider(AppContext.BaseDirectory),
+                EnvironmentName = Environments.Development,
+                WebRootPath = webRoot,
+                WebRootFileProvider = Directory.Exists(webRoot)
+                    ? new PhysicalFileProvider(webRoot)
+                    : new NullFileProvider()
+            });
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+            services.AddSingleton<MjmlRenderer>();
+            services.AddControllersWithViews()
+                .AddApplicationPart(typeof(Startup).Assembly);
+            services.AddTransient<IMjmlEmailRenderer, MjmlEmailRenderer>();
+
+            using (var serviceProvider = services.BuildServiceProvider())
+            {
+                var renderer = serviceProvider.GetRequiredService<IMjmlEmailRenderer>();
+                var order = CreateValidEntities.Order(2920, populateAllFields: true);
+                order.Status = OrderStatusCodes.Finalized;
+                order.RequestNum = "22F107";
+                order.Creator = CreateValidEntities.User(2920);
+                var orderDetails = order.GetOrderDetails();
+                orderDetails.Payment.ClientType = "other";
+                orderDetails.Project = "Finalized Project";
+                orderDetails.LabworksSampleDisposition = "R";
+                order.SaveDetails(orderDetails);
+
+                var html = await renderer.RenderAsync(MjmlEmailService.WorkRequestFinalizedTemplateName, new WorkRequestFinalizedEmailModel
+                {
+                    Order = order,
+                    ButtonText = "Get Your Results and Pay",
+                    ButtonUrl = "https://localhost:5001/Results/Link/11111111-1111-1111-1111-111111111111",
+                    BypassClientEmail = true,
+                    BypassRecipientList = "client@example.com;copy@example.com"
+                });
+
+                html.ShouldContain("Work Request Finalized");
+                html.ShouldContain("Email not sent to clients.");
+                html.ShouldContain("client@example.com;copy@example.com");
+                html.ShouldContain("Work Request 22F107");
+                html.ShouldContain("Results for Project Finalized Project");
+                html.ShouldContain("Your work order has been completed and your results are now available. You are required to pay at this time.");
+                html.ShouldContain("Get Your Results and Pay");
+                html.ShouldContain("https://localhost:5001/Results/Link/11111111-1111-1111-1111-111111111111");
+                html.ShouldContain("Sample Disposition");
+                html.ShouldContain("Return samples at client cost.");
                 html.ShouldNotContain("<mjml");
             }
         }

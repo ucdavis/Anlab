@@ -1,9 +1,11 @@
 @using System
+@using System.Globalization
 @using System.Linq
 @using Anlab.Core.Models
 @model AnlabMvc.Models.Email.OrderTestDetailsTableEmailModel
 
 @{
+    var currencyCulture = CultureInfo.GetCultureInfo("en-US");
     var orderEntity = Model?.Order;
     var order = orderEntity?.GetOrderDetails() ?? new OrderDetails();
     var selectedTests = order.SelectedTests ?? Array.Empty<TestDetails>();
@@ -50,22 +52,22 @@
 
       <tr>
         <td width="46%" style="border-bottom:1px solid #edf1f5;padding:10px 10px 10px 0;">@test.Analysis</td>
-        <td align="right" width="18%" style="border-bottom:1px solid #edf1f5;padding:10px 10px 10px 0;white-space:nowrap;">@test.Cost.ToString("C")</td>
-        <td align="right" width="18%" style="border-bottom:1px solid #edf1f5;padding:10px 10px 10px 0;white-space:nowrap;">@test.SetupCost.ToString("C")</td>
-        <td align="right" width="18%" style="border-bottom:1px solid #edf1f5;padding:10px 0 10px 0;white-space:nowrap;">@test.Total.ToString("C")</td>
+        <td align="right" width="18%" style="border-bottom:1px solid #edf1f5;padding:10px 10px 10px 0;white-space:nowrap;">@test.Cost.ToString("C", currencyCulture)</td>
+        <td align="right" width="18%" style="border-bottom:1px solid #edf1f5;padding:10px 10px 10px 0;white-space:nowrap;">@test.SetupCost.ToString("C", currencyCulture)</td>
+        <td align="right" width="18%" style="border-bottom:1px solid #edf1f5;padding:10px 0 10px 0;white-space:nowrap;">@test.Total.ToString("C", currencyCulture)</td>
       </tr>
   }
   <tr>
     <td style="padding:12px 10px 0 0;"></td>
     <td colspan="2" align="left" style="padding:12px 10px 0 0;font-weight:700;">Processing Fee</td>
-    <td align="right" style="padding:12px 0 0 0;white-space:nowrap;">@processingFee.ToString("C")</td>
+    <td align="right" style="padding:12px 0 0 0;white-space:nowrap;">@processingFee.ToString("C", currencyCulture)</td>
   </tr>
   @if (Model?.ShowBillingTotals == true && hiddenCosts > 0.0M)
   {
       <tr>
         <td style="padding:8px 10px 0 0;"></td>
         <td colspan="2" align="left" style="padding:8px 10px 0 0;font-weight:700;">Other Costs</td>
-        <td align="right" style="padding:8px 0 0 0;white-space:nowrap;">@hiddenCosts.ToString("C")</td>
+        <td align="right" style="padding:8px 0 0 0;white-space:nowrap;">@hiddenCosts.ToString("C", currencyCulture)</td>
       </tr>
   }
   @if (Model?.ShowBillingTotals == true && order.AdjustmentAmount != 0)
@@ -73,12 +75,12 @@
       <tr>
         <td style="padding:8px 10px 0 0;"></td>
         <td colspan="2" align="left" style="padding:8px 10px 0 0;font-weight:700;">Adjustment Amount</td>
-        <td align="right" style="padding:8px 0 0 0;white-space:nowrap;">@order.AdjustmentAmount.ToString("C")</td>
+        <td align="right" style="padding:8px 0 0 0;white-space:nowrap;">@order.AdjustmentAmount.ToString("C", currencyCulture)</td>
       </tr>
   }
   <tr>
     <td style="padding:8px 10px 0 0;"></td>
     <td colspan="2" align="left" style="padding:8px 10px 0 0;font-weight:700;">Grand Total</td>
-    <td align="right" style="padding:8px 0 0 0;font-weight:700;white-space:nowrap;">@order.GrandTotal.ToString("C")</td>
+    <td align="right" style="padding:8px 0 0 0;font-weight:700;white-space:nowrap;">@order.GrandTotal.ToString("C", currencyCulture)</td>
   </tr>
 </mj-table>
