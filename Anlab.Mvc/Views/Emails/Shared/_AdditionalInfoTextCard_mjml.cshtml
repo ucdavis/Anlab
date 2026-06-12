@@ -1,0 +1,32 @@
+@using Anlab.Core.Models
+@using System.Net
+@model Anlab.Core.Domain.Order
+
+@{
+  var order = Model?.GetOrderDetails() ?? new OrderDetails();
+  var additionalInfo = order.AdditionalInfo;
+  var formattedAdditionalInfo = string.IsNullOrWhiteSpace(additionalInfo)
+      ? string.Empty
+      : WebUtility.HtmlEncode(additionalInfo)
+          .Replace("\r\n", "<br />")
+          .Replace("\n", "<br />")
+          .Replace("\r", "<br />");
+}
+
+@if (!string.IsNullOrWhiteSpace(additionalInfo))
+{
+  <mj-table cellpadding="0"
+            cellspacing="0"
+            width="100%"
+            color="#172033"
+            font-size="16px"
+            line-height="1.55"
+            padding="0px 0px 24px 0px">
+    <tr>
+      <td style="background-color:#f4f6f8;border:1px solid #d9e1ea;border-radius:8px;padding:18px 24px;">
+        <div style="font-weight:700;line-height:1.4;padding:0 0 8px 0;">Additional Information</div>
+        <div>@Html.Raw(formattedAdditionalInfo)</div>
+      </td>
+    </tr>
+  </mj-table>
+}

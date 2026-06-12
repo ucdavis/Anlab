@@ -20,5 +20,9 @@ namespace AnlabMvc
         public string AccountsEmail { get; set; }
 
         public bool AllowDuplicateRequestNums { get; set; } = false;
+
+        public bool UseMjmlEmails { get; set; } = false;
+
+        public bool IncludePartialResultsDownloadLink { get; set; } = false;
     }
 }

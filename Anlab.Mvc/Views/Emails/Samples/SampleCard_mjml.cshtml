@@ -1,0 +1,55 @@
+@model AnlabMvc.Models.Email.Samples.SampleCardEmailModel
+
+@{
+    Layout = "/Views/Emails/Shared/_MjmlEmailLayout.cshtml";
+}
+
+<mj-section padding="36px 36px 18px 36px">
+  <mj-column>
+    <mj-text font-size="26px"
+             font-weight="700"
+             line-height="1.3"
+             padding="0px 0px 12px 0px">
+      @Model.Header
+    </mj-text>
+    <mj-text padding="0px 0px 18px 0px">
+      @Model.Message
+    </mj-text>
+  </mj-column>
+</mj-section>
+
+<mj-section background-color="#f7fafc"
+            border="1px solid #dfe7f1"
+            border-radius="12px"
+            padding="22px 28px"
+            margin="0px 36px 30px 36px">
+  <mj-column>
+    <mj-text font-size="18px"
+             font-weight="700"
+             line-height="1.35"
+             padding="0px 0px 8px 0px">
+      @Model.CardTitle
+    </mj-text>
+    <mj-text color="#5d6b82" padding="0px 0px 14px 0px">
+      @Model.CardSummary
+    </mj-text>
+    <mj-table cellpadding="0" cellspacing="0" font-size="14px" line-height="1.5" role="presentation" padding="0px">
+      @foreach (var item in Model.Items)
+      {
+        <tr style="border-top:1px solid #e6edf5;">
+          <td style="padding:12px 12px 12px 0;color:#5d6b82;font-weight:700;width:36%;">
+            @item.Label
+          </td>
+          <td style="padding:12px 0;color:#172033;font-weight:600;">
+            @item.Value
+          </td>
+        </tr>
+      }
+    </mj-table>
+  </mj-column>
+</mj-section>
+
+@if (!string.IsNullOrWhiteSpace(Model.ButtonText) && !string.IsNullOrWhiteSpace(Model.ButtonUrl))
+{
+  @await Html.PartialAsync("/Views/Emails/Shared/_MjmlEmailButton.cshtml", new AnlabMvc.Models.Email.MjmlEmailButtonModel(Model.ButtonText, Model.ButtonUrl))
+}

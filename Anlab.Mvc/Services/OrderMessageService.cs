@@ -27,17 +27,25 @@ namespace AnlabMvc.Services
         private readonly IMailService _mailService;
         private readonly AppSettings _appSettings;
         private readonly EmailSettings _emailSettings;
+        private readonly IMjmlEmailService _mjmlEmailService;
 
 
-        public OrderMessageService(ViewRenderService viewRenderService, IMailService mailService, IOptions<AppSettings> appSettings, IOptions<EmailSettings> emailSettings)
+        public OrderMessageService(ViewRenderService viewRenderService, IMailService mailService, IOptions<AppSettings> appSettings, IOptions<EmailSettings> emailSettings, IMjmlEmailService mjmlEmailService)
         {
             _viewRenderService = viewRenderService;
             _mailService = mailService;
             _appSettings = appSettings.Value;
             _emailSettings = emailSettings.Value;
+            _mjmlEmailService = mjmlEmailService;
         }
         public async Task EnqueueCreatedMessage(Order order)
         {
+            if (_appSettings.UseMjmlEmails)
+            {
+                await _mjmlEmailService.EnqueueOrderCreatedEmailAsync(GetSendTo(order), order, order.Creator);
+                return;
+            }
+
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderCreated", order);
 
             var message = new MailMessage
@@ -65,18 +73,33 @@ namespace AnlabMvc.Services
 
         public async Task EnqueueReceivedMessage(Order order, bool bypass = false)
         {
+            var clientRecipients = GetSendTo(order);
+
+            if (_appSettings.UseMjmlEmails)
+            {
+                var sendTo = bypass ? _emailSettings.AnlabAddress : clientRecipients;
+
+                await _mjmlEmailService.EnqueueWorkRequestReceivedByLabEmailAsync(
+                    sendTo,
+                    order,
+                    order.Creator,
+                    bypass,
+                    bypass ? clientRecipients : null);
+                return;
+            }
+
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderReceived", order);
 
             if (bypass)
             {
-                body = $"Email not sent to clients. </br> {GetSendTo(order)} </br></br></br> {body}";
+                body = $"Email not sent to clients. </br> {clientRecipients} </br></br></br> {body}";
             }
 
             var message = new MailMessage
             {
                 Subject = $"Work Request Confirmation - {order.RequestNum}",
                 Body = body,
-                SendTo = GetSendTo(order),
+                SendTo = clientRecipients,
                 Order = order,
                 User = order.Creator,
             };
@@ -97,15 +120,28 @@ namespace AnlabMvc.Services
         /// <returns></returns>
         public async Task EnqueuePartialResultsMessage(Order order)
         {
+            var clientRecipients = GetSendTo(order);
+
+            if (_appSettings.UseMjmlEmails)
+            {
+                await _mjmlEmailService.EnqueueWorkRequestPartialResultsEmailAsync(
+                    _emailSettings.AnlabAddress,
+                    order,
+                    order.Creator,
+                    true,
+                    clientRecipients);
+                return;
+            }
+
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderPartialResults", order);
 
-            body = $"Email not sent to clients. </br> {GetSendTo(order)} </br></br></br> {body}";
+            body = $"Email not sent to clients. </br> {clientRecipients} </br></br></br> {body}";
 
             var message = new MailMessage
             {
                 Subject = $"Work Request Partial Results - {order.RequestNum}  -- Bypass Client",
                 Body = body,
-                SendTo = GetSendTo(order),
+                SendTo = clientRecipients,
                 Order = order,
                 User = order.Creator,
             };
@@ -117,21 +153,34 @@ namespace AnlabMvc.Services
 
         public async Task EnqueueFinalizedMessage(Order order, bool bypass = false)
         {
-            var orderDetails = order.GetOrderDetails();
-            var subject = $"Work Request Finalized - Payment Pending - {order.RequestNum}";
+            var clientRecipients = GetSendTo(order);
 
+            if (_appSettings.UseMjmlEmails)
+            {
+                var sendTo = bypass ? _emailSettings.AnlabAddress : clientRecipients;
+
+                await _mjmlEmailService.EnqueueWorkRequestFinalizedEmailAsync(
+                    sendTo,
+                    order,
+                    order.Creator,
+                    bypass,
+                    bypass ? clientRecipients : null);
+                return;
+            }
+
+            var subject = $"Work Request Finalized - Payment Pending - {order.RequestNum}";
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_OrderFinalized", order);
 
             if (bypass)
             {
-                body = $"Email not sent to clients. </br> {GetSendTo(order)} </br></br></br> {body}";
+                body = $"Email not sent to clients. </br> {clientRecipients} </br></br></br> {body}";
             }
 
             var message = new MailMessage
             {
                 Subject = subject,
                 Body = body,
-                SendTo = GetSendTo(order),
+                SendTo = clientRecipients,
                 Order = order,
                 User = order.Creator,
             };
@@ -166,10 +215,13 @@ namespace AnlabMvc.Services
 
         public async Task EnqueueBillingMessage(Order order, string subject = "Anlab Work Request Billing Info")
         {
-            var orderDetails = order.GetOrderDetails();
-            //TODO: change wording, change SendTo to billing email
-            var body = await _viewRenderService.RenderViewToStringAsync("Templates/_BillingInformation", order);
+            if (_appSettings.UseMjmlEmails)
+            {
+                await _mjmlEmailService.EnqueueBillingInformationEmailAsync(_appSettings.AccountsEmail, subject, order, order.Creator);
+                return;
+            }
 
+            var body = await _viewRenderService.RenderViewToStringAsync("Templates/_BillingInformation", order);
 
             var message = new MailMessage
             {
