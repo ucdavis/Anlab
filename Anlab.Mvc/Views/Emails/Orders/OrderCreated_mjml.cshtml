@@ -9,10 +9,7 @@
     var orderTotal = orderDetails == null ? "-" : orderDetails.Total.ToString("C", currencyCulture);
 }
 
-<mj-text font-size="26px"
-         font-weight="700"
-         line-height="1.3"
-         padding="0px 0px 12px 0px">
+<mj-text mj-class="heading-primary">
   Work Order Confirmation
 </mj-text>
 <mj-text padding="0px 0px 14px 0px">
@@ -21,7 +18,7 @@
 <mj-text padding="0px 0px 14px 0px">
   All samples must be numbered sequentially starting at #1.
 </mj-text>
-<mj-text padding="0px 0px 18px 0px">
+<mj-text mj-class="body-copy">
   If you would like your sample descriptions included in the report, you may send an Excel file with that information to the lab email: <a href="mailto:anlab@ucdavis.edu?subject=@labEmailSubject">anlab@ucdavis.edu</a> Please reference the online order number in the email subject.
 </mj-text>
 
@@ -30,10 +27,7 @@
 <mj-table cellpadding="0"
           cellspacing="0"
           width="100%"
-          color="#172033"
-          font-size="16px"
-          line-height="1.65"
-          padding="0px 0px 24px 0px">
+          mj-class="content-table">
   <tr>
     <td style="background-color:#def0fc;border:1px solid #b7d7ee;border-radius:8px;padding:16px 24px;">
       Order Total: <strong>@orderTotal</strong>
@@ -54,13 +48,10 @@
             border-color="#d9e1ea"
             padding="16px 0px" />
 
-<mj-text font-size="26px"
-         font-weight="700"
-         line-height="1.3"
-         padding="0px 0px 12px 0px">
+<mj-text mj-class="heading-primary">
   What's Next?
 </mj-text>
-<mj-text padding="0px 0px 18px 0px">
+<mj-text mj-class="body-copy">
   Once we receive your samples we will email you a confirmation.
 </mj-text>
 

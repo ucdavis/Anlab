@@ -35,29 +35,20 @@
     }
 }
 
-<mj-text font-size="26px"
-         font-weight="700"
-         line-height="1.3"
-         padding="0px 0px 12px 0px">
+<mj-text mj-class="heading-primary">
   Work Request Finalized
 </mj-text>
-<mj-text font-size="20px"
-         font-weight="700"
-         line-height="1.35"
-         padding="0px 0px 12px 0px">
+<mj-text mj-class="heading-secondary">
   Work Request @requestNumber
 </mj-text>
-<mj-text padding="0px 0px 18px 0px">
+<mj-text mj-class="body-copy">
   Results for Project @project
 </mj-text>
 
 <mj-table cellpadding="0"
           cellspacing="0"
           width="100%"
-          color="#172033"
-          font-size="16px"
-          line-height="1.65"
-          padding="0px 0px 24px 0px">
+          mj-class="content-table">
   <tr>
     <td style="background-color:#def0fc;border:1px solid #b7d7ee;border-radius:8px;padding:16px 24px;">
       @resultsMessage
@@ -75,10 +66,7 @@
     <mj-table cellpadding="0"
               cellspacing="0"
               width="100%"
-              color="#172033"
-              font-size="16px"
-              line-height="1.55"
-              padding="0px 0px 24px 0px">
+              mj-class="compact-content-table">
       <tr>
         <td style="background-color:#f4f6f8;border:1px solid #d9e1ea;border-radius:8px;padding:18px 24px;">
           <div style="font-weight:700;line-height:1.4;padding:0 0 8px 0;">Sample Disposition</div>
