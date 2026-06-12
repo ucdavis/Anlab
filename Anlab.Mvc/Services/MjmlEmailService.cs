@@ -10,6 +10,7 @@ using AnlabMvc.Models.Email.Samples;
 using AnlabMvc.Models.Email.WorkRequests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace AnlabMvc.Services
 {
@@ -82,12 +83,14 @@ namespace AnlabMvc.Services
         private readonly IMjmlEmailRenderer _renderer;
         private readonly IMailService _mailService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly AppSettings _appSettings;
 
-        public MjmlEmailService(IMjmlEmailRenderer renderer, IMailService mailService, IHttpContextAccessor httpContextAccessor)
+        public MjmlEmailService(IMjmlEmailRenderer renderer, IMailService mailService, IHttpContextAccessor httpContextAccessor, IOptions<AppSettings> appSettings = null)
         {
             _renderer = renderer;
             _mailService = mailService;
             _httpContextAccessor = httpContextAccessor;
+            _appSettings = appSettings?.Value ?? new AppSettings();
         }
 
         public Task<string> RenderAsync<TModel>(string templateName, TModel model, CancellationToken cancellationToken = default)
@@ -218,13 +221,18 @@ namespace AnlabMvc.Services
             string bypassRecipientList = null,
             CancellationToken cancellationToken = default)
         {
+            var includeResultsDownloadLink = ShouldIncludePartialResultsDownloadLink(order);
             var model = new WorkRequestPartialResultsEmailModel
             {
                 LayoutWidth = "800px",
                 Order = order,
                 PreviewText = "Work Request Partial Results",
                 BypassClientEmail = bypassClientEmail,
-                BypassRecipientList = bypassRecipientList ?? sendTo
+                BypassRecipientList = bypassRecipientList ?? sendTo,
+                ShowResultsDownloadLink = includeResultsDownloadLink,
+                ResultsDownloadUrl = includeResultsDownloadLink
+                    ? BuildResultsDownloadUrl(order)
+                    : null
             };
 
             var subject = $"Work Request Partial Results - {order?.RequestNum}";
@@ -234,6 +242,12 @@ namespace AnlabMvc.Services
             }
 
             return EnqueueAsync(sendTo, subject, WorkRequestPartialResultsTemplateName, model, order, user ?? order?.Creator, cancellationToken);
+        }
+
+        private bool ShouldIncludePartialResultsDownloadLink(Order order)
+        {
+            return _appSettings.IncludePartialResultsDownloadLink
+                   && !string.IsNullOrWhiteSpace(order?.ResultsFileIdentifier);
         }
 
         public Task EnqueueBillingInformationEmailAsync(
@@ -324,6 +338,26 @@ namespace AnlabMvc.Services
                 request.Host,
                 request.PathBase,
                 $"/Results/Link/{order.ShareIdentifier}");
+        }
+
+        private string BuildResultsDownloadUrl(Order order)
+        {
+            if (order == null)
+            {
+                throw new ArgumentNullException(nameof(order));
+            }
+
+            var request = _httpContextAccessor.HttpContext?.Request;
+            if (request == null)
+            {
+                throw new InvalidOperationException("A current HTTP request is required to build the results download email URL.");
+            }
+
+            return UriHelper.BuildAbsolute(
+                request.Scheme,
+                request.Host,
+                request.PathBase,
+                $"/Results/Download/{order.ShareIdentifier}");
         }
     }
 }

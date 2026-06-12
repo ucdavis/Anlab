@@ -33,6 +33,11 @@
   </tr>
 </mj-table>
 
+@if (Model.ShowResultsDownloadLink && !string.IsNullOrWhiteSpace(Model.ResultsDownloadUrl))
+{
+    @await Html.PartialAsync("/Views/Emails/Shared/_ResultsDownloadLink_mjml.cshtml", new AnlabMvc.Models.Email.ResultsDownloadLinkEmailModel(Model.ResultsDownloadUrl))
+}
+
 @if (!string.IsNullOrWhiteSpace(labComments))
 {
     <mj-table cellpadding="0"

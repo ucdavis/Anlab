@@ -24,6 +24,16 @@ namespace AnlabMvc.Models.Email
         public string Url { get; }
     }
 
+    public class ResultsDownloadLinkEmailModel
+    {
+        public ResultsDownloadLinkEmailModel(string downloadUrl)
+        {
+            DownloadUrl = downloadUrl;
+        }
+
+        public string DownloadUrl { get; }
+    }
+
     public class OrderTestDetailsTableEmailModel
     {
         public Anlab.Core.Domain.Order Order { get; set; }

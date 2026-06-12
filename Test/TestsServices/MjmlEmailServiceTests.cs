@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Mjml.Net;
 using Shouldly;
 using Test.Helpers;
@@ -167,6 +168,66 @@ namespace Test.TestsServices
             mailService.Message.SendTo.ShouldBe("anlab@example.com");
             mailService.Message.Order.ShouldBe(order);
             mailService.Message.User.ShouldBe(user);
+        }
+
+        [Fact]
+        public async Task EnqueueWorkRequestPartialResultsEmailAsync_AddsDownloadLinkWhenFlagEnabledAndFileIdentifierExists()
+        {
+            var renderer = new StubMjmlEmailRenderer();
+            var mailService = new StubMailService();
+            var httpContextAccessor = new HttpContextAccessor
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            httpContextAccessor.HttpContext.Request.Scheme = "https";
+            httpContextAccessor.HttpContext.Request.Host = new HostString("localhost:5001");
+            var service = new MjmlEmailService(
+                renderer,
+                mailService,
+                httpContextAccessor,
+                Options.Create(new AppSettings
+                {
+                    IncludePartialResultsDownloadLink = true
+                }));
+            var order = new Order
+            {
+                RequestNum = "22F107",
+                ResultsFileIdentifier = "results.pdf",
+                ShareIdentifier = Guid.Parse("11111111-1111-1111-1111-111111111111")
+            };
+
+            await service.EnqueueWorkRequestPartialResultsEmailAsync("anlab@example.com", order);
+
+            var model = renderer.Model.ShouldBeOfType<WorkRequestPartialResultsEmailModel>();
+            model.ShowResultsDownloadLink.ShouldBeTrue();
+            model.ResultsDownloadUrl.ShouldBe("https://localhost:5001/Results/Download/11111111-1111-1111-1111-111111111111");
+        }
+
+        [Fact]
+        public async Task EnqueueWorkRequestPartialResultsEmailAsync_DoesNotAddDownloadLinkWhenFlagDisabled()
+        {
+            var renderer = new StubMjmlEmailRenderer();
+            var mailService = new StubMailService();
+            var service = new MjmlEmailService(
+                renderer,
+                mailService,
+                new HttpContextAccessor(),
+                Options.Create(new AppSettings
+                {
+                    IncludePartialResultsDownloadLink = false
+                }));
+            var order = new Order
+            {
+                RequestNum = "22F107",
+                ResultsFileIdentifier = "results.pdf",
+                ShareIdentifier = Guid.Parse("11111111-1111-1111-1111-111111111111")
+            };
+
+            await service.EnqueueWorkRequestPartialResultsEmailAsync("anlab@example.com", order);
+
+            var model = renderer.Model.ShouldBeOfType<WorkRequestPartialResultsEmailModel>();
+            model.ShowResultsDownloadLink.ShouldBeFalse();
+            model.ResultsDownloadUrl.ShouldBeNull();
         }
 
         [Fact]
@@ -609,7 +670,9 @@ namespace Test.TestsServices
                 {
                     Order = order,
                     BypassClientEmail = true,
-                    BypassRecipientList = "client@example.com;copy@example.com"
+                    BypassRecipientList = "client@example.com;copy@example.com",
+                    ShowResultsDownloadLink = true,
+                    ResultsDownloadUrl = "https://localhost:5001/Results/Download/11111111-1111-1111-1111-111111111111"
                 });
 
                 html.ShouldContain("Partial Results Attached");
@@ -617,6 +680,9 @@ namespace Test.TestsServices
                 html.ShouldContain("Intended recipient(s):");
                 html.ShouldContain("client@example.com;copy@example.com");
                 html.ShouldContain("partial results are attached to this email");
+                html.ShouldContain("Partial Results Download");
+                html.ShouldContain("Download Partial Results");
+                html.ShouldContain("https://localhost:5001/Results/Download/11111111-1111-1111-1111-111111111111");
                 html.ShouldContain("22F107");
                 html.ShouldContain("Lab Comments");
                 html.ShouldContain("Partial results are attached.");

@@ -1,0 +1,26 @@
+@model AnlabMvc.Models.Email.ResultsDownloadLinkEmailModel
+
+@if (!string.IsNullOrWhiteSpace(Model?.DownloadUrl))
+{
+  <mj-table cellpadding="0"
+            cellspacing="0"
+            width="100%"
+            color="#172033"
+            font-size="16px"
+            line-height="1.55"
+            padding="0px 0px 24px 0px">
+    <tr>
+      <td style="background-color:#f4f6f8;border:1px solid #d9e1ea;border-radius:8px;padding:18px 24px;">
+        <div style="font-weight:700;line-height:1.4;padding:0 0 8px 0;">Partial Results Download</div>
+        <div style="padding:0 0 16px 0;">Partial results are available for download using the secure link below.</div>
+        <table cellpadding="0" cellspacing="0" role="presentation">
+          <tr>
+            <td style="background-color:#13639e;border-radius:8px;padding:14px 30px;">
+              <a href="@Model.DownloadUrl" style="color:#ffffff;display:inline-block;font-size:16px;font-weight:600;text-decoration:none;">Download Partial Results</a>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </mj-table>
+}
