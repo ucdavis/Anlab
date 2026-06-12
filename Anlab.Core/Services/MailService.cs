@@ -1,11 +1,11 @@
-using System;
-using System.Net;
-using System.Net.Mail;
-using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Models;
 using Microsoft.Extensions.Options;
 using Serilog;
+using System;
+using System.Net;
+using System.Net.Mail;
+using System.Threading.Tasks;
 using MailMessage = Anlab.Core.Domain.MailMessage;
 
 namespace Anlab.Core.Services
@@ -34,6 +34,22 @@ namespace Anlab.Core.Services
         public void EnqueueMessage(MailMessage message)
         {
             _dbContext.Add(message);
+
+            if (!_emailSettings.SendEmailRightAway)
+            {
+                return;
+            }
+
+            try
+            {
+                SendMessage(message);
+                message.Sent = true;
+                message.SentAt = DateTime.UtcNow;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error sending email right away. Exception {ex.Message}");
+            }
         }
 
         public void SendMessage(MailMessage mailMessage)
