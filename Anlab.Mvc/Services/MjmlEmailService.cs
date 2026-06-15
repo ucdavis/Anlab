@@ -6,6 +6,7 @@ using Anlab.Core.Domain;
 using Anlab.Core.Services;
 using AnlabMvc.Models.Email.Billing;
 using AnlabMvc.Models.Email.Orders;
+using AnlabMvc.Models.Email.Payments;
 using AnlabMvc.Models.Email.Samples;
 using AnlabMvc.Models.Email.WorkRequests;
 using Microsoft.AspNetCore.Http;
@@ -69,6 +70,24 @@ namespace AnlabMvc.Services
             Order order,
             User user = null,
             CancellationToken cancellationToken = default);
+
+        Task EnqueuePaymentReceivedEmailAsync(
+            string sendTo,
+            Order order,
+            User user = null,
+            CancellationToken cancellationToken = default);
+
+        Task EnqueueBillingOverrideEmailAsync(
+            string sendTo,
+            Order order,
+            User user = null,
+            CancellationToken cancellationToken = default);
+
+        Task EnqueueDisposalWarningEmailAsync(
+            string sendTo,
+            Order order,
+            User user = null,
+            CancellationToken cancellationToken = default);
     }
 
     public class MjmlEmailService : IMjmlEmailService
@@ -79,6 +98,9 @@ namespace AnlabMvc.Services
         public const string WorkRequestPartialResultsTemplateName = "Emails/WorkRequests/WorkRequestPartialResults_mjml";
         public const string WorkRequestFinalizedTemplateName = "Emails/WorkRequests/WorkRequestFinalized_mjml";
         public const string BillingInformationTemplateName = "Emails/Billing/BillingInformation_mjml";
+        public const string PaymentReceivedTemplateName = "Emails/Payments/PaymentReceived_mjml";
+        public const string BillingOverrideTemplateName = "Emails/Billing/BillingOverride_mjml";
+        public const string DisposalWarningTemplateName = "Emails/WorkRequests/DisposalWarning_mjml";
 
         private readonly IMjmlEmailRenderer _renderer;
         private readonly IMailService _mailService;
@@ -269,6 +291,42 @@ namespace AnlabMvc.Services
             return EnqueueAsync(sendTo, subject, BillingInformationTemplateName, model, order, user ?? order?.Creator, cancellationToken);
         }
 
+        public Task EnqueuePaymentReceivedEmailAsync(
+            string sendTo,
+            Order order,
+            User user = null,
+            CancellationToken cancellationToken = default)
+        {
+            var model = new PaymentReceivedEmailModel
+            {
+                LayoutWidth = "800px",
+                Order = order,
+                PreviewText = "Payment Complete",
+                ButtonText = "View Your Results",
+                ButtonUrl = BuildResultsLinkUrl(order)
+            };
+
+            var subject = $"Work Request Payment Complete  - {order?.RequestNum}";
+
+            return EnqueueAsync(sendTo, subject, PaymentReceivedTemplateName, model, order, user ?? order?.Creator, cancellationToken);
+        }
+
+        public Task EnqueueBillingOverrideEmailAsync(
+            string sendTo,
+            Order order,
+            User user = null,
+            CancellationToken cancellationToken = default)
+        {
+            var model = new BillingOverrideEmailModel
+            {
+                LayoutWidth = "800px",
+                Order = order,
+                PreviewText = "Anlab Order -- Admin Override"
+            };
+
+            return EnqueueAsync(sendTo, "Anlab Order -- Admin Override", BillingOverrideTemplateName, model, order, user ?? order?.Creator, cancellationToken);
+        }
+
         public Task EnqueueWorkRequestFinalizedEmailAsync(
             string sendTo,
             Order order,
@@ -298,6 +356,26 @@ namespace AnlabMvc.Services
             }
 
             return EnqueueAsync(sendTo, subject, WorkRequestFinalizedTemplateName, model, order, user ?? order?.Creator, cancellationToken);
+        }
+
+        public Task EnqueueDisposalWarningEmailAsync(
+            string sendTo,
+            Order order,
+            User user = null,
+            CancellationToken cancellationToken = default)
+        {
+            var model = new DisposalWarningEmailModel
+            {
+                LayoutWidth = "800px",
+                Order = order,
+                PreviewText = "Work Request Disposal Warning",
+                ButtonText = "View Details or Order",
+                ButtonUrl = BuildResultsLinkUrl(order)
+            };
+
+            var subject = $"Work Request Disposal Warning - {order?.RequestNum}";
+
+            return EnqueueAsync(sendTo, subject, DisposalWarningTemplateName, model, order, user ?? order?.Creator, cancellationToken);
         }
 
         private string BuildReviewerDetailsUrl(Order order)

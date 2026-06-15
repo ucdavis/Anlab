@@ -196,7 +196,12 @@ namespace AnlabMvc.Services
 
         public async Task EnqueuePaidMessage(Order order)
         {
-            var orderDetails = order.GetOrderDetails();
+            if (_appSettings.UseMjmlEmails)
+            {
+                await _mjmlEmailService.EnqueuePaymentReceivedEmailAsync(GetSendTo(order), order, order.Creator);
+                return;
+            }
+
             var subject = $"Work Request Payment Complete  - {order.RequestNum}";
             //TODO: change body of email, right now it is the same as OrderCreated
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_PaymentReceived", order);
@@ -237,6 +242,12 @@ namespace AnlabMvc.Services
 
         public async Task EnqueueBillingOverride(Order order)
         {
+            if (_appSettings.UseMjmlEmails)
+            {
+                await _mjmlEmailService.EnqueueBillingOverrideEmailAsync(_appSettings.AccountsEmail, order, order.Creator);
+                return;
+            }
+
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_BillingOverride", order);
 
             var message = new MailMessage
@@ -253,6 +264,12 @@ namespace AnlabMvc.Services
 
         public async Task EnqeueDisposalMessage(Order order)
         {
+            if (_appSettings.UseMjmlEmails)
+            {
+                await _mjmlEmailService.EnqueueDisposalWarningEmailAsync(GetSendTo(order), order, order.Creator);
+                return;
+            }
+
             var body = await _viewRenderService.RenderViewToStringAsync("Templates/_DisposalWarning", order);
 
             var message = new MailMessage

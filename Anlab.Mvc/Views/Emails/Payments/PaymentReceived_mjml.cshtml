@@ -1,0 +1,42 @@
+@using System.Globalization
+@model AnlabMvc.Models.Email.Payments.PaymentReceivedEmailModel
+
+@{
+    Layout = "/Views/Emails/Shared/_MjmlEmailLayout.cshtml";
+    var currencyCulture = CultureInfo.GetCultureInfo("en-US");
+    var orderDetails = Model.Order?.GetOrderDetails();
+    var orderTotal = orderDetails == null ? "-" : orderDetails.GrandTotal.ToString("C", currencyCulture);
+}
+
+<mj-text mj-class="heading-primary">
+  Payment Complete
+</mj-text>
+<mj-text mj-class="body-copy">
+  The payment for your work order has been completed. Here is a summary of your order.
+</mj-text>
+
+@await Html.PartialAsync("/Views/Emails/Shared/_SummaryCard_mjml.cshtml", Model.Order)
+
+<mj-table cellpadding="0"
+          cellspacing="0"
+          width="100%"
+          mj-class="content-table">
+  <tr>
+    <td style="background-color:#def0fc;border:1px solid #b7d7ee;border-radius:8px;padding:16px 24px;">
+      Order Total: <strong>@orderTotal</strong>
+    </td>
+  </tr>
+</mj-table>
+
+@await Html.PartialAsync("/Views/Emails/Shared/_OrderTestDetailsTable_mjml.cshtml", new AnlabMvc.Models.Email.OrderTestDetailsTableEmailModel
+{
+    Order = Model.Order,
+    ShowBillingTotals = true
+})
+
+@await Html.PartialAsync("/Views/Emails/Shared/_AdditionalInfoTextCard_mjml.cshtml", Model.Order)
+
+@if (!string.IsNullOrWhiteSpace(Model.ButtonText) && !string.IsNullOrWhiteSpace(Model.ButtonUrl))
+{
+    @await Html.PartialAsync("/Views/Emails/Shared/_MjmlEmailButton.cshtml", new AnlabMvc.Models.Email.MjmlEmailButtonModel(Model.ButtonText, Model.ButtonUrl))
+}

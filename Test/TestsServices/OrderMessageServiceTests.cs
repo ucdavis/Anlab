@@ -195,6 +195,75 @@ namespace Test.TestsServices
                 It.IsAny<CancellationToken>()), Times.Once);
         }
 
+        [Fact]
+        public async Task EnqueuePaidMessage_WhenMjmlFlagEnabledUsesMjmlEmail()
+        {
+            var mjmlEmailService = new Mock<IMjmlEmailService>();
+            mjmlEmailService
+                .Setup(a => a.EnqueuePaymentReceivedEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<Order>(),
+                    It.IsAny<User>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            var orderMessageService = CreateService(mjmlEmailService.Object, useMjmlEmails: true);
+            var order = CreateOrder();
+
+            await orderMessageService.EnqueuePaidMessage(order);
+
+            mjmlEmailService.Verify(a => a.EnqueuePaymentReceivedEmailAsync(
+                "client@example.com;copy@example.com",
+                order,
+                order.Creator,
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task EnqueueBillingOverride_WhenMjmlFlagEnabledUsesMjmlEmail()
+        {
+            var mjmlEmailService = new Mock<IMjmlEmailService>();
+            mjmlEmailService
+                .Setup(a => a.EnqueueBillingOverrideEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<Order>(),
+                    It.IsAny<User>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            var orderMessageService = CreateService(mjmlEmailService.Object, useMjmlEmails: true);
+            var order = CreateOrder();
+
+            await orderMessageService.EnqueueBillingOverride(order);
+
+            mjmlEmailService.Verify(a => a.EnqueueBillingOverrideEmailAsync(
+                "accounts@example.com",
+                order,
+                order.Creator,
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task EnqeueDisposalMessage_WhenMjmlFlagEnabledUsesMjmlEmail()
+        {
+            var mjmlEmailService = new Mock<IMjmlEmailService>();
+            mjmlEmailService
+                .Setup(a => a.EnqueueDisposalWarningEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<Order>(),
+                    It.IsAny<User>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            var orderMessageService = CreateService(mjmlEmailService.Object, useMjmlEmails: true);
+            var order = CreateOrder();
+
+            await orderMessageService.EnqeueDisposalMessage(order);
+
+            mjmlEmailService.Verify(a => a.EnqueueDisposalWarningEmailAsync(
+                "client@example.com;copy@example.com",
+                order,
+                order.Creator,
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
         private static OrderMessageService CreateService(IMjmlEmailService mjmlEmailService, bool useMjmlEmails)
         {
             return new OrderMessageService(

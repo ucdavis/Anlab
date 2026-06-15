@@ -9,6 +9,7 @@ using Anlab.Core.Services;
 using AnlabMvc;
 using AnlabMvc.Models.Email.Billing;
 using AnlabMvc.Models.Email.Orders;
+using AnlabMvc.Models.Email.Payments;
 using AnlabMvc.Models.Email.Samples;
 using AnlabMvc.Models.Email.WorkRequests;
 using AnlabMvc.Services;
@@ -271,6 +272,94 @@ namespace Test.TestsServices
         }
 
         [Fact]
+        public async Task EnqueuePaymentReceivedEmailAsync_UsesPaymentReceivedTemplate()
+        {
+            var renderer = new StubMjmlEmailRenderer();
+            var mailService = new StubMailService();
+            var httpContextAccessor = new HttpContextAccessor
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            httpContextAccessor.HttpContext.Request.Scheme = "https";
+            httpContextAccessor.HttpContext.Request.Host = new HostString("localhost:5001");
+            var service = new MjmlEmailService(renderer, mailService, httpContextAccessor);
+            var user = new User();
+            var order = new Order
+            {
+                Creator = user,
+                RequestNum = "22F107",
+                ShareIdentifier = Guid.Parse("11111111-1111-1111-1111-111111111111")
+            };
+
+            await service.EnqueuePaymentReceivedEmailAsync("client@example.com", order, user);
+
+            renderer.TemplateName.ShouldBe(MjmlEmailService.PaymentReceivedTemplateName);
+            var model = renderer.Model.ShouldBeOfType<PaymentReceivedEmailModel>();
+            model.ButtonText.ShouldBe("View Your Results");
+            model.ButtonUrl.ShouldBe("https://localhost:5001/Results/Link/11111111-1111-1111-1111-111111111111");
+            mailService.Message.ShouldNotBeNull();
+            mailService.Message.Subject.ShouldBe("Work Request Payment Complete  - 22F107");
+            mailService.Message.Order.ShouldBe(order);
+            mailService.Message.User.ShouldBe(user);
+        }
+
+        [Fact]
+        public async Task EnqueueBillingOverrideEmailAsync_UsesBillingOverrideTemplate()
+        {
+            var renderer = new StubMjmlEmailRenderer();
+            var mailService = new StubMailService();
+            var service = new MjmlEmailService(renderer, mailService, new HttpContextAccessor());
+            var user = new User();
+            var order = new Order
+            {
+                Creator = user,
+                RequestNum = "22F107"
+            };
+
+            await service.EnqueueBillingOverrideEmailAsync("accounts@example.com", order, user);
+
+            renderer.TemplateName.ShouldBe(MjmlEmailService.BillingOverrideTemplateName);
+            renderer.Model.ShouldBeOfType<BillingOverrideEmailModel>();
+            mailService.Message.ShouldNotBeNull();
+            mailService.Message.Subject.ShouldBe("Anlab Order -- Admin Override");
+            mailService.Message.SendTo.ShouldBe("accounts@example.com");
+            mailService.Message.Order.ShouldBe(order);
+            mailService.Message.User.ShouldBe(user);
+        }
+
+        [Fact]
+        public async Task EnqueueDisposalWarningEmailAsync_UsesDisposalWarningTemplate()
+        {
+            var renderer = new StubMjmlEmailRenderer();
+            var mailService = new StubMailService();
+            var httpContextAccessor = new HttpContextAccessor
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            httpContextAccessor.HttpContext.Request.Scheme = "https";
+            httpContextAccessor.HttpContext.Request.Host = new HostString("localhost:5001");
+            var service = new MjmlEmailService(renderer, mailService, httpContextAccessor);
+            var user = new User();
+            var order = new Order
+            {
+                Creator = user,
+                RequestNum = "22F107",
+                ShareIdentifier = Guid.Parse("11111111-1111-1111-1111-111111111111")
+            };
+
+            await service.EnqueueDisposalWarningEmailAsync("client@example.com", order, user);
+
+            renderer.TemplateName.ShouldBe(MjmlEmailService.DisposalWarningTemplateName);
+            var model = renderer.Model.ShouldBeOfType<DisposalWarningEmailModel>();
+            model.ButtonText.ShouldBe("View Details or Order");
+            model.ButtonUrl.ShouldBe("https://localhost:5001/Results/Link/11111111-1111-1111-1111-111111111111");
+            mailService.Message.ShouldNotBeNull();
+            mailService.Message.Subject.ShouldBe("Work Request Disposal Warning - 22F107");
+            mailService.Message.Order.ShouldBe(order);
+            mailService.Message.User.ShouldBe(user);
+        }
+
+        [Fact]
         public async Task RenderAsync_RendersSampleCardTemplateToHtml()
         {
             var services = new ServiceCollection();
@@ -433,6 +522,111 @@ namespace Test.TestsServices
                 html.ShouldContain("Grand Total");
                 html.ShouldContain("UC Davis Analytical Lab");
                 html.ShouldContain("tel:5307520147");
+                html.ShouldNotContain("<mjml");
+            }
+        }
+
+        [Fact]
+        public async Task RenderAsync_RendersPaymentReceivedTemplateWithHiddenBillingTotalsToHtml()
+        {
+            var services = new ServiceCollection();
+            var webRoot = Path.Combine(AppContext.BaseDirectory, "wwwroot");
+            var diagnosticListener = new DiagnosticListener("MjmlEmailServiceTests");
+
+            services.AddLogging();
+            services.AddSingleton<DiagnosticSource>(diagnosticListener);
+            services.AddSingleton(diagnosticListener);
+            services.AddSingleton<IWebHostEnvironment>(new TestWebHostEnvironment
+            {
+                ApplicationName = typeof(Startup).Assembly.GetName().Name,
+                ContentRootPath = AppContext.BaseDirectory,
+                ContentRootFileProvider = new PhysicalFileProvider(AppContext.BaseDirectory),
+                EnvironmentName = Environments.Development,
+                WebRootPath = webRoot,
+                WebRootFileProvider = Directory.Exists(webRoot)
+                    ? new PhysicalFileProvider(webRoot)
+                    : new NullFileProvider()
+            });
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+            services.AddSingleton<MjmlRenderer>();
+            services.AddControllersWithViews()
+                .AddApplicationPart(typeof(Startup).Assembly);
+            services.AddTransient<IMjmlEmailRenderer, MjmlEmailRenderer>();
+
+            using (var serviceProvider = services.BuildServiceProvider())
+            {
+                var renderer = serviceProvider.GetRequiredService<IMjmlEmailRenderer>();
+                var order = CreateValidEntities.Order(42, populateAllFields: true);
+                var orderDetails = order.GetOrderDetails();
+                orderDetails.Payment.ClientType = "uc";
+                orderDetails.InternalProcessingFee = 12.00m;
+                orderDetails.AdjustmentAmount = 5.00m;
+                orderDetails.SelectedTests = new[]
+                {
+                    new TestDetails
+                    {
+                        Id = "PUBLIC",
+                        Analysis = "Visible Test",
+                        Cost = 40.00m,
+                        SetupCost = 2.00m,
+                        Total = 42.00m
+                    },
+                    new TestDetails
+                    {
+                        Id = "PRIVATE",
+                        Analysis = "Hidden Test",
+                        Cost = 80.00m,
+                        SetupCost = 0.00m,
+                        Total = 80.00m
+                    },
+                    new TestDetails
+                    {
+                        Id = "REPORTING",
+                        Analysis = "Reporting Test",
+                        Cost = 25.00m,
+                        SetupCost = 0.00m,
+                        Total = 25.00m
+                    }
+                };
+                order.SaveDetails(orderDetails);
+                order.SaveTestDetails(new[]
+                {
+                    new TestItemModel
+                    {
+                        Id = "PUBLIC",
+                        Category = "Soil",
+                        Public = true
+                    },
+                    new TestItemModel
+                    {
+                        Id = "PRIVATE",
+                        Category = "Soil",
+                        Public = false
+                    },
+                    new TestItemModel
+                    {
+                        Id = "REPORTING",
+                        Category = "Soil",
+                        Public = false,
+                        Reporting = true
+                    }
+                });
+
+                var html = await renderer.RenderAsync(MjmlEmailService.PaymentReceivedTemplateName, new PaymentReceivedEmailModel
+                {
+                    Order = order
+                });
+
+                html.ShouldContain("Payment Complete");
+                html.ShouldContain("Visible Test");
+                html.ShouldContain("Reporting Test");
+                html.ShouldNotContain("Hidden Test");
+                html.ShouldContain("Other Costs");
+                html.ShouldContain("$80.00");
+                html.ShouldContain("Adjustment Amount");
+                html.ShouldContain("$5.00");
+                html.ShouldContain("Grand Total");
                 html.ShouldNotContain("<mjml");
             }
         }

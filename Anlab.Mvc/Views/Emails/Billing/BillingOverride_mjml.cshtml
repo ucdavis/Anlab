@@ -1,0 +1,62 @@
+@using Anlab.Core.Models
+@model AnlabMvc.Models.Email.Billing.BillingOverrideEmailModel
+
+@{
+    Layout = "/Views/Emails/Shared/_MjmlEmailLayout.cshtml";
+    var actionText = "";
+    var h2Text = $"Order Number {Model.Order?.Id}";
+    var h4Text = "";
+
+    if (Model.Order?.IsDeleted == true)
+    {
+        actionText = "set to DELETED";
+    }
+    else if (Model.Order?.Status == OrderStatusCodes.Created)
+    {
+        actionText = "set back to Created status";
+    }
+    else
+    {
+        actionText = "??? Contact Tech support (Jason Sylvestre)";
+    }
+
+    if (!string.IsNullOrWhiteSpace(Model.Order?.RequestNum))
+    {
+        h4Text = $"Work Request {Model.Order.RequestNum} (But this might get changed)";
+    }
+}
+
+<mj-text mj-class="heading-primary">
+  Anlab Order has been @actionText with an Admin Override
+</mj-text>
+<mj-text font-size="20px"
+         font-weight="700"
+         line-height="1.35"
+         padding="0px 0px 14px 0px">
+  @h2Text
+</mj-text>
+@if (!string.IsNullOrWhiteSpace(h4Text))
+{
+    <mj-text font-size="18px"
+             font-weight="700"
+             line-height="1.35"
+             padding="0px 0px 14px 0px">
+      @h4Text
+    </mj-text>
+}
+<mj-text mj-class="body-copy">
+  NOTE!!! The information below will probably be changed or no longer be accurate.
+</mj-text>
+
+@await Html.PartialAsync("/Views/Emails/Billing/_RequesterDetailsCard_mjml.cshtml", new AnlabMvc.Models.Email.Billing.BillingInformationEmailModel
+{
+    Order = Model.Order
+})
+
+@await Html.PartialAsync("/Views/Emails/Billing/_BillingDetailsCard_mjml.cshtml", Model.Order)
+
+@await Html.PartialAsync("/Views/Emails/Shared/_OrderTestDetailsTable_mjml.cshtml", new AnlabMvc.Models.Email.OrderTestDetailsTableEmailModel
+{
+    Order = Model.Order,
+    ShowBillingTotals = true
+})
