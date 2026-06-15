@@ -187,6 +187,38 @@ namespace Test.TestsServices
         }
 
         [Fact]
+        public async Task EnqueueWorkRequestPartialResultsEmailAsync_RejectsDownloadLinkWhenRequestSchemeIsNotHttpOrHttps()
+        {
+            var renderer = new StubMjmlEmailRenderer();
+            var mailService = new StubMailService();
+            var httpContextAccessor = new HttpContextAccessor
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            httpContextAccessor.HttpContext.Request.Scheme = "ftp";
+            httpContextAccessor.HttpContext.Request.Host = new HostString("localhost:5001");
+            var service = new MjmlEmailService(
+                renderer,
+                mailService,
+                httpContextAccessor,
+                Options.Create(new AppSettings
+                {
+                    IncludePartialResultsDownloadLink = true
+                }));
+            var order = new Order
+            {
+                RequestNum = "22F107",
+                ResultsFileIdentifier = "results.pdf",
+                ShareIdentifier = Guid.Parse("11111111-1111-1111-1111-111111111111")
+            };
+
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                service.EnqueueWorkRequestPartialResultsEmailAsync("anlab@example.com", order));
+
+            exception.Message.ShouldBe("The results download email URL must be an absolute HTTP or HTTPS URL.");
+        }
+
+        [Fact]
         public async Task EnqueueWorkRequestPartialResultsEmailAsync_DoesNotAddDownloadLinkWhenFlagDisabled()
         {
             var renderer = new StubMjmlEmailRenderer();
@@ -859,6 +891,9 @@ namespace Test.TestsServices
                 html.ShouldContain("Partial Results Download");
                 html.ShouldContain("Download Partial Results");
                 html.ShouldContain("https://localhost:5001/Results/Download/11111111-1111-1111-1111-111111111111");
+                html.ShouldContain("display:block");
+                html.ShouldContain("padding:14px 24px");
+                html.ShouldContain("text-align:center");
                 html.ShouldContain("22F107");
                 html.ShouldContain("Lab Comments");
                 html.ShouldContain("Partial results are attached.");
@@ -879,6 +914,31 @@ namespace Test.TestsServices
                 html.ShouldContain("Additional Information");
                 html.ShouldContain("Client-provided handling note.");
                 html.ShouldContain("When testing is completed you will receive an email");
+                html.ShouldNotContain("<mjml");
+            }
+        }
+
+        [Fact]
+        public async Task RenderAsync_OmitsPartialResultsDownloadLinkWhenDownloadUrlIsNotHttpOrHttps()
+        {
+            using (var serviceProvider = CreateMjmlRendererServiceProvider())
+            {
+                var renderer = serviceProvider.GetRequiredService<IMjmlEmailRenderer>();
+                var order = CreateValidEntities.Order(2921, populateAllFields: true);
+                order.Status = OrderStatusCodes.Received;
+                order.RequestNum = "22F108";
+
+                var html = await renderer.RenderAsync(MjmlEmailService.WorkRequestPartialResultsTemplateName, new WorkRequestPartialResultsEmailModel
+                {
+                    Order = order,
+                    ShowResultsDownloadLink = true,
+                    ResultsDownloadUrl = "javascript:alert(1)"
+                });
+
+                html.ShouldContain("Partial Results Attached");
+                html.ShouldNotContain("Partial Results Download");
+                html.ShouldNotContain("Download Partial Results");
+                html.ShouldNotContain("javascript:alert(1)");
                 html.ShouldNotContain("<mjml");
             }
         }
@@ -1134,6 +1194,36 @@ namespace Test.TestsServices
                 html.ShouldNotContain("Anlab Work Request Billing");
                 html.ShouldNotContain("<mjml");
             }
+        }
+
+        private static ServiceProvider CreateMjmlRendererServiceProvider()
+        {
+            var services = new ServiceCollection();
+            var webRoot = Path.Combine(AppContext.BaseDirectory, "wwwroot");
+            var diagnosticListener = new DiagnosticListener("MjmlEmailServiceTests");
+
+            services.AddLogging();
+            services.AddSingleton<DiagnosticSource>(diagnosticListener);
+            services.AddSingleton(diagnosticListener);
+            services.AddSingleton<IWebHostEnvironment>(new TestWebHostEnvironment
+            {
+                ApplicationName = typeof(Startup).Assembly.GetName().Name,
+                ContentRootPath = AppContext.BaseDirectory,
+                ContentRootFileProvider = new PhysicalFileProvider(AppContext.BaseDirectory),
+                EnvironmentName = Environments.Development,
+                WebRootPath = webRoot,
+                WebRootFileProvider = Directory.Exists(webRoot)
+                    ? new PhysicalFileProvider(webRoot)
+                    : new NullFileProvider()
+            });
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+            services.AddSingleton<MjmlRenderer>();
+            services.AddControllersWithViews()
+                .AddApplicationPart(typeof(Startup).Assembly);
+            services.AddTransient<IMjmlEmailRenderer, MjmlEmailRenderer>();
+
+            return services.BuildServiceProvider();
         }
 
         private class StubMjmlEmailRenderer : IMjmlEmailRenderer

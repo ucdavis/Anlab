@@ -1,3 +1,5 @@
+using System;
+
 namespace AnlabMvc.Models.Email
 {
     public abstract class MjmlEmailTemplateModelBase
@@ -28,10 +30,17 @@ namespace AnlabMvc.Models.Email
     {
         public ResultsDownloadLinkEmailModel(string downloadUrl)
         {
-            DownloadUrl = downloadUrl;
+            DownloadUrl = IsHttpOrHttpsAbsoluteUrl(downloadUrl) ? downloadUrl : null;
         }
 
         public string DownloadUrl { get; }
+
+        public static bool IsHttpOrHttpsAbsoluteUrl(string downloadUrl)
+        {
+            return !string.IsNullOrWhiteSpace(downloadUrl)
+                   && Uri.TryCreate(downloadUrl, UriKind.Absolute, out var uri)
+                   && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+        }
     }
 
     public class OrderTestDetailsTableEmailModel

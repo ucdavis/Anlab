@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Anlab.Core.Domain;
 using Anlab.Core.Services;
+using AnlabMvc.Models.Email;
 using AnlabMvc.Models.Email.Billing;
 using AnlabMvc.Models.Email.Orders;
 using AnlabMvc.Models.Email.Payments;
@@ -385,11 +386,18 @@ namespace AnlabMvc.Services
                 throw new InvalidOperationException("A current HTTP request is required to build the results download email URL.");
             }
 
-            return UriHelper.BuildAbsolute(
+            var downloadUrl = UriHelper.BuildAbsolute(
                 request.Scheme,
                 request.Host,
                 request.PathBase,
                 $"/Results/Download/{order.ShareIdentifier}");
+
+            if (!ResultsDownloadLinkEmailModel.IsHttpOrHttpsAbsoluteUrl(downloadUrl))
+            {
+                throw new InvalidOperationException("The results download email URL must be an absolute HTTP or HTTPS URL.");
+            }
+
+            return downloadUrl;
         }
     }
 }
