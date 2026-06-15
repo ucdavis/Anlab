@@ -10,7 +10,6 @@ using AnlabMvc;
 using AnlabMvc.Models.Email.Billing;
 using AnlabMvc.Models.Email.Orders;
 using AnlabMvc.Models.Email.Payments;
-using AnlabMvc.Models.Email.Samples;
 using AnlabMvc.Models.Email.WorkRequests;
 using AnlabMvc.Services;
 using Microsoft.AspNetCore.Hosting;
@@ -40,10 +39,10 @@ namespace Test.TestsServices
             await service.EnqueueAsync(
                 "client@example.com",
                 "Rendered email",
-                MjmlEmailService.SampleCardTemplateName,
+                MjmlEmailService.OrderCreatedTemplateName,
                 new { Header = "Hello" });
 
-            renderer.TemplateName.ShouldBe(MjmlEmailService.SampleCardTemplateName);
+            renderer.TemplateName.ShouldBe(MjmlEmailService.OrderCreatedTemplateName);
             mailService.Message.ShouldNotBeNull();
             mailService.Message.SendTo.ShouldBe("client@example.com");
             mailService.Message.Subject.ShouldBe("Rendered email");
@@ -371,64 +370,6 @@ namespace Test.TestsServices
             mailService.Message.Subject.ShouldBe("Work Request Disposal Warning - 22F107");
             mailService.Message.Order.ShouldBe(order);
             mailService.Message.User.ShouldBe(user);
-        }
-
-        [Fact]
-        public async Task RenderAsync_RendersSampleCardTemplateToHtml()
-        {
-            var services = new ServiceCollection();
-            var webRoot = Path.Combine(AppContext.BaseDirectory, "wwwroot");
-            var diagnosticListener = new DiagnosticListener("MjmlEmailServiceTests");
-
-            services.AddLogging();
-            services.AddSingleton<DiagnosticSource>(diagnosticListener);
-            services.AddSingleton(diagnosticListener);
-            services.AddSingleton<IWebHostEnvironment>(new TestWebHostEnvironment
-            {
-                ApplicationName = typeof(Startup).Assembly.GetName().Name,
-                ContentRootPath = AppContext.BaseDirectory,
-                ContentRootFileProvider = new PhysicalFileProvider(AppContext.BaseDirectory),
-                EnvironmentName = Environments.Development,
-                WebRootPath = webRoot,
-                WebRootFileProvider = Directory.Exists(webRoot)
-                    ? new PhysicalFileProvider(webRoot)
-                    : new NullFileProvider()
-            });
-            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
-            services.AddSingleton<MjmlRenderer>();
-            services.AddControllersWithViews()
-                .AddApplicationPart(typeof(Startup).Assembly);
-            services.AddTransient<IMjmlEmailRenderer, MjmlEmailRenderer>();
-
-            using (var serviceProvider = services.BuildServiceProvider())
-            {
-                var renderer = serviceProvider.GetRequiredService<IMjmlEmailRenderer>();
-
-                var html = await renderer.RenderAsync(MjmlEmailService.SampleCardTemplateName, new SampleCardEmailModel
-                {
-                    Header = "Render test",
-                    Message = "This email should render.",
-                    CardTitle = "Card title",
-                    CardSummary = "Card summary",
-                    Items = new[]
-                    {
-                        new SampleCardEmailItem
-                        {
-                            Label = "Status",
-                            Value = "Received"
-                        }
-                    }
-                });
-
-                html.ShouldContain("Render test");
-                html.ShouldContain("Card title");
-                html.ShouldContain("Status");
-                html.ShouldContain("https://anlaborders.ucdavis.edu/Images/anlabEmailLogo.jpg");
-                html.ShouldContain("mailto:anlab@ucdavis.edu");
-                html.ShouldContain("tel:5307520147");
-                html.ShouldNotContain("<mjml");
-            }
         }
 
         [Fact]

@@ -85,7 +85,6 @@ namespace AnlabMvc.Services
 
     public class MjmlEmailService : IMjmlEmailService
     {
-        public const string SampleCardTemplateName = "Emails/Samples/SampleCard_mjml";
         public const string OrderCreatedTemplateName = "Emails/Orders/OrderCreated_mjml";
         public const string WorkRequestReceivedByLabTemplateName = "Emails/WorkRequests/WorkRequestReceivedByLab_mjml";
         public const string WorkRequestPartialResultsTemplateName = "Emails/WorkRequests/WorkRequestPartialResults_mjml";
