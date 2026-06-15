@@ -51,24 +51,6 @@ namespace Test.TestsServices
         }
 
         [Fact]
-        public async Task EnqueueSampleCardEmailAsync_UsesSampleTemplate()
-        {
-            var renderer = new StubMjmlEmailRenderer();
-            var mailService = new StubMailService();
-            var service = new MjmlEmailService(renderer, mailService, new HttpContextAccessor());
-            var order = new Order();
-            var user = new User();
-
-            await service.EnqueueSampleCardEmailAsync("client@example.com", order, user);
-
-            renderer.TemplateName.ShouldBe(MjmlEmailService.SampleCardTemplateName);
-            mailService.Message.ShouldNotBeNull();
-            mailService.Message.Subject.ShouldBe("Anlab MJML email example");
-            mailService.Message.Order.ShouldBe(order);
-            mailService.Message.User.ShouldBe(user);
-        }
-
-        [Fact]
         public async Task EnqueueOrderCreatedEmailAsync_UsesOrderCreatedTemplate()
         {
             var renderer = new StubMjmlEmailRenderer();

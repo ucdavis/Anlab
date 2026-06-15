@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Anlab.Core.Domain;
@@ -7,7 +6,6 @@ using Anlab.Core.Services;
 using AnlabMvc.Models.Email.Billing;
 using AnlabMvc.Models.Email.Orders;
 using AnlabMvc.Models.Email.Payments;
-using AnlabMvc.Models.Email.Samples;
 using AnlabMvc.Models.Email.WorkRequests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -24,12 +22,6 @@ namespace AnlabMvc.Services
             string subject,
             string templateName,
             TModel model,
-            Order order = null,
-            User user = null,
-            CancellationToken cancellationToken = default);
-
-        Task EnqueueSampleCardEmailAsync(
-            string sendTo,
             Order order = null,
             User user = null,
             CancellationToken cancellationToken = default);
@@ -151,44 +143,6 @@ namespace AnlabMvc.Services
             };
 
             _mailService.EnqueueMessage(message);
-        }
-
-        public Task EnqueueSampleCardEmailAsync(
-            string sendTo,
-            Order order = null,
-            User user = null,
-            CancellationToken cancellationToken = default)
-        {
-            var model = new SampleCardEmailModel
-            {
-                PreviewText = "Example MJML email from Anlab.",
-                Header = "MJML email example",
-                Message = "This sample shows the card-based MJML email layout available to application services.",
-                CardTitle = "Work request summary",
-                CardSummary = "Use this template as a starting point for future HTML email messages.",
-                ButtonText = "View Anlab",
-                ButtonUrl = "https://anlab.ucdavis.edu",
-                Items = new List<SampleCardEmailItem>
-                {
-                    new SampleCardEmailItem
-                    {
-                        Label = "Request",
-                        Value = "WR-000123"
-                    },
-                    new SampleCardEmailItem
-                    {
-                        Label = "Status",
-                        Value = "Received"
-                    },
-                    new SampleCardEmailItem
-                    {
-                        Label = "Client",
-                        Value = "UC Davis"
-                    }
-                }
-            };
-
-            return EnqueueAsync(sendTo, "Anlab MJML email example", SampleCardTemplateName, model, order, user, cancellationToken);
         }
 
         public Task EnqueueOrderCreatedEmailAsync(
