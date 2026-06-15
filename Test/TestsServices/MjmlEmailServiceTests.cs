@@ -890,6 +890,8 @@ namespace Test.TestsServices
                 html.ShouldContain("partial results are attached to this email");
                 html.ShouldContain("Partial Results Download");
                 html.ShouldContain("Download Partial Results");
+                html.ShouldContain("This link is valid only for the current partial results file.");
+                html.ShouldContain("If the file is replaced, use the order details page to download the latest results.");
                 html.ShouldContain("https://localhost:5001/Results/Download/11111111-1111-1111-1111-111111111111");
                 html.ShouldContain("display:block");
                 html.ShouldContain("padding:14px 24px");
@@ -938,6 +940,8 @@ namespace Test.TestsServices
                 html.ShouldContain("Partial Results Attached");
                 html.ShouldNotContain("Partial Results Download");
                 html.ShouldNotContain("Download Partial Results");
+                html.ShouldNotContain("This link is valid only for the current partial results file.");
+                html.ShouldNotContain("If the file is replaced, use the order details page to download the latest results.");
                 html.ShouldNotContain("javascript:alert(1)");
                 html.ShouldNotContain("<mjml");
             }
