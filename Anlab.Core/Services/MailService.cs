@@ -34,7 +34,7 @@ namespace Anlab.Core.Services
         public void EnqueueMessage(MailMessage message)
         {
             _dbContext.Add(message);
-
+#if DEBUG
             if (!_emailSettings.SendEmailRightAway)
             {
                 return;
@@ -50,6 +50,7 @@ namespace Anlab.Core.Services
             {
                 Log.Error($"Error sending email right away. Exception {ex.Message}");
             }
+#endif
         }
 
         public void SendMessage(MailMessage mailMessage)
