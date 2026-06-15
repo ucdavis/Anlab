@@ -369,7 +369,7 @@ namespace AnlabMvc.Services
                 LayoutWidth = "800px",
                 Order = order,
                 PreviewText = "Work Request Disposal Warning",
-                ButtonText = "View Details or Order",
+                ButtonText = "View Details of Order",
                 ButtonUrl = BuildResultsLinkUrl(order)
             };
 

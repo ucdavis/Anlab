@@ -351,7 +351,7 @@ namespace Test.TestsServices
 
             renderer.TemplateName.ShouldBe(MjmlEmailService.DisposalWarningTemplateName);
             var model = renderer.Model.ShouldBeOfType<DisposalWarningEmailModel>();
-            model.ButtonText.ShouldBe("View Details or Order");
+            model.ButtonText.ShouldBe("View Details of Order");
             model.ButtonUrl.ShouldBe("https://localhost:5001/Results/Link/11111111-1111-1111-1111-111111111111");
             mailService.Message.ShouldNotBeNull();
             mailService.Message.Subject.ShouldBe("Work Request Disposal Warning - 22F107");
