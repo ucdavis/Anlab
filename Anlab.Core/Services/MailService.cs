@@ -74,7 +74,7 @@ namespace Anlab.Core.Services
 
             message.Subject = mailMessage.Subject;
             message.IsBodyHtml = false;
-            message.Body = mailMessage.Body;
+            message.Body = HtmlEmailTextFormatter.ToPlainText(mailMessage.Body);
             var mimeType = new System.Net.Mime.ContentType("text/html");
             var alternate = AlternateView.CreateAlternateViewFromString(mailMessage.Body, mimeType);
             message.AlternateViews.Add(alternate);
@@ -105,7 +105,7 @@ namespace Anlab.Core.Services
 
                 message.Subject = $"T.O.P.S. Email Failure. Order Id {orderId}";
                 message.IsBodyHtml = false;
-                message.Body = body;
+                message.Body = HtmlEmailTextFormatter.ToPlainText(body);
                 var mimeType = new System.Net.Mime.ContentType("text/html");
                 var alternate = AlternateView.CreateAlternateViewFromString(body, mimeType);
                 message.AlternateViews.Add(alternate);
