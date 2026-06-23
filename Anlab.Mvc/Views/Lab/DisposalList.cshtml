@@ -58,6 +58,7 @@
                 <th>Date Finalized</th>
                 <th>Status</th>
                 <th>#</th>
+                <th class="text-center disposal-selected-column">Selected</th>
             </tr>
         </thead>
         <tbody>
@@ -74,6 +75,9 @@
                     <td>@disOrder.DateFinalized.Value.ToPacificTime().ToString("g")</td>
                     <td>@disOrder.Status</td>
                     <td>@disOrder.EmailCount</td>
+                    <td class="text-center disposal-selected-cell">
+                        <input class="disposal-select-indicator" type="checkbox" tabindex="-1" aria-label="Selected order @disOrder.Id" />
+                    </td>
                 </tr>
             }
         </tbody>
@@ -88,6 +92,35 @@
     <style>
         #table tbody tr {
             cursor: pointer;
+        }
+
+        #table.dataTable tbody tr.selected,
+        #table.dataTable tbody tr.selected > td,
+        #table.dataTable tbody tr.selected > th {
+            background-color: #0d6efd !important;
+            color: #fff;
+        }
+
+        #table.dataTable tbody tr.selected:hover,
+        #table.dataTable tbody tr.selected:hover > td,
+        #table.dataTable tbody tr.selected:hover > th {
+            background-color: #0b5ed7 !important;
+            color: #fff;
+        }
+
+        #table.dataTable tbody tr.selected a {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        #table .disposal-selected-column,
+        #table .disposal-selected-cell {
+            width: 1%;
+            white-space: nowrap;
+        }
+
+        #table .disposal-select-indicator {
+            pointer-events: none;
         }
     </style>
 }
@@ -107,12 +140,26 @@
                 "columnDefs": [
                     {
                         "type": "date", "targets" : [7]
+                    },
+                    {
+                        "orderable": false,
+                        "searchable": false,
+                        "targets": [10]
                     }
                 ],
                 "iDisplayLength": 100,
                 "stateSave": true,                
                 "stateDuration": 60 * 60,
             });
+
+            function syncSelectionCheckboxes() {
+                table.rows().every(function () {
+                    var row = $(this.node());
+                    row.find(".disposal-select-indicator").prop("checked", row.hasClass("selected"));
+                });
+            }
+
+            table.on("select deselect draw", syncSelectionCheckboxes);
 
             $("#bulk-disposal-email").submit(function () {
                 var ids = $.map(table.rows('.selected').ids(),
