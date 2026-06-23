@@ -34,6 +34,10 @@ public class DocumentSigningService : IDocumentSigningService
     private readonly ESignatureOptions _eSignatureSettings;
 
     private static readonly string SignerClientId = "1000";
+    private const string SampleAmountGuideText = "Sample Amount Guide";
+    private const string SampleAmountGuideAnchor = "**sample_amount_guide_link**";
+    private const string SampleAmountGuideUrl = "https://anlab.ucdavis.edu/forms-and-guides";
+    private const string SampleAmountGuideTabLabel = "#HREF_SampleAmountGuide";
 
     public DocumentSigningService(IOptions<ESignatureOptions> eSignatureSettings, ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor)
     {
@@ -247,8 +251,27 @@ public class DocumentSigningService : IDocumentSigningService
             AnchorXOffset = "20",
         };
 
+        var sampleAmountGuideLink = new Text
+        {
+            AnchorString = SampleAmountGuideAnchor,
+            AnchorUnits = "pixels",
+            TabLabel = SampleAmountGuideTabLabel,
+            Value = SampleAmountGuideText,
+            Name = SampleAmountGuideUrl,
+            Tooltip = SampleAmountGuideUrl,
+            Required = "true",
+            Locked = "true",
+            FontColor = "BrightBlue",
+            Underline = "true",
+        };
+
         // add sign here & date signed tabs for signer
-        signer.Tabs = new Tabs {SignHereTabs = new List<SignHere> {signHere}, DateSignedTabs = new List<DateSigned> {dateSigned }};
+        signer.Tabs = new Tabs
+        {
+            SignHereTabs = new List<SignHere> {signHere},
+            DateSignedTabs = new List<DateSigned> {dateSigned},
+            TextTabs = new List<Text> {sampleAmountGuideLink}
+        };
 
         // add signer to envelope
         env.Recipients = new Recipients {Signers = new List<Signer> {signer}};
