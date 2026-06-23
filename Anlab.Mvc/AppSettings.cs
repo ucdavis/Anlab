@@ -21,7 +21,7 @@ namespace AnlabMvc
 
         public bool AllowDuplicateRequestNums { get; set; } = false;
 
-        public bool UseMjmlEmails { get; set; } = false;
+        public bool UseMjmlEmails { get; set; } = true;
 
         public bool IncludePartialResultsDownloadLink { get; set; } = false;
     }
