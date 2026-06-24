@@ -1,0 +1,49 @@
+@using Anlab.Core.Extensions
+@model AnlabMvc.Models.Email.WorkRequests.DisposalWarningEmailModel
+
+@{
+    Layout = "/Views/Emails/Shared/_MjmlEmailLayout.cshtml";
+    var requestNumber = string.IsNullOrWhiteSpace(Model.Order?.RequestNum) ? "-" : Model.Order.RequestNum;
+    var clientId = string.IsNullOrWhiteSpace(Model.Order?.ClientId) ? "-" : Model.Order.ClientId;
+    var finalizedDate = Model.Order?.DateFinalized;
+    var reportDate = finalizedDate.HasValue ? finalizedDate.Value.ToPacificTime().ToShortDateString() : "-";
+}
+
+<mj-text mj-class="heading-primary">
+  Work Request @requestNumber
+</mj-text>
+<mj-text mj-class="heading-secondary">
+  Client Id: @clientId
+</mj-text>
+<mj-text mj-class="heading-secondary">
+  Report Date: @reportDate
+</mj-text>
+
+<mj-text mj-class="body-copy">
+  Due to storage space limitations, the Analytical Laboratory can only hold tested samples for a limited time after testing. The 30 day courtesy holding period for the samples associated with the above work request has expired. <strong style="color:#c62828;">These samples will be discarded in two weeks from this date.</strong> Please reply to this email with one of the following options:
+</mj-text>
+
+<mj-text mj-class="body-copy">
+  <ul style="margin:0;padding-left:22px;">
+    <li>I no longer want the samples. Please discard them.</li>
+    <li>I will arrange to pick up my samples at the Lab's Receiving Area in the Hoagland Annex (phone: (530) 752-0147; email: anlab@ucdavis.edu)</li>
+    <li>Please hold my samples until _________________________ (charges may apply)</li>
+    <li>Other _____________________________________________</li>
+  </ul>
+</mj-text>
+
+<mj-table cellpadding="0"
+          cellspacing="0"
+          width="100%"
+          mj-class="content-table">
+  <tr>
+    <td style="background-color:#fff3f0;border:1px solid #f0c5bd;border-radius:8px;padding:16px 24px;">
+      Because this is the <strong style="color:#c62828;">only notification</strong> we will send you, <strong style="color:#c62828;">please take appropriate action quickly</strong>. Without a response, the samples will be discarded.
+    </td>
+  </tr>
+</mj-table>
+
+@if (!string.IsNullOrWhiteSpace(Model.ButtonText) && !string.IsNullOrWhiteSpace(Model.ButtonUrl))
+{
+    @await Html.PartialAsync("/Views/Emails/Shared/_MjmlEmailButton.cshtml", new AnlabMvc.Models.Email.MjmlEmailButtonModel(Model.ButtonText, Model.ButtonUrl))
+}

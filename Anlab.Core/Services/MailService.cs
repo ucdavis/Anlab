@@ -1,11 +1,11 @@
-using System;
-using System.Net;
-using System.Net.Mail;
-using System.Threading.Tasks;
 using Anlab.Core.Data;
 using Anlab.Core.Models;
 using Microsoft.Extensions.Options;
 using Serilog;
+using System;
+using System.Net;
+using System.Net.Mail;
+using System.Threading.Tasks;
 using MailMessage = Anlab.Core.Domain.MailMessage;
 
 namespace Anlab.Core.Services
@@ -34,6 +34,23 @@ namespace Anlab.Core.Services
         public void EnqueueMessage(MailMessage message)
         {
             _dbContext.Add(message);
+#if DEBUG
+            if (!_emailSettings.SendEmailRightAway)
+            {
+                return;
+            }
+
+            try
+            {
+                SendMessage(message);
+                message.Sent = true;
+                message.SentAt = DateTime.UtcNow;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error sending email right away. Exception {ex.Message}");
+            }
+#endif
         }
 
         public void SendMessage(MailMessage mailMessage)
@@ -57,7 +74,7 @@ namespace Anlab.Core.Services
 
             message.Subject = mailMessage.Subject;
             message.IsBodyHtml = false;
-            message.Body = mailMessage.Body;
+            message.Body = HtmlEmailTextFormatter.ToPlainText(mailMessage.Body);
             var mimeType = new System.Net.Mime.ContentType("text/html");
             var alternate = AlternateView.CreateAlternateViewFromString(mailMessage.Body, mimeType);
             message.AlternateViews.Add(alternate);
@@ -88,7 +105,7 @@ namespace Anlab.Core.Services
 
                 message.Subject = $"T.O.P.S. Email Failure. Order Id {orderId}";
                 message.IsBodyHtml = false;
-                message.Body = body;
+                message.Body = HtmlEmailTextFormatter.ToPlainText(body);
                 var mimeType = new System.Net.Mime.ContentType("text/html");
                 var alternate = AlternateView.CreateAlternateViewFromString(body, mimeType);
                 message.AlternateViews.Add(alternate);

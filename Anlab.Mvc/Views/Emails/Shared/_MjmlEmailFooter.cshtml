@@ -1,0 +1,25 @@
+@model AnlabMvc.Models.Email.MjmlEmailTemplateModelBase
+
+<mj-section mj-class="email-card-section"
+            border-radius="0px 0px 14px 14px"
+            padding-top="18px"
+            padding-bottom="32px">
+  <mj-column width="28%" vertical-align="top">
+    <mj-image src="@Model.FooterImageUrl"
+              alt="UC Davis Analytical Laboratory"
+              width="92px"
+              align="left"
+              padding="0px 0px 16px 0px" />
+  </mj-column>
+  <mj-column width="72%" vertical-align="top">
+    <mj-text mj-class="footer-text" padding="0px 0px 10px 0px">
+      Email us at <a href="mailto:anlab@ucdavis.edu">anlab@ucdavis.edu</a>
+    </mj-text>
+    <mj-text mj-class="footer-text" padding="0px">
+      UC Davis Analytical Lab<br />
+      <a href="tel:5307520147">530 752-0147</a><br />
+      University of California Davis, California<br />
+      95616-5270
+    </mj-text>
+  </mj-column>
+</mj-section>

@@ -1,0 +1,61 @@
+@using Anlab.Core.Models
+@model AnlabMvc.Models.Email.Billing.BillingInformationEmailModel
+
+@{
+    Layout = "/Views/Emails/Shared/_MjmlEmailLayout.cshtml";
+    var h1Text = "";
+    var h2Text = "";
+    var h3Text = "";
+    var billingText = "";
+
+    if (Model.Order?.Status == OrderStatusCodes.Confirmed || Model.Order?.Status == OrderStatusCodes.Created)
+    {
+        h1Text = "Anlab Agreement Request";
+        h2Text = $"Order Number {Model.Order.Id}";
+        billingText = "agreement for a work request";
+    }
+    else
+    {
+        h1Text = "Anlab Work Request Billing";
+        h2Text = $"Work Request {Model.Order?.RequestNum}";
+        h3Text = $"Order Number {Model.Order?.Id}";
+        billingText = "work request";
+    }
+}
+
+<mj-text mj-class="heading-primary">
+  @h1Text
+</mj-text>
+<mj-text font-size="20px"
+         font-weight="700"
+         line-height="1.35"
+         padding="0px 0px 14px 0px">
+  @h2Text
+</mj-text>
+@if (!string.IsNullOrWhiteSpace(h3Text))
+{
+    <mj-text font-size="18px"
+             font-weight="700"
+             line-height="1.35"
+             padding="0px 0px 14px 0px">
+      @h3Text
+    </mj-text>
+}
+<mj-text mj-class="body-copy">
+  A new @billingText has been placed that requires your attention.
+</mj-text>
+
+@await Html.PartialAsync("/Views/Emails/Billing/_RequesterDetailsCard_mjml.cshtml", Model)
+
+@await Html.PartialAsync("/Views/Emails/Billing/_BillingDetailsCard_mjml.cshtml", Model.Order)
+
+@await Html.PartialAsync("/Views/Emails/Shared/_OrderTestDetailsTable_mjml.cshtml", new AnlabMvc.Models.Email.OrderTestDetailsTableEmailModel
+{
+    Order = Model.Order,
+    ShowBillingTotals = true
+})
+
+@if (!string.IsNullOrWhiteSpace(Model.ButtonText) && !string.IsNullOrWhiteSpace(Model.ButtonUrl))
+{
+    @await Html.PartialAsync("/Views/Emails/Shared/_MjmlEmailButton.cshtml", new AnlabMvc.Models.Email.MjmlEmailButtonModel(Model.ButtonText, Model.ButtonUrl))
+}

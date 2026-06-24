@@ -19,7 +19,7 @@
         <p>Click To select one</p>
         <p>Ctrl + Click to select multiple</p>
         <p>Shift + Click to select range</p>
-        <p>Selected rows are a darker blue</p>
+        <p>Selected rows are a light blue</p>
         <h3>Look at order's emails</h3>
         <p>If you click on the order id, it will open a new tab with emails for that order</p>
         <h3>The # column</h3>
@@ -27,7 +27,7 @@
         <h3>Sorting and filtering</h3>
         <p>You can sort the columns by clicking on the heading. You can sort by multiple columns by shift + click the headings. The heading arrow shows the direction of sort. Sorting does not affect selected columns.</p>
         <h3>What you have selected</h3>
-        <p>Selected columns are a darker blue. A count of selected items shows up in the bottom of the table. Once you click on generate emails, a confirmation dialog will appear listing the order Ids it will generate the emails for. You can cancel at this time.</p>
+        <p>Selected columns are a light blue. A count of selected items shows up in the bottom of the table. Once you click on generate emails, a confirmation dialog will appear listing the order Ids it will generate the emails for. You can cancel at this time.</p>
         <h3>Alternatives</h3>
         <p>Only orders completed in the last 31 or so days are listed. If you need to send an email to an order not listed here, you can do it from the Admin Override.</p>
         <p>Only Finalized and Completed orders are listed.</p>
@@ -58,6 +58,7 @@
                 <th>Date Finalized</th>
                 <th>Status</th>
                 <th>#</th>
+                <th class="text-center disposal-selected-column">Selected</th>
             </tr>
         </thead>
         <tbody>
@@ -74,6 +75,9 @@
                     <td>@disOrder.DateFinalized.Value.ToPacificTime().ToString("g")</td>
                     <td>@disOrder.Status</td>
                     <td>@disOrder.EmailCount</td>
+                    <td class="text-center disposal-selected-cell">
+                        <input class="disposal-select-indicator" type="checkbox" tabindex="-1" aria-label="Selected order @disOrder.Id" />
+                    </td>
                 </tr>
             }
         </tbody>
@@ -88,6 +92,35 @@
     <style>
         #table tbody tr {
             cursor: pointer;
+        }
+
+        #table.dataTable tbody tr.selected,
+        #table.dataTable tbody tr.selected > td,
+        #table.dataTable tbody tr.selected > th {
+            background-color: #cfe2ff !important;
+            color: #052c65;
+        }
+
+        #table.dataTable tbody tr.selected:hover,
+        #table.dataTable tbody tr.selected:hover > td,
+        #table.dataTable tbody tr.selected:hover > th {
+            background-color: #b6d4fe !important;
+            color: #052c65;
+        }
+
+        #table.dataTable tbody tr.selected a {
+            color: #084298;
+            font-weight: 600;
+        }
+
+        #table .disposal-selected-column,
+        #table .disposal-selected-cell {
+            width: 1%;
+            white-space: nowrap;
+        }
+
+        #table .disposal-select-indicator {
+            pointer-events: none;
         }
     </style>
 }
@@ -107,12 +140,26 @@
                 "columnDefs": [
                     {
                         "type": "date", "targets" : [7]
+                    },
+                    {
+                        "orderable": false,
+                        "searchable": false,
+                        "targets": [10]
                     }
                 ],
                 "iDisplayLength": 100,
                 "stateSave": true,                
                 "stateDuration": 60 * 60,
             });
+
+            function syncSelectionCheckboxes() {
+                table.rows().every(function () {
+                    var row = $(this.node());
+                    row.find(".disposal-select-indicator").prop("checked", row.hasClass("selected"));
+                });
+            }
+
+            table.on("select deselect draw", syncSelectionCheckboxes);
 
             $("#bulk-disposal-email").submit(function () {
                 var ids = $.map(table.rows('.selected').ids(),

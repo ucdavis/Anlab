@@ -13,5 +13,7 @@ namespace Anlab.Core.Models
         public string AnlabAddress { get; set; }
 
         public string DisableSend { get; set; } = "Yes";
+
+        public bool SendEmailRightAway { get; set; } = false;
     }
 }

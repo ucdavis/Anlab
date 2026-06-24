@@ -1,0 +1,58 @@
+@using Anlab.Core.Models
+@using AnlabMvc.Extensions
+@model Anlab.Core.Domain.Order
+
+@{
+  var order = Model?.GetOrderDetails() ?? new OrderDetails();
+  var createdBy = Model?.Creator?.Name;
+  var paymentDetail = string.Empty;
+
+  if (Model?.PaymentType == PaymentTypeCodes.Other || Model?.PaymentType == PaymentTypeCodes.UcOtherAccount)
+  {
+    paymentDetail = order.OtherPaymentInfo != null
+        ? $" ({order.OtherPaymentInfo.PaymentType})"
+        : " (Unknown Payment Type)";
+  }
+
+  var paymentMethod = $"{order.Payment?.ClientType.PaymentMethodDescription()}{paymentDetail}";
+  var dateSampled = order.DateSampled == default ? string.Empty : order.DateSampled.ToShortDateString();
+}
+
+<mj-table cellpadding="0"
+          cellspacing="0"
+          width="100%"
+          color="#172033"
+          font-size="16px"
+          line-height="1.65"
+          padding="0px 0px 24px 0px">
+  <tr>
+    <td style="background-color:#f4f6f8;border:1px solid #d9e1ea;border-radius:8px;padding:22px 28px;">
+      <table cellpadding="0" cellspacing="0" role="presentation" width="100%" style="border-collapse:collapse;">
+        <tr>
+          <td width="50%" valign="top" style="padding:0 12px 0 0;">
+            <div style="padding:0 0 16px 0;"><strong>Online Order Number</strong><br />@(Model?.Id.ToString() ?? "-")</div>
+            <div style="padding:0 0 16px 0;"><strong>Project Title/Location</strong><br />@(string.IsNullOrWhiteSpace(order.Project) ? "-" : order.Project)</div>
+            <div style="padding:0 0 16px 0;"><strong>Payment Method</strong><br />@(string.IsNullOrWhiteSpace(paymentMethod) ? "-" : paymentMethod)</div>
+            <div style="padding:0 0 16px 0;"><strong>Client Id</strong><br />@(string.IsNullOrWhiteSpace(order.ClientInfo?.ClientId) ? "-" : order.ClientInfo.ClientId)</div>
+            <div><strong>Client Name</strong><br />@(string.IsNullOrWhiteSpace(order.ClientInfo?.Name) ? "-" : order.ClientInfo.Name)</div>
+            @if (!string.IsNullOrWhiteSpace(order.ProjectCode))
+            {
+              <div style="padding:16px 0 0 0;"><strong>AnLab Project Code</strong><br />@order.ProjectCode</div>
+            }
+          </td>
+          <td width="50%" valign="top" style="padding:0;">
+            <div style="padding:0 0 16px 0;"><strong>Created By</strong><br />@(string.IsNullOrWhiteSpace(createdBy) ? "-" : createdBy)</div>
+            <div style="padding:0 0 16px 0;"><strong>Sample Type</strong><br />@(string.IsNullOrWhiteSpace(order.SampleType) ? "-" : order.SampleType)</div>
+            <div style="padding:0 0 16px 0;"><strong>Commodity</strong><br />@(string.IsNullOrWhiteSpace(order.Commodity) ? "-" : order.Commodity)</div>
+            <div style="padding:0 0 16px 0;"><strong># of Samples</strong><br />@order.Quantity</div>
+            <div><strong>Date Sampled</strong><br />@(string.IsNullOrWhiteSpace(dateSampled) ? "-" : dateSampled)</div>
+            @if (!string.IsNullOrWhiteSpace(order.ClientProvidedId))
+            {
+              <div style="padding:16px 0 0 0;"><strong>Client Provided Id</strong><br />@order.ClientProvidedId</div>
+            }
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</mj-table>

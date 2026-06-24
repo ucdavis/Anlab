@@ -28,21 +28,21 @@ else
 <table id="table" cellpadding="0" class="row-border stripe order-column dt-responsive">
     <thead>
         <tr>
-            <th></th>
+            <th class="control"></th>
             <th>Action</th>
             <th>Status:</th>
             <th>Id</th>
             <th>To:</th>
             <th>Subject:</th>
             <th>Sent At:</th>
-            <th>Message Body:</th>
+            <th class="none">Message Body:</th>
         </tr>
     </thead>
     <tbody>
     @foreach (var message in Model)
     {
         <tr>
-            <td></td>
+            <td class="control"></td>
             <td>
                 @if (message.Sent.HasValue || message.FailureCount > 2)
                 {
@@ -73,7 +73,7 @@ else
             <td>
                 @message.SentAt.ToPacificTime().Format()
             </td>
-            <td>
+            <td class="none">
                 <a href="@Url.Action("ViewMessage",new { id = message.Id })" target="_blank">Open in a new window</a>
                 <div class="panel-body">
                     @Html.Raw(message.Body)
@@ -126,10 +126,16 @@ else
             var table = $("#table").DataTable({
                 "order": [[2, "desc"],[6,"desc"]],
                 "columnDefs": [
-                    { "orderable": false, "targets": 0 },
+                    { "className": "control", "orderable": false, "targets": 0 },
+                    { "className": "none", "targets": 7 },
                     {"type": "date", "targets": 6}
                 ],
-                responsive: true,
+                responsive: {
+                    details: {
+                        type: "column",
+                        target: 0
+                    }
+                },
             });
 
             $("#collapsebutton").hide();

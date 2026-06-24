@@ -80,6 +80,7 @@ namespace Test.TestsModel
             expectedFields.Add(new NameAndType("Host", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Password", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Port", "System.Int32", new List<string>()));
+            expectedFields.Add(new NameAndType("SendEmailRightAway", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("UserName", "System.String", new List<string>()));
             #endregion Arrange
 

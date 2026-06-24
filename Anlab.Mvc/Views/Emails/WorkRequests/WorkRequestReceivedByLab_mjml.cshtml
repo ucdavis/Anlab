@@ -1,0 +1,83 @@
+@using System.Globalization
+@using Anlab.Core.Models
+@model AnlabMvc.Models.Email.WorkRequests.WorkRequestReceivedByLabEmailModel
+
+@{
+    Layout = "/Views/Emails/Shared/_MjmlEmailLayout.cshtml";
+    var currencyCulture = CultureInfo.GetCultureInfo("en-US");
+    var orderDetails = Model.Order?.GetOrderDetails() ?? new OrderDetails();
+    var labComments = orderDetails.LabComments;
+}
+
+<mj-text mj-class="heading-primary">
+  Work Request Received By Lab
+</mj-text>
+<mj-text mj-class="body-copy">
+  Your samples have been received by the lab. Please review this information, as there may have been necessary changes in tests, number of samples, and/or pricing. Please notify us immediately of any required changes.
+</mj-text>
+
+<mj-table cellpadding="0"
+          cellspacing="0"
+          width="100%"
+          mj-class="content-table">
+  <tr>
+    <td style="background-color:#def0fc;border:1px solid #b7d7ee;border-radius:8px;padding:16px 24px;">
+      The work request number assigned to this order is <strong>@(string.IsNullOrWhiteSpace(Model.Order?.RequestNum) ? "-" : Model.Order.RequestNum)</strong>
+    </td>
+  </tr>
+</mj-table>
+
+@if (!string.IsNullOrWhiteSpace(labComments))
+{
+    <mj-table cellpadding="0"
+              cellspacing="0"
+              width="100%"
+              mj-class="compact-content-table">
+      <tr>
+        <td style="background-color:#def0fc;border:1px solid #b7d7ee;border-radius:8px;padding:18px 24px;">
+          <div style="font-weight:700;line-height:1.4;padding:0 0 8px 0;">Lab Comments</div>
+          <div style="white-space:pre-wrap;">@labComments</div>
+        </td>
+      </tr>
+    </mj-table>
+}
+
+@await Html.PartialAsync("/Views/Emails/Shared/_SummaryCard_mjml.cshtml", Model.Order)
+
+@await Html.PartialAsync("/Views/Emails/Billing/_BillingDetailsCard_mjml.cshtml", Model.Order)
+
+<mj-table cellpadding="0"
+          cellspacing="0"
+          width="100%"
+          mj-class="content-table">
+  <tr>
+    <td style="background-color:#def0fc;border:1px solid #b7d7ee;border-radius:8px;padding:16px 24px;">
+      <div>Order Total: <strong>@orderDetails.GrandTotal.ToString("C", currencyCulture)</strong></div>
+      <div style="color:#0000ff;font-weight:700;padding:8px 0 0 20px;">*Non-routine matrices may incur additional charges.</div>
+      @if (orderDetails.RushMultiplier.HasValue && orderDetails.RushMultiplier.Value > 1)
+      {
+        <div style="font-size:20px;font-weight:700;line-height:1.35;padding:12px 0 0 0;">RUSH This order is a rush and has the cost increased by a factor of @orderDetails.RushMultiplier</div>
+      }
+    </td>
+  </tr>
+</mj-table>
+
+@await Html.PartialAsync("/Views/Emails/Shared/_OrderTestDetailsTable_mjml.cshtml", new AnlabMvc.Models.Email.OrderTestDetailsTableEmailModel
+{
+    Order = Model.Order,
+    ShowBillingTotals = true
+})
+
+@await Html.PartialAsync("/Views/Emails/Shared/_AdditionalInfoTextCard_mjml.cshtml", Model.Order)
+
+<mj-divider border-width="1px"
+            border-style="solid"
+            border-color="#d9e1ea"
+            padding="16px 0px" />
+
+<mj-text mj-class="heading-primary">
+  What's Next?
+</mj-text>
+<mj-text mj-class="body-copy">
+  When testing is completed you will receive an email with a link to the results and payment instructions.
+</mj-text>

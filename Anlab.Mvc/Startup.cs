@@ -21,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Mjml.Net;
 using MvcReact;
 using Serilog;
 
@@ -118,6 +119,9 @@ namespace AnlabMvc
             services.AddTransient<IMailService, MailService>();
             services.AddTransient<ISlothService, SlothService>();
             services.AddTransient<IOrderMessageService, OrderMessageService>();
+            services.AddSingleton<MjmlRenderer>();
+            services.AddTransient<IMjmlEmailRenderer, MjmlEmailRenderer>();
+            services.AddTransient<IMjmlEmailService, MjmlEmailService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             if (Configuration.GetSection("Dev:UseFakeLabworks").Value == "Yes")
             {

@@ -1,0 +1,81 @@
+@model AnlabMvc.Models.Email.MjmlEmailTemplateModelBase
+<!doctype html>
+<mjml>
+  <mj-head>
+    <mj-preview>@(string.IsNullOrWhiteSpace(Model.PreviewText) ? $"{Model.AppName} notification" : Model.PreviewText)</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text color="#172033" font-size="16px" line-height="1.65" />
+      <mj-button background-color="#13639e"
+                 color="#ffffff"
+                 border-radius="8px"
+                 font-size="16px"
+                 font-weight="600"
+                 inner-padding="14px 30px" />
+      <mj-class name="footer-text"
+                color="#5d6b82"
+                font-size="14px"
+                line-height="1.5" />
+      <mj-class name="email-card-section"
+                background-color="#ffffff"
+                padding-left="36px"
+                padding-right="36px" />
+      <mj-class name="heading-primary"
+                font-size="26px"
+                font-weight="700"
+                line-height="1.3"
+                padding="0px 0px 12px 0px" />
+      <mj-class name="heading-secondary"
+                font-size="20px"
+                font-weight="700"
+                line-height="1.35"
+                padding="0px 0px 12px 0px" />
+      <mj-class name="heading-section"
+                font-size="22px"
+                font-weight="700"
+                line-height="1.3"
+                padding="0px 0px 12px 0px" />
+      <mj-class name="body-copy"
+                padding="0px 0px 18px 0px" />
+      <mj-class name="content-table"
+                color="#172033"
+                font-size="16px"
+                line-height="1.65"
+                padding="0px 0px 24px 0px" />
+      <mj-class name="compact-content-table"
+                color="#172033"
+                font-size="16px"
+                line-height="1.55"
+                padding="0px 0px 24px 0px" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#eef3f8"
+           width="@(string.IsNullOrWhiteSpace(Model.LayoutWidth) ? "600px" : Model.LayoutWidth)">
+    <mj-section mj-class="email-card-section"
+                border-radius="14px 14px 0px 0px"
+                padding-top="36px"
+                padding-bottom="16px">
+      <mj-column>
+        <mj-text align="left"
+                 font-size="26px"
+                 font-weight="700"
+                 color="#172033"
+                 padding="0px">
+          @Model.AppName
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section mj-class="email-card-section"
+                padding-top="0px"
+                padding-bottom="0px">
+      <mj-column padding="0px">
+        @await Html.PartialAsync("/Views/Emails/Shared/_BypassClientCard_mjml.cshtml", Model)
+
+        @RenderBody()
+      </mj-column>
+    </mj-section>
+
+    @await Html.PartialAsync("/Views/Emails/Shared/_MjmlEmailFooter.cshtml", Model)
+  </mj-body>
+</mjml>
