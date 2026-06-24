@@ -8,10 +8,9 @@ CREATE TABLE [dbo].[TestItems] (
     [Notes]                NVARCHAR (MAX) NULL,
     [Public]               BIT            NOT NULL,
     [RequestOrder]         INT            NOT NULL,
-    [Reporting] BIT NOT NULL DEFAULT 0, 
-    [DryMatter] BIT NOT NULL DEFAULT 0, 
+    [Reporting]            BIT            DEFAULT ((0)) NOT NULL,
+    [DryMatter]            BIT            CONSTRAINT [DF_TestItems_DryMatter] DEFAULT ((0)) NOT NULL,
+    [TestGroup]            NVARCHAR(64)   DEFAULT('') NOT NULL,
     CONSTRAINT [PK_TestItems] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
-
-
 
