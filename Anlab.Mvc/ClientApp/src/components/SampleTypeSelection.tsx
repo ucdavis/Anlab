@@ -24,7 +24,7 @@ export class SampleTypeSelection extends React.Component<ISampleTypeProps, {}> {
             onClick={() => this._handleChange("Soil")}
           >
             <SoilSvg />
-            <h3>Soil</h3>
+            <h3>Soil Only</h3>
           </div>
           <div
             className={
@@ -33,7 +33,7 @@ export class SampleTypeSelection extends React.Component<ISampleTypeProps, {}> {
             onClick={() => this._handleChange("Plant")}
           >
             <PlantSvg />
-            <h3>Plant / Feed</h3>
+            <h3>Plant / Feed Only</h3>
           </div>
           <div
             className={
@@ -42,7 +42,7 @@ export class SampleTypeSelection extends React.Component<ISampleTypeProps, {}> {
             onClick={() => this._handleChange("Water")}
           >
             <WaterSvg />
-            <h3>Water</h3>
+            <h3>Water and Irrigation Water Only</h3>
           </div>
           <div
             className={
@@ -53,7 +53,7 @@ export class SampleTypeSelection extends React.Component<ISampleTypeProps, {}> {
             onClick={() => this._handleChange("Miscellaneous")}
           >
             <MiscSvg />
-            <h3>Miscellaneous</h3>
+            <h3>Misc & Specialty Testing</h3>
           </div>
         </div>
       </div>

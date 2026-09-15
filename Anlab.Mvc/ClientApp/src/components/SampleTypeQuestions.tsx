@@ -36,8 +36,19 @@ export class SampleTypeQuestions extends React.Component<
       <div>
         {this.props.sampleType === "Miscellaneous" && (
           <div className="alert alert-warning" role="alert">
-            For Miscellaneous samples, if the following questions do not apply,
-            leave them as No.
+            <h4>Miscellaneous &amp; Specialty Testing</h4>
+            <div>
+              Please use this category for all other samples that do not fit within our standard
+              categories.
+            </div>
+            <div>
+              <strong>Examples:</strong> seawater, manure, compost, etc.
+            </div>
+            <hr />
+            <div>
+              For Miscellaneous samples, if the following questions do not
+              apply, leave them as <strong>No</strong>.
+            </div>
           </div>
         )}
         <SampleSoilQuestions

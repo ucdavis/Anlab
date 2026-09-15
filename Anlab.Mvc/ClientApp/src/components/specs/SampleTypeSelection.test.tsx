@@ -6,8 +6,8 @@ import { SampleTypeSelection } from "../SampleTypeSelection";
 
 describe("<SampleTypeSelection/>", () => {
   it("should render", () => {
-    render(<SampleTypeSelection sampleType="soil" onSampleSelected={null} />);
-    expect(screen.getByText("Soil")).toBeInTheDocument();
+    render(<SampleTypeSelection sampleType="Soil" onSampleSelected={null} />);
+    expect(screen.getByText("Soil Only")).toBeInTheDocument();
   });
 
   describe("Soil selector", () => {
@@ -22,7 +22,7 @@ describe("<SampleTypeSelection/>", () => {
       );
 
       const user = userEvent.setup();
-      await user.click(screen.getByText("Soil"));
+      await user.click(screen.getByText("Soil Only"));
 
       expect(onSampleSelected).toHaveBeenCalled();
       expect(onSampleSelected).toHaveBeenCalledWith("Soil");
@@ -41,7 +41,7 @@ describe("<SampleTypeSelection/>", () => {
       );
 
       const user = userEvent.setup();
-      await user.click(screen.getByText("Plant / Feed"));
+      await user.click(screen.getByText("Plant / Feed Only"));
 
       expect(onSampleSelected).toHaveBeenCalled();
       expect(onSampleSelected).toHaveBeenCalledWith("Plant");
@@ -60,7 +60,7 @@ describe("<SampleTypeSelection/>", () => {
       );
 
       const user = userEvent.setup();
-      await user.click(screen.getByText("Water"));
+      await user.click(screen.getByText("Water and Irrigation Water Only"));
 
       expect(onSampleSelected).toHaveBeenCalled();
       expect(onSampleSelected).toHaveBeenCalledWith("Water");
