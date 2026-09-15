@@ -38,7 +38,7 @@ export class SampleTypeQuestions extends React.Component<
           <div className="alert alert-warning" role="alert">
             <h4>Miscellaneous &amp; Specialty Testing</h4>
             <div>
-              For all other samples that do not fit within our standard
+              Please use this category for all other samples that do not fit within our standard
               categories.
             </div>
             <div>
