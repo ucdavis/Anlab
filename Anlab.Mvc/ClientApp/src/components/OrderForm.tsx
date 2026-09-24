@@ -710,7 +710,7 @@ export default class OrderForm extends React.Component<
       ) {
         valid = false;
       }
-      // if dry matter is not selected, user must select the first or second choice
+      // individual dry weight reporting requires a dry matter test
       if (
         !isDryMatterSelected &&
         this.state.sampleTypeQuestions.plantReportingBasis ===

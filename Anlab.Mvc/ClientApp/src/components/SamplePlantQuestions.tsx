@@ -17,6 +17,8 @@ export const SamplePlantQuestionsOptions = {
   asReceived: "Report results on As Received basis.",
   individual:
     "Report results on 100% dry weight basis, based on individual dry matter results (Charges Apply).",
+  asFed:
+    "Report results on As Fed basis. (Please note: If sample needs to be dried, DM55 charges will apply.)",
 };
 
 export class SamplePlantQuestions extends React.Component<
@@ -56,8 +58,9 @@ export class SamplePlantQuestions extends React.Component<
               <span className="red-text help-block">
                 <span className="red-text">
                   You have selected Dry Matter. This reporting basis is not
-                  available. Please choose reporting basis of "As Received" or
-                  "100% Dry Weight Basis, on individual dry matter."
+                  available. Please choose reporting basis of "As Received",
+                  "100% Dry Weight Basis, on individual dry matter", or "As
+                  Fed".
                 </span>
               </span>
             )}
@@ -109,6 +112,21 @@ export class SamplePlantQuestions extends React.Component<
                 Matter from below to select this option. (Charges Apply)
               </span>
             )}
+        </p>
+        <p>
+          <label>
+            <input
+              className="videokilledtheradiostar"
+              type="radio"
+              value={SamplePlantQuestionsOptions.asFed}
+              checked={
+                this.props.questions.plantReportingBasis ===
+                SamplePlantQuestionsOptions.asFed
+              }
+              onChange={this._changeReporting}
+            />
+            {SamplePlantQuestionsOptions.asFed}
+          </label>
         </p>
         {!this.props.questions.plantReportingBasis && (
           <>
