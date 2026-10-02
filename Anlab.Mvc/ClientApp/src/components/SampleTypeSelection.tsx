@@ -56,6 +56,11 @@ export class SampleTypeSelection extends React.Component<ISampleTypeProps, {}> {
             <h3>Misc & Specialty Testing</h3>
           </div>
         </div>
+        {this.props.sampleType && this.props.sampleType !== "Water" && (
+          <div className="alert alert-info" role="alert">
+            Unless requested, all samples will be analyzed on dry material.
+          </div>
+        )}
       </div>
     );
   }
