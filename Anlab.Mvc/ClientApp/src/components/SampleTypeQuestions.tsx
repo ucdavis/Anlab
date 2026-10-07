@@ -42,7 +42,7 @@ export class SampleTypeQuestions extends React.Component<
               categories.
             </div>
             <div>
-              <strong>Examples:</strong> seawater, manure, compost, etc.
+              <strong>Examples:</strong> seawater, manure, compost, fruit, etc.
             </div>
             <hr />
             <div>
